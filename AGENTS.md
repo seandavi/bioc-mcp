@@ -33,9 +33,14 @@ src/
   transports/mcp.ts   builds an McpServer from a set of modules (tools, resources, prompts)
   transports/rest.ts  builds OpenAPI routes from the same capabilities
   upstreams/<name>.ts one adapter per upstream (fetch + cache + shape)
+  docs-index/         docs index schemas and loader; bundled.ts imports generated/docs-index
   envelope.ts         result envelope: data + text summary + provenance
+scripts/              build-time Node code (never bundled); build-docs-index.ts builds the index
+generated/            build output, gitignored: docs-index.js + docs-index.d.ts
+docs-sources.yaml     the docs corpus: site URL, repos and files, size limit
 test/
   fixtures/<upstream>/  recorded upstream responses
+  fixtures/docs/<host>/<path>  recorded docs inputs, one file per URL
 ```
 
 ## Rules
@@ -56,6 +61,10 @@ test/
 - Upstream adapters build every path through `pathSegment()` (`src/upstreams/http.ts`) for each
   caller-supplied value and fetch only through `fetchUpstream`, which refuses redirects that leave
   the upstream's base URL. Upstream `baseUrl`s are `https:` and end with `/`.
+- The docs index is built, never fetched at runtime: `scripts/build-docs-index.ts` reads
+  `docs-sources.yaml`, and the Worker imports the result from `generated/`. Adding a docs source
+  means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
+  fixtures and the updated snapshot (`npx vitest run -u test/docs-index`).
 - No tool returns more than ~8 KB of text.
 - Tests never hit the network: upstream calls go through an injectable `fetch`, fed from
   `test/fixtures/`.
@@ -76,6 +85,12 @@ Node ≥ 22.12 (CI uses 24).
   `curl -s -X POST http://127.0.0.1:8787/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`
 - `npm run build`: bundle with `wrangler deploy --dry-run --outdir dist` (no deploy, no
   credentials).
+- `npm run docs:fixtures`: build `generated/docs-index.js` from `test/fixtures/docs/` (no network).
+  `npm test`, `typecheck`, `dev` and `build` do this first when the file is missing. Bare
+  `npx vitest` or `npx tsc` on a fresh clone fail with "Cannot find module '../../generated/docs-index'"
+  until `npm run docs:fixtures` has run once.
+- `npm run docs:build`: build it from the live docs (network). `npm run docs:record` does the same
+  and re-records `test/fixtures/docs/`.
 - `npm run cf-typegen`: regenerate `worker-configuration.d.ts` after editing `wrangler.jsonc`.
 
 Adding a capability: define it with `defineCapability` in `src/core/<module>/`, add it to the

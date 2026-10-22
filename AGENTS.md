@@ -58,7 +58,22 @@ test/
 
 ## Commands
 
-Filled in by the scaffold issue (#2): `npm ci`, `npm test`, `npm run typecheck`, `npm run dev`.
+Node ≥ 22.12 (CI uses 24).
+
+- `npm ci`: install exactly what `package-lock.json` pins.
+- `npm test`: Vitest in Node. Network is disabled; upstreams come from `test/fixtures/` via
+  `deps.fetch`.
+- `npm run typecheck`: `tsc` (TypeScript 7) against the Workers runtime types in
+  `worker-configuration.d.ts`.
+- `npm run dev`: `wrangler dev` on http://127.0.0.1:8787. Check it with
+  `curl -s -X POST http://127.0.0.1:8787/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`
+- `npm run build`: bundle with `wrangler deploy --dry-run --outdir dist` (no deploy, no
+  credentials).
+- `npm run cf-typegen`: regenerate `worker-configuration.d.ts` after editing `wrangler.jsonc`.
+
+Adding a capability: define it with `defineCapability` in `src/core/<module>/`, add it to the
+module's `capabilities`, add the module to `modules` in `src/core/registry.ts`. MCP and REST pick
+it up; `validateRegistry` enforces naming and REST-compatible input.
 
 ## Git
 

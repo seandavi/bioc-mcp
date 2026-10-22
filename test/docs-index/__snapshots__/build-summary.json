@@ -1,0 +1,5530 @@
+{
+  "meta": {
+    "built_at": "2026-10-22T00:00:00.000Z",
+    "build_commit": "test-commit",
+    "record_count": 418,
+    "inputs": [
+      {
+        "url": "https://seandavi.github.io/bioc-infrastructure/search.json",
+        "record_count": 264,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "6458f04d48beb666ad9dde01684bdbe576c7d4fc04bc53dae7a1816d27f3e503"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-registry/main/README.md",
+        "record_count": 11,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "d4f0899354884f8390c8ed7813947c9862adbc01f9ced41ff49d9f6d773c489a"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-registry/main/docs/api.md",
+        "record_count": 22,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "960b5dba0886994249d0de5e2595c76cadada120ae03390fb693b32fa3a4e2a4"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-edge/main/README.md",
+        "record_count": 11,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "f6fa605bc7647bab621d3d098dbdb6e6f87241b9708f044ee105840c50b416a2"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-edge/main/DATAPLANE.md",
+        "record_count": 20,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "fe90f08d6dec7e8616209eed157a1743cd8c7bdd054227b0f27e1af4f534d604"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-traffic/main/README.md",
+        "record_count": 5,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "23939af803c8ad074efeb43dc1a32a08fd32cb67ef702a944ad99e3e1760e56d"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-traffic/main/docs/published-comparison.md",
+        "record_count": 8,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "37dbc81f0605aa615fc9e08acdd8ea659ec16c59b6886613fb7aa21fea37c3a6"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-build/main/README.md",
+        "record_count": 6,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "d3da9b09aa14a90f796547cc5a38d292d50c548f604750421ec815ff1f27a01a"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-manifest/main/README.md",
+        "record_count": 6,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "bc924c741f18d8b29e86e5c2e10d69db961dbcf0e302dd8079f3f6409ece2430"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-website/main/README.md",
+        "record_count": 7,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "e5888ba7b36f3c6bb7744432b34c7d98010ed92e84e53dab04d4ece1ffc0849d"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-infrastructure/main/README.md",
+        "record_count": 6,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "423ce7c7d52479f2d3f4137ff26725e6f81262e38974d9ab16b7a02577562bf7"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-r-universe-build-db/main/README.md",
+        "record_count": 13,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "6360918f39fc0a71f10af724630cef3c7a26d6f3844ac619d8401f560fcc8d9e"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-intelligence/main/README.md",
+        "record_count": 16,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "a063d080beb82c26eaac28f07ef879e645128f7d9bbdec2eb001c555059967dd"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-on-ice/main/README.md",
+        "record_count": 12,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "e05db46f6ca1324f2f2b4d59d69ae8c7261c845730c4ecc770c956d635bf2a9e"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-harnesses/main/README.md",
+        "record_count": 6,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "17381ac7e04c1f4013676d0e7867851a1452b97915ad5bad3d742c44439ab882"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/seandavi/bioc-mcp/main/README.md",
+        "record_count": 5,
+        "last_modified": null,
+        "fetched_at": "2026-10-22T00:00:00.000Z",
+        "sha256": "323cd8ef4825bd8297561ca7e3525123e414e9b88a54d036b5960c85dbf24cef"
+      }
+    ]
+  },
+  "store_sha256": "fc24f0e89b3f1222a8867d6c2364e84510596f00c658fef35d96df06fb04cb62",
+  "index_sha256": "37167ac51cdeb5b56fe601bdb6b5bd84c49b8c18ea3d0f9ca676ec35c1674646",
+  "records": [
+    {
+      "id": "site:adr/0013-redirects-land-on-content-or-they-go.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0013-redirects-land-on-content-or-they-go.html",
+      "title": "0013 — A redirect lands on the content, or it goes",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0013 — A redirect lands on the content, or it goes"
+      ],
+      "source": "adr",
+      "text_chars": 3393
+    },
+    {
+      "id": "site:adr/0013-redirects-land-on-content-or-they-go.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0013-redirects-land-on-content-or-they-go.html#context",
+      "title": "0013 — A redirect lands on the content, or it goes",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0013 — A redirect lands on the content, or it goes"
+      ],
+      "source": "adr",
+      "text_chars": 1568
+    },
+    {
+      "id": "site:adr/0013-redirects-land-on-content-or-they-go.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0013-redirects-land-on-content-or-they-go.html#decision",
+      "title": "0013 — A redirect lands on the content, or it goes",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0013 — A redirect lands on the content, or it goes"
+      ],
+      "source": "adr",
+      "text_chars": 1096
+    },
+    {
+      "id": "site:adr/0013-redirects-land-on-content-or-they-go.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0013-redirects-land-on-content-or-they-go.html#consequences",
+      "title": "0013 — A redirect lands on the content, or it goes",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0013 — A redirect lands on the content, or it goes"
+      ],
+      "source": "adr",
+      "text_chars": 682
+    },
+    {
+      "id": "site:adr/0011-one-propagation-gate-for-every-producer.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0011-one-propagation-gate-for-every-producer.html",
+      "title": "0011 — One propagation gate for every producer",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0011 — One propagation gate for every producer"
+      ],
+      "source": "adr",
+      "text_chars": 3165
+    },
+    {
+      "id": "site:adr/0011-one-propagation-gate-for-every-producer.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0011-one-propagation-gate-for-every-producer.html#context",
+      "title": "0011 — One propagation gate for every producer",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0011 — One propagation gate for every producer"
+      ],
+      "source": "adr",
+      "text_chars": 949
+    },
+    {
+      "id": "site:adr/0011-one-propagation-gate-for-every-producer.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0011-one-propagation-gate-for-every-producer.html#decision",
+      "title": "0011 — One propagation gate for every producer",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0011 — One propagation gate for every producer"
+      ],
+      "source": "adr",
+      "text_chars": 1592
+    },
+    {
+      "id": "site:adr/0011-one-propagation-gate-for-every-producer.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0011-one-propagation-gate-for-every-producer.html#consequences",
+      "title": "0011 — One propagation gate for every producer",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0011 — One propagation gate for every producer"
+      ],
+      "source": "adr",
+      "text_chars": 578
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 5153
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html#context",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 957
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html#decision",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 506
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html#why-at-the-edge-rather-than-at-ingest",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html#why-at-the-edge-rather-than-at-ingest",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 873
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html#what-is-traded-away",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html#what-is-traded-away",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 884
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html#the-subtlety-that-will-cause-the-bug",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html#the-subtlety-that-will-cause-the-bug",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 872
+    },
+    {
+      "id": "site:adr/0009-client-addresses-are-hashed-at-the-edge.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0009-client-addresses-are-hashed-at-the-edge.html#consequences",
+      "title": "0009 — Client addresses are hashed at the edge, not de-identified downstream",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0009 — Client addresses are hashed at the edge, not de-identified downstream"
+      ],
+      "source": "adr",
+      "text_chars": 943
+    },
+    {
+      "id": "site:adr/0007-cloudflare-workflows-for-the-release-roll-guard.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html",
+      "title": "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll"
+      ],
+      "source": "adr",
+      "text_chars": 8560
+    },
+    {
+      "id": "site:adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#context",
+      "title": "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll"
+      ],
+      "source": "adr",
+      "text_chars": 1852
+    },
+    {
+      "id": "site:adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#decision",
+      "title": "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll"
+      ],
+      "source": "adr",
+      "text_chars": 2891
+    },
+    {
+      "id": "site:adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#consequences",
+      "title": "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll"
+      ],
+      "source": "adr",
+      "text_chars": 1972
+    },
+    {
+      "id": "site:adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#alternatives-considered",
+      "title": "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll"
+      ],
+      "source": "adr",
+      "text_chars": 1793
+    },
+    {
+      "id": "site:adr/0005-completeness-is-measured-by-origin-not-page-type.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html",
+      "title": "0005 — Completeness is measured by origin, not by page type",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0005 — Completeness is measured by origin, not by page type"
+      ],
+      "source": "adr",
+      "text_chars": 4228
+    },
+    {
+      "id": "site:adr/0005-completeness-is-measured-by-origin-not-page-type.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html#context",
+      "title": "0005 — Completeness is measured by origin, not by page type",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0005 — Completeness is measured by origin, not by page type"
+      ],
+      "source": "adr",
+      "text_chars": 1191
+    },
+    {
+      "id": "site:adr/0005-completeness-is-measured-by-origin-not-page-type.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html#decision",
+      "title": "0005 — Completeness is measured by origin, not by page type",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0005 — Completeness is measured by origin, not by page type"
+      ],
+      "source": "adr",
+      "text_chars": 955
+    },
+    {
+      "id": "site:adr/0005-completeness-is-measured-by-origin-not-page-type.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html#consequences",
+      "title": "0005 — Completeness is measured by origin, not by page type",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0005 — Completeness is measured by origin, not by page type"
+      ],
+      "source": "adr",
+      "text_chars": 1265
+    },
+    {
+      "id": "site:adr/0005-completeness-is-measured-by-origin-not-page-type.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html#alternatives-considered",
+      "title": "0005 — Completeness is measured by origin, not by page type",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0005 — Completeness is measured by origin, not by page type"
+      ],
+      "source": "adr",
+      "text_chars": 766
+    },
+    {
+      "id": "site:adr/0003-request-logging-after-the-cloudflare-cutover.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html",
+      "title": "0003 — Request logging after the Cloudflare cutover",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0003 — Request logging after the Cloudflare cutover"
+      ],
+      "source": "adr",
+      "text_chars": 6607
+    },
+    {
+      "id": "site:adr/0003-request-logging-after-the-cloudflare-cutover.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#context",
+      "title": "0003 — Request logging after the Cloudflare cutover",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0003 — Request logging after the Cloudflare cutover"
+      ],
+      "source": "adr",
+      "text_chars": 1473
+    },
+    {
+      "id": "site:adr/0003-request-logging-after-the-cloudflare-cutover.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#decision",
+      "title": "0003 — Request logging after the Cloudflare cutover",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0003 — Request logging after the Cloudflare cutover"
+      ],
+      "source": "adr",
+      "text_chars": 1554
+    },
+    {
+      "id": "site:adr/0003-request-logging-after-the-cloudflare-cutover.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#consequences",
+      "title": "0003 — Request logging after the Cloudflare cutover",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0003 — Request logging after the Cloudflare cutover"
+      ],
+      "source": "adr",
+      "text_chars": 991
+    },
+    {
+      "id": "site:adr/0003-request-logging-after-the-cloudflare-cutover.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#alternatives-considered",
+      "title": "0003 — Request logging after the Cloudflare cutover",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0003 — Request logging after the Cloudflare cutover"
+      ],
+      "source": "adr",
+      "text_chars": 1106
+    },
+    {
+      "id": "site:adr/0003-request-logging-after-the-cloudflare-cutover.html#amendment-2026-08-10-delivery-destination-moved-to-google-cloud-storage",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#amendment-2026-08-10-delivery-destination-moved-to-google-cloud-storage",
+      "title": "0003 — Request logging after the Cloudflare cutover",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0003 — Request logging after the Cloudflare cutover"
+      ],
+      "source": "adr",
+      "text_chars": 1355
+    },
+    {
+      "id": "site:adr/0001-public-docs-site-with-a-publication-boundary.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html",
+      "title": "0001 — The docs site is public, with a publication boundary",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0001 — The docs site is public, with a publication boundary"
+      ],
+      "source": "adr",
+      "text_chars": 4750
+    },
+    {
+      "id": "site:adr/0001-public-docs-site-with-a-publication-boundary.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html#context",
+      "title": "0001 — The docs site is public, with a publication boundary",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0001 — The docs site is public, with a publication boundary"
+      ],
+      "source": "adr",
+      "text_chars": 970
+    },
+    {
+      "id": "site:adr/0001-public-docs-site-with-a-publication-boundary.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html#decision",
+      "title": "0001 — The docs site is public, with a publication boundary",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0001 — The docs site is public, with a publication boundary"
+      ],
+      "source": "adr",
+      "text_chars": 1368
+    },
+    {
+      "id": "site:adr/0001-public-docs-site-with-a-publication-boundary.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html#consequences",
+      "title": "0001 — The docs site is public, with a publication boundary",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0001 — The docs site is public, with a publication boundary"
+      ],
+      "source": "adr",
+      "text_chars": 894
+    },
+    {
+      "id": "site:adr/0001-public-docs-site-with-a-publication-boundary.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html#alternatives-considered",
+      "title": "0001 — The docs site is public, with a publication boundary",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0001 — The docs site is public, with a publication boundary"
+      ],
+      "source": "adr",
+      "text_chars": 510
+    },
+    {
+      "id": "site:traffic-2026-09-30.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 527
+    },
+    {
+      "id": "site:traffic-2026-09-30.html#the-day-at-a-glance",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html#the-day-at-a-glance",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "The day at a glance",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 460
+    },
+    {
+      "id": "site:traffic-2026-09-30.html#who-is-asking",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html#who-is-asking",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "Who is asking",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 1642
+    },
+    {
+      "id": "site:traffic-2026-09-30.html#r-clients",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html#r-clients",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "R clients",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 875
+    },
+    {
+      "id": "site:traffic-2026-09-30.html#build-reports",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html#build-reports",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "Build reports",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 255
+    },
+    {
+      "id": "site:traffic-2026-09-30.html#why-the-edge-cache-hit-rate-is-only-49",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html#why-the-edge-cache-hit-rate-is-only-49",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "Why the edge cache hit rate is only 49%",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 2088
+    },
+    {
+      "id": "site:traffic-2026-09-30.html#should-404s-be-cached-longer",
+      "url": "https://seandavi.github.io/bioc-infrastructure/traffic-2026-09-30.html#should-404s-be-cached-longer",
+      "title": "One day of traffic: 2026-09-30",
+      "section": "Should 404s be cached longer?",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "One Day of Traffic (2026-09-30)"
+      ],
+      "source": "site",
+      "text_chars": 1145
+    },
+    {
+      "id": "site:roadmap.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/roadmap.html",
+      "title": "Roadmap",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Roadmap"
+      ],
+      "source": "site",
+      "text_chars": 636
+    },
+    {
+      "id": "site:roadmap.html#m0-operational-readiness-1",
+      "url": "https://seandavi.github.io/bioc-infrastructure/roadmap.html#m0-operational-readiness-1",
+      "title": "Roadmap",
+      "section": "M0 — Operational readiness (#1)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Roadmap"
+      ],
+      "source": "site",
+      "text_chars": 745
+    },
+    {
+      "id": "site:roadmap.html#m1-production-cutover-2",
+      "url": "https://seandavi.github.io/bioc-infrastructure/roadmap.html#m1-production-cutover-2",
+      "title": "Roadmap",
+      "section": "M1 — Production cutover (#2)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Roadmap"
+      ],
+      "source": "site",
+      "text_chars": 2123
+    },
+    {
+      "id": "site:roadmap.html#m2-full-disconnect-from-legacy-infrastructure-3",
+      "url": "https://seandavi.github.io/bioc-infrastructure/roadmap.html#m2-full-disconnect-from-legacy-infrastructure-3",
+      "title": "Roadmap",
+      "section": "M2 — Full disconnect from legacy infrastructure (#3)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Roadmap"
+      ],
+      "source": "site",
+      "text_chars": 1990
+    },
+    {
+      "id": "site:roadmap.html#m3-search-and-page-redesigns-through-the-public-pr-process-4",
+      "url": "https://seandavi.github.io/bioc-infrastructure/roadmap.html#m3-search-and-page-redesigns-through-the-public-pr-process-4",
+      "title": "Roadmap",
+      "section": "M3 — Search and page redesigns, through the public PR process (#4)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Roadmap"
+      ],
+      "source": "site",
+      "text_chars": 990
+    },
+    {
+      "id": "site:report.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/report.html",
+      "title": "Reporting a problem",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Reporting a Problem"
+      ],
+      "source": "site",
+      "text_chars": 257
+    },
+    {
+      "id": "site:report.html#where-to-report",
+      "url": "https://seandavi.github.io/bioc-infrastructure/report.html#where-to-report",
+      "title": "Reporting a problem",
+      "section": "Where to report",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Reporting a Problem"
+      ],
+      "source": "site",
+      "text_chars": 1005
+    },
+    {
+      "id": "site:report.html#how-triage-works",
+      "url": "https://seandavi.github.io/bioc-infrastructure/report.html#how-triage-works",
+      "title": "Reporting a problem",
+      "section": "How triage works",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Reporting a Problem"
+      ],
+      "source": "site",
+      "text_chars": 740
+    },
+    {
+      "id": "site:report.html#security",
+      "url": "https://seandavi.github.io/bioc-infrastructure/report.html#security",
+      "title": "Reporting a problem",
+      "section": "Security",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Reporting a Problem"
+      ],
+      "source": "site",
+      "text_chars": 428
+    },
+    {
+      "id": "site:r2-migration.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html",
+      "title": "R2 Migration",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 716
+    },
+    {
+      "id": "site:r2-migration.html#why",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html#why",
+      "title": "R2 Migration",
+      "section": "Why",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 463
+    },
+    {
+      "id": "site:r2-migration.html#architecture",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html#architecture",
+      "title": "R2 Migration",
+      "section": "Architecture",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 1095
+    },
+    {
+      "id": "site:r2-migration.html#status-measured-not-projected",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html#status-measured-not-projected",
+      "title": "R2 Migration",
+      "section": "Status (measured, not projected)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 284
+    },
+    {
+      "id": "site:r2-migration.html#progress-since-2026-08-03-updated-2026-08-13",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html#progress-since-2026-08-03-updated-2026-08-13",
+      "title": "R2 Migration",
+      "section": "Progress since 2026-08-03 (updated 2026-08-13)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 1681
+    },
+    {
+      "id": "site:r2-migration.html#not-in-scope",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html#not-in-scope",
+      "title": "R2 Migration",
+      "section": "Not in scope",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 336
+    },
+    {
+      "id": "site:r2-migration.html#relationship-to-the-decommission-plan",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r2-migration.html#relationship-to-the-decommission-plan",
+      "title": "R2 Migration",
+      "section": "Relationship to the decommission plan",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "R2 Migration"
+      ],
+      "source": "site",
+      "text_chars": 282
+    },
+    {
+      "id": "site:proposal-unified-search.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html",
+      "title": "Unified search: a proposal",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 432
+    },
+    {
+      "id": "site:proposal-unified-search.html#summary",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#summary",
+      "title": "Unified search: a proposal",
+      "section": "Summary",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 2335
+    },
+    {
+      "id": "site:proposal-unified-search.html#guiding-principles",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#guiding-principles",
+      "title": "Unified search: a proposal",
+      "section": "Guiding principles",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 3052
+    },
+    {
+      "id": "site:proposal-unified-search.html#what-changed-since-the-grant-was-written",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#what-changed-since-the-grant-was-written",
+      "title": "Unified search: a proposal",
+      "section": "What changed since the grant was written",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 1456
+    },
+    {
+      "id": "site:proposal-unified-search.html#who-uses-the-site",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#who-uses-the-site",
+      "title": "Unified search: a proposal",
+      "section": "Who uses the site",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 3288
+    },
+    {
+      "id": "site:proposal-unified-search.html#what-exists-today",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#what-exists-today",
+      "title": "Unified search: a proposal",
+      "section": "What exists today",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 5109
+    },
+    {
+      "id": "site:proposal-unified-search.html#personas",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#personas",
+      "title": "Unified search: a proposal",
+      "section": "Personas",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 2922
+    },
+    {
+      "id": "site:proposal-unified-search.html#search-experiences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#search-experiences",
+      "title": "Unified search: a proposal",
+      "section": "Search experiences",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 1613
+    },
+    {
+      "id": "site:proposal-unified-search.html#agents",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#agents",
+      "title": "Unified search: a proposal",
+      "section": "Agents",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 1444
+    },
+    {
+      "id": "site:proposal-unified-search.html#extending-it",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#extending-it",
+      "title": "Unified search: a proposal",
+      "section": "Extending it",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 2044
+    },
+    {
+      "id": "site:proposal-unified-search.html#sustainability-and-cost",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#sustainability-and-cost",
+      "title": "Unified search: a proposal",
+      "section": "Sustainability and cost",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 1560
+    },
+    {
+      "id": "site:proposal-unified-search.html#possible-measures",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#possible-measures",
+      "title": "Unified search: a proposal",
+      "section": "Possible measures",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 3252
+    },
+    {
+      "id": "site:proposal-unified-search.html#invariants",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#invariants",
+      "title": "Unified search: a proposal",
+      "section": "Invariants",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 3817
+    },
+    {
+      "id": "site:proposal-unified-search.html#funding-data",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#funding-data",
+      "title": "Unified search: a proposal",
+      "section": "Funding data",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 893
+    },
+    {
+      "id": "site:proposal-unified-search.html#the-original-plan",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#the-original-plan",
+      "title": "Unified search: a proposal",
+      "section": "The original plan",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 1166
+    },
+    {
+      "id": "site:proposal-unified-search.html#proposed-sequence",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#proposed-sequence",
+      "title": "Unified search: a proposal",
+      "section": "Proposed sequence",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 1096
+    },
+    {
+      "id": "site:proposal-unified-search.html#open-questions",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#open-questions",
+      "title": "Unified search: a proposal",
+      "section": "Open questions",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search"
+      ],
+      "source": "site",
+      "text_chars": 389
+    },
+    {
+      "id": "site:operations.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 336
+    },
+    {
+      "id": "site:operations.html#who-operates-what",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#who-operates-what",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Who operates what",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 2439
+    },
+    {
+      "id": "site:operations.html#runbooks",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Runbooks",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 6033
+    },
+    {
+      "id": "site:operations.html#decisions-pending",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#decisions-pending",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Decisions pending",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 1151
+    },
+    {
+      "id": "site:operations.html#risks",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#risks",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Top risks",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 1017
+    },
+    {
+      "id": "site:legacy-propagation.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 363
+    },
+    {
+      "id": "site:legacy-propagation.html#the-rule",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#the-rule",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "The rule",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 622
+    },
+    {
+      "id": "site:legacy-propagation.html#why-it-keys-on-nebbiolo1",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#why-it-keys-on-nebbiolo1",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "Why it keys on nebbiolo1",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 1714
+    },
+    {
+      "id": "site:legacy-propagation.html#how-closely-does-r-universe-agree-with-nebbiolo1",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#how-closely-does-r-universe-agree-with-nebbiolo1",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "How closely does r-universe agree with nebbiolo1?",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 1287
+    },
+    {
+      "id": "site:legacy-propagation.html#the-pre-hooks",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#the-pre-hooks",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "The pre-hooks",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 2952
+    },
+    {
+      "id": "site:legacy-propagation.html#how-a-replacement-gate-was-first-sketched",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#how-a-replacement-gate-was-first-sketched",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "How a replacement gate was first sketched",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 1848
+    },
+    {
+      "id": "site:legacy-propagation.html#what-could-not-be-determined",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#what-could-not-be-determined",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "What could not be determined",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 537
+    },
+    {
+      "id": "site:legacy-propagation.html#sources",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#sources",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "Sources",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks"
+      ],
+      "source": "site",
+      "text_chars": 781
+    },
+    {
+      "id": "site:index.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html",
+      "title": "Bioconductor Infrastructure",
+      "section": "",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 258
+    },
+    {
+      "id": "site:index.html#start-here",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#start-here",
+      "title": "Bioconductor Infrastructure",
+      "section": "Start here",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 517
+    },
+    {
+      "id": "site:index.html#tldr",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#tldr",
+      "title": "Bioconductor Infrastructure",
+      "section": "TL;DR",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 3006
+    },
+    {
+      "id": "site:index.html#how-the-pieces-meet",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#how-the-pieces-meet",
+      "title": "Bioconductor Infrastructure",
+      "section": "How the pieces meet",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 1382
+    },
+    {
+      "id": "site:index.html#the-contracts",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#the-contracts",
+      "title": "Bioconductor Infrastructure",
+      "section": "The contracts",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 2002
+    },
+    {
+      "id": "site:index.html#where-this-stands",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#where-this-stands",
+      "title": "Bioconductor Infrastructure",
+      "section": "Where this stands",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 2551
+    },
+    {
+      "id": "site:index.html#how-this-site-is-organised",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#how-this-site-is-organised",
+      "title": "Bioconductor Infrastructure",
+      "section": "How this site is organised",
+      "crumbs": [
+        "Overview"
+      ],
+      "source": "site",
+      "text_chars": 1125
+    },
+    {
+      "id": "site:how-it-works.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html",
+      "title": "How bioconductor.org Works",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works"
+      ],
+      "source": "site",
+      "text_chars": 594
+    },
+    {
+      "id": "site:how-it-works.html#terms",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#terms",
+      "title": "How bioconductor.org Works",
+      "section": "Terms",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works"
+      ],
+      "source": "site",
+      "text_chars": 1735
+    },
+    {
+      "id": "site:how-it-works.html#serving",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#serving",
+      "title": "How bioconductor.org Works",
+      "section": "Serving: how a request is answered",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works"
+      ],
+      "source": "site",
+      "text_chars": 3697
+    },
+    {
+      "id": "site:how-it-works.html#publishing",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#publishing",
+      "title": "How bioconductor.org Works",
+      "section": "Publishing: how content gets there",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works"
+      ],
+      "source": "site",
+      "text_chars": 4488
+    },
+    {
+      "id": "site:how-it-works.html#diagnosing",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#diagnosing",
+      "title": "How bioconductor.org Works",
+      "section": "When something looks wrong",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works"
+      ],
+      "source": "site",
+      "text_chars": 492
+    },
+    {
+      "id": "site:dns-cutover.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 1686
+    },
+    {
+      "id": "site:dns-cutover.html#outcome",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#outcome",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Outcome (2026-09-30)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 1350
+    },
+    {
+      "id": "site:dns-cutover.html#what-m1-actually-changes",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#what-m1-actually-changes",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "What M1 actually changes",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 1692
+    },
+    {
+      "id": "site:dns-cutover.html#migration-plan",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#migration-plan",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Migration plan",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 14539
+    },
+    {
+      "id": "site:dns-cutover.html#full-inventory-with-detail-links",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#full-inventory-with-detail-links",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Full inventory, with detail links",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 2397
+    },
+    {
+      "id": "site:dns-cutover.html#core-infrastructure-staying-put-27",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#core-infrastructure-staying-put-27",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Core infrastructure, staying put (27)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 5477
+    },
+    {
+      "id": "site:dns-cutover.html#undecided-needs-an-owner-18-with-live-content-or-a-clear-guess-24-more-listed-in-the-appendix-table-are-wildcards-or-mailcert-plumbing",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#undecided-needs-an-owner-18-with-live-content-or-a-clear-guess-24-more-listed-in-the-appendix-table-are-wildcards-or-mailcert-plumbing",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 3161
+    },
+    {
+      "id": "site:dns-cutover.html#already-off-aws-no-action-27-one-table",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#already-off-aws-no-action-27-one-table",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Already off AWS — no action (27, one table)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 330
+    },
+    {
+      "id": "site:dns-cutover.html#delete-candidates-25-confirmed-unreachable",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#delete-candidates-25-confirmed-unreachable",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Delete candidates (25) — confirmed unreachable",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 618
+    },
+    {
+      "id": "site:dns-cutover.html#mailcert-plumbing-and-wildcards-undecided-24",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#mailcert-plumbing-and-wildcards-undecided-24",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Mail/cert plumbing and wildcards, undecided (24)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 551
+    },
+    {
+      "id": "site:dns-cutover.html#open-questions-for-the-core-team",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#open-questions-for-the-core-team",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Open questions for the core team",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover"
+      ],
+      "source": "site",
+      "text_chars": 1199
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1243
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#what-r-universe-actually-ingests",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#what-r-universe-actually-ingests",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "What r-universe actually ingests",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 2129
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#finding-1-the-experiment-corpus-is-head-heavy",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#finding-1-the-experiment-corpus-is-head-heavy",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "Finding 1: the experiment corpus is head-heavy",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1115
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#finding-2-workflows-are-a-rounding-error",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#finding-2-workflows-are-a-rounding-error",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "Finding 2: workflows are a rounding error",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 800
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#finding-3-31-packages-have-no-mirror-to-ingest-from",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#finding-3-31-packages-have-no-mirror-to-ingest-from",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "Finding 3: 31 packages have no mirror to ingest from",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1830
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#finding-4-git-repositories-are-not-tarball-sized",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#finding-4-git-repositories-are-not-tarball-sized",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "Finding 4: git repositories are not tarball-sized",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 812
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#finding-5-the-data-do-not-change",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#finding-5-the-data-do-not-change",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "Finding 5: the data do not change",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1166
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#what-it-would-cost-if-merged-as-written",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#what-it-would-cost-if-merged-as-written",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "What it would cost, if merged as written",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1001
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#what-this-suggests",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#what-this-suggests",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "What this suggests",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1888
+    },
+    {
+      "id": "site:data-packages-in-r-universe.html#method",
+      "url": "https://seandavi.github.io/bioc-infrastructure/data-packages-in-r-universe.html#method",
+      "title": "Data and workflow packages in r-universe: a size audit",
+      "section": "Method",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Data Packages in r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1692
+    },
+    {
+      "id": "site:cloudflare-account-migration.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html",
+      "title": "Cloudflare Account Migration",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration"
+      ],
+      "source": "site",
+      "text_chars": 484
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#why-move",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#why-move",
+      "title": "Cloudflare Account Migration",
+      "section": "Why move",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration"
+      ],
+      "source": "site",
+      "text_chars": 530
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#what-it-costs-to-do-later-instead-of-first",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#what-it-costs-to-do-later-instead-of-first",
+      "title": "Cloudflare Account Migration",
+      "section": "What it costs to do later instead of first",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration"
+      ],
+      "source": "site",
+      "text_chars": 469
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#inventory-what-moves-and-how",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#inventory-what-moves-and-how",
+      "title": "Cloudflare Account Migration",
+      "section": "Inventory — what moves, and how",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration"
+      ],
+      "source": "site",
+      "text_chars": 1958
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#procedure",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#procedure",
+      "title": "Cloudflare Account Migration",
+      "section": "Procedure",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration"
+      ],
+      "source": "site",
+      "text_chars": 4727
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#open-questions",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#open-questions",
+      "title": "Cloudflare Account Migration",
+      "section": "Open questions",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration"
+      ],
+      "source": "site",
+      "text_chars": 512
+    },
+    {
+      "id": "site:cache.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cache.html",
+      "title": "Cache behavior at the edge",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Edge Cache"
+      ],
+      "source": "site",
+      "text_chars": 522
+    },
+    {
+      "id": "site:cache.html#is-this-page-cached",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cache.html#is-this-page-cached",
+      "title": "Cache behavior at the edge",
+      "section": "Is this page cached?",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Edge Cache"
+      ],
+      "source": "site",
+      "text_chars": 1095
+    },
+    {
+      "id": "site:cache.html#query-strings-do-not-bust-the-cache",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cache.html#query-strings-do-not-bust-the-cache",
+      "title": "Cache behavior at the edge",
+      "section": "Query strings do not bust the cache",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Edge Cache"
+      ],
+      "source": "site",
+      "text_chars": 1329
+    },
+    {
+      "id": "site:cache.html#what-is-cached-and-under-which-key",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cache.html#what-is-cached-and-under-which-key",
+      "title": "Cache behavior at the edge",
+      "section": "What is cached, and under which key",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Edge Cache"
+      ],
+      "source": "site",
+      "text_chars": 1285
+    },
+    {
+      "id": "site:cache.html#urls-that-are-never-cached",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cache.html#urls-that-are-never-cached",
+      "title": "Cache behavior at the edge",
+      "section": "URLs that are never cached",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Edge Cache"
+      ],
+      "source": "site",
+      "text_chars": 831
+    },
+    {
+      "id": "site:cache.html#purging",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cache.html#purging",
+      "title": "Cache behavior at the edge",
+      "section": "Purging",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Edge Cache"
+      ],
+      "source": "site",
+      "text_chars": 2476
+    },
+    {
+      "id": "site:astro-site-build.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html",
+      "title": "Building the site from primary sources",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build"
+      ],
+      "source": "site",
+      "text_chars": 700
+    },
+    {
+      "id": "site:astro-site-build.html#how-a-build-reaches-production",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#how-a-build-reaches-production",
+      "title": "Building the site from primary sources",
+      "section": "How a build reaches production",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build"
+      ],
+      "source": "site",
+      "text_chars": 3524
+    },
+    {
+      "id": "site:astro-site-build.html#editing-content-where-and-how-long-it-takes",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#editing-content-where-and-how-long-it-takes",
+      "title": "Building the site from primary sources",
+      "section": "Editing content: where, and how long it takes",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build"
+      ],
+      "source": "site",
+      "text_chars": 1814
+    },
+    {
+      "id": "site:astro-site-build.html#the-seam",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#the-seam",
+      "title": "Building the site from primary sources",
+      "section": "The seam",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build"
+      ],
+      "source": "site",
+      "text_chars": 1565
+    },
+    {
+      "id": "site:astro-site-build.html#what-the-build-does-not-cover",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#what-the-build-does-not-cover",
+      "title": "Building the site from primary sources",
+      "section": "What the build does not cover",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build"
+      ],
+      "source": "site",
+      "text_chars": 1394
+    },
+    {
+      "id": "site:astro-site-build.html#the-2026-08-04-build-record",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#the-2026-08-04-build-record",
+      "title": "Building the site from primary sources",
+      "section": "The 2026-08-04 build (record)",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build"
+      ],
+      "source": "site",
+      "text_chars": 9862
+    },
+    {
+      "id": "site:builder-transition.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 991
+    },
+    {
+      "id": "site:builder-transition.html#the-three-tracks",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#the-three-tracks",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "The three tracks",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 4896
+    },
+    {
+      "id": "site:builder-transition.html#what-this-means-in-practice",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#what-this-means-in-practice",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "What this means in practice",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 1473
+    },
+    {
+      "id": "site:builder-transition.html#the-redirect-nobody-would-think-to-preserve",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#the-redirect-nobody-would-think-to-preserve",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "The redirect nobody would think to preserve",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 1280
+    },
+    {
+      "id": "site:builder-transition.html#storage-what-is-offloaded-and-what-isnt",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#storage-what-is-offloaded-and-what-isnt",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "Storage: what is offloaded and what isn’t",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 624
+    },
+    {
+      "id": "site:builder-transition.html#what-could-not-be-determined",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#what-could-not-be-determined",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "What could not be determined",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 1123
+    },
+    {
+      "id": "site:builder-transition.html#sources",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#sources",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "Sources",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition"
+      ],
+      "source": "site",
+      "text_chars": 741
+    },
+    {
+      "id": "site:ci.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html",
+      "title": "CI & Scheduled Jobs",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 388
+    },
+    {
+      "id": "site:ci.html#how-the-new-system-workflows-relate",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#how-the-new-system-workflows-relate",
+      "title": "CI & Scheduled Jobs",
+      "section": "How the new-system workflows relate",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 2751
+    },
+    {
+      "id": "site:ci.html#scheduled-jobs-outside-github-actions",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#scheduled-jobs-outside-github-actions",
+      "title": "CI & Scheduled Jobs",
+      "section": "Scheduled jobs outside GitHub Actions",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 1449
+    },
+    {
+      "id": "site:ci.html#workflows",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#workflows",
+      "title": "CI & Scheduled Jobs",
+      "section": "Workflows",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 220
+    },
+    {
+      "id": "site:ci.html#new-system-pipeline",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#new-system-pipeline",
+      "title": "CI & Scheduled Jobs",
+      "section": "New system pipeline",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 3152
+    },
+    {
+      "id": "site:ci.html#platform-services",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#platform-services",
+      "title": "CI & Scheduled Jobs",
+      "section": "Platform services",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 334
+    },
+    {
+      "id": "site:ci.html#experimental",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#experimental",
+      "title": "CI & Scheduled Jobs",
+      "section": "Experimental",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs"
+      ],
+      "source": "site",
+      "text_chars": 1596
+    },
+    {
+      "id": "site:current-state.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/current-state.html",
+      "title": "Current State: staging + master",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Current State (legacy)"
+      ],
+      "source": "site",
+      "text_chars": 497
+    },
+    {
+      "id": "site:current-state.html#the-pipeline-end-to-end",
+      "url": "https://seandavi.github.io/bioc-infrastructure/current-state.html#the-pipeline-end-to-end",
+      "title": "Current State: staging + master",
+      "section": "The pipeline, end to end",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Current State (legacy)"
+      ],
+      "source": "site",
+      "text_chars": 1627
+    },
+    {
+      "id": "site:current-state.html#staging.bioconductor.org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/current-state.html#staging.bioconductor.org",
+      "title": "Current State: staging + master",
+      "section": "staging.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Current State (legacy)"
+      ],
+      "source": "site",
+      "text_chars": 4322
+    },
+    {
+      "id": "site:current-state.html#master.bioconductor.org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/current-state.html#master.bioconductor.org",
+      "title": "Current State: staging + master",
+      "section": "master.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Current State (legacy)"
+      ],
+      "source": "site",
+      "text_chars": 1873
+    },
+    {
+      "id": "site:decommission-plan.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/decommission-plan.html",
+      "title": "Decommission Plan",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Decommission Plan"
+      ],
+      "source": "site",
+      "text_chars": 914
+    },
+    {
+      "id": "site:decommission-plan.html#whats-actually-on-the-critical-path",
+      "url": "https://seandavi.github.io/bioc-infrastructure/decommission-plan.html#whats-actually-on-the-critical-path",
+      "title": "Decommission Plan",
+      "section": "What’s actually on the critical path",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Decommission Plan"
+      ],
+      "source": "site",
+      "text_chars": 3102
+    },
+    {
+      "id": "site:decommission-plan.html#per-component-assessment",
+      "url": "https://seandavi.github.io/bioc-infrastructure/decommission-plan.html#per-component-assessment",
+      "title": "Decommission Plan",
+      "section": "Per-component assessment",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Decommission Plan"
+      ],
+      "source": "site",
+      "text_chars": 2114
+    },
+    {
+      "id": "site:decommission-plan.html#sequencing",
+      "url": "https://seandavi.github.io/bioc-infrastructure/decommission-plan.html#sequencing",
+      "title": "Decommission Plan",
+      "section": "Sequencing",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Decommission Plan"
+      ],
+      "source": "site",
+      "text_chars": 1368
+    },
+    {
+      "id": "site:decommission-plan.html#open-questions-for-the-team",
+      "url": "https://seandavi.github.io/bioc-infrastructure/decommission-plan.html#open-questions-for-the-team",
+      "title": "Decommission Plan",
+      "section": "Open questions for the team",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Decommission Plan"
+      ],
+      "source": "site",
+      "text_chars": 794
+    },
+    {
+      "id": "site:decommission-plan.html#risks-flagged-along-the-way-independent-of-this-plan",
+      "url": "https://seandavi.github.io/bioc-infrastructure/decommission-plan.html#risks-flagged-along-the-way-independent-of-this-plan",
+      "title": "Decommission Plan",
+      "section": "Risks flagged along the way (independent of this plan)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Decommission Plan"
+      ],
+      "source": "site",
+      "text_chars": 547
+    },
+    {
+      "id": "site:download-stats.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html",
+      "title": "Download Stats",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 2610
+    },
+    {
+      "id": "site:download-stats.html#two-systems-both-running",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#two-systems-both-running",
+      "title": "Download Stats",
+      "section": "Two systems, both running",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 2846
+    },
+    {
+      "id": "site:download-stats.html#what-counts-as-a-download",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#what-counts-as-a-download",
+      "title": "Download Stats",
+      "section": "What counts as a download",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 1752
+    },
+    {
+      "id": "site:download-stats.html#do-the-two-systems-agree",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#do-the-two-systems-agree",
+      "title": "Download Stats",
+      "section": "Do the two systems agree?",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 5146
+    },
+    {
+      "id": "site:download-stats.html#two-data-quality-problems",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#two-data-quality-problems",
+      "title": "Download Stats",
+      "section": "Two data-quality problems",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 6599
+    },
+    {
+      "id": "site:download-stats.html#can-this-be-rebuilt-from-source",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#can-this-be-rebuilt-from-source",
+      "title": "Download Stats",
+      "section": "Can this be rebuilt from source?",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 6017
+    },
+    {
+      "id": "site:download-stats.html#what-this-means-for-the-migration",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#what-this-means-for-the-migration",
+      "title": "Download Stats",
+      "section": "What this means for the migration",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 5834
+    },
+    {
+      "id": "site:download-stats.html#what-could-not-be-determined",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#what-could-not-be-determined",
+      "title": "Download Stats",
+      "section": "What could not be determined",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats"
+      ],
+      "source": "site",
+      "text_chars": 1289
+    },
+    {
+      "id": "site:improvements.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/improvements.html",
+      "title": "What the new site has changed",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "What the New Site Has Changed"
+      ],
+      "source": "site",
+      "text_chars": 390
+    },
+    {
+      "id": "site:improvements.html#watching-the-logs-caught-a-crawler-eating-three-quarters-of-the-site",
+      "url": "https://seandavi.github.io/bioc-infrastructure/improvements.html#watching-the-logs-caught-a-crawler-eating-three-quarters-of-the-site",
+      "title": "What the new site has changed",
+      "section": "Watching the logs caught a crawler eating three quarters of the site",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "What the New Site Has Changed"
+      ],
+      "source": "site",
+      "text_chars": 3982
+    },
+    {
+      "id": "site:improvements.html#costs-about-5000-a-month-down-to-a-couple-of-hundred",
+      "url": "https://seandavi.github.io/bioc-infrastructure/improvements.html#costs-about-5000-a-month-down-to-a-couple-of-hundred",
+      "title": "What the new site has changed",
+      "section": "Costs: about $5,000 a month down to a couple of hundred",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "What the New Site Has Changed"
+      ],
+      "source": "site",
+      "text_chars": 2117
+    },
+    {
+      "id": "site:improvements.html#faster-smaller-downloads-and-a-regression-we-caught",
+      "url": "https://seandavi.github.io/bioc-infrastructure/improvements.html#faster-smaller-downloads-and-a-regression-we-caught",
+      "title": "What the new site has changed",
+      "section": "Faster, smaller downloads, and a regression we caught",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "What the New Site Has Changed"
+      ],
+      "source": "site",
+      "text_chars": 1774
+    },
+    {
+      "id": "site:improvements.html#download-statistics-that-can-tell-people-from-bots",
+      "url": "https://seandavi.github.io/bioc-infrastructure/improvements.html#download-statistics-that-can-tell-people-from-bots",
+      "title": "What the new site has changed",
+      "section": "Download statistics that can tell people from bots",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "What the New Site Has Changed"
+      ],
+      "source": "site",
+      "text_chars": 1878
+    },
+    {
+      "id": "site:improvements.html#the-build-system-migration-has-a-path-forward",
+      "url": "https://seandavi.github.io/bioc-infrastructure/improvements.html#the-build-system-migration-has-a-path-forward",
+      "title": "What the new site has changed",
+      "section": "The build system migration has a path forward",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "What the New Site Has Changed"
+      ],
+      "source": "site",
+      "text_chars": 1293
+    },
+    {
+      "id": "site:install.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/install.html",
+      "title": "Installing packages",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Installing Packages"
+      ],
+      "source": "site",
+      "text_chars": 672
+    },
+    {
+      "id": "site:install.html#is-my-install-coming-from-the-new-stack",
+      "url": "https://seandavi.github.io/bioc-infrastructure/install.html#is-my-install-coming-from-the-new-stack",
+      "title": "Installing packages",
+      "section": "Is my install coming from the new stack?",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Installing Packages"
+      ],
+      "source": "site",
+      "text_chars": 249
+    },
+    {
+      "id": "site:install.html#what-to-expect",
+      "url": "https://seandavi.github.io/bioc-infrastructure/install.html#what-to-expect",
+      "title": "Installing packages",
+      "section": "What to expect",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Installing Packages"
+      ],
+      "source": "site",
+      "text_chars": 704
+    },
+    {
+      "id": "site:install.html#reporting-problems",
+      "url": "https://seandavi.github.io/bioc-infrastructure/install.html#reporting-problems",
+      "title": "Installing packages",
+      "section": "Reporting problems",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Installing Packages"
+      ],
+      "source": "site",
+      "text_chars": 464
+    },
+    {
+      "id": "site:mirror-how-to.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html",
+      "title": "Running a Bioconductor mirror",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 474
+    },
+    {
+      "id": "site:mirror-how-to.html#what-changed",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#what-changed",
+      "title": "Running a Bioconductor mirror",
+      "section": "What changed",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 601
+    },
+    {
+      "id": "site:mirror-how-to.html#the-manifest",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#the-manifest",
+      "title": "Running a Bioconductor mirror",
+      "section": "The manifest",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 925
+    },
+    {
+      "id": "site:mirror-how-to.html#choosing-scope",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#choosing-scope",
+      "title": "Running a Bioconductor mirror",
+      "section": "Choosing scope",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 507
+    },
+    {
+      "id": "site:mirror-how-to.html#running-the-sync",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#running-the-sync",
+      "title": "Running a Bioconductor mirror",
+      "section": "Running the sync",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 3055
+    },
+    {
+      "id": "site:mirror-how-to.html#serving",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#serving",
+      "title": "Running a Bioconductor mirror",
+      "section": "Serving",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 590
+    },
+    {
+      "id": "site:mirror-how-to.html#migrating-an-existing-rsync-mirror",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#migrating-an-existing-rsync-mirror",
+      "title": "Running a Bioconductor mirror",
+      "section": "Migrating an existing rsync mirror",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 680
+    },
+    {
+      "id": "site:mirror-how-to.html#listing-your-mirror",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#listing-your-mirror",
+      "title": "Running a Bioconductor mirror",
+      "section": "Listing your mirror",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 165
+    },
+    {
+      "id": "site:mirror-how-to.html#source",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#source",
+      "title": "Running a Bioconductor mirror",
+      "section": "Source",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror"
+      ],
+      "source": "site",
+      "text_chars": 175
+    },
+    {
+      "id": "site:propagation-gate.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 359
+    },
+    {
+      "id": "site:propagation-gate.html#the-gate-check-by-check",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#the-gate-check-by-check",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "The gate, check by check",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 5464
+    },
+    {
+      "id": "site:propagation-gate.html#three-ways-into-the-index",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#three-ways-into-the-index",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "Three ways into the index",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 979
+    },
+    {
+      "id": "site:propagation-gate.html#what-r-universe-already-computes",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#what-r-universe-already-computes",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "What r-universe already computes",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 1471
+    },
+    {
+      "id": "site:propagation-gate.html#why-the-registry-polls",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "Why the registry polls",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 2173
+    },
+    {
+      "id": "site:propagation-gate.html#relation-to-the-legacy-production-gate",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#relation-to-the-legacy-production-gate",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "Relation to the legacy production gate",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 1177
+    },
+    {
+      "id": "site:propagation-gate.html#sources",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#sources",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "Sources",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate"
+      ],
+      "source": "site",
+      "text_chars": 731
+    },
+    {
+      "id": "site:r-universe-size-limits.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html",
+      "title": "Size limits in the r-universe build",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1122
+    },
+    {
+      "id": "site:r-universe-size-limits.html#three-limits-three-different-objects",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#three-limits-three-different-objects",
+      "title": "Size limits in the r-universe build",
+      "section": "Three limits, three different objects",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1076
+    },
+    {
+      "id": "site:r-universe-size-limits.html#where-r-universes-limit-lives",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#where-r-universes-limit-lives",
+      "title": "Size limits in the r-universe build",
+      "section": "Where r-universe’s limit lives",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 3759
+    },
+    {
+      "id": "site:r-universe-size-limits.html#what-github-imposes",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#what-github-imposes",
+      "title": "Size limits in the r-universe build",
+      "section": "What GitHub imposes",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1064
+    },
+    {
+      "id": "site:r-universe-size-limits.html#where-the-limits-genuinely-differ",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#where-the-limits-genuinely-differ",
+      "title": "Size limits in the r-universe build",
+      "section": "Where the limits genuinely differ",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1398
+    },
+    {
+      "id": "site:r-universe-size-limits.html#bioconductors-own-size-rules-are-silent-in-this-pipeline",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#bioconductors-own-size-rules-are-silent-in-this-pipeline",
+      "title": "Size limits in the r-universe build",
+      "section": "Bioconductor’s own size rules are silent in this pipeline",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1995
+    },
+    {
+      "id": "site:r-universe-size-limits.html#what-this-means-for-the-migration",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#what-this-means-for-the-migration",
+      "title": "Size limits in the r-universe build",
+      "section": "What this means for the migration",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1400
+    },
+    {
+      "id": "site:r-universe-size-limits.html#reproducing-this",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#reproducing-this",
+      "title": "Size limits in the r-universe build",
+      "section": "Reproducing this",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits"
+      ],
+      "source": "site",
+      "text_chars": 1122
+    },
+    {
+      "id": "site:registry-switch.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html",
+      "title": "Serving software packages from the registry",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 776
+    },
+    {
+      "id": "site:registry-switch.html#where-software-packages-come-from-today",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#where-software-packages-come-from-today",
+      "title": "Serving software packages from the registry",
+      "section": "Where software packages come from today",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 1241
+    },
+    {
+      "id": "site:registry-switch.html#what-the-switch-covers",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#what-the-switch-covers",
+      "title": "Serving software packages from the registry",
+      "section": "What the switch covers",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 879
+    },
+    {
+      "id": "site:registry-switch.html#findings-what-would-regress-if-we-switched-today",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#findings-what-would-regress-if-we-switched-today",
+      "title": "Serving software packages from the registry",
+      "section": "Findings: what would regress if we switched today",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 7640
+    },
+    {
+      "id": "site:registry-switch.html#mechanism-write-the-registrys-repository-into-the-edges-storage",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#mechanism-write-the-registrys-repository-into-the-edges-storage",
+      "title": "Serving software packages from the registry",
+      "section": "Mechanism: write the registry’s repository into the edge’s storage",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 993
+    },
+    {
+      "id": "site:registry-switch.html#plan",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#plan",
+      "title": "Serving software packages from the registry",
+      "section": "Plan",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 2153
+    },
+    {
+      "id": "site:registry-switch.html#regression-tests",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#regression-tests",
+      "title": "Serving software packages from the registry",
+      "section": "Regression tests",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 2233
+    },
+    {
+      "id": "site:registry-switch.html#decisions-needed",
+      "url": "https://seandavi.github.io/bioc-infrastructure/registry-switch.html#decisions-needed",
+      "title": "Serving software packages from the registry",
+      "section": "Decisions needed",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Registry Switch (plan)"
+      ],
+      "source": "site",
+      "text_chars": 951
+    },
+    {
+      "id": "site:reproducing-package-pages.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html",
+      "title": "Reproducing the package pages",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 664
+    },
+    {
+      "id": "site:reproducing-package-pages.html#the-short-version",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#the-short-version",
+      "title": "Reproducing the package pages",
+      "section": "The short version",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 333
+    },
+    {
+      "id": "site:reproducing-package-pages.html#the-pipeline",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#the-pipeline",
+      "title": "Reproducing the package pages",
+      "section": "The pipeline",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 682
+    },
+    {
+      "id": "site:reproducing-package-pages.html#what-data-exists-per-release",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#what-data-exists-per-release",
+      "title": "Reproducing the package pages",
+      "section": "What data exists, per release",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 633
+    },
+    {
+      "id": "site:reproducing-package-pages.html#where-the-data-actually-comes-from",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#where-the-data-actually-comes-from",
+      "title": "Reproducing the package pages",
+      "section": "Where the data actually comes from",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 1863
+    },
+    {
+      "id": "site:reproducing-package-pages.html#what-renders-it",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#what-renders-it",
+      "title": "Reproducing the package pages",
+      "section": "What renders it",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 950
+    },
+    {
+      "id": "site:reproducing-package-pages.html#tree.json-the-category-hierarchy",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#tree.json-the-category-hierarchy",
+      "title": "Reproducing the package pages",
+      "section": "tree.json: the category hierarchy",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 2279
+    },
+    {
+      "id": "site:reproducing-package-pages.html#much-of-the-data-is-never-read",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#much-of-the-data-is-never-read",
+      "title": "Reproducing the package pages",
+      "section": "Much of the data is never read",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 1033
+    },
+    {
+      "id": "site:reproducing-package-pages.html#status",
+      "url": "https://seandavi.github.io/bioc-infrastructure/reproducing-package-pages.html#status",
+      "title": "Reproducing the package pages",
+      "section": "Status",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Package Pages"
+      ],
+      "source": "site",
+      "text_chars": 979
+    },
+    {
+      "id": "site:start-here.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/start-here.html",
+      "title": "Start here",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Start here"
+      ],
+      "source": "site",
+      "text_chars": 357
+    },
+    {
+      "id": "site:start-here.html#what-each-box-is",
+      "url": "https://seandavi.github.io/bioc-infrastructure/start-here.html#what-each-box-is",
+      "title": "Start here",
+      "section": "What each box is",
+      "crumbs": [
+        "Overview",
+        "Start here"
+      ],
+      "source": "site",
+      "text_chars": 2361
+    },
+    {
+      "id": "site:views-and-r-universe.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1231
+    },
+    {
+      "id": "site:views-and-r-universe.html#what-views-is-and-why-it-is-load-bearing",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#what-views-is-and-why-it-is-load-bearing",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "What VIEWS is, and why it is load-bearing",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1723
+    },
+    {
+      "id": "site:views-and-r-universe.html#method",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#method",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "Method",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 669
+    },
+    {
+      "id": "site:views-and-r-universe.html#coverage-which-packages-exist-on-both-sides",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#coverage-which-packages-exist-on-both-sides",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "Coverage: which packages exist on both sides",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1388
+    },
+    {
+      "id": "site:views-and-r-universe.html#field-coverage-for-the-repos-r-universe-does-carry",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#field-coverage-for-the-repos-r-universe-does-carry",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "Field coverage for the repos r-universe does carry",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1938
+    },
+    {
+      "id": "site:views-and-r-universe.html#what-this-means",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#what-this-means",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "What this means",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 1148
+    },
+    {
+      "id": "site:views-and-r-universe.html#the-obligation-is-smaller-than-the-file-suggests",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#the-obligation-is-smaller-than-the-file-suggests",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "The obligation is smaller than the file suggests",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 2636
+    },
+    {
+      "id": "site:views-and-r-universe.html#reproducing-this",
+      "url": "https://seandavi.github.io/bioc-infrastructure/views-and-r-universe.html#reproducing-this",
+      "title": "VIEWS: what r-universe can and cannot replace",
+      "section": "Reproducing this",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "VIEWS & r-universe"
+      ],
+      "source": "site",
+      "text_chars": 972
+    },
+    {
+      "id": "site:adr/0002-mirror-access-logs-unfiltered.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html",
+      "title": "0002 — Mirror the access logs unfiltered; interpret with views",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0002 — Mirror the access logs unfiltered; interpret with views"
+      ],
+      "source": "adr",
+      "text_chars": 7227
+    },
+    {
+      "id": "site:adr/0002-mirror-access-logs-unfiltered.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html#context",
+      "title": "0002 — Mirror the access logs unfiltered; interpret with views",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0002 — Mirror the access logs unfiltered; interpret with views"
+      ],
+      "source": "adr",
+      "text_chars": 2328
+    },
+    {
+      "id": "site:adr/0002-mirror-access-logs-unfiltered.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html#decision",
+      "title": "0002 — Mirror the access logs unfiltered; interpret with views",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0002 — Mirror the access logs unfiltered; interpret with views"
+      ],
+      "source": "adr",
+      "text_chars": 1069
+    },
+    {
+      "id": "site:adr/0002-mirror-access-logs-unfiltered.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html#consequences",
+      "title": "0002 — Mirror the access logs unfiltered; interpret with views",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0002 — Mirror the access logs unfiltered; interpret with views"
+      ],
+      "source": "adr",
+      "text_chars": 1425
+    },
+    {
+      "id": "site:adr/0002-mirror-access-logs-unfiltered.html#addendum-2026-08-05-iceberg-over-the-mirror-at-no-copy-cost",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html#addendum-2026-08-05-iceberg-over-the-mirror-at-no-copy-cost",
+      "title": "0002 — Mirror the access logs unfiltered; interpret with views",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0002 — Mirror the access logs unfiltered; interpret with views"
+      ],
+      "source": "adr",
+      "text_chars": 1026
+    },
+    {
+      "id": "site:adr/0002-mirror-access-logs-unfiltered.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html#alternatives-considered",
+      "title": "0002 — Mirror the access logs unfiltered; interpret with views",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0002 — Mirror the access logs unfiltered; interpret with views"
+      ],
+      "source": "adr",
+      "text_chars": 1322
+    },
+    {
+      "id": "site:adr/0004-download-statistics-are-generated-static-files.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html",
+      "title": "0004 — Download statistics are generated static files, not a live service",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0004 — Download statistics are generated static files, not a live service"
+      ],
+      "source": "adr",
+      "text_chars": 5734
+    },
+    {
+      "id": "site:adr/0004-download-statistics-are-generated-static-files.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html#context",
+      "title": "0004 — Download statistics are generated static files, not a live service",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0004 — Download statistics are generated static files, not a live service"
+      ],
+      "source": "adr",
+      "text_chars": 1402
+    },
+    {
+      "id": "site:adr/0004-download-statistics-are-generated-static-files.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html#decision",
+      "title": "0004 — Download statistics are generated static files, not a live service",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0004 — Download statistics are generated static files, not a live service"
+      ],
+      "source": "adr",
+      "text_chars": 1596
+    },
+    {
+      "id": "site:adr/0004-download-statistics-are-generated-static-files.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html#consequences",
+      "title": "0004 — Download statistics are generated static files, not a live service",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0004 — Download statistics are generated static files, not a live service"
+      ],
+      "source": "adr",
+      "text_chars": 1029
+    },
+    {
+      "id": "site:adr/0004-download-statistics-are-generated-static-files.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html#alternatives-considered",
+      "title": "0004 — Download statistics are generated static files, not a live service",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0004 — Download statistics are generated static files, not a live service"
+      ],
+      "source": "adr",
+      "text_chars": 1656
+    },
+    {
+      "id": "site:adr/0006-old-releases-and-their-checkresults-are-archival.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html",
+      "title": "0006 — 33 of 35 releases, and checkResults for them, are archival",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0006 — 33 of 35 releases, and checkResults for them, are archival"
+      ],
+      "source": "adr",
+      "text_chars": 3111
+    },
+    {
+      "id": "site:adr/0006-old-releases-and-their-checkresults-are-archival.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html#context",
+      "title": "0006 — 33 of 35 releases, and checkResults for them, are archival",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0006 — 33 of 35 releases, and checkResults for them, are archival"
+      ],
+      "source": "adr",
+      "text_chars": 832
+    },
+    {
+      "id": "site:adr/0006-old-releases-and-their-checkresults-are-archival.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html#decision",
+      "title": "0006 — 33 of 35 releases, and checkResults for them, are archival",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0006 — 33 of 35 releases, and checkResults for them, are archival"
+      ],
+      "source": "adr",
+      "text_chars": 623
+    },
+    {
+      "id": "site:adr/0006-old-releases-and-their-checkresults-are-archival.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html#consequences",
+      "title": "0006 — 33 of 35 releases, and checkResults for them, are archival",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0006 — 33 of 35 releases, and checkResults for them, are archival"
+      ],
+      "source": "adr",
+      "text_chars": 983
+    },
+    {
+      "id": "site:adr/0006-old-releases-and-their-checkresults-are-archival.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html#alternatives-considered",
+      "title": "0006 — 33 of 35 releases, and checkResults for them, are archival",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0006 — 33 of 35 releases, and checkResults for them, are archival"
+      ],
+      "source": "adr",
+      "text_chars": 621
+    },
+    {
+      "id": "site:adr/0008-three-repos-and-a-strangler-migration.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html",
+      "title": "0008 — Split by audience into three repositories; migrate by strangling behind the Worker",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0008 — Split by audience into three repositories; migrate by strangling behind the Worker"
+      ],
+      "source": "adr",
+      "text_chars": 7097
+    },
+    {
+      "id": "site:adr/0008-three-repos-and-a-strangler-migration.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html#context",
+      "title": "0008 — Split by audience into three repositories; migrate by strangling behind the Worker",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0008 — Split by audience into three repositories; migrate by strangling behind the Worker"
+      ],
+      "source": "adr",
+      "text_chars": 1894
+    },
+    {
+      "id": "site:adr/0008-three-repos-and-a-strangler-migration.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html#decision",
+      "title": "0008 — Split by audience into three repositories; migrate by strangling behind the Worker",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0008 — Split by audience into three repositories; migrate by strangling behind the Worker"
+      ],
+      "source": "adr",
+      "text_chars": 2571
+    },
+    {
+      "id": "site:adr/0008-three-repos-and-a-strangler-migration.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html#consequences",
+      "title": "0008 — Split by audience into three repositories; migrate by strangling behind the Worker",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0008 — Split by audience into three repositories; migrate by strangling behind the Worker"
+      ],
+      "source": "adr",
+      "text_chars": 1225
+    },
+    {
+      "id": "site:adr/0008-three-repos-and-a-strangler-migration.html#alternatives-considered",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html#alternatives-considered",
+      "title": "0008 — Split by audience into three repositories; migrate by strangling behind the Worker",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0008 — Split by audience into three repositories; migrate by strangling behind the Worker"
+      ],
+      "source": "adr",
+      "text_chars": 1199
+    },
+    {
+      "id": "site:adr/0008-three-repos-and-a-strangler-migration.html#wayfinding",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html#wayfinding",
+      "title": "0008 — Split by audience into three repositories; migrate by strangling behind the Worker",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0008 — Split by audience into three repositories; migrate by strangling behind the Worker"
+      ],
+      "source": "adr",
+      "text_chars": 153
+    },
+    {
+      "id": "site:adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html",
+      "title": "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry"
+      ],
+      "source": "adr",
+      "text_chars": 4256
+    },
+    {
+      "id": "site:adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#context",
+      "title": "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry"
+      ],
+      "source": "adr",
+      "text_chars": 1865
+    },
+    {
+      "id": "site:adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#decision",
+      "title": "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry"
+      ],
+      "source": "adr",
+      "text_chars": 1659
+    },
+    {
+      "id": "site:adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#consequences",
+      "title": "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry"
+      ],
+      "source": "adr",
+      "text_chars": 685
+    },
+    {
+      "id": "site:adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html",
+      "title": "0012 — Client addresses are stored raw; de-identification is a view",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0012 — Client addresses are stored raw; de-identification is a view"
+      ],
+      "source": "adr",
+      "text_chars": 3566
+    },
+    {
+      "id": "site:adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#context",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#context",
+      "title": "0012 — Client addresses are stored raw; de-identification is a view",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0012 — Client addresses are stored raw; de-identification is a view"
+      ],
+      "source": "adr",
+      "text_chars": 1260
+    },
+    {
+      "id": "site:adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#decision",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#decision",
+      "title": "0012 — Client addresses are stored raw; de-identification is a view",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0012 — Client addresses are stored raw; de-identification is a view"
+      ],
+      "source": "adr",
+      "text_chars": 759
+    },
+    {
+      "id": "site:adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#what-is-traded-away",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#what-is-traded-away",
+      "title": "0012 — Client addresses are stored raw; de-identification is a view",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0012 — Client addresses are stored raw; de-identification is a view"
+      ],
+      "source": "adr",
+      "text_chars": 941
+    },
+    {
+      "id": "site:adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#consequences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#consequences",
+      "title": "0012 — Client addresses are stored raw; de-identification is a view",
+      "section": "",
+      "crumbs": [
+        "Overview",
+        "Decisions (ADRs)",
+        "0012 — Client addresses are stored raw; de-identification is a view"
+      ],
+      "source": "adr",
+      "text_chars": 538
+    },
+    {
+      "id": "repo:bioc-registry/README.md",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md",
+      "title": "bioc-registry",
+      "section": "",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1370
+    },
+    {
+      "id": "repo:bioc-registry/README.md#try-it-in-30-seconds",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#try-it-in-30-seconds",
+      "title": "bioc-registry",
+      "section": "Try it in 30 seconds",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 856
+    },
+    {
+      "id": "repo:bioc-registry/README.md#how-it-works",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#how-it-works",
+      "title": "bioc-registry",
+      "section": "How it works",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 916
+    },
+    {
+      "id": "repo:bioc-registry/README.md#the-gate",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#the-gate",
+      "title": "bioc-registry",
+      "section": "The gate",
+      "crumbs": [
+        "bioc-registry",
+        "How it works"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1302
+    },
+    {
+      "id": "repo:bioc-registry/README.md#two-ways-in",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#two-ways-in",
+      "title": "bioc-registry",
+      "section": "Two ways in",
+      "crumbs": [
+        "bioc-registry",
+        "How it works"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 938
+    },
+    {
+      "id": "repo:bioc-registry/README.md#whats-stored",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#whats-stored",
+      "title": "bioc-registry",
+      "section": "What's stored",
+      "crumbs": [
+        "bioc-registry",
+        "How it works"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 708
+    },
+    {
+      "id": "repo:bioc-registry/README.md#routes",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#routes",
+      "title": "bioc-registry",
+      "section": "Routes",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 725
+    },
+    {
+      "id": "repo:bioc-registry/README.md#scope",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#scope",
+      "title": "bioc-registry",
+      "section": "Scope",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 372
+    },
+    {
+      "id": "repo:bioc-registry/README.md#development",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#development",
+      "title": "bioc-registry",
+      "section": "Development",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 438
+    },
+    {
+      "id": "repo:bioc-registry/README.md#ops",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#ops",
+      "title": "bioc-registry",
+      "section": "Ops",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 2786
+    },
+    {
+      "id": "repo:bioc-registry/README.md#citing-licence-conduct",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/README.md#citing-licence-conduct",
+      "title": "bioc-registry",
+      "section": "Citing, licence, conduct",
+      "crumbs": [
+        "bioc-registry"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 158
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md",
+      "title": "bioc-prop API",
+      "section": "",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 440
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-",
+      "title": "bioc-prop API",
+      "section": "GET /",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 491
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-pkguniversepackage",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-pkguniversepackage",
+      "title": "bioc-prop API",
+      "section": "GET /pkg/{universe}/{package}",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 695
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-logsuniversejob",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-logsuniversejob",
+      "title": "bioc-prop API",
+      "section": "GET /logs/{universe}/{job}",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 2409
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-checksuniversejob",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-checksuniversejob",
+      "title": "bioc-prop API",
+      "section": "GET /checks/{universe}/{job}",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1914
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-buildsuniversejob",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-buildsuniversejob",
+      "title": "bioc-prop API",
+      "section": "GET /builds/{universe}/{job}",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 2282
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-docs-and-get-openapijson",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-docs-and-get-openapijson",
+      "title": "bioc-prop API",
+      "section": "GET /docs and GET /openapi.json",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 523
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-sql",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-sql",
+      "title": "bioc-prop API",
+      "section": "GET /sql",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1127
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-datar2-key",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-datar2-key",
+      "title": "bioc-prop API",
+      "section": "GET /data/<r2-key>",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1001
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-repouniverse--installable-cran-repo",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-repouniverse--installable-cran-repo",
+      "title": "bioc-prop API",
+      "section": "GET /repo/{universe}/… — installable CRAN repo",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1503
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-manifestjson",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-manifestjson",
+      "title": "bioc-prop API",
+      "section": "GET /manifest.json",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 149
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-poll",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-poll",
+      "title": "bioc-prop API",
+      "section": "GET /poll",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 287
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-backfillrunn",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-backfillrunn",
+      "title": "bioc-prop API",
+      "section": "GET /backfill?run=N",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 432
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-seeduniversebiocbioc-releasestartnrefresh1",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-seeduniversebiocbioc-releasestartnrefresh1",
+      "title": "bioc-prop API",
+      "section": "GET /seed?universe={bioc|bioc-release}&start=N&refresh=1",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 2405
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#get-topupuniversebiocbioc-release",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-topupuniversebiocbioc-release",
+      "title": "bioc-prop API",
+      "section": "GET /topup?universe={bioc|bioc-release}",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1514
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#post-publish",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#post-publish",
+      "title": "bioc-prop API",
+      "section": "POST /publish",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 3446
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#post-gate",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#post-gate",
+      "title": "bioc-prop API",
+      "section": "POST /gate",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Routes"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 2781
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#storage-keys",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#storage-keys",
+      "title": "bioc-prop API",
+      "section": "Storage keys",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 3039
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#reproduction-fields-on-an-observation-record",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#reproduction-fields-on-an-observation-record",
+      "title": "bioc-prop API",
+      "section": "Reproduction fields on an observation record",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Storage keys"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1572
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#rows-are-stored-as-changes-not-snapshots",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#rows-are-stored-as-changes-not-snapshots",
+      "title": "bioc-prop API",
+      "section": "Rows are stored as changes, not snapshots",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API",
+        "Storage keys"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1678
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#parquet-schema-jobs",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#parquet-schema-jobs",
+      "title": "bioc-prop API",
+      "section": "Parquet schema (jobs)",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 1287
+    },
+    {
+      "id": "repo:bioc-registry/docs/api.md#index-entry-shape",
+      "url": "https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#index-entry-shape",
+      "title": "bioc-prop API",
+      "section": "Index entry shape",
+      "crumbs": [
+        "bioc-registry",
+        "bioc-prop API"
+      ],
+      "source": "repo",
+      "repo": "bioc-registry",
+      "text_chars": 2681
+    },
+    {
+      "id": "repo:bioc-edge/README.md",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md",
+      "title": "bioc-edge",
+      "section": "",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 683
+    },
+    {
+      "id": "repo:bioc-edge/README.md#why",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#why",
+      "title": "bioc-edge",
+      "section": "Why",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 846
+    },
+    {
+      "id": "repo:bioc-edge/README.md#what-comes-from-where",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#what-comes-from-where",
+      "title": "bioc-edge",
+      "section": "What comes from where",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1434
+    },
+    {
+      "id": "repo:bioc-edge/README.md#how-the-sync-stays-cheap",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#how-the-sync-stays-cheap",
+      "title": "bioc-edge",
+      "section": "How the sync stays cheap",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 672
+    },
+    {
+      "id": "repo:bioc-edge/README.md#object-storage-has-no-symlinks",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#object-storage-has-no-symlinks",
+      "title": "bioc-edge",
+      "section": "Object storage has no symlinks",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 526
+    },
+    {
+      "id": "repo:bioc-edge/README.md#the-api",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#the-api",
+      "title": "bioc-edge",
+      "section": "The API",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 431
+    },
+    {
+      "id": "repo:bioc-edge/README.md#mirroring",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#mirroring",
+      "title": "bioc-edge",
+      "section": "Mirroring",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 690
+    },
+    {
+      "id": "repo:bioc-edge/README.md#status",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#status",
+      "title": "bioc-edge",
+      "section": "Status",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 340
+    },
+    {
+      "id": "repo:bioc-edge/README.md#repo-layout",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#repo-layout",
+      "title": "bioc-edge",
+      "section": "Repo layout",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1171
+    },
+    {
+      "id": "repo:bioc-edge/README.md#not-in-scope",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#not-in-scope",
+      "title": "bioc-edge",
+      "section": "Not in scope",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 254
+    },
+    {
+      "id": "repo:bioc-edge/README.md#note",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/README.md#note",
+      "title": "bioc-edge",
+      "section": "Note",
+      "crumbs": [
+        "bioc-edge"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 240
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md",
+      "title": "A data plane for bioconductor.org",
+      "section": "",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 635
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#why-this-note-exists",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#why-this-note-exists",
+      "title": "A data plane for bioconductor.org",
+      "section": "Why this note exists",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 718
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#1-prior-art",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#1-prior-art",
+      "title": "A data plane for bioconductor.org",
+      "section": "1. Prior art",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 112
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#cloudflare-workflows-v",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#cloudflare-workflows-v",
+      "title": "A data plane for bioconductor.org",
+      "section": "Cloudflare Workflows [V]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "1. Prior art"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1517
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#durable-objects-as-workflow-state-v",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#durable-objects-as-workflow-state-v",
+      "title": "A data plane for bioconductor.org",
+      "section": "Durable Objects as workflow state [V]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "1. Prior art"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 633
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#managed-alternatives-v",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#managed-alternatives-v",
+      "title": "A data plane for bioconductor.org",
+      "section": "Managed alternatives [V]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "1. Prior art"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 912
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#scientific--bioinformatics-prior-art-v",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#scientific--bioinformatics-prior-art-v",
+      "title": "A data plane for bioconductor.org",
+      "section": "Scientific / bioinformatics prior art [V]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "1. Prior art"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 679
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#the-dumb-worker--dispatch-pattern-v",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#the-dumb-worker--dispatch-pattern-v",
+      "title": "A data plane for bioconductor.org",
+      "section": "The dumb-worker / dispatch pattern [V]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "1. Prior art"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1014
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#existing-workers-prior-art-in-this-ecosystem-v",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#existing-workers-prior-art-in-this-ecosystem-v",
+      "title": "A data plane for bioconductor.org",
+      "section": "Existing Workers prior art in this ecosystem [V]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "1. Prior art"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 679
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#2-the-shape",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#2-the-shape",
+      "title": "A data plane for bioconductor.org",
+      "section": "2. The shape",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 2072
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#the-wider-ambition-sketched",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#the-wider-ambition-sketched",
+      "title": "A data plane for bioconductor.org",
+      "section": "The wider ambition, sketched",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "2. The shape"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 2852
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#3-near-term-roadmap",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#3-near-term-roadmap",
+      "title": "A data plane for bioconductor.org",
+      "section": "3. Near-term roadmap",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 119
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#0-release-roll-guard--the-pilot-in-code-undeployed",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#0-release-roll-guard--the-pilot-in-code-undeployed",
+      "title": "A data plane for bioconductor.org",
+      "section": "0. Release-roll guard — the pilot [in code, undeployed]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "3. Near-term roadmap"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1905
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#1-a-delete-count-guard-in-syncsh-not-started",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#1-a-delete-count-guard-in-syncsh-not-started",
+      "title": "A data plane for bioconductor.org",
+      "section": "1. A delete count guard in sync.sh [not started]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "3. Near-term roadmap"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 512
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#2-sync-run-supervision-not-started",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#2-sync-run-supervision-not-started",
+      "title": "A data plane for bioconductor.org",
+      "section": "2. Sync-run supervision [not started]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "3. Near-term roadmap"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1289
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#3-shields-needs-an-independent-producer-not-started",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#3-shields-needs-an-independent-producer-not-started",
+      "title": "A data plane for bioconductor.org",
+      "section": "3. shields/ needs an independent producer [not started]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "3. Near-term roadmap"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 381
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#4-cicd-for-the-site-build-and-worker-deploy-not-started",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#4-cicd-for-the-site-build-and-worker-deploy-not-started",
+      "title": "A data plane for bioconductor.org",
+      "section": "4. CI/CD for the site build and Worker deploy [not started]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "3. Near-term roadmap"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 366
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#5-download-stats-scheduling-and-staleness-alert-not-started",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#5-download-stats-scheduling-and-staleness-alert-not-started",
+      "title": "A data plane for bioconductor.org",
+      "section": "5. Download-stats scheduling and staleness alert [not started]",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org",
+        "3. Near-term roadmap"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 734
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#4-out-of-scope-for-now",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#4-out-of-scope-for-now",
+      "title": "A data plane for bioconductor.org",
+      "section": "4. Out of scope, for now",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 1045
+    },
+    {
+      "id": "repo:bioc-edge/DATAPLANE.md#5-assumptions-worth-validating-before-anything-else-is-built",
+      "url": "https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md#5-assumptions-worth-validating-before-anything-else-is-built",
+      "title": "A data plane for bioconductor.org",
+      "section": "5. Assumptions worth validating before anything else is built",
+      "crumbs": [
+        "bioc-edge",
+        "A data plane for bioconductor.org"
+      ],
+      "source": "repo",
+      "repo": "bioc-edge",
+      "text_chars": 974
+    },
+    {
+      "id": "repo:bioc-traffic/README.md",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/README.md",
+      "title": "bioc-traffic",
+      "section": "",
+      "crumbs": [
+        "bioc-traffic"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 393
+    },
+    {
+      "id": "repo:bioc-traffic/README.md#not-all-traffic-is-people",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/README.md#not-all-traffic-is-people",
+      "title": "bioc-traffic",
+      "section": "Not all traffic is people",
+      "crumbs": [
+        "bioc-traffic"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 1206
+    },
+    {
+      "id": "repo:bioc-traffic/README.md#what-it-produces",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/README.md#what-it-produces",
+      "title": "bioc-traffic",
+      "section": "What it produces",
+      "crumbs": [
+        "bioc-traffic"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 615
+    },
+    {
+      "id": "repo:bioc-traffic/README.md#privacy",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/README.md#privacy",
+      "title": "bioc-traffic",
+      "section": "Privacy",
+      "crumbs": [
+        "bioc-traffic"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 192
+    },
+    {
+      "id": "repo:bioc-traffic/README.md#related",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/README.md#related",
+      "title": "bioc-traffic",
+      "section": "Related",
+      "crumbs": [
+        "bioc-traffic"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 372
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 256
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#coverage",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#coverage",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Coverage",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 239
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#distribution-of-δ-package-months-in-both-with--100-published-downloads",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#distribution-of-δ-package-months-in-both-with--100-published-downloads",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Distribution of Δ, package-months in both with ≥ 100 published downloads",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 1414
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#category-totals-by-month-where-δ--2-",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#category-totals-by-month-where-δ--2-",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Category totals by month, where |Δ| > 2 %",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 4407
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#outlier-package-months-δ-downloads--5---1000-published-downloads-by-month",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#outlier-package-months-δ-downloads--5---1000-published-downloads-by-month",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Outlier package-months (|Δ downloads| > 5 %, ≥ 1,000 published downloads), by month",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 3947
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#hypothesis-the-published-files-count-head-requests",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#hypothesis-the-published-files-count-head-requests",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Hypothesis: the published files count HEAD requests",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 6008
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#hypothesis-the-published-source-is-missing-log-days",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#hypothesis-the-published-source-is-missing-log-days",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Hypothesis: the published source is missing log days",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 2730
+    },
+    {
+      "id": "repo:bioc-traffic/docs/published-comparison.md#hypothesis-the-published-files-count-a-package-under-every-category-path",
+      "url": "https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md#hypothesis-the-published-files-count-a-package-under-every-category-path",
+      "title": "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09",
+      "section": "Hypothesis: the published files count a package under every category path",
+      "crumbs": [
+        "bioc-traffic",
+        "Published /packages/stats/ vs our fixed-definition columns, 2020-01 → 2026-09"
+      ],
+      "source": "repo",
+      "repo": "bioc-traffic",
+      "text_chars": 2312
+    },
+    {
+      "id": "repo:bioc-build/README.md",
+      "url": "https://github.com/seandavi/bioc-build/blob/main/README.md",
+      "title": "bioc-build",
+      "section": "",
+      "crumbs": [
+        "bioc-build"
+      ],
+      "source": "repo",
+      "repo": "bioc-build",
+      "text_chars": 812
+    },
+    {
+      "id": "repo:bioc-build/README.md#status",
+      "url": "https://github.com/seandavi/bioc-build/blob/main/README.md#status",
+      "title": "bioc-build",
+      "section": "Status",
+      "crumbs": [
+        "bioc-build"
+      ],
+      "source": "repo",
+      "repo": "bioc-build",
+      "text_chars": 307
+    },
+    {
+      "id": "repo:bioc-build/README.md#relationship-to-r-universe",
+      "url": "https://github.com/seandavi/bioc-build/blob/main/README.md#relationship-to-r-universe",
+      "title": "bioc-build",
+      "section": "Relationship to r-universe",
+      "crumbs": [
+        "bioc-build"
+      ],
+      "source": "repo",
+      "repo": "bioc-build",
+      "text_chars": 1727
+    },
+    {
+      "id": "repo:bioc-build/README.md#reproducing-a-build-locally",
+      "url": "https://github.com/seandavi/bioc-build/blob/main/README.md#reproducing-a-build-locally",
+      "title": "bioc-build",
+      "section": "Reproducing a build locally",
+      "crumbs": [
+        "bioc-build"
+      ],
+      "source": "repo",
+      "repo": "bioc-build",
+      "text_chars": 904
+    },
+    {
+      "id": "repo:bioc-build/README.md#runbook",
+      "url": "https://github.com/seandavi/bioc-build/blob/main/README.md#runbook",
+      "title": "bioc-build",
+      "section": "Runbook",
+      "crumbs": [
+        "bioc-build"
+      ],
+      "source": "repo",
+      "repo": "bioc-build",
+      "text_chars": 2452
+    },
+    {
+      "id": "repo:bioc-build/README.md#trust-model",
+      "url": "https://github.com/seandavi/bioc-build/blob/main/README.md#trust-model",
+      "title": "bioc-build",
+      "section": "Trust model",
+      "crumbs": [
+        "bioc-build"
+      ],
+      "source": "repo",
+      "repo": "bioc-build",
+      "text_chars": 636
+    },
+    {
+      "id": "repo:bioc-manifest/README.md",
+      "url": "https://github.com/seandavi/bioc-manifest/blob/main/README.md",
+      "title": "bioc-manifest",
+      "section": "",
+      "crumbs": [
+        "bioc-manifest"
+      ],
+      "source": "repo",
+      "repo": "bioc-manifest",
+      "text_chars": 845
+    },
+    {
+      "id": "repo:bioc-manifest/README.md#entry-format",
+      "url": "https://github.com/seandavi/bioc-manifest/blob/main/README.md#entry-format",
+      "title": "bioc-manifest",
+      "section": "Entry format",
+      "crumbs": [
+        "bioc-manifest"
+      ],
+      "source": "repo",
+      "repo": "bioc-manifest",
+      "text_chars": 946
+    },
+    {
+      "id": "repo:bioc-manifest/README.md#adding-a-package",
+      "url": "https://github.com/seandavi/bioc-manifest/blob/main/README.md#adding-a-package",
+      "title": "bioc-manifest",
+      "section": "Adding a package",
+      "crumbs": [
+        "bioc-manifest"
+      ],
+      "source": "repo",
+      "repo": "bioc-manifest",
+      "text_chars": 107
+    },
+    {
+      "id": "repo:bioc-manifest/README.md#deprecating-a-package",
+      "url": "https://github.com/seandavi/bioc-manifest/blob/main/README.md#deprecating-a-package",
+      "title": "bioc-manifest",
+      "section": "Deprecating a package",
+      "crumbs": [
+        "bioc-manifest"
+      ],
+      "source": "repo",
+      "repo": "bioc-manifest",
+      "text_chars": 182
+    },
+    {
+      "id": "repo:bioc-manifest/README.md#regenerating-from-upstream",
+      "url": "https://github.com/seandavi/bioc-manifest/blob/main/README.md#regenerating-from-upstream",
+      "title": "bioc-manifest",
+      "section": "Regenerating from upstream",
+      "crumbs": [
+        "bioc-manifest"
+      ],
+      "source": "repo",
+      "repo": "bioc-manifest",
+      "text_chars": 399
+    },
+    {
+      "id": "repo:bioc-manifest/README.md#validating",
+      "url": "https://github.com/seandavi/bioc-manifest/blob/main/README.md#validating",
+      "title": "bioc-manifest",
+      "section": "Validating",
+      "crumbs": [
+        "bioc-manifest"
+      ],
+      "source": "repo",
+      "repo": "bioc-manifest",
+      "text_chars": 214
+    },
+    {
+      "id": "repo:bioc-website/README.md",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md",
+      "title": "bioc-website",
+      "section": "",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 951
+    },
+    {
+      "id": "repo:bioc-website/README.md#how-the-site-is-built",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md#how-the-site-is-built",
+      "title": "bioc-website",
+      "section": "How the site is built",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 1175
+    },
+    {
+      "id": "repo:bioc-website/README.md#how-builds-are-published-and-served",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md#how-builds-are-published-and-served",
+      "title": "bioc-website",
+      "section": "How builds are published and served",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 5270
+    },
+    {
+      "id": "repo:bioc-website/README.md#quickstart",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md#quickstart",
+      "title": "bioc-website",
+      "section": "Quickstart",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 412
+    },
+    {
+      "id": "repo:bioc-website/README.md#related-repos",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md#related-repos",
+      "title": "bioc-website",
+      "section": "Related repos",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 544
+    },
+    {
+      "id": "repo:bioc-website/README.md#status",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md#status",
+      "title": "bioc-website",
+      "section": "Status",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 569
+    },
+    {
+      "id": "repo:bioc-website/README.md#contributing",
+      "url": "https://github.com/seandavi/bioc-website/blob/main/README.md#contributing",
+      "title": "bioc-website",
+      "section": "Contributing",
+      "crumbs": [
+        "bioc-website"
+      ],
+      "source": "repo",
+      "repo": "bioc-website",
+      "text_chars": 346
+    },
+    {
+      "id": "repo:bioc-infrastructure/README.md",
+      "url": "https://github.com/seandavi/bioc-infrastructure/blob/main/README.md",
+      "title": "bioconductor-infrastructure",
+      "section": "",
+      "crumbs": [
+        "bioc-infrastructure",
+        "bioconductor-infrastructure"
+      ],
+      "source": "repo",
+      "repo": "bioc-infrastructure",
+      "text_chars": 346
+    },
+    {
+      "id": "repo:bioc-infrastructure/README.md#status",
+      "url": "https://github.com/seandavi/bioc-infrastructure/blob/main/README.md#status",
+      "title": "bioconductor-infrastructure",
+      "section": "Status",
+      "crumbs": [
+        "bioc-infrastructure",
+        "bioconductor-infrastructure"
+      ],
+      "source": "repo",
+      "repo": "bioc-infrastructure",
+      "text_chars": 3507
+    },
+    {
+      "id": "repo:bioc-infrastructure/README.md#rendering-locally",
+      "url": "https://github.com/seandavi/bioc-infrastructure/blob/main/README.md#rendering-locally",
+      "title": "bioconductor-infrastructure",
+      "section": "Rendering locally",
+      "crumbs": [
+        "bioc-infrastructure",
+        "bioconductor-infrastructure"
+      ],
+      "source": "repo",
+      "repo": "bioc-infrastructure",
+      "text_chars": 200
+    },
+    {
+      "id": "repo:bioc-infrastructure/README.md#layout",
+      "url": "https://github.com/seandavi/bioc-infrastructure/blob/main/README.md#layout",
+      "title": "bioconductor-infrastructure",
+      "section": "Layout",
+      "crumbs": [
+        "bioc-infrastructure",
+        "bioconductor-infrastructure"
+      ],
+      "source": "repo",
+      "repo": "bioc-infrastructure",
+      "text_chars": 226
+    },
+    {
+      "id": "repo:bioc-infrastructure/README.md#publishing",
+      "url": "https://github.com/seandavi/bioc-infrastructure/blob/main/README.md#publishing",
+      "title": "bioconductor-infrastructure",
+      "section": "Publishing",
+      "crumbs": [
+        "bioc-infrastructure",
+        "bioconductor-infrastructure"
+      ],
+      "source": "repo",
+      "repo": "bioc-infrastructure",
+      "text_chars": 371
+    },
+    {
+      "id": "repo:bioc-infrastructure/README.md#license",
+      "url": "https://github.com/seandavi/bioc-infrastructure/blob/main/README.md#license",
+      "title": "bioconductor-infrastructure",
+      "section": "License",
+      "crumbs": [
+        "bioc-infrastructure",
+        "bioconductor-infrastructure"
+      ],
+      "source": "repo",
+      "repo": "bioc-infrastructure",
+      "text_chars": 71
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 679
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#the-data",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#the-data",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "The data",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 378
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#storage-format",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#storage-format",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Storage Format",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 751
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#github-actions",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#github-actions",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "GitHub Actions",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 122
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#manual-triggers",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#manual-triggers",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Manual Triggers",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker",
+        "GitHub Actions"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 100
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#setup",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#setup",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Setup",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker",
+        "GitHub Actions"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 164
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#api-endpoints",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#api-endpoints",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "API Endpoints",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 287
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#dependencies",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#dependencies",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Dependencies",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 183
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#installation",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#installation",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Installation",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 80
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#incremental-sync-rss-feed",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#incremental-sync-rss-feed",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Incremental Sync (RSS Feed)",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker",
+        "Usage"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 249
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#backfill-all-current-packages",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#backfill-all-current-packages",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Backfill (All Current Packages)",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker",
+        "Usage"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 180
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#check-status",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#check-status",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Check Status",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker",
+        "Usage"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 81
+    },
+    {
+      "id": "repo:bioc-r-universe-build-db/README.md#options",
+      "url": "https://github.com/seandavi/bioc-r-universe-build-db/blob/main/README.md#options",
+      "title": "Bioconductor R-Universe Build Tracker",
+      "section": "Options",
+      "crumbs": [
+        "bioc-r-universe-build-db",
+        "Bioconductor R-Universe Build Tracker",
+        "Usage"
+      ],
+      "source": "repo",
+      "repo": "bioc-r-universe-build-db",
+      "text_chars": 179
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 245
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#-live-dashboard--impactbioconductororg",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#-live-dashboard--impactbioconductororg",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "🔗 Live dashboard → impact.bioconductor.org",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 618
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#why",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#why",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Why",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 561
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#features",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#features",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Features",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 1340
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#architecture--data-flow",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#architecture--data-flow",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Architecture & data flow",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 1796
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#data-sources",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#data-sources",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Data sources",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform",
+        "Architecture & data flow"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 750
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#pipeline-python-uv",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#pipeline-python-uv",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Pipeline (Python, uv)",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform",
+        "Quickstart"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 1251
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#frontend-vite--react--typescript",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#frontend-vite--react--typescript",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Frontend (Vite + React + TypeScript)",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform",
+        "Quickstart"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 331
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#scheduled-refresh",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#scheduled-refresh",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Scheduled refresh",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform",
+        "Quickstart"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 1492
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#programmatic-access",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#programmatic-access",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Programmatic access",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 2786
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#repository-layout",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#repository-layout",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Repository layout",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 866
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#caveats--known-limitations",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#caveats--known-limitations",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Caveats & known limitations",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 2700
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#roadmap",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#roadmap",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Roadmap",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 281
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#tech-stack",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#tech-stack",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Tech stack",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 408
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#acknowledgments",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#acknowledgments",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "Acknowledgments",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 332
+    },
+    {
+      "id": "repo:bioc-intelligence/README.md#license",
+      "url": "https://github.com/seandavi/bioc-intelligence/blob/main/README.md#license",
+      "title": "Bioconductor Intelligence Platform",
+      "section": "License",
+      "crumbs": [
+        "bioc-intelligence",
+        "Bioconductor Intelligence Platform"
+      ],
+      "source": "repo",
+      "repo": "bioc-intelligence",
+      "text_chars": 14
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md",
+      "title": "biocOnIce",
+      "section": "",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 263
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#why",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#why",
+      "title": "biocOnIce",
+      "section": "Why",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 1664
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#what-it-replaces",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#what-it-replaces",
+      "title": "biocOnIce",
+      "section": "What it replaces",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 3533
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#pointers-to-data-not-copies-of-it",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#pointers-to-data-not-copies-of-it",
+      "title": "biocOnIce",
+      "section": "Pointers to data, not copies of it",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 2461
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#status",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#status",
+      "title": "biocOnIce",
+      "section": "Status",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 4658
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#query-it",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#query-it",
+      "title": "biocOnIce",
+      "section": "Query it",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 805
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#icite",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#icite",
+      "title": "biocOnIce",
+      "section": "iCite",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 1366
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#ingest-it",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#ingest-it",
+      "title": "biocOnIce",
+      "section": "Ingest it",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 1357
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#conventions",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#conventions",
+      "title": "biocOnIce",
+      "section": "Conventions",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 985
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#ask-an-assistant",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#ask-an-assistant",
+      "title": "biocOnIce",
+      "section": "Ask an assistant",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 1875
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#develop",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#develop",
+      "title": "biocOnIce",
+      "section": "Develop",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 87
+    },
+    {
+      "id": "repo:bioc-on-ice/README.md#acceptance",
+      "url": "https://github.com/seandavi/bioc-on-ice/blob/main/README.md#acceptance",
+      "title": "biocOnIce",
+      "section": "Acceptance",
+      "crumbs": [
+        "bioc-on-ice",
+        "biocOnIce"
+      ],
+      "source": "repo",
+      "repo": "bioc-on-ice",
+      "text_chars": 766
+    },
+    {
+      "id": "repo:bioc-harnesses/README.md",
+      "url": "https://github.com/seandavi/bioc-harnesses/blob/main/README.md",
+      "title": "bioc-harnesses",
+      "section": "",
+      "crumbs": [
+        "bioc-harnesses"
+      ],
+      "source": "repo",
+      "repo": "bioc-harnesses",
+      "text_chars": 795
+    },
+    {
+      "id": "repo:bioc-harnesses/README.md#why-three",
+      "url": "https://github.com/seandavi/bioc-harnesses/blob/main/README.md#why-three",
+      "title": "bioc-harnesses",
+      "section": "Why three",
+      "crumbs": [
+        "bioc-harnesses"
+      ],
+      "source": "repo",
+      "repo": "bioc-harnesses",
+      "text_chars": 460
+    },
+    {
+      "id": "repo:bioc-harnesses/README.md#layout",
+      "url": "https://github.com/seandavi/bioc-harnesses/blob/main/README.md#layout",
+      "title": "bioc-harnesses",
+      "section": "Layout",
+      "crumbs": [
+        "bioc-harnesses"
+      ],
+      "source": "repo",
+      "repo": "bioc-harnesses",
+      "text_chars": 1159
+    },
+    {
+      "id": "repo:bioc-harnesses/README.md#two-things-that-shaped-the-design",
+      "url": "https://github.com/seandavi/bioc-harnesses/blob/main/README.md#two-things-that-shaped-the-design",
+      "title": "bioc-harnesses",
+      "section": "Two things that shaped the design",
+      "crumbs": [
+        "bioc-harnesses"
+      ],
+      "source": "repo",
+      "repo": "bioc-harnesses",
+      "text_chars": 784
+    },
+    {
+      "id": "repo:bioc-harnesses/README.md#working-on-this-repo",
+      "url": "https://github.com/seandavi/bioc-harnesses/blob/main/README.md#working-on-this-repo",
+      "title": "bioc-harnesses",
+      "section": "Working on this repo",
+      "crumbs": [
+        "bioc-harnesses"
+      ],
+      "source": "repo",
+      "repo": "bioc-harnesses",
+      "text_chars": 858
+    },
+    {
+      "id": "repo:bioc-harnesses/README.md#license",
+      "url": "https://github.com/seandavi/bioc-harnesses/blob/main/README.md#license",
+      "title": "bioc-harnesses",
+      "section": "License",
+      "crumbs": [
+        "bioc-harnesses"
+      ],
+      "source": "repo",
+      "repo": "bioc-harnesses",
+      "text_chars": 3
+    },
+    {
+      "id": "repo:bioc-mcp/README.md",
+      "url": "https://github.com/seandavi/bioc-mcp/blob/main/README.md",
+      "title": "bioc-mcp",
+      "section": "",
+      "crumbs": [
+        "bioc-mcp"
+      ],
+      "source": "repo",
+      "repo": "bioc-mcp",
+      "text_chars": 750
+    },
+    {
+      "id": "repo:bioc-mcp/README.md#what-it-will-offer-v0",
+      "url": "https://github.com/seandavi/bioc-mcp/blob/main/README.md#what-it-will-offer-v0",
+      "title": "bioc-mcp",
+      "section": "What it will offer (v0)",
+      "crumbs": [
+        "bioc-mcp"
+      ],
+      "source": "repo",
+      "repo": "bioc-mcp",
+      "text_chars": 656
+    },
+    {
+      "id": "repo:bioc-mcp/README.md#principles",
+      "url": "https://github.com/seandavi/bioc-mcp/blob/main/README.md#principles",
+      "title": "bioc-mcp",
+      "section": "Principles",
+      "crumbs": [
+        "bioc-mcp"
+      ],
+      "source": "repo",
+      "repo": "bioc-mcp",
+      "text_chars": 297
+    },
+    {
+      "id": "repo:bioc-mcp/README.md#try-it-locally",
+      "url": "https://github.com/seandavi/bioc-mcp/blob/main/README.md#try-it-locally",
+      "title": "bioc-mcp",
+      "section": "Try it locally",
+      "crumbs": [
+        "bioc-mcp"
+      ],
+      "source": "repo",
+      "repo": "bioc-mcp",
+      "text_chars": 382
+    },
+    {
+      "id": "repo:bioc-mcp/README.md#contributing",
+      "url": "https://github.com/seandavi/bioc-mcp/blob/main/README.md#contributing",
+      "title": "bioc-mcp",
+      "section": "Contributing",
+      "crumbs": [
+        "bioc-mcp"
+      ],
+      "source": "repo",
+      "repo": "bioc-mcp",
+      "text_chars": 189
+    }
+  ]
+}

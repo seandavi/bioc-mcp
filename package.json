@@ -7,24 +7,35 @@
     "node": ">=22.12"
   },
   "scripts": {
+    "predev": "tsx scripts/build-docs-index.ts --fixtures --if-missing",
     "dev": "wrangler dev",
+    "prebuild": "tsx scripts/build-docs-index.ts --fixtures --if-missing",
     "build": "wrangler deploy --dry-run --outdir dist",
+    "pretest": "tsx scripts/build-docs-index.ts --fixtures --if-missing",
     "test": "vitest run",
+    "pretypecheck": "tsx scripts/build-docs-index.ts --fixtures --if-missing",
     "typecheck": "tsc -p tsconfig.json",
-    "cf-typegen": "wrangler types --strict-vars=false"
+    "cf-typegen": "wrangler types --strict-vars=false",
+    "docs:build": "tsx scripts/build-docs-index.ts",
+    "docs:fixtures": "tsx scripts/build-docs-index.ts --fixtures",
+    "docs:record": "tsx scripts/build-docs-index.ts --record-fixtures"
   },
   "dependencies": {
     "@hono/zod-openapi": "^1.6.3",
     "@modelcontextprotocol/hono": "^2.0.2",
     "@modelcontextprotocol/server": "^2.3.1",
     "hono": "^4.13.13",
+    "minisearch": "^7.2.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "^2.3.1",
     "@types/node": "^24.19.2",
+    "github-slugger": "^2.0.0",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5",
-    "wrangler": "^4.151.3"
+    "wrangler": "^4.151.3",
+    "yaml": "^2.9.1"
   }
 }

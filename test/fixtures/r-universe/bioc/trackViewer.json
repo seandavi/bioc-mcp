@@ -1,0 +1,1120 @@
+{
+  "_id": "6abc611099f7aa8c6aa4a8d3",
+  "Package": "trackViewer",
+  "Type": "Package",
+  "Title": "A R/Bioconductor package with web interface for drawing elegant\ninteractive tracks or lollipop plot to facilitate integrated\nanalysis of multi-omics data",
+  "Version": "1.49.3",
+  "Authors@R": "c(person(given=\"Jianhong\", family=\"Ou\", email=\"jou@morgridge.org\", \nrole=c(\"aut\", \"cre\"), comment=c(ORCID=\"0000-0002-8652-2488\")),\nperson(given=\"Julie Lihua\", family=\"Zhu\",\nrole=\"aut\", email=\"Julie.Zhu@umassmed.edu\"))",
+  "Maintainer": "Jianhong Ou <jou@morgridge.org>",
+  "Description": "Visualize mapped reads along with annotation as track\nlayers for NGS dataset such as ChIP-seq, RNA-seq, miRNA-seq,\nDNA-seq, SNPs and methylation data.",
+  "License": "GPL (>= 2)",
+  "biocViews": "Visualization",
+  "VignetteBuilder": "knitr",
+  "Encoding": "UTF-8",
+  "Config/roxygen2/version": "8.1.0",
+  "Config/pak/sysreqs": "cmake make libbz2-dev libicu-dev liblzma-dev\nlibpng-dev libuv1-dev libxml2-dev libssl-dev xz-utils\nzlib1g-dev",
+  "Repository": "https://bioc.r-universe.dev",
+  "Date/Publication": "2026-09-29 19:32:11 UTC",
+  "RemoteUrl": "https://github.com/bioc/trackViewer",
+  "RemoteRef": "HEAD",
+  "RemoteSha": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+  "NeedsCompilation": "no",
+  "Packaged": {
+    "Date": "2026-09-30 00:55:24 UTC",
+    "User": "root"
+  },
+  "Author": "Jianhong Ou [aut, cre] (ORCID: <https://orcid.org/0000-0002-8652-2488>),\nJulie Lihua Zhu [aut]",
+  "_user": "bioc",
+  "_type": "src",
+  "_file": "trackViewer_1.49.3.tar.gz",
+  "_fileid": "https://r2.ropensci.org/00f889a99dfa2acd320026762e7c2b66dca057a7ce8aae0afed60bf847a7c92b",
+  "_filesize": 9755432,
+  "_sha256": "00f889a99dfa2acd320026762e7c2b66dca057a7ce8aae0afed60bf847a7c92b",
+  "_expires": "2027-01-08T01:08:29.000Z",
+  "_created": "2026-09-30T00:55:24.000Z",
+  "_published": "2026-09-30T01:08:32.273Z",
+  "_bioccheck": {
+    "error": 0,
+    "warning": 5,
+    "note": 18
+  },
+  "_host": "GitHub-Actions",
+  "_buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855",
+  "_status": "success",
+  "_upstream": "https://github.com/bioc/trackViewer",
+  "_commit": {
+    "id": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+    "author": "Jianhong Ou <jianhong.ou@gmail.com>",
+    "committer": "Jianhong Ou <jianhong.ou@gmail.com>",
+    "message": "Add break layout for lollipop plot.\n",
+    "time": 1790710331
+  },
+  "_maintainer": {
+    "name": "Jianhong Ou",
+    "email": "jou@morgridge.org",
+    "orcid": "0000-0002-8652-2488"
+  },
+  "_distro": "resolute",
+  "_jobs": [
+    {
+      "job": 109690330754,
+      "time": 336,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "WARNING",
+      "artifact": "11071785772"
+    },
+    {
+      "job": 109690330696,
+      "time": 678,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "OK",
+      "artifact": "11071532303"
+    },
+    {
+      "job": 109690330798,
+      "time": 650,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "11071661791"
+    },
+    {
+      "job": 109690330721,
+      "time": 324,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "OK",
+      "artifact": "11071496873"
+    },
+    {
+      "job": 109690330687,
+      "time": 440,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "11071711649"
+    },
+    {
+      "job": 109686554313,
+      "time": 920,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "11070732314"
+    },
+    {
+      "job": 109690330642,
+      "time": 249,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "11071421466"
+    },
+    {
+      "job": 109690330675,
+      "time": 465,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "OK",
+      "artifact": "11071526754"
+    },
+    {
+      "job": 109690330666,
+      "time": 465,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "OK",
+      "artifact": "11070997947"
+    },
+    {
+      "job": 109690330710,
+      "time": 438,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "11071646302"
+    }
+  ],
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "R",
+      "version": ">= 3.5.0",
+      "role": "Depends"
+    },
+    {
+      "package": "grDevices",
+      "role": "Depends"
+    },
+    {
+      "package": "methods",
+      "role": "Depends"
+    },
+    {
+      "package": "GenomicRanges",
+      "role": "Depends"
+    },
+    {
+      "package": "grid",
+      "role": "Depends"
+    },
+    {
+      "package": "Seqinfo",
+      "role": "Imports"
+    },
+    {
+      "package": "GenomeInfoDb",
+      "role": "Imports"
+    },
+    {
+      "package": "GenomicAlignments",
+      "role": "Imports"
+    },
+    {
+      "package": "GenomicFeatures",
+      "role": "Imports"
+    },
+    {
+      "package": "Rsamtools",
+      "role": "Imports"
+    },
+    {
+      "package": "S4Vectors",
+      "role": "Imports"
+    },
+    {
+      "package": "rtracklayer",
+      "role": "Imports"
+    },
+    {
+      "package": "BiocGenerics",
+      "role": "Imports"
+    },
+    {
+      "package": "scales",
+      "role": "Imports"
+    },
+    {
+      "package": "tools",
+      "role": "Imports"
+    },
+    {
+      "package": "IRanges",
+      "role": "Imports"
+    },
+    {
+      "package": "AnnotationDbi",
+      "role": "Imports"
+    },
+    {
+      "package": "grImport",
+      "role": "Imports"
+    },
+    {
+      "package": "htmlwidgets",
+      "role": "Imports"
+    },
+    {
+      "package": "InteractionSet",
+      "role": "Imports"
+    },
+    {
+      "package": "utils",
+      "role": "Imports"
+    },
+    {
+      "package": "rhdf5",
+      "role": "Imports"
+    },
+    {
+      "package": "strawr",
+      "role": "Imports"
+    },
+    {
+      "package": "txdbmaker",
+      "role": "Imports"
+    },
+    {
+      "package": "biomaRt",
+      "role": "Suggests"
+    },
+    {
+      "package": "TxDb.Hsapiens.UCSC.hg19.knownGene",
+      "role": "Suggests"
+    },
+    {
+      "package": "RUnit",
+      "role": "Suggests"
+    },
+    {
+      "package": "org.Hs.eg.db",
+      "role": "Suggests"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "VariantAnnotation",
+      "role": "Suggests"
+    },
+    {
+      "package": "httr",
+      "role": "Suggests"
+    },
+    {
+      "package": "htmltools",
+      "role": "Suggests"
+    },
+    {
+      "package": "rmarkdown",
+      "role": "Suggests"
+    },
+    {
+      "package": "motifStack",
+      "role": "Suggests"
+    },
+    {
+      "package": "Gviz",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": true,
+  "_usedby": 4,
+  "_updates": [
+    {
+      "week": "2025-42",
+      "n": 2
+    },
+    {
+      "week": "2025-43",
+      "n": 1
+    },
+    {
+      "week": "2025-44",
+      "n": 2
+    },
+    {
+      "week": "2026-12",
+      "n": 2
+    },
+    {
+      "week": "2026-18",
+      "n": 2
+    },
+    {
+      "week": "2026-32",
+      "n": 1
+    },
+    {
+      "week": "2026-38",
+      "n": 1
+    },
+    {
+      "week": "2026-40",
+      "n": 1
+    }
+  ],
+  "_tags": [],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "1.49.2",
+      "bioc": "3.24"
+    },
+    {
+      "branch": "release",
+      "version": "1.48.0",
+      "bioc": "3.23"
+    }
+  ],
+  "_topics": [
+    "visualization"
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 470,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 1348,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/trackViewer"
+  },
+  "_mentions": 14,
+  "_searchresults": 280,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/contents.json",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt",
+    "extra/readme.html",
+    "extra/readme.md",
+    "extra/trackViewer.html"
+  ],
+  "_homeurl": "https://github.com/jianhong/trackviewer",
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    "addArrowMark",
+    "addGuideLine",
+    "addInteractionAnnotation",
+    "ARA",
+    "browseTracks",
+    "browseTracksOutput",
+    "coverageGR",
+    "dandelion.plot",
+    "geneModelFromTxdb",
+    "geneTrack",
+    "getCurTrackViewport",
+    "getGeneIDsFromTxDb",
+    "getLocation",
+    "gi2track",
+    "gieStain",
+    "GIoperator",
+    "GRoperator",
+    "ideogramPlot",
+    "importBam",
+    "importData",
+    "importGInteractions",
+    "importScore",
+    "listChromosomes",
+    "listNormalizations",
+    "listResolutions",
+    "loadIdeogram",
+    "lolliplot",
+    "optimizeStyle",
+    "parse2GRanges",
+    "parseWIG",
+    "plotGRanges",
+    "reduce",
+    "renderbrowseTracks",
+    "seqlevels",
+    "seqlevelsStyle",
+    "seqlevelsStyle<-",
+    "setTrackStyleParam",
+    "setTrackViewerStyleParam",
+    "setTrackXscaleParam",
+    "setTrackYaxisParam",
+    "show",
+    "trackList",
+    "trackViewerStyle",
+    "viewGene",
+    "viewTracks"
+  ],
+  "_help": [
+    {
+      "page": "trackViewer-package",
+      "title": "Minimal designed plotting tool for genomic data",
+      "topics": [
+        "trackViewer-package",
+        "trackViewer"
+      ]
+    },
+    {
+      "page": "addArrowMark",
+      "title": "Add arrow mark to the figure at a given position",
+      "topics": [
+        "addArrowMark"
+      ]
+    },
+    {
+      "page": "addGuideLine",
+      "title": "Add guide lines to the tracks",
+      "topics": [
+        "addGuideLine"
+      ]
+    },
+    {
+      "page": "addInteractionAnnotation",
+      "title": "Add annotation markers to the figure at a given position",
+      "topics": [
+        "addInteractionAnnotation"
+      ]
+    },
+    {
+      "page": "ARA",
+      "title": "Aggregate Region Analysis",
+      "topics": [
+        "ARA"
+      ]
+    },
+    {
+      "page": "browseTracks",
+      "title": "browse tracks",
+      "topics": [
+        "browseTracks"
+      ]
+    },
+    {
+      "page": "browseTracks-shiny",
+      "title": "Shiny bindings for browseTracks",
+      "topics": [
+        "browseTracks-shiny",
+        "browseTracksOutput",
+        "renderbrowseTracks"
+      ]
+    },
+    {
+      "page": "coverageGR",
+      "title": "calculate coverage",
+      "topics": [
+        "coverageGR"
+      ]
+    },
+    {
+      "page": "dandelion.plot",
+      "title": "dandelion.plots",
+      "topics": [
+        "dandelion.plot"
+      ]
+    },
+    {
+      "page": "geneModelFromTxdb",
+      "title": "Prepare gene model from an object of TxDb",
+      "topics": [
+        "geneModelFromTxdb"
+      ]
+    },
+    {
+      "page": "geneTrack",
+      "title": "track from TxDb",
+      "topics": [
+        "geneTrack"
+      ]
+    },
+    {
+      "page": "getCurTrackViewport",
+      "title": "Get current track viewport",
+      "topics": [
+        "getCurTrackViewport"
+      ]
+    },
+    {
+      "page": "getGeneIDsFromTxDb",
+      "title": "get gene ids by genomic location",
+      "topics": [
+        "getGeneIDsFromTxDb"
+      ]
+    },
+    {
+      "page": "getLocation",
+      "title": "get genomic location by gene symbol",
+      "topics": [
+        "getLocation"
+      ]
+    },
+    {
+      "page": "gi2track",
+      "title": "convert GInteractions to track object",
+      "topics": [
+        "gi2track"
+      ]
+    },
+    {
+      "page": "gieStain",
+      "title": "color sheme for the schema for Chromosome Band (Ideogram)",
+      "topics": [
+        "gieStain"
+      ]
+    },
+    {
+      "page": "GIoperator",
+      "title": "GInteractions operator",
+      "topics": [
+        "GIoperator"
+      ]
+    },
+    {
+      "page": "gridPlot",
+      "title": "plot GRanges metadata",
+      "topics": [
+        "gridPlot"
+      ]
+    },
+    {
+      "page": "GRoperator",
+      "title": "GRanges operator",
+      "topics": [
+        "GRoperator"
+      ]
+    },
+    {
+      "page": "ideogramPlot",
+      "title": "plot ideogram with data",
+      "topics": [
+        "ideogramPlot"
+      ]
+    },
+    {
+      "page": "importBam",
+      "title": "Reading data from a BAM file",
+      "topics": [
+        "importBam"
+      ]
+    },
+    {
+      "page": "importData",
+      "title": "Reading data from a BED or WIG file to RleList",
+      "topics": [
+        "importData"
+      ]
+    },
+    {
+      "page": "importGInteractions",
+      "title": "Reading data from a ginteractions, hic, cool, or validPairs file",
+      "topics": [
+        "importGInteractions"
+      ]
+    },
+    {
+      "page": "importScore",
+      "title": "Reading data from a BED or WIG file",
+      "topics": [
+        "importScore"
+      ]
+    },
+    {
+      "page": "importScSeqScore",
+      "title": "plot tracks for single cell RNAseq",
+      "topics": [
+        "importScSeqScore"
+      ]
+    },
+    {
+      "page": "listChromosomes",
+      "title": "List the available chromosome",
+      "topics": [
+        "listChromosomes"
+      ]
+    },
+    {
+      "page": "listNormalizations",
+      "title": "List the available normalizations",
+      "topics": [
+        "listNormalizations"
+      ]
+    },
+    {
+      "page": "listResolutions",
+      "title": "List the available resolutions",
+      "topics": [
+        "listResolutions"
+      ]
+    },
+    {
+      "page": "loadIdeogram",
+      "title": "load ideogram from UCSC",
+      "topics": [
+        "loadIdeogram"
+      ]
+    },
+    {
+      "page": "lolliplot",
+      "title": "Lolliplots",
+      "topics": [
+        "lolliplot"
+      ]
+    },
+    {
+      "page": "optimizeStyle",
+      "title": "Optimize the style of plot",
+      "topics": [
+        "optimizeStyle"
+      ]
+    },
+    {
+      "page": "parse2GRanges",
+      "title": "parse text into GRanges",
+      "topics": [
+        "parse2GRanges"
+      ]
+    },
+    {
+      "page": "parseWIG",
+      "title": "convert WIG format track to BED format track",
+      "topics": [
+        "parseWIG"
+      ]
+    },
+    {
+      "page": "plotGRanges",
+      "title": "plot GRanges data",
+      "topics": [
+        "plotGRanges"
+      ]
+    },
+    {
+      "page": "plotIdeo",
+      "title": "plot ideogram",
+      "topics": [
+        "plotIdeo"
+      ]
+    },
+    {
+      "page": "plotOneIdeo",
+      "title": "plot ideogram with data for one chromosome",
+      "topics": [
+        "plotOneIdeo"
+      ]
+    },
+    {
+      "page": "pos-class",
+      "title": "Class '\"pos\"'",
+      "topics": [
+        "pos",
+        "pos-class"
+      ]
+    },
+    {
+      "page": "reduce-GInteractions-method",
+      "title": "Reduce method for 'GInteractions'",
+      "topics": [
+        "reduce,GInteractions",
+        "reduce,GInteractions-method"
+      ]
+    },
+    {
+      "page": "trackList-class",
+      "title": "List of tracks",
+      "topics": [
+        "seqlevelsStyle<-,trackList-method",
+        "trackList",
+        "trackList-class"
+      ]
+    },
+    {
+      "page": "trackStyle-class",
+      "title": "Class '\"trackStyle\"'",
+      "topics": [
+        "$,track-method",
+        "$,trackStyle-method",
+        "$<-,track-method",
+        "$<-,trackStyle-method",
+        ".DollarNames.track",
+        ".DollarNames.trackStyle",
+        "seqlevels,track-method",
+        "seqlevelsStyle,track-method",
+        "seqlevelsStyle<-,track-method",
+        "setTrackStyleParam",
+        "setTrackStyleParam,track,character,ANY-method",
+        "setTrackStyleParam,track,character-method",
+        "setTrackXscaleParam",
+        "setTrackXscaleParam,track,character,ANY-method",
+        "setTrackXscaleParam,track,character-method",
+        "setTrackYaxisParam",
+        "setTrackYaxisParam,track,character,ANY-method",
+        "setTrackYaxisParam,track,character-method",
+        "show,track-method",
+        "track",
+        "track-class",
+        "trackStyle",
+        "trackStyle-class"
+      ]
+    },
+    {
+      "page": "trackViewerStyle-class",
+      "title": "Class '\"trackViewerStyle\"'",
+      "topics": [
+        "setTrackViewerStyleParam",
+        "setTrackViewerStyleParam,trackViewerStyle,character,ANY-method",
+        "setTrackViewerStyleParam,trackViewerStyle,character-method",
+        "trackViewerStyle",
+        "trackViewerStyle-class"
+      ]
+    },
+    {
+      "page": "viewGene",
+      "title": "plot tracks based on gene name",
+      "topics": [
+        "viewGene"
+      ]
+    },
+    {
+      "page": "viewTracks",
+      "title": "plot the tracks",
+      "topics": [
+        "viewTracks"
+      ]
+    },
+    {
+      "page": "xscale-class",
+      "title": "Class '\"xscale\"'",
+      "topics": [
+        "xscale",
+        "xscale-class"
+      ]
+    },
+    {
+      "page": "yaxisStyle-class",
+      "title": "Class '\"yaxisStyle\"'",
+      "topics": [
+        "yaxisStyle",
+        "yaxisStyle-class"
+      ]
+    }
+  ],
+  "_readme": "https://github.com/bioc/trackViewer/raw/HEAD/README.md",
+  "_rundeps": [
+    "abind",
+    "AnnotationDbi",
+    "askpass",
+    "base64enc",
+    "BH",
+    "Biobase",
+    "BiocBaseUtils",
+    "BiocFileCache",
+    "BiocGenerics",
+    "BiocIO",
+    "biocmake",
+    "BiocParallel",
+    "biomaRt",
+    "Biostrings",
+    "bit",
+    "bit64",
+    "bitops",
+    "blob",
+    "bslib",
+    "cachem",
+    "cigarillo",
+    "cli",
+    "codetools",
+    "cpp11",
+    "crayon",
+    "curl",
+    "DBI",
+    "dbplyr",
+    "DelayedArray",
+    "digest",
+    "dir.expiry",
+    "dplyr",
+    "evaluate",
+    "farver",
+    "fastmap",
+    "filelock",
+    "fontawesome",
+    "formatR",
+    "fs",
+    "futile.logger",
+    "futile.options",
+    "generics",
+    "GenomeInfoDb",
+    "GenomicAlignments",
+    "GenomicFeatures",
+    "GenomicRanges",
+    "glue",
+    "grImport",
+    "highr",
+    "hms",
+    "htmltools",
+    "htmlwidgets",
+    "httr",
+    "httr2",
+    "InteractionSet",
+    "IRanges",
+    "jquerylib",
+    "jsonlite",
+    "KEGGREST",
+    "knitr",
+    "labeling",
+    "lambda.r",
+    "lattice",
+    "lifecycle",
+    "magrittr",
+    "Matrix",
+    "MatrixGenerics",
+    "matrixStats",
+    "memoise",
+    "mime",
+    "openssl",
+    "pillar",
+    "pkgconfig",
+    "png",
+    "prettyunits",
+    "progress",
+    "purrr",
+    "R6",
+    "rappdirs",
+    "RColorBrewer",
+    "Rcpp",
+    "RCurl",
+    "restfulr",
+    "rhdf5",
+    "rhdf5filters",
+    "Rhdf5lib",
+    "Rhtslib",
+    "rjson",
+    "rlang",
+    "rmarkdown",
+    "Rsamtools",
+    "RSQLite",
+    "rtracklayer",
+    "S4Arrays",
+    "S4Vectors",
+    "sass",
+    "scales",
+    "Seqinfo",
+    "snow",
+    "SparseArray",
+    "strawr",
+    "stringi",
+    "stringr",
+    "SummarizedExperiment",
+    "sys",
+    "tibble",
+    "tidyr",
+    "tidyselect",
+    "tinytex",
+    "txdbmaker",
+    "UCSC.utils",
+    "utf8",
+    "vctrs",
+    "viridisLite",
+    "withr",
+    "xfun",
+    "XML",
+    "xml2",
+    "XVector",
+    "yaml"
+  ],
+  "_vignettes": [
+    {
+      "source": "changeTracksStyles.Rmd",
+      "filename": "changeTracksStyles.html",
+      "title": "trackViewer Vignette: change the track styles",
+      "author": "Jianhong Ou, Lihua Julie Zhu",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Prepare toy data",
+        "Using the browseTracks function as a helper",
+        "Adjust the x-axis or the X scale",
+        "Adjust the y-axis",
+        "Adjust the label of y-axis",
+        "Adjust the track color",
+        "Adjust the track height",
+        "Change the track names",
+        "Show paired data in the same track",
+        "Show signals and the called peaks",
+        "Flip the x-axis",
+        "Optimize the theme",
+        "Plot with breaks",
+        "Session Info"
+      ],
+      "created": "2021-04-01 03:12:56",
+      "modified": "2024-12-03 13:48:08",
+      "commits": 8
+    },
+    {
+      "source": "dandelionPlot.Rmd",
+      "filename": "dandelionPlot.html",
+      "title": "trackViewer Vignette: dandelionPlot",
+      "author": "Jianhong Ou, Lihua Julie Zhu",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Dandelion Plot",
+        "Change the type of Dandelion plot",
+        "Change the number of dandelions",
+        "Add y-axis (yaxis)",
+        "Session Info"
+      ],
+      "created": "2021-04-01 03:12:56",
+      "modified": "2026-03-18 14:21:14",
+      "commits": 6
+    },
+    {
+      "source": "lollipopPlot.Rmd",
+      "filename": "lollipopPlot.html",
+      "title": "trackViewer Vignette: lollipopPlot",
+      "author": "Jianhong Ou, Lihua Julie Zhu",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Lolliplot",
+        "Change the lolliplot color",
+        "Change the color of the features.",
+        "Change the color and opacity of the lollipop.",
+        "Add the index labels in the node",
+        "Change the height of the features",
+        "Plot multiple transcripts in the features",
+        "Change the height of a lollipop plot",
+        "Customize the x-axis label position",
+        "Customize the y-axis label position",
+        "Jitter the label",
+        "Add a legend",
+        "Control the labels",
+        "Change the lolliplot type",
+        "Change the shape for \"circle\" plot",
+        "Google pin",
+        "Flag",
+        "Pie plot",
+        "Plot multiple samples",
+        "Multiple layers",
+        "pie.stack layout",
+        "Caterpillar layout",
+        "EMBL-EBI Proteins API",
+        "Variant Call Format (VCF) data",
+        "Methylation data",
+        "Change the node size",
+        "Change the scale of the x-axis (xscale)",
+        "Split the lollipop plot into multiLayers",
+        "Plot the lollipop plot with the coverage and annotation tracks",
+        "Session Info"
+      ],
+      "created": "2021-04-01 03:12:56",
+      "modified": "2026-09-29 19:32:11",
+      "commits": 22
+    },
+    {
+      "source": "trackViewer.Rmd",
+      "filename": "trackViewer.html",
+      "title": "trackViewer Vignette: overview",
+      "author": "Jianhong Ou, Lihua Julie Zhu",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Introduction",
+        "Browse",
+        "Steps of using trackViewer \\Biocpkg",
+        "Step 1. Import data",
+        "Step 2. Build the gene model",
+        "Step 3. View the tracks",
+        "Generate and edit an interactive plot using the browseTracks function",
+        "Plot multiple genes in one track",
+        "Operators",
+        "Lolliplot",
+        "Dandelion Plot",
+        "Plot chromatin interactions data",
+        "Ideogram Plot",
+        "Web application of trackViewer",
+        "Session Info"
+      ],
+      "created": "2015-10-02 18:45:03",
+      "modified": "2024-02-08 17:55:50",
+      "commits": 79
+    },
+    {
+      "source": "plotInteractionData.Rmd",
+      "filename": "plotInteractionData.html",
+      "title": "trackViewer Vignette: plot interaction data",
+      "author": "Jianhong Ou, Lihua Julie Zhu",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Introduction",
+        "Plot chromatin interactions data in linear layout",
+        "Session Info"
+      ],
+      "created": "2021-04-01 03:12:56",
+      "modified": "2024-11-08 14:45:12",
+      "commits": 30
+    }
+  ],
+  "_score": 8.957059165253128,
+  "_indexed": true,
+  "_nocasepkg": "trackviewer",
+  "_universes": [
+    "bioc"
+  ],
+  "_previous": "1.49.2",
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "1.49.3",
+      "date": "2026-09-30T01:02:02.000Z",
+      "distro": "resolute",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/54484a04124274e600c7caf8f3e223f8399bd8b8f8744f5fe82736c7f78fcd2f",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "1.49.3",
+      "date": "2026-09-30T01:01:47.000Z",
+      "distro": "resolute",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/bb7a4b008a95437b777e015c7bf4337fe9566a6391657f8de2d2e94d133a4598",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "1.49.3",
+      "date": "2026-09-30T01:00:14.000Z",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/09fb697771277ab0b29ad2747bcbda2a068514d2757f01b05b8cd17ee9610ea7",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "1.49.3",
+      "date": "2026-09-30T01:01:42.000Z",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/47952af74de5e5b58696601dabcb2d93a23e9a055a2f928c6c7dc70ad12b4380",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "1.49.3",
+      "date": "2026-09-30T01:00:38.000Z",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/bb1990061b522dade0fc2d51b85f081324f5df9b78a8a0f55bcc5fbb1c00516a",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "1.49.3",
+      "date": "2026-09-30T00:58:25.000Z",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/adf2d36d8260921a55ef8691fd310e1c813caae6a298adbae8c3d5f1862dd417",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "1.49.3",
+      "date": "2026-09-30T00:58:23.000Z",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/190cfac0a47beeacf2f5b7bbc456026540118af75c10a5d650bfdbce380a4308",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "1.49.3",
+      "date": "2026-09-30T00:58:54.000Z",
+      "commit": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+      "fileid": "https://r2.ropensci.org/562fdf146c2fdf517d303dc3389696697dc1e69fda764c4fccf2c1e713313bb5",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36651509855"
+    }
+  ]
+}

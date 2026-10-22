@@ -1,0 +1,2174 @@
+{
+  "_id": "6ad38188256cde87d781316f",
+  "Package": "edgeR",
+  "Version": "4.10.7",
+  "Date": "2026-10-17",
+  "Title": "Empirical Analysis of Digital Gene Expression Data in R",
+  "Description": "Differential expression analysis of sequence count data.\nImplements a range of statistical methodology based on the\nnegative binomial distributions, including empirical Bayes\nestimation, exact tests, generalized linear models,\nquasi-likelihood, and gene set enrichment. Can perform\ndifferential analyses of any type of omics data that produces\nread counts, including RNA-seq, ChIP-seq, ATAC-seq,\nBisulfite-seq, SAGE, CAGE, metabolomics, or proteomics spectral\ncounts. RNA-seq analyses can be conducted at the gene or\nisoform level, and tests can be conducted for differential exon\nor transcript usage.",
+  "Author": "Yunshun Chen, Lizhong Chen, Aaron TL Lun, Davis J McCarthy,\nPedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu,\nXiaobei Zhou, Mark D Robinson, Gordon K Smyth",
+  "Maintainer": "Yunshun Chen <yuchen@wehi.edu.au>, Gordon Smyth\n<smyth@wehi.edu.au>, Aaron Lun\n<infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson\n<mark.robinson@imls.uzh.ch>",
+  "License": "GPL (>=2)",
+  "VignetteBuilder": "knitr",
+  "URL": "https://bioinf.wehi.edu.au/edgeR/,\nhttps://bioconductor.org/packages/edgeR",
+  "biocViews": "AlternativeSplicing, BatchEffect, Bayesian,\nBiomedicalInformatics, CellBiology, ChIPSeq, Clustering,\nCoverage, DifferentialExpression, DifferentialMethylation,\nDifferentialSplicing, DNAMethylation, Epigenetics,\nFunctionalGenomics, GeneExpression, GeneSetEnrichment,\nGenetics, Genetics, ImmunoOncology, MultipleComparison,\nNormalization, Pathways, Proteomics, QualityControl,\nRegression, RNASeq, SAGE, Sequencing, SingleCell,\nSystemsBiology, TimeCourse, Transcription, Transcriptomics",
+  "NeedsCompilation": "yes",
+  "Repository": "Bioconductor 3.23",
+  "Date/Publication": "2026-10-17 07:28:20 UTC",
+  "RemoteUrl": "https://github.com/bioc/edgeR",
+  "RemoteRef": "RELEASE_3_23",
+  "RemoteSha": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+  "Packaged": {
+    "Date": "2026-10-17 13:58:00 UTC",
+    "User": "root"
+  },
+  "_user": "bioc-release",
+  "_type": "src",
+  "_file": "edgeR_4.10.7.tar.gz",
+  "_fileid": "https://r2.ropensci.org/d3e7cf0fa3cd9881258280e4669ce2de4b9b275ac6b8b92a97bf366ca8b14e27",
+  "_filesize": 3549746,
+  "_sha256": "d3e7cf0fa3cd9881258280e4669ce2de4b9b275ac6b8b92a97bf366ca8b14e27",
+  "_expires": "2027-01-25T14:09:10.000Z",
+  "_created": "2026-10-17T13:58:00.000Z",
+  "_published": "2026-10-17T14:09:12.696Z",
+  "_buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305",
+  "_status": "success",
+  "_host": "GitHub-Actions",
+  "_bioccheck": {
+    "error": 2,
+    "warning": 3,
+    "note": 19
+  },
+  "_upstream": "https://github.com/bioc/edgeR",
+  "_commit": {
+    "id": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+    "author": "Gordon Smyth <smyth@wehi.edu.au>",
+    "committer": "Gordon Smyth <smyth@wehi.edu.au>",
+    "message": "edgeR 4.10.7\n- sumTechReps() now supports 'offset` and 'offset.prior' matrices.\n- New function estimateTxExpr().\n- New function .imputeEffectiveLengths(), which is needed by catchSalmonGene() and catchKallistoGene().\n- Add some DOIs for references in Rd files.\n",
+    "time": 1792222100
+  },
+  "_maintainer": {
+    "name": "Yunshun Chen",
+    "email": "mark.robinson@imls.uzh.ch",
+    "login": "yunshun",
+    "description": "",
+    "uuid": 22924100
+  },
+  "_distro": "resolute",
+  "_jobs": [
+    {
+      "job": 117413830159,
+      "time": 192,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12103432187"
+    },
+    {
+      "job": 117413830206,
+      "time": 170,
+      "config": "linux-devel-arm64",
+      "r": "4.7.0",
+      "check": "OK",
+      "artifact": "12103690289"
+    },
+    {
+      "job": 117413830230,
+      "time": 244,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "OK",
+      "artifact": "12102844467"
+    },
+    {
+      "job": 117413830186,
+      "time": 184,
+      "config": "linux-release-arm64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12103615619"
+    },
+    {
+      "job": 117413830216,
+      "time": 258,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12102454098"
+    },
+    {
+      "job": 117413830179,
+      "time": 138,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "OK",
+      "artifact": "12103720425"
+    },
+    {
+      "job": 117413830211,
+      "time": 460,
+      "config": "macos-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "OK",
+      "artifact": "12102324893"
+    },
+    {
+      "job": 117413830233,
+      "time": 126,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12103615915"
+    },
+    {
+      "job": 117413830262,
+      "time": 507,
+      "config": "macos-release-x86_64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12103472383"
+    },
+    {
+      "job": 117412720749,
+      "time": 342,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12102483702"
+    },
+    {
+      "job": 117413830236,
+      "time": 136,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "12103346583"
+    },
+    {
+      "job": 117413830183,
+      "time": 281,
+      "config": "windows-devel-arm64",
+      "r": "4.7.0",
+      "check": "OK",
+      "artifact": "12102703780"
+    },
+    {
+      "job": 117413830227,
+      "time": 203,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "OK",
+      "artifact": "12103546088"
+    },
+    {
+      "job": 117413830235,
+      "time": 203,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "OK",
+      "artifact": "12103760059"
+    },
+    {
+      "job": 117413830199,
+      "time": 280,
+      "config": "windows-release-arm64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12103218196"
+    },
+    {
+      "job": 117413830212,
+      "time": 169,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12103511392"
+    }
+  ],
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "R",
+      "version": ">= 3.6.0",
+      "role": "Depends"
+    },
+    {
+      "package": "limma",
+      "version": ">= 3.63.6",
+      "role": "Depends"
+    },
+    {
+      "package": "methods",
+      "role": "Imports"
+    },
+    {
+      "package": "graphics",
+      "role": "Imports"
+    },
+    {
+      "package": "stats",
+      "role": "Imports"
+    },
+    {
+      "package": "utils",
+      "role": "Imports"
+    },
+    {
+      "package": "locfit",
+      "role": "Imports"
+    },
+    {
+      "package": "jsonlite",
+      "role": "Suggests"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "Matrix",
+      "role": "Suggests"
+    },
+    {
+      "package": "nanoparquet",
+      "role": "Suggests"
+    },
+    {
+      "package": "readr",
+      "role": "Suggests"
+    },
+    {
+      "package": "rhdf5",
+      "role": "Suggests"
+    },
+    {
+      "package": "SeuratObject",
+      "role": "Suggests"
+    },
+    {
+      "package": "splines",
+      "role": "Suggests"
+    },
+    {
+      "package": "AnnotationDbi",
+      "role": "Suggests"
+    },
+    {
+      "package": "Biobase",
+      "role": "Suggests"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    },
+    {
+      "package": "org.Hs.eg.db",
+      "role": "Suggests"
+    },
+    {
+      "package": "S4Vectors",
+      "role": "Suggests"
+    },
+    {
+      "package": "SummarizedExperiment",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": false,
+  "_usedby": 320,
+  "_updates": [
+    {
+      "week": "2025-44",
+      "n": 2
+    },
+    {
+      "week": "2025-49",
+      "n": 1
+    },
+    {
+      "week": "2025-52",
+      "n": 1
+    },
+    {
+      "week": "2026-09",
+      "n": 1
+    },
+    {
+      "week": "2026-10",
+      "n": 1
+    },
+    {
+      "week": "2026-15",
+      "n": 1
+    },
+    {
+      "week": "2026-16",
+      "n": 3
+    },
+    {
+      "week": "2026-17",
+      "n": 2
+    },
+    {
+      "week": "2026-18",
+      "n": 1
+    },
+    {
+      "week": "2026-21",
+      "n": 1
+    },
+    {
+      "week": "2026-32",
+      "n": 3
+    },
+    {
+      "week": "2026-35",
+      "n": 1
+    },
+    {
+      "week": "2026-36",
+      "n": 1
+    },
+    {
+      "week": "2026-42",
+      "n": 3
+    }
+  ],
+  "_tags": [],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "4.99.8",
+      "bioc": "3.24",
+      "repository": "bioc"
+    },
+    {
+      "branch": "release",
+      "version": "4.10.6",
+      "bioc": "3.23",
+      "repository": "bioc"
+    }
+  ],
+  "_topics": [
+    "alternativesplicing",
+    "batcheffect",
+    "bayesian",
+    "biomedicalinformatics",
+    "cellbiology",
+    "chipseq",
+    "clustering",
+    "coverage",
+    "differentialexpression",
+    "differentialmethylation",
+    "differentialsplicing",
+    "dnamethylation",
+    "epigenetics",
+    "functionalgenomics",
+    "geneexpression",
+    "genesetenrichment",
+    "genetics",
+    "immunooncology",
+    "multiplecomparison",
+    "normalization",
+    "pathways",
+    "proteomics",
+    "qualitycontrol",
+    "regression",
+    "rnaseq",
+    "sage",
+    "sequencing",
+    "singlecell",
+    "systemsbiology",
+    "timecourse",
+    "transcription",
+    "transcriptomics",
+    "openblas"
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 478,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 57272,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/edgeR"
+  },
+  "_mentions": 6568,
+  "_searchresults": 27520,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/contents.json",
+    "extra/edgeR.html",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt"
+  ],
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    "[.CompressedMatrix",
+    "[.DGEExact",
+    "[.DGEGLM",
+    "[.DGEList",
+    "[.DGELRT",
+    "[.TopTags",
+    "[<-.CompressedMatrix",
+    "addPriorCount",
+    "adjustedProfileLik",
+    "as.data.frame.DGEExact",
+    "as.data.frame.DGEGLM",
+    "as.data.frame.DGEList",
+    "as.data.frame.DGELRT",
+    "as.data.frame.TopTags",
+    "as.matrix.CompressedMatrix",
+    "as.matrix.DGEGLM",
+    "as.matrix.DGEList",
+    "aveLogCPM",
+    "aveLogCPM.default",
+    "aveLogCPM.DGEGLM",
+    "aveLogCPM.DGEList",
+    "aveLogCPM.SummarizedExperiment",
+    "binMeanVar",
+    "binomTest",
+    "calcNormFactors",
+    "calcNormFactors.default",
+    "calcNormFactors.DGEList",
+    "calcNormFactors.SummarizedExperiment",
+    "calcNormOffsetsforChIP",
+    "camera.DGEGLM",
+    "camera.DGEList",
+    "cameraPR.DGELRT",
+    "catchKallisto",
+    "catchKallistoGene",
+    "catchOarfish",
+    "catchRSEM",
+    "catchSalmon",
+    "catchSalmonGene",
+    "cbind.CompressedMatrix",
+    "cbind.DGEList",
+    "collapseGencodeTx2Gene",
+    "commonCondLogLikDerDelta",
+    "condLogLikDerDelta",
+    "condLogLikDerSize",
+    "cpm",
+    "cpm.default",
+    "cpm.DGEGLM",
+    "cpm.DGEList",
+    "cpm.DGELRT",
+    "cpm.MArrayLM",
+    "cpm.SummarizedExperiment",
+    "cpmByGroup",
+    "cpmByGroup.default",
+    "cpmByGroup.DGEList",
+    "cpmByGroup.SummarizedExperiment",
+    "cutWithMinN",
+    "decideTests.DGEExact",
+    "decideTests.DGELRT",
+    "designAsFactor",
+    "DGEList",
+    "DGEList.data.frame",
+    "DGEList.default",
+    "DGEListFromTximeta",
+    "DGEListFromTximport",
+    "diffSplice.DGEGLM",
+    "diffSpliceDGE",
+    "dim.CompressedMatrix",
+    "dim.DGEExact",
+    "dim.DGEGLM",
+    "dim.DGEList",
+    "dim.DGELRT",
+    "dim.TopTags",
+    "dimnames.DGEExact",
+    "dimnames.DGEGLM",
+    "dimnames.DGEList",
+    "dimnames.DGELRT",
+    "dimnames.TopTags",
+    "dimnames<-.DGEExact",
+    "dimnames<-.DGEGLM",
+    "dimnames<-.DGEList",
+    "dimnames<-.DGELRT",
+    "dispBinTrend",
+    "dispCoxReid",
+    "dispCoxReidInterpolateTagwise",
+    "dispCoxReidPowerTrend",
+    "dispCoxReidSplineTrend",
+    "dispDeviance",
+    "dispPearson",
+    "dropEmptyLevels",
+    "edgeRUsersGuide",
+    "equalizeLibSizes",
+    "equalizeLibSizes.default",
+    "equalizeLibSizes.DGEList",
+    "estimateCommonDisp",
+    "estimateCommonDisp.default",
+    "estimateCommonDisp.DGEList",
+    "estimateDisp",
+    "estimateDisp.default",
+    "estimateDisp.DGEList",
+    "estimateDisp.SummarizedExperiment",
+    "estimateExonGenewiseDisp",
+    "estimateGLMCommonDisp",
+    "estimateGLMCommonDisp.default",
+    "estimateGLMCommonDisp.DGEList",
+    "estimateGLMRobustDisp",
+    "estimateGLMTagwiseDisp",
+    "estimateGLMTagwiseDisp.default",
+    "estimateGLMTagwiseDisp.DGEList",
+    "estimateGLMTrendedDisp",
+    "estimateGLMTrendedDisp.default",
+    "estimateGLMTrendedDisp.DGEList",
+    "estimateTagwiseDisp",
+    "estimateTagwiseDisp.default",
+    "estimateTagwiseDisp.DGEList",
+    "estimateTrendedDisp",
+    "estimateTrendedDisp.default",
+    "estimateTrendedDisp.DGEList",
+    "estimateTxExpr",
+    "exactTest",
+    "exactTestBetaApprox",
+    "exactTestByDeviance",
+    "exactTestBySmallP",
+    "exactTestDoubleTail",
+    "expandAsMatrix",
+    "featureCounts2DGEList",
+    "filterByExpr",
+    "filterByExpr.default",
+    "filterByExpr.DGEList",
+    "filterByExpr.SummarizedExperiment",
+    "fry.DGEGLM",
+    "fry.DGEList",
+    "getCounts",
+    "getDispersion",
+    "getNormLibSizes",
+    "getNormLibSizes.default",
+    "getNormLibSizes.DGEGLM",
+    "getNormLibSizes.DGEList",
+    "getNormLibSizes.DGELRT",
+    "getOffset",
+    "getPriorN",
+    "gini",
+    "glmFit",
+    "glmFit.default",
+    "glmFit.DGEList",
+    "glmFit.SummarizedExperiment",
+    "glmLRT",
+    "glmQLFit",
+    "glmQLFit.default",
+    "glmQLFit.DGEList",
+    "glmQLFit.SummarizedExperiment",
+    "glmQLFTest",
+    "glmTreat",
+    "goana.DGEExact",
+    "goana.DGELRT",
+    "gof",
+    "goodTuring",
+    "goodTuringPlot",
+    "goodTuringProportions",
+    "head.DGEExact",
+    "head.DGEGLM",
+    "head.DGEList",
+    "head.DGELRT",
+    "head.TopTags",
+    "kegga.DGEExact",
+    "kegga.DGELRT",
+    "length.CompressedMatrix",
+    "locfitByCol",
+    "loessByCol",
+    "makeCompressedMatrix",
+    "maPlot",
+    "maximizeInterpolant",
+    "maximizeQuadratic",
+    "mglmLevenberg",
+    "mglmOneGroup",
+    "mglmOneWay",
+    "modelMatrixMeth",
+    "movingAverageByCol",
+    "mroast.DGEGLM",
+    "mroast.DGEList",
+    "nbinomDeviance",
+    "nbinomUnitDeviance",
+    "nearestReftoX",
+    "nearestTSS",
+    "normalizeBetweenArrays.DGEList",
+    "normalizeChIPtoInput",
+    "normLibSizes",
+    "normLibSizes.default",
+    "normLibSizes.DGEList",
+    "normLibSizes.SummarizedExperiment",
+    "Ops.CompressedMatrix",
+    "plotBCV",
+    "plotExonUsage",
+    "plotMD.DGEExact",
+    "plotMD.DGEGLM",
+    "plotMD.DGEList",
+    "plotMD.DGELRT",
+    "plotMD.SummarizedExperiment",
+    "plotMDS.DGEList",
+    "plotMDS.SummarizedExperiment",
+    "plotMeanVar",
+    "plotMeanVar2",
+    "plotQLDisp",
+    "plotSmear",
+    "plotSpliceDGE",
+    "predFC",
+    "predFC.default",
+    "predFC.DGEList",
+    "predFC.SummarizedExperiment",
+    "processAmplicons",
+    "q2qnbinom",
+    "q2qpois",
+    "rbind.CompressedMatrix",
+    "rbind.DGEList",
+    "read10X",
+    "readBismark2DGE",
+    "readDGE",
+    "roast.DGEGLM",
+    "roast.DGEList",
+    "romer.DGEGLM",
+    "romer.DGEList",
+    "rowsum.DGEList",
+    "rowsum.SummarizedExperiment",
+    "rpkm",
+    "rpkm.default",
+    "rpkm.DGEGLM",
+    "rpkm.DGEList",
+    "rpkm.DGELRT",
+    "rpkm.MArrayLM",
+    "rpkm.SummarizedExperiment",
+    "rpkmByGroup",
+    "rpkmByGroup.default",
+    "rpkmByGroup.DGEList",
+    "rpkmByGroup.SummarizedExperiment",
+    "sampleWeights",
+    "scaleOffset",
+    "scaleOffset.default",
+    "scaleOffset.DGEList",
+    "SE2DGEList",
+    "Seurat2PB",
+    "show",
+    "spliceVariants",
+    "splitGencodeTxNames",
+    "splitIntoGroups",
+    "splitIntoGroups.default",
+    "splitIntoGroups.DGEList",
+    "splitIntoGroupsPseudo",
+    "sumTechReps",
+    "sumTechReps.default",
+    "sumTechReps.DGEList",
+    "sumTechReps.SummarizedExperiment",
+    "systematicSubset",
+    "tail.DGEExact",
+    "tail.DGEGLM",
+    "tail.DGEList",
+    "tail.DGELRT",
+    "tail.TopTags",
+    "thinCounts",
+    "topSpliceDGE",
+    "topTags",
+    "tpm",
+    "tpmProp",
+    "validDGEList",
+    "voomLmFit",
+    "weightedCondLogLikDerDelta",
+    "WLEB",
+    "zscoreNBinom"
+  ],
+  "_help": [
+    {
+      "page": "edgeR-package",
+      "title": "Empirical Analysis of Digital Gene Expression Data in R",
+      "concept": [
+        "Documentation"
+      ],
+      "topics": [
+        "edgeR-package",
+        "edgeR"
+      ]
+    },
+    {
+      "page": "addPriorCount",
+      "title": "Add a prior count",
+      "topics": [
+        "addPriorCount"
+      ]
+    },
+    {
+      "page": "adjustedProfileLik",
+      "title": "Adjusted Profile Likelihood for the Negative Binomial Dispersion Parameter",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "adjustedProfileLik"
+      ]
+    },
+    {
+      "page": "asdataframe",
+      "title": "Collapse TopTags or Other edgeR Object to a Data Frame",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "as.data.frame.DGEExact",
+        "as.data.frame.DGEGLM",
+        "as.data.frame.DGEList",
+        "as.data.frame.DGELRT",
+        "as.data.frame.TopTags"
+      ]
+    },
+    {
+      "page": "asmatrix",
+      "title": "Collapse a DGEList or DGEGLM Object to a Matrix",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "as.matrix.DGEGLM",
+        "as.matrix.DGEList"
+      ]
+    },
+    {
+      "page": "aveLogCPM",
+      "title": "Average Log Counts Per Million",
+      "topics": [
+        "aveLogCPM",
+        "aveLogCPM.default",
+        "aveLogCPM.DGEGLM",
+        "aveLogCPM.DGEList",
+        "aveLogCPM.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "binomTest",
+      "title": "Exact Binomial Tests for Comparing Two Digital Libraries",
+      "concept": [
+        "Differential expression"
+      ],
+      "topics": [
+        "binomTest"
+      ]
+    },
+    {
+      "page": "camera",
+      "title": "Competitive Gene Set Tests for Digital Gene Expression Data",
+      "topics": [
+        "camera.DGEGLM",
+        "camera.DGEList",
+        "cameraPR.DGELRT"
+      ]
+    },
+    {
+      "page": "catchSalmon",
+      "title": "Process kallisto, Salmon, Oarfish, or RSEM Transcript Output",
+      "concept": [
+        "Transcript expression",
+        "Reading data files"
+      ],
+      "topics": [
+        "catchKallisto",
+        "catchOarfish",
+        "catchRSEM",
+        "catchSalmon"
+      ]
+    },
+    {
+      "page": "catchSalmonGene",
+      "title": "Process Kallisto or Salmon Output to Produce Gene Counts",
+      "concept": [
+        "Transcript expression",
+        "Reading data files"
+      ],
+      "topics": [
+        "catchKallistoGene",
+        "catchSalmonGene"
+      ]
+    },
+    {
+      "page": "cbind",
+      "title": "Combine DGEList Objects",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "cbind",
+        "cbind.DGEList",
+        "rbind.DGEList"
+      ]
+    },
+    {
+      "page": "commonCondLogLikDerDelta",
+      "title": "Conditional Log-Likelihoods in Terms of Delta",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "commonCondLogLikDerDelta"
+      ]
+    },
+    {
+      "page": "condLogLikDerSize",
+      "title": "Conditional Log-Likelihood of the Dispersion for a Single Group of Replicate Libraries",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "condLogLikDerDelta",
+        "condLogLikDerSize"
+      ]
+    },
+    {
+      "page": "cpm",
+      "title": "Counts per Million or Reads per Kilobase per Million",
+      "concept": [
+        "Data exploration"
+      ],
+      "topics": [
+        "cpm",
+        "cpm.default",
+        "cpm.DGEGLM",
+        "cpm.DGEList",
+        "cpm.DGELRT",
+        "cpm.MArrayLM",
+        "cpm.SummarizedExperiment",
+        "cpmByGroup",
+        "cpmByGroup.default",
+        "cpmByGroup.DGEList",
+        "cpmByGroup.SummarizedExperiment",
+        "rpkm",
+        "rpkm.default",
+        "rpkm.DGEGLM",
+        "rpkm.DGEList",
+        "rpkm.DGELRT",
+        "rpkm.MArrayLM",
+        "rpkm.SummarizedExperiment",
+        "rpkmByGroup",
+        "rpkmByGroup.default",
+        "rpkmByGroup.DGEList",
+        "rpkmByGroup.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "cutWithMinN",
+      "title": "Cut Numeric Vector Into Non-empty Intervals",
+      "topics": [
+        "cutWithMinN"
+      ]
+    },
+    {
+      "page": "decidetestsDGE",
+      "title": "Multiple Testing Across Genes and Contrasts",
+      "concept": [
+        "Differential expression"
+      ],
+      "topics": [
+        "decideTests.DGEExact",
+        "decideTests.DGELRT"
+      ]
+    },
+    {
+      "page": "DGEExact-class",
+      "title": "differential expression of Digital Gene Expression data - class",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "DGEExact-class",
+        "show,DGEExact-method"
+      ]
+    },
+    {
+      "page": "DGEGLM-class",
+      "title": "Digital Gene Expression Generalized Linear Model results - class",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "DGEGLM-class",
+        "show,DGEGLM-method"
+      ]
+    },
+    {
+      "page": "DGEList",
+      "title": "Create a DGEList object",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "DGEList",
+        "DGEList.data.frame",
+        "DGEList.default"
+      ]
+    },
+    {
+      "page": "DGEList-class",
+      "title": "Digital Gene Expression data - class",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "DGEList-class"
+      ]
+    },
+    {
+      "page": "DGEListFromTximport",
+      "title": "Create a DGEList Object From tximport or tximeta Output",
+      "concept": [
+        "edgeR classes",
+        "Reading data files"
+      ],
+      "topics": [
+        "DGEListFromTximeta",
+        "DGEListFromTximport"
+      ]
+    },
+    {
+      "page": "DGELRT-class",
+      "title": "Digital Gene Expression Likelihood Ratio Test data and results - class",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "DGELRT-class",
+        "show,DGELRT-method"
+      ]
+    },
+    {
+      "page": "diffSplice",
+      "title": "Differential Transcript or Exon Usage",
+      "concept": [
+        "Differential transcript usage",
+        "Differential usage"
+      ],
+      "topics": [
+        "diffSplice.DGEGLM"
+      ]
+    },
+    {
+      "page": "diffSpliceDGE",
+      "title": "Test for Differential Exon Usage",
+      "concept": [
+        "Differential exon usage"
+      ],
+      "topics": [
+        "diffSpliceDGE"
+      ]
+    },
+    {
+      "page": "dim",
+      "title": "Retrieve the Dimensions of a DGEList, DGEExact, DGEGLM, DGELRT or TopTags Object",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "dim.DGEExact",
+        "dim.DGEGLM",
+        "dim.DGEList",
+        "dim.DGELRT",
+        "dim.TopTags"
+      ]
+    },
+    {
+      "page": "dimnames",
+      "title": "Retrieve the Dimension Names of a DGE Object",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "dimnames.DGEExact",
+        "dimnames.DGEGLM",
+        "dimnames.DGEList",
+        "dimnames.DGELRT",
+        "dimnames.TopTags",
+        "dimnames<-.DGEExact",
+        "dimnames<-.DGEGLM",
+        "dimnames<-.DGEList",
+        "dimnames<-.DGELRT"
+      ]
+    },
+    {
+      "page": "dispBinTrend",
+      "title": "Estimate Dispersion Trend by Binning for NB GLMs",
+      "topics": [
+        "dispBinTrend"
+      ]
+    },
+    {
+      "page": "dispCoxReid",
+      "title": "Estimate Common Dispersion for Negative Binomial GLMs",
+      "topics": [
+        "dispCoxReid",
+        "dispDeviance",
+        "dispPearson"
+      ]
+    },
+    {
+      "page": "dispCoxReidInterpolateTagwise",
+      "title": "Estimate Genewise Dispersion for Negative Binomial GLMs by Cox-Reid Adjusted Profile Likelihood",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "dispCoxReidInterpolateTagwise"
+      ]
+    },
+    {
+      "page": "dispCoxReidSplineTrend",
+      "title": "Estimate Dispersion Trend for Negative Binomial GLMs",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "dispCoxReidPowerTrend",
+        "dispCoxReidSplineTrend"
+      ]
+    },
+    {
+      "page": "dropEmptyLevels",
+      "title": "Drop Levels of a Factor that Never Occur",
+      "topics": [
+        "dropEmptyLevels"
+      ]
+    },
+    {
+      "page": "edgeRUsersGuide",
+      "title": "View edgeR User's Guide",
+      "concept": [
+        "Documentation"
+      ],
+      "topics": [
+        "edgeRUsersGuide"
+      ]
+    },
+    {
+      "page": "equalizeLibSizes",
+      "title": "Equalize Library Sizes by Quantile-to-Quantile Normalization",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "equalizeLibSizes",
+        "equalizeLibSizes.default",
+        "equalizeLibSizes.DGEList"
+      ]
+    },
+    {
+      "page": "estimateCommonDisp",
+      "title": "Estimate Common Negative Binomial Dispersion by Conditional Maximum Likelihood",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateCommonDisp",
+        "estimateCommonDisp.default",
+        "estimateCommonDisp.DGEList"
+      ]
+    },
+    {
+      "page": "estimateDisp",
+      "title": "Estimate Common, Trended and Tagwise Negative Binomial dispersions by weighted likelihood empirical Bayes",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateDisp",
+        "estimateDisp.default",
+        "estimateDisp.DGEList",
+        "estimateDisp.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "estimateExonGenewisedisp",
+      "title": "Estimate Genewise Dispersions from Exon-Level Count Data",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateExonGenewiseDisp"
+      ]
+    },
+    {
+      "page": "estimateGLMCommonDisp",
+      "title": "Estimate Common Dispersion for Negative Binomial GLMs",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateGLMCommonDisp",
+        "estimateGLMCommonDisp.default",
+        "estimateGLMCommonDisp.DGEList"
+      ]
+    },
+    {
+      "page": "estimateGLMRobustDisp",
+      "title": "Empirical Robust Bayes Tagwise Dispersions for Negative Binomial GLMs using Observation Weights",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateGLMRobustDisp"
+      ]
+    },
+    {
+      "page": "estimateGLMTagwiseDisp",
+      "title": "Empirical Bayes Tagwise Dispersions for Negative Binomial GLMs",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateGLMTagwiseDisp",
+        "estimateGLMTagwiseDisp.default",
+        "estimateGLMTagwiseDisp.DGEList"
+      ]
+    },
+    {
+      "page": "estimateGLMTrendedDisp",
+      "title": "Estimate Trended Dispersion for Negative Binomial GLMs",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateGLMTrendedDisp",
+        "estimateGLMTrendedDisp.default",
+        "estimateGLMTrendedDisp.DGEList"
+      ]
+    },
+    {
+      "page": "estimateTagwiseDisp",
+      "title": "Estimate Empirical Bayes Tagwise Dispersion Values",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateTagwiseDisp",
+        "estimateTagwiseDisp.default",
+        "estimateTagwiseDisp.DGEList"
+      ]
+    },
+    {
+      "page": "estimateTrendedDisp",
+      "title": "Estimate Empirical Bayes Trended Dispersion Values",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "estimateTrendedDisp",
+        "estimateTrendedDisp.default",
+        "estimateTrendedDisp.DGEList"
+      ]
+    },
+    {
+      "page": "estimateTxExpr",
+      "title": "Estimate Transcript Expression Levels from Equivalence Class Counts",
+      "concept": [
+        "Transcript expression"
+      ],
+      "topics": [
+        "estimateTxExpr"
+      ]
+    },
+    {
+      "page": "exactTest",
+      "title": "Exact Tests for Differences between Two Groups of Negative-Binomial Counts",
+      "concept": [
+        "Differential expression"
+      ],
+      "topics": [
+        "exactTest",
+        "exactTestBetaApprox",
+        "exactTestByDeviance",
+        "exactTestBySmallP",
+        "exactTestDoubleTail"
+      ]
+    },
+    {
+      "page": "expandAsMatrix",
+      "title": "expandAsMatrix",
+      "topics": [
+        "expandAsMatrix"
+      ]
+    },
+    {
+      "page": "featureCounts2DGEList",
+      "title": "Convert featureCounts object to a DGEList",
+      "concept": [
+        "edgeR classes",
+        "differential transcript usage",
+        "Differential usage"
+      ],
+      "topics": [
+        "featureCounts2DGEList"
+      ]
+    },
+    {
+      "page": "filterByExpr",
+      "title": "Filter Genes By Expression Level",
+      "topics": [
+        "filterByExpr",
+        "filterByExpr.default",
+        "filterByExpr.DGEList",
+        "filterByExpr.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "getCounts",
+      "title": "Extract Components of a DGEList Object",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "getCounts",
+        "getDispersion",
+        "getOffset"
+      ]
+    },
+    {
+      "page": "effectiveLibSizes",
+      "title": "Effective Library Sizes",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "getNormLibSizes",
+        "getNormLibSizes.default",
+        "getNormLibSizes.DGEGLM",
+        "getNormLibSizes.DGEList",
+        "getNormLibSizes.DGELRT"
+      ]
+    },
+    {
+      "page": "getPriorN",
+      "title": "Get a Recommended Value for Prior N from DGEList Object",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "getPriorN"
+      ]
+    },
+    {
+      "page": "gini",
+      "title": "Gini dispersion index",
+      "concept": [
+        "Data exploration"
+      ],
+      "topics": [
+        "gini"
+      ]
+    },
+    {
+      "page": "glmfit",
+      "title": "Genewise Negative Binomial Generalized Linear Models",
+      "concept": [
+        "Model fit",
+        "Differential expression"
+      ],
+      "topics": [
+        "glmFit",
+        "glmFit.default",
+        "glmFit.DGEList",
+        "glmFit.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "glmLRT",
+      "title": "Genewise Likelihood Ratio Tests",
+      "concept": [
+        "Model fit",
+        "Differential expression"
+      ],
+      "topics": [
+        "glmLRT"
+      ]
+    },
+    {
+      "page": "glmQLFit",
+      "title": "Genewise Negative Binomial Generalized Linear Models with Quasi-Dispersion Estimation",
+      "concept": [
+        "Model fit",
+        "Dispersion estimation",
+        "Differential expression"
+      ],
+      "topics": [
+        "glmQLFit",
+        "glmQLFit.default",
+        "glmQLFit.DGEList",
+        "glmQLFit.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "glmQLFTest",
+      "title": "Quasi-Likelihood F-Tests",
+      "concept": [
+        "Model fit",
+        "Differential expression"
+      ],
+      "topics": [
+        "glmQLFTest"
+      ]
+    },
+    {
+      "page": "glmTreat",
+      "title": "Test for Differential Expression Relative to a Threshold",
+      "topics": [
+        "glmTreat"
+      ]
+    },
+    {
+      "page": "goana",
+      "title": "Gene Ontology or KEGG Analysis of Differentially Expressed Genes",
+      "concept": [
+        "Gene set testing"
+      ],
+      "topics": [
+        "goana.DGEExact",
+        "goana.DGELRT",
+        "kegga.DGEExact",
+        "kegga.DGELRT"
+      ]
+    },
+    {
+      "page": "gof",
+      "title": "Goodness of Fit Tests for Multiple GLM Fits",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "gof"
+      ]
+    },
+    {
+      "page": "goodTuring",
+      "title": "Good-Turing Frequency Estimation",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "goodTuring",
+        "goodTuringPlot",
+        "goodTuringProportions"
+      ]
+    },
+    {
+      "page": "head",
+      "title": "Return the First to Last Part of a Data Object",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "head.DGEExact",
+        "head.DGEGLM",
+        "head.DGEList",
+        "head.DGELRT",
+        "head.TopTags",
+        "tail.DGEExact",
+        "tail.DGEGLM",
+        "tail.DGEList",
+        "tail.DGELRT",
+        "tail.TopTags"
+      ]
+    },
+    {
+      "page": "loessByCol",
+      "title": "Locally Weighted Mean By Column",
+      "topics": [
+        "locfitByCol",
+        "loessByCol"
+      ]
+    },
+    {
+      "page": "makeCompressedMatrix",
+      "title": "Make a CompressedMatrix",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "as.matrix.CompressedMatrix",
+        "cbind.CompressedMatrix",
+        "CompressedMatrix",
+        "CompressedMatrix-class",
+        "dim.CompressedMatrix",
+        "length.CompressedMatrix",
+        "makeCompressedMatrix",
+        "Ops.CompressedMatrix",
+        "rbind.CompressedMatrix",
+        "[.CompressedMatrix",
+        "[<-.CompressedMatrix"
+      ]
+    },
+    {
+      "page": "maPlot",
+      "title": "Plots Log-Fold Change versus Log-Concentration (or, M versus A) for Count Data",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "maPlot"
+      ]
+    },
+    {
+      "page": "maximizeInterpolant",
+      "title": "Maximize a function given a table of values by spline interpolation.",
+      "topics": [
+        "maximizeInterpolant"
+      ]
+    },
+    {
+      "page": "maximizeQuadratic",
+      "title": "Maximize a function given a table of values by quadratic interpolation.",
+      "topics": [
+        "maximizeQuadratic"
+      ]
+    },
+    {
+      "page": "meanvar",
+      "title": "Explore the Mean-Variance Relationship for DGE Data",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "binMeanVar",
+        "plotMeanVar"
+      ]
+    },
+    {
+      "page": "mglm",
+      "title": "Fit Negative Binomial Generalized Linear Models to Multiple Response Vectors: Low Level Functions",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "designAsFactor",
+        "mglm",
+        "mglmLevenberg",
+        "mglmOneGroup",
+        "mglmOneWay"
+      ]
+    },
+    {
+      "page": "modelMatrixMeth",
+      "title": "Construct Design Matrix for edgeR Analysis of Methylation Count Data",
+      "concept": [
+        "Differential methylation"
+      ],
+      "topics": [
+        "modelMatrixMeth"
+      ]
+    },
+    {
+      "page": "movingAverageByCol",
+      "title": "Moving Average Smoother of Matrix Columns",
+      "topics": [
+        "movingAverageByCol"
+      ]
+    },
+    {
+      "page": "nbinomDeviance",
+      "title": "Negative Binomial Deviance",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "nbinomDeviance"
+      ]
+    },
+    {
+      "page": "nbinomUnitDeviance",
+      "title": "Negative Binomial Unit Deviance",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "nbinomUnitDeviance"
+      ]
+    },
+    {
+      "page": "nearestReftoX",
+      "title": "Find Nearest Element of Reference for each Element of X",
+      "topics": [
+        "nearestReftoX"
+      ]
+    },
+    {
+      "page": "nearestTSS",
+      "title": "Find Nearest Transcriptional Start Site",
+      "topics": [
+        "nearestTSS"
+      ]
+    },
+    {
+      "page": "normalizeBetweenArraysDGEList",
+      "title": "Apply Microarray Normalization to DGEList",
+      "topics": [
+        "normalizeBetweenArrays.DGEList"
+      ]
+    },
+    {
+      "page": "normalizeChIPtoInput",
+      "title": "Normalize ChIP-Seq Read Counts to Input and Test for Enrichment",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "calcNormOffsetsforChIP",
+        "normalizeChIPtoInput"
+      ]
+    },
+    {
+      "page": "calcNormFactors",
+      "title": "Normalize Library Sizes",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "calcNormFactors",
+        "calcNormFactors.default",
+        "calcNormFactors.DGEList",
+        "calcNormFactors.SummarizedExperiment",
+        "normLibSizes",
+        "normLibSizes.default",
+        "normLibSizes.DGEList",
+        "normLibSizes.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "plotBCV",
+      "title": "Plot Biological Coefficient of Variation",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "plotBCV"
+      ]
+    },
+    {
+      "page": "plotExonUsage",
+      "title": "Create a Plot of Exon Usage from Exon-Level Count Data",
+      "concept": [
+        "Differential exon usage"
+      ],
+      "topics": [
+        "plotExonUsage"
+      ]
+    },
+    {
+      "page": "plotMD",
+      "title": "Mean-Difference Plot of Count Data",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "plotMD.DGEExact",
+        "plotMD.DGEGLM",
+        "plotMD.DGEList",
+        "plotMD.DGELRT",
+        "plotMD.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "plotMDS.DGEList",
+      "title": "Multidimensional scaling plot of distances between digital gene expression profiles",
+      "concept": [
+        "Data exploration"
+      ],
+      "topics": [
+        "plotMDS.DGEList",
+        "plotMDS.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "dglmStdResid",
+      "title": "Plot Mean-Variance Relationship in DGE Data Using Standardized Residuals",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "plotMeanVar2"
+      ]
+    },
+    {
+      "page": "plotQLDisp",
+      "title": "Plot the quasi-dispersion",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "plotQLDisp"
+      ]
+    },
+    {
+      "page": "plotSmear",
+      "title": "Smear plot",
+      "concept": [
+        "Data exploration",
+        "Model fit"
+      ],
+      "topics": [
+        "plotSmear"
+      ]
+    },
+    {
+      "page": "plotSpliceDGE",
+      "title": "Differential splicing plot",
+      "concept": [
+        "Differential exon usage"
+      ],
+      "topics": [
+        "plotSpliceDGE"
+      ]
+    },
+    {
+      "page": "predFC",
+      "title": "Predictive log-fold changes",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "predFC",
+        "predFC.default",
+        "predFC.DGEList",
+        "predFC.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "processAmplicons",
+      "title": "Process FASTQ files from pooled genetic sequencing screens",
+      "topics": [
+        "processAmplicons"
+      ]
+    },
+    {
+      "page": "q2qnbinom",
+      "title": "Quantile to Quantile Mapping between Negative-Binomial Distributions",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "q2qnbinom",
+        "q2qpois"
+      ]
+    },
+    {
+      "page": "read10X",
+      "title": "Read 10X Genomics Files",
+      "concept": [
+        "Reading data files"
+      ],
+      "topics": [
+        "read10X"
+      ]
+    },
+    {
+      "page": "readBismark2DGE",
+      "title": "Read Bismark Coverage Files",
+      "concept": [
+        "Reading data files",
+        "Differential methylation"
+      ],
+      "topics": [
+        "readBismark2DGE"
+      ]
+    },
+    {
+      "page": "readDGE",
+      "title": "Read and Merge a Set of Files Containing Count Data",
+      "concept": [
+        "Reading data files"
+      ],
+      "topics": [
+        "readDGE"
+      ]
+    },
+    {
+      "page": "roast.DGEGLM",
+      "title": "Self-contained Gene Set Tests for Digital Gene Expression Data",
+      "concept": [
+        "Gene set testing"
+      ],
+      "topics": [
+        "fry.DGEGLM",
+        "mroast.DGEGLM",
+        "roast.DGEGLM"
+      ]
+    },
+    {
+      "page": "roast.DGEList",
+      "title": "Self-contained Gene Set Tests for Digital Gene Expression Data",
+      "concept": [
+        "Gene set testing"
+      ],
+      "topics": [
+        "fry.DGEList",
+        "mroast.DGEList",
+        "roast.DGEList"
+      ]
+    },
+    {
+      "page": "romer.DGEGLM",
+      "title": "Rotation Gene Set Enrichment for Digital Gene Expression Data",
+      "concept": [
+        "Gene set testing"
+      ],
+      "topics": [
+        "romer.DGEGLM"
+      ]
+    },
+    {
+      "page": "romer.DGEList",
+      "title": "Rotation Gene Set Enrichment for Digital Gene Expression Data",
+      "concept": [
+        "Gene set testing"
+      ],
+      "topics": [
+        "romer.DGEList"
+      ]
+    },
+    {
+      "page": "rowsum",
+      "title": "Sum Over Groups of Genes",
+      "topics": [
+        "rowsum.DGEList",
+        "rowsum.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "sampleWeights",
+      "title": "Empirical Sample Quality Weights",
+      "topics": [
+        "sampleWeights"
+      ]
+    },
+    {
+      "page": "scaleOffset",
+      "title": "Scale offsets",
+      "concept": [
+        "Normalization"
+      ],
+      "topics": [
+        "scaleOffset",
+        "scaleOffset.default",
+        "scaleOffset.DGEList"
+      ]
+    },
+    {
+      "page": "SE2DGEList",
+      "title": "SummarizedExperiment to DGEList",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "SE2DGEList"
+      ]
+    },
+    {
+      "page": "Seurat2PB",
+      "title": "Seurat or SeuratObject class object to pseudo-bulk DGEList",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "Seurat2PB"
+      ]
+    },
+    {
+      "page": "spliceVariants",
+      "title": "Identify Genes with Splice Variants (Classic Pipeline)",
+      "concept": [
+        "Differential exon usage"
+      ],
+      "topics": [
+        "spliceVariants"
+      ]
+    },
+    {
+      "page": "splitGencodeTxNames",
+      "title": "Split GENCODE Transcript Names and Summarize By Gene",
+      "concept": [
+        "Transcript expression",
+        "Reading data files"
+      ],
+      "topics": [
+        "collapseGencodeTx2Gene",
+        "splitGencodeTxNames"
+      ]
+    },
+    {
+      "page": "splitIntoGroups",
+      "title": "Split the Counts or Pseudocounts from a DGEList Object According To Group",
+      "topics": [
+        "splitIntoGroups",
+        "splitIntoGroups.default",
+        "splitIntoGroups.DGEList",
+        "splitIntoGroupsPseudo"
+      ]
+    },
+    {
+      "page": "subsetting",
+      "title": "Subset DGEList, DGEGLM, DGEExact and DGELRT Objects",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "subsetting",
+        "[.DGEExact",
+        "[.DGEGLM",
+        "[.DGEList",
+        "[.DGELRT",
+        "[.TopTags"
+      ]
+    },
+    {
+      "page": "sumTechReps",
+      "title": "Sum over Replicate Samples",
+      "concept": [
+        "Preprocessing"
+      ],
+      "topics": [
+        "sumTechReps",
+        "sumTechReps.default",
+        "sumTechReps.DGEList",
+        "sumTechReps.SummarizedExperiment"
+      ]
+    },
+    {
+      "page": "systematicSubset",
+      "title": "Take a systematic subset of indices.",
+      "topics": [
+        "systematicSubset"
+      ]
+    },
+    {
+      "page": "thinCounts",
+      "title": "Binomial or Multinomial Thinning of Counts",
+      "concept": [
+        "Data exploration"
+      ],
+      "topics": [
+        "thinCounts"
+      ]
+    },
+    {
+      "page": "topSpliceDGE",
+      "title": "Top table of differentially spliced genes or exons",
+      "topics": [
+        "topSpliceDGE"
+      ]
+    },
+    {
+      "page": "topTags",
+      "title": "Table of the Top Differentially Expressed Genes/Tags",
+      "topics": [
+        "show,TopTags-method",
+        "topTags",
+        "TopTags-class"
+      ]
+    },
+    {
+      "page": "tpm",
+      "title": "Transcripts per Million",
+      "concept": [
+        "Differential transcript usage",
+        "Differential usage"
+      ],
+      "topics": [
+        "tpm"
+      ]
+    },
+    {
+      "page": "tpmProp",
+      "title": "TPM Proportion By Transcript For Each Gene",
+      "concept": [
+        "Differential transcript usage",
+        "Differential usage"
+      ],
+      "topics": [
+        "tpmProp"
+      ]
+    },
+    {
+      "page": "validDGEList",
+      "title": "Check for Valid DGEList object",
+      "concept": [
+        "edgeR classes"
+      ],
+      "topics": [
+        "validDGEList"
+      ]
+    },
+    {
+      "page": "voomLmFit",
+      "title": "Apply voom-lmFit Pipeline While Accounting for Loss of Residual DF Due to Exact Zeros",
+      "concept": [
+        "Model fit"
+      ],
+      "topics": [
+        "voomLmFit"
+      ]
+    },
+    {
+      "page": "weightedCondLogLikDerDelta",
+      "title": "Weighted Conditional Log-Likelihood in Terms of Delta",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "weightedCondLogLikDerDelta"
+      ]
+    },
+    {
+      "page": "WLEB",
+      "title": "Weighted Likelihood Empirical Bayes",
+      "concept": [
+        "Dispersion estimation"
+      ],
+      "topics": [
+        "WLEB"
+      ]
+    },
+    {
+      "page": "zscoreNBinom",
+      "title": "Z-score Equivalents of Negative Binomial Deviate",
+      "topics": [
+        "zscoreNBinom"
+      ]
+    }
+  ],
+  "_rundeps": [
+    "lattice",
+    "limma",
+    "locfit",
+    "statmod"
+  ],
+  "_sysdeps": [
+    {
+      "shlib": "liblapack",
+      "package": "libopenblas0-pthread",
+      "source": "openblas",
+      "version": "0.3.32+ds-5",
+      "name": "openblas",
+      "homepage": "https://www.openblas.net/",
+      "description": "Optimized BLAS (linear algebra) library (shared lib, pthread)"
+    },
+    {
+      "shlib": "libblas",
+      "package": "libopenblas0-pthread",
+      "source": "openblas",
+      "version": "0.3.32+ds-5",
+      "name": "openblas",
+      "homepage": "https://www.openblas.net/",
+      "description": "Optimized BLAS (linear algebra) library (shared lib, pthread)"
+    }
+  ],
+  "_vignettes": [
+    {
+      "source": "intro.Rmd",
+      "filename": "intro.html",
+      "title": "A brief introduction to edgeR",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "What is it?",
+        "How to get help",
+        "Further reading"
+      ],
+      "created": "2023-06-21 10:09:59",
+      "modified": "2025-12-23 06:09:34",
+      "commits": 3
+    },
+    {
+      "source": "edgeRUsersGuide.Rnw",
+      "filename": "edgeRUsersGuide.pdf",
+      "title": "edgeR User's Guide",
+      "engine": "utils::Sweave",
+      "headings": [],
+      "created": "2023-06-20 00:55:03",
+      "modified": "2023-06-20 00:55:03",
+      "commits": 1
+    }
+  ],
+  "_score": 13.627020043355039,
+  "_indexed": false,
+  "_nocasepkg": "edger",
+  "_universes": [
+    "bioc-release"
+  ],
+  "_indexurl": "https://bioc.r-universe.dev/edgeR",
+  "_previous": "4.10.6",
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:00:36.000Z",
+      "distro": "resolute",
+      "arch": "aarch64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/03d994dea6040756ac8d62c930930b7198370d736132e7e41542d0fa823dcc0d",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:01:37.000Z",
+      "distro": "resolute",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/1f161955ff59e7fc2317338ada98f14f98a7902e60c3bc0e697503f760f54478",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:00:55.000Z",
+      "distro": "resolute",
+      "arch": "aarch64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/9d8a41c1606b347cf27099b9b582a427bb03034dded6b113f128e9cae3946637",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:02:00.000Z",
+      "distro": "resolute",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/fd1aca3c4c6c6f0e2da1643e5e1f482d32f8c18b01ffa68d0cf6a4c046c55b44",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:02:55.000Z",
+      "arch": "aarch64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/16a17625ad073d33382b61e0ec9f0ae76244a707f54e0aca880ae90a80d7b9a9",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:04:09.000Z",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/4d73f068ea2ec35922b31cd215bf366be1922ca449ad2765365a5a665f2dedee",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:03:49.000Z",
+      "arch": "aarch64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/8b5d6821d67d9f2954d951771736454a0579ef5269773f15d5f79090247f702d",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:06:14.000Z",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/db45f85e90210531326c0352dccb6abd12b884be12a1970536422f11f3b164d1",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:00:46.000Z",
+      "arch": "emscripten",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/cbfb38b62246842a240ef87c4794256a95068660dc982a349098b6fbbab93367",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:01:50.000Z",
+      "arch": "aarch64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/04998f76c03ab437f02a540c8c5d10db150054f7ca2d4860ffc72dedf8e30aa4",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "4.10.7",
+      "date": "2026-10-17T13:59:51.000Z",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/a51b32e5fb77e30d782ec1c9ec016cd183b8bab3f3eaac00d9bbed1c4312290b",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:00:17.000Z",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/e18a14d4531a47a63a88a177fe53a6108a0f269b513ee04fdb33305363a38a33",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "4.10.7",
+      "date": "2026-10-17T14:01:56.000Z",
+      "arch": "aarch64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/35aaf04af24fb470747c2228dfde5fab6aebb1f343d65f400501dc596096726f",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "4.10.7",
+      "date": "2026-10-17T13:59:56.000Z",
+      "arch": "x86_64",
+      "commit": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+      "fileid": "https://r2.ropensci.org/2deb579e0fae9bbbe9fd347e06ee270940e8fae9a00fc2b95b6ffcd642f0c223",
+      "status": "success",
+      "check": "OK",
+      "buildurl": "https://github.com/r-universe/bioc-release/actions/runs/39038364305"
+    }
+  ]
+}

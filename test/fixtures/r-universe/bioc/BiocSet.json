@@ -1,0 +1,665 @@
+{
+  "_id": "6abe46d799f7aa8c6aa54a54",
+  "Package": "BiocSet",
+  "Title": "Representing Different Biological Sets",
+  "Version": "1.27.0",
+  "Authors@R": "c(\nperson(\"Kayla\", \"Morrell\", email = \"kayla.morrell16@gmail.com\",\nrole = c(\"aut\", \"cre\")),\nperson(\"Martin\", \"Morgan\", role = \"aut\"),\nperson(\"Kevin\", \"Rue-Albrecht\", role = \"ctb\"),\nperson(\"Lluís\", \"Revilla Sancho\", role = \"ctb\"))",
+  "Description": "BiocSet displays different biological sets in a triple\ntibble format. These three tibbles are `element`, `set`, and\n`elementset`. The user has the abilty to activate one of these\nthree tibbles to perform common functions from the dplyr\npackage. Mapping functionality and accessing web references for\nelements/sets are also available in BiocSet.",
+  "biocViews": "GeneExpression, GO, KEGG, Software",
+  "License": "Artistic-2.0",
+  "Encoding": "UTF-8",
+  "RoxygenNote": "7.2.3",
+  "VignetteBuilder": "knitr",
+  "Config/pak/sysreqs": "libicu-dev libpng-dev libssl-dev zlib1g-dev",
+  "Repository": "https://bioc.r-universe.dev",
+  "Date/Publication": "2026-04-28 12:51:26 UTC",
+  "RemoteUrl": "https://github.com/bioc/BiocSet",
+  "RemoteRef": "HEAD",
+  "RemoteSha": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+  "NeedsCompilation": "no",
+  "Packaged": {
+    "Date": "2026-10-01 11:30:26 UTC",
+    "User": "root"
+  },
+  "Author": "Kayla Morrell [aut, cre],\nMartin Morgan [aut],\nKevin Rue-Albrecht [ctb],\nLluís Revilla Sancho [ctb]",
+  "Maintainer": "Kayla Morrell <kayla.morrell16@gmail.com>",
+  "_user": "bioc",
+  "_type": "src",
+  "_file": "BiocSet_1.27.0.tar.gz",
+  "_fileid": "https://r2.ropensci.org/7ac5fd6c35b5001b4375ba4096720e32f9e04b007cd0a490a4a3b3e60c86315b",
+  "_filesize": 179710,
+  "_sha256": "7ac5fd6c35b5001b4375ba4096720e32f9e04b007cd0a490a4a3b3e60c86315b",
+  "_expires": "2027-01-09T11:41:09.000Z",
+  "_created": "2026-10-01T11:30:26.000Z",
+  "_published": "2026-10-01T11:41:11.541Z",
+  "_bioccheck": {
+    "error": 0,
+    "warning": 2,
+    "note": 9
+  },
+  "_host": "GitHub-Actions",
+  "_buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423",
+  "_status": "failure",
+  "_upstream": "https://github.com/bioc/BiocSet",
+  "_commit": {
+    "id": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+    "author": "A Wokaty <andres.wokaty@sph.cuny.edu>",
+    "committer": "A Wokaty <andres.wokaty@sph.cuny.edu>",
+    "message": "bump x.y.z version to odd y following creation of RELEASE_3_23 branch\n",
+    "time": 1777380686
+  },
+  "_maintainer": {
+    "name": "Kayla Morrell",
+    "email": "kayla.morrell16@gmail.com",
+    "login": "kayla-morrell",
+    "twitter": "@kaylainter1011",
+    "description": "Core team member of Bioconductor at Roswell Park Comprehensive Cancer Center. R 📦 development, support, and maintenance. ",
+    "uuid": 32339524
+  },
+  "_distro": "resolute",
+  "_jobs": [
+    {
+      "job": 110347984182,
+      "time": 239,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "WARNING",
+      "artifact": "11159027633"
+    },
+    {
+      "job": 110347984316,
+      "time": 441,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "11159048200"
+    },
+    {
+      "job": 110347984141,
+      "time": 396,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "11157953747"
+    },
+    {
+      "job": 110347984151,
+      "time": 208,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "ERROR",
+      "artifact": "11159203243"
+    },
+    {
+      "job": 110347984281,
+      "time": 209,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "11157904207"
+    },
+    {
+      "job": 110346057596,
+      "time": 341,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "11159011807"
+    },
+    {
+      "job": 110347984056,
+      "time": 211,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "11157723398"
+    },
+    {
+      "job": 110347984219,
+      "time": 295,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "11159242239"
+    },
+    {
+      "job": 110347984131,
+      "time": 227,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "ERROR",
+      "artifact": "11158582740"
+    },
+    {
+      "job": 110347984326,
+      "time": 216,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "11158203098"
+    }
+  ],
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "R",
+      "version": ">= 3.6",
+      "role": "Depends"
+    },
+    {
+      "package": "dplyr",
+      "role": "Depends"
+    },
+    {
+      "package": "methods",
+      "role": "Imports"
+    },
+    {
+      "package": "tibble",
+      "role": "Imports"
+    },
+    {
+      "package": "utils",
+      "role": "Imports"
+    },
+    {
+      "package": "rlang",
+      "role": "Imports"
+    },
+    {
+      "package": "plyr",
+      "role": "Imports"
+    },
+    {
+      "package": "S4Vectors",
+      "role": "Imports"
+    },
+    {
+      "package": "BiocIO",
+      "role": "Imports"
+    },
+    {
+      "package": "AnnotationDbi",
+      "role": "Imports"
+    },
+    {
+      "package": "KEGGREST",
+      "role": "Imports"
+    },
+    {
+      "package": "ontologyIndex",
+      "role": "Imports"
+    },
+    {
+      "package": "tidyr",
+      "role": "Imports"
+    },
+    {
+      "package": "GSEABase",
+      "role": "Suggests"
+    },
+    {
+      "package": "airway",
+      "role": "Suggests"
+    },
+    {
+      "package": "org.Hs.eg.db",
+      "role": "Suggests"
+    },
+    {
+      "package": "DESeq2",
+      "role": "Suggests"
+    },
+    {
+      "package": "limma",
+      "role": "Suggests"
+    },
+    {
+      "package": "BiocFileCache",
+      "role": "Suggests"
+    },
+    {
+      "package": "GO.db",
+      "role": "Suggests"
+    },
+    {
+      "package": "testthat",
+      "role": "Suggests"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "rmarkdown",
+      "role": "Suggests"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": true,
+  "_usedby": 3,
+  "_updates": [
+    {
+      "week": "2025-44",
+      "n": 2
+    },
+    {
+      "week": "2026-18",
+      "n": 2
+    }
+  ],
+  "_tags": [],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "1.27.0",
+      "bioc": "3.24"
+    },
+    {
+      "branch": "release",
+      "version": "1.25.0",
+      "bioc": "3.23"
+    }
+  ],
+  "_topics": [
+    "geneexpression",
+    "go",
+    "kegg",
+    "software"
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 471,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 759,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/BiocSet"
+  },
+  "_searchresults": 40,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/BiocSet.html",
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/contents.json",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt"
+  ],
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    "arrange_element",
+    "arrange_elementset",
+    "arrange_set",
+    "BiocSet",
+    "BiocSet_from_elementset",
+    "BiocSet_from_GeneSetCollection",
+    "coerce",
+    "data.frame_from_element",
+    "data.frame_from_elementset",
+    "data.frame_from_set",
+    "es_activate",
+    "es_element",
+    "es_elementset",
+    "es_set",
+    "export",
+    "filter_element",
+    "filter_elementset",
+    "filter_set",
+    "GeneSetCollection_from_BiocSet",
+    "go_sets",
+    "import",
+    "intersect_single",
+    "kegg_sets",
+    "left_join_element",
+    "left_join_elementset",
+    "left_join_set",
+    "map_add_element",
+    "map_add_set",
+    "map_multiple",
+    "map_set",
+    "map_unique",
+    "metadata",
+    "metadata<-",
+    "mutate_element",
+    "mutate_elementset",
+    "mutate_set",
+    "OBOSet",
+    "oboset_element_ancestors",
+    "oboset_element_children",
+    "oboset_element_parents",
+    "oboset_set_ancestors",
+    "oboset_set_children",
+    "oboset_set_parents",
+    "select_element",
+    "select_elementset",
+    "select_set",
+    "summarise_element",
+    "summarise_elementset",
+    "summarise_set",
+    "tibble_from_element",
+    "tibble_from_elementset",
+    "tibble_from_set",
+    "union_single",
+    "url_ref",
+    "url_ref_element",
+    "url_ref_set"
+  ],
+  "_help": [
+    {
+      "page": "BiocSet-class",
+      "title": "BiocSet class",
+      "topics": [
+        "BiocSet",
+        "BiocSet-class",
+        "BiocSet_from_elementset",
+        "es_element",
+        "es_element,BiocSet-method",
+        "es_elementset",
+        "es_elementset,BiocSet-method",
+        "es_set",
+        "es_set,BiocSet-method",
+        "show,BiocSet-method"
+      ]
+    },
+    {
+      "page": "coerce",
+      "title": "as(\"BiocSet\", \"list\")",
+      "topics": [
+        "coerce",
+        "coerce,BiocSet,list-method"
+      ]
+    },
+    {
+      "page": "element_funs",
+      "title": "Functions applied to elements in a 'BiocSet' object",
+      "topics": [
+        "arrange_element",
+        "data.frame_from_element",
+        "element_funs",
+        "filter_element",
+        "left_join_element",
+        "mutate_element",
+        "select_element",
+        "summarise_element",
+        "tibble_from_element"
+      ]
+    },
+    {
+      "page": "elementset_funs",
+      "title": "Functions applied to elementsets in a 'BiocSet' object",
+      "topics": [
+        "arrange_elementset",
+        "data.frame_from_elementset",
+        "elementset_funs",
+        "filter_elementset",
+        "left_join_elementset",
+        "mutate_elementset",
+        "select_elementset",
+        "summarise_elementset",
+        "tibble_from_elementset"
+      ]
+    },
+    {
+      "page": "genesetcollection",
+      "title": "GeneSetCollection",
+      "topics": [
+        "BiocSet_from_GeneSetCollection",
+        "genesetcollection",
+        "GeneSetCollection_from_BiocSet"
+      ]
+    },
+    {
+      "page": "import",
+      "title": "Importing/exporting",
+      "topics": [
+        "export,BiocSet,GMTFile,ANY-method",
+        "export,BiocSet,OBOFile,ANY-method",
+        "import",
+        "import,GMTFile,ANY,ANY-method",
+        "import,OBOFile,ANY,ANY-method"
+      ]
+    },
+    {
+      "page": "intersect_single",
+      "title": "Intersect on a single 'BiocSet' object",
+      "topics": [
+        "intersect_single"
+      ]
+    },
+    {
+      "page": "mapping_element",
+      "title": "Functions for mapping elements in the element tibble to different id types",
+      "topics": [
+        "mapping_element",
+        "map_add_element",
+        "map_multiple",
+        "map_unique"
+      ]
+    },
+    {
+      "page": "mapping_set",
+      "title": "Functions for mapping sets in the set tibble to different id types",
+      "topics": [
+        "go_sets",
+        "kegg_sets",
+        "mapping_set",
+        "map_add_set",
+        "map_set"
+      ]
+    },
+    {
+      "page": "obo_relations",
+      "title": "Functions to display relationships of an 'OBOSet' object",
+      "topics": [
+        "oboset_element_ancestors",
+        "oboset_element_children",
+        "oboset_element_parents",
+        "oboset_set_ancestors",
+        "oboset_set_children",
+        "oboset_set_parents",
+        "obo_relations"
+      ]
+    },
+    {
+      "page": "OBOSet-class",
+      "title": "OBOSet class",
+      "topics": [
+        "OBOSet",
+        "OBOSet-class"
+      ]
+    },
+    {
+      "page": "set_funs",
+      "title": "Functions applied to sets in a 'BiocSet' object",
+      "topics": [
+        "arrange_set",
+        "data.frame_from_set",
+        "filter_set",
+        "left_join_set",
+        "mutate_set",
+        "select_set",
+        "set_funs",
+        "summarise_set",
+        "tibble_from_set"
+      ]
+    },
+    {
+      "page": "union_single",
+      "title": "Union on a single 'BiocSet' object",
+      "topics": [
+        "union_single"
+      ]
+    },
+    {
+      "page": "url_ref",
+      "title": "Functions to access reference urls for different identifiers",
+      "topics": [
+        "url_ref",
+        "url_ref_element",
+        "url_ref_set"
+      ]
+    }
+  ],
+  "_rundeps": [
+    "AnnotationDbi",
+    "askpass",
+    "Biobase",
+    "BiocBaseUtils",
+    "BiocGenerics",
+    "BiocIO",
+    "Biostrings",
+    "bit",
+    "bit64",
+    "blob",
+    "cachem",
+    "cli",
+    "cpp11",
+    "crayon",
+    "curl",
+    "DBI",
+    "dplyr",
+    "fastmap",
+    "generics",
+    "glue",
+    "httr",
+    "IRanges",
+    "jsonlite",
+    "KEGGREST",
+    "lifecycle",
+    "magrittr",
+    "memoise",
+    "mime",
+    "ontologyIndex",
+    "openssl",
+    "pillar",
+    "pkgconfig",
+    "plyr",
+    "png",
+    "purrr",
+    "R6",
+    "Rcpp",
+    "rlang",
+    "RSQLite",
+    "S4Vectors",
+    "Seqinfo",
+    "stringi",
+    "stringr",
+    "sys",
+    "tibble",
+    "tidyr",
+    "tidyselect",
+    "utf8",
+    "vctrs",
+    "withr",
+    "XVector"
+  ],
+  "_score": 3.8573324964312685,
+  "_indexed": true,
+  "_nocasepkg": "biocset",
+  "_universes": [
+    "bioc",
+    "kayla-morrell"
+  ],
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:36:16.000Z",
+      "distro": "resolute",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/1cf294a004db04fdba7de16a1caf3cd0007f57aa104b8cc4b8b301031fb803b9",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:35:55.000Z",
+      "distro": "resolute",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/00ba1aefaca3280ac9f0918c428994c0669b262b62cbed94867275603cea8af9",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:38:13.000Z",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/37168232ac6df539379b076482b1d911ab010c8360da8930febffdc06a248f2f",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:38:55.000Z",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/1709f9d4f3a520c0e50e662a77c7d4cfb76d6771b33b5711a2a2779361162bad",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:34:18.000Z",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/285ae0bb328ed42120a2fecff241786d3fc8b5d265c7c8a27d12d19d2d97eeef",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:32:44.000Z",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/c84410ea8bdab7a70c9d9dbc5f0dddba3dcc7a3c55d8fff83a36f95aee159d1c",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:32:31.000Z",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/3427f1a1095d8bd9cda91f9cc4fedb6e5589bcc462159878a3fdfc8277a3e754",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "1.27.0",
+      "date": "2026-10-01T11:32:37.000Z",
+      "commit": "edc80df2f76a8f9674bc280de749d2c2a4289a69",
+      "fileid": "https://r2.ropensci.org/b6d9489e2d59eae140e35036e496ffe75f63ceedc6163d47cf5ce86a85669e57",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/36855202423"
+    }
+  ]
+}

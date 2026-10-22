@@ -1,0 +1,1814 @@
+{
+  "_id": "6a89180108552371331c4157",
+  "Type": "Package",
+  "Package": "RMassBank",
+  "Title": "Workflow to process tandem MS files and build MassBank records",
+  "Version": "3.23.0",
+  "Authors@R": "c(\nperson(\"RMassBank at Eawag\", , , \"massbank@eawag.ch\", role = \"cre\"),\nperson(\"Michael A.\", \"Stravs\", , \"michael.stravs@eawag.ch\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-1426-8572\")),\nperson(\"Emma L.\", \"Schymanski\", , \"emma.schymanski@uni.lu\", role = \"aut\",\ncomment = c(ORCID = \"0000-0001-6868-8145\")),\nperson(\"Steffen\", \"Neumann\", , \"sneumann@ipb-halle.de\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-7899-7192\")),\nperson(\"Erik\", \"Muller\", , , role = \"aut\",\ncomment = c(ORCID = \"0000-0003-3288-0439\")),\nperson(\"Paul\", \"Stahlhofen\", , , role = \"aut\"),\nperson(\"Tobias\", \"Schulze\", , \"tsufz1@gmail.com\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-9744-8914\")),\nperson(\"Hendrik\", \"Treutler\", , \"hendrik.treutler@gmail.com\", role = \"ctb\")\n)",
+  "Author": "Michael Stravs, Emma Schymanski, Steffen Neumann, Erik Mueller,\nPaul Stahlhofen, Tobias Schulze with contributions of Hendrik\nTreutler",
+  "Maintainer": "RMassBank at Eawag <massbank@eawag.ch>",
+  "Description": "Workflow to process tandem MS files and build MassBank\nrecords.  Functions include automated extraction of tandem MS\nspectra, formula assignment to tandem MS fragments,\nrecalibration of tandem MS spectra with assigned fragments,\nspectrum cleanup, automated retrieval of compound information\nfrom Internet databases, and export to MassBank records.",
+  "License": "Artistic-2.0",
+  "VignetteBuilder": "knitr",
+  "biocViews": "ImmunoOncology, Bioinformatics, MassSpectrometry,\nMetabolomics, Software",
+  "Encoding": "UTF-8",
+  "RoxygenNote": "7.2.3",
+  "SystemRequirements": "OpenBabel",
+  "Collate": "'alternateAnalyze.R' 'formulaCalculator.R' 'getSplash.R'\n'leCsvAccess.R' 'settings_example.R' 'webAccess.R'\n'deprofile.R' 'parseMassBank.R' 'Generics.R'\n'SpectrumClasses.R' 'SpectrumMethods.R' 'RmbSpectrum2Update.R'\n'readWriteMgfData.R' 'RmbWorkspace.R' 'RmbWorkspaceUpdate.R'\n'SpectraSetMethods.R' 'AggregateMethods.R' 'leMsMs.r'\n'leMsmsRaw.R' 'buildRecord.R' 'createMassBank.R'\n'msmsRawExtensions.r' 'validateMassBank.R' 'tools.R'\n'msmsRead.R' 'mergeSpectra.R' 'Isotopic_Annotation.R'\n'fillback.R' 'parseMbRecord.R' 'zzz.R' 'log_wrapper.R'\n'createCompoundlist.R'",
+  "Config/pak/sysreqs": "cmake libglpk-dev make default-jdk libicu-dev\nlibpng-dev librsvg2-dev libuv1-dev libxml2-dev libnetcdf-dev\nlibopenbabel-dev libssl-dev libx11-dev zlib1g-dev",
+  "Repository": "https://bioc.r-universe.dev",
+  "Date/Publication": "2026-04-28 12:36:44 UTC",
+  "RemoteUrl": "https://github.com/bioc/RMassBank",
+  "RemoteRef": "HEAD",
+  "RemoteSha": "bca43b51ad069b7308671399c264ff99f692446a",
+  "NeedsCompilation": "no",
+  "Packaged": {
+    "Date": "2026-08-22 03:20:04 UTC",
+    "User": "root"
+  },
+  "_user": "bioc",
+  "_type": "src",
+  "_file": "RMassBank_3.23.0.tar.gz",
+  "_fileid": "https://r2.ropensci.org/d9bd0a7898b9ff27aa7359afb7bb6c17ead0539f4722cf53fbffa026e383e848",
+  "_filesize": 2018174,
+  "_sha256": "d9bd0a7898b9ff27aa7359afb7bb6c17ead0539f4722cf53fbffa026e383e848",
+  "_expires": "2026-11-30T03:31:06.000Z",
+  "_created": "2026-08-22T03:20:04.000Z",
+  "_published": "2026-10-14T06:34:57.842Z",
+  "_bioccheck": {
+    "error": 1,
+    "warning": 5,
+    "note": 21
+  },
+  "_host": "GitHub-Actions",
+  "_buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653",
+  "_status": "success",
+  "_upstream": "https://github.com/bioc/RMassBank",
+  "_commit": {
+    "id": "bca43b51ad069b7308671399c264ff99f692446a",
+    "author": "A Wokaty <andres.wokaty@sph.cuny.edu>",
+    "committer": "A Wokaty <andres.wokaty@sph.cuny.edu>",
+    "message": "bump x.y.z version to odd y following creation of RELEASE_3_23 branch\n",
+    "time": 1777379804
+  },
+  "_maintainer": {
+    "name": "RMassBank at Eawag",
+    "email": "massbank@eawag.ch",
+    "login": "uchem-massbank",
+    "description": "",
+    "uuid": 4113113
+  },
+  "_distro": "resolute",
+  "_jobs": [
+    {
+      "job": 96971837395,
+      "time": 293,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "9469427639"
+    },
+    {
+      "job": 96971837321,
+      "time": 578,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "NOTE",
+      "artifact": "9469492615"
+    },
+    {
+      "job": 96971837335,
+      "time": 507,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "9469475693"
+    },
+    {
+      "job": 96971837307,
+      "time": 249,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "NOTE",
+      "artifact": "9469417995"
+    },
+    {
+      "job": 96971837315,
+      "time": 328,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "9469435395"
+    },
+    {
+      "job": 96970516590,
+      "time": 653,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "9469360861"
+    },
+    {
+      "job": 96971837360,
+      "time": 210,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "9469409178"
+    },
+    {
+      "job": 96971837385,
+      "time": 400,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "NOTE",
+      "artifact": "9469451390"
+    },
+    {
+      "job": 96971837411,
+      "time": 393,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "NOTE",
+      "artifact": "9469450015"
+    },
+    {
+      "job": 96971837296,
+      "time": 399,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "9469451460"
+    }
+  ],
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "R",
+      "version": ">= 4.1.0",
+      "role": "Depends"
+    },
+    {
+      "package": "Rcpp",
+      "role": "Depends"
+    },
+    {
+      "package": "assertthat",
+      "role": "Imports"
+    },
+    {
+      "package": "Biobase",
+      "role": "Imports"
+    },
+    {
+      "package": "ChemmineR",
+      "role": "Imports"
+    },
+    {
+      "package": "data.table",
+      "role": "Imports"
+    },
+    {
+      "package": "digest",
+      "role": "Imports"
+    },
+    {
+      "package": "dplyr",
+      "role": "Imports"
+    },
+    {
+      "package": "enviPat",
+      "role": "Imports"
+    },
+    {
+      "package": "glue",
+      "role": "Imports"
+    },
+    {
+      "package": "httr",
+      "role": "Imports"
+    },
+    {
+      "package": "httr2",
+      "role": "Imports"
+    },
+    {
+      "package": "logger",
+      "role": "Imports"
+    },
+    {
+      "package": "methods",
+      "role": "Imports"
+    },
+    {
+      "package": "MSnbase",
+      "role": "Imports"
+    },
+    {
+      "package": "mzR",
+      "role": "Imports"
+    },
+    {
+      "package": "purrr",
+      "role": "Imports"
+    },
+    {
+      "package": "R.utils",
+      "role": "Imports"
+    },
+    {
+      "package": "rcdk",
+      "role": "Imports"
+    },
+    {
+      "package": "readJDX",
+      "role": "Imports"
+    },
+    {
+      "package": "readr",
+      "role": "Imports"
+    },
+    {
+      "package": "rjson",
+      "role": "Imports"
+    },
+    {
+      "package": "S4Vectors",
+      "role": "Imports"
+    },
+    {
+      "package": "tibble",
+      "role": "Imports"
+    },
+    {
+      "package": "tidyselect",
+      "role": "Imports"
+    },
+    {
+      "package": "webchem",
+      "role": "Imports"
+    },
+    {
+      "package": "XML",
+      "role": "Imports"
+    },
+    {
+      "package": "yaml",
+      "role": "Imports"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    },
+    {
+      "package": "CAMERA",
+      "role": "Suggests"
+    },
+    {
+      "package": "gplots",
+      "role": "Suggests"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "magick",
+      "role": "Suggests"
+    },
+    {
+      "package": "rmarkdown",
+      "role": "Suggests"
+    },
+    {
+      "package": "RMassBankData",
+      "version": ">= 1.33.1",
+      "role": "Suggests"
+    },
+    {
+      "package": "RUnit",
+      "role": "Suggests"
+    },
+    {
+      "package": "xcms",
+      "version": ">= 1.37.1",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": true,
+  "_usedby": 0,
+  "_updates": [
+    {
+      "week": "2025-44",
+      "n": 2
+    },
+    {
+      "week": "2026-18",
+      "n": 2
+    }
+  ],
+  "_tags": [],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "3.23.0",
+      "bioc": "3.24"
+    },
+    {
+      "branch": "release",
+      "version": "3.22.0",
+      "bioc": "3.23"
+    }
+  ],
+  "_topics": [
+    "immunooncology",
+    "bioinformatics",
+    "massspectrometry",
+    "metabolomics",
+    "software",
+    "openjdk"
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 464,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 636,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/RMassBank"
+  },
+  "_mentions": 10,
+  "_searchresults": 38,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/contents.json",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt",
+    "extra/readme.html",
+    "extra/readme.md",
+    "extra/RMassBank.html",
+    "manual.pdf"
+  ],
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    ".msmsWorkspace",
+    ".updateObject.RmbSpectrum2.formulaSource",
+    "add.formula",
+    "addMB",
+    "addPeaks",
+    "addPeaksManually",
+    "addProperty",
+    "aggregateSpectra",
+    "analyzeMsMs",
+    "analyzeMsMs.formula",
+    "analyzeMsMs.intensity",
+    "annotator.default",
+    "archiveResults",
+    "buildRecord",
+    "CAS2SMILES",
+    "checkIsotopes",
+    "checkSpectra",
+    "cleanElnoise",
+    "combineMultiplicities",
+    "compoundlist2SDF",
+    "createCompoundlist",
+    "createMolfile",
+    "CTS.externalIdSubset",
+    "CTS.externalIdTypes",
+    "dbe",
+    "deprofile",
+    "deprofile.fwhm",
+    "deprofile.localMax",
+    "deprofile.scan",
+    "deprofile.spline",
+    "exportMassbank",
+    "fillback",
+    "filterCompoundlist",
+    "filterMultiplicity",
+    "filterPeakSatellites",
+    "filterPeaksMultiplicity",
+    "findCAS",
+    "findEIC",
+    "findFormula",
+    "findLevel",
+    "findMass",
+    "findMsMsHR",
+    "findMsMsHR.direct",
+    "findMsMsHR.mass",
+    "findMsMsHR.ticms2",
+    "findMsMsHRperMsp",
+    "findMsMsHRperxcms",
+    "findMsMsHRperxcms.direct",
+    "findMz",
+    "findMz.formula",
+    "findName",
+    "findProgress",
+    "findRt",
+    "findSmiles",
+    "flatten",
+    "formulastring.to.list",
+    "gatherCCTE",
+    "gatherData",
+    "gatherDataBabel",
+    "gatherDataUnknown",
+    "gatherPubChem",
+    "getAnalyticalInfo",
+    "getCactus",
+    "getCASRN",
+    "getCSID",
+    "getCtsKey",
+    "getCtsRecord",
+    "getData",
+    "getDTXCID",
+    "getDTXSID",
+    "getDTXSMILES",
+    "getField",
+    "getMolecule",
+    "getPcId",
+    "getPrefName",
+    "is.valid.formula",
+    "list.to.formula",
+    "loadInfolist",
+    "loadInfolists",
+    "loadList",
+    "loadMsmsWorkspace",
+    "loadRmbSettings",
+    "loadRmbSettingsFromEnv",
+    "makeMollist",
+    "makePeaksCache",
+    "makeRecalibration",
+    "mbWorkflow",
+    "mergePeaks",
+    "mergeSpectra",
+    "msmsRead",
+    "msmsRead.RAW",
+    "msmsWorkflow",
+    "multiply.formula",
+    "newMbWorkspace",
+    "newMsmsWorkspace",
+    "normalize",
+    "order.formula",
+    "parseMassBank",
+    "parseMbRecord",
+    "peaksMatched",
+    "peaksUnmatched",
+    "plotMbWorkspaces",
+    "plotRecalibration",
+    "plotRecalibration.direct",
+    "ppm",
+    "problematicPeaks",
+    "processProblematicPeaks",
+    "progressBarHook",
+    "property",
+    "property<-",
+    "readMbdata",
+    "reanalyzeFailpeak",
+    "reanalyzeFailpeaks",
+    "recalibrate",
+    "recalibrate.addMS1data",
+    "recalibrate.identity",
+    "recalibrate.linear",
+    "recalibrate.loess",
+    "recalibrate.mean",
+    "recalibrateSingleSpec",
+    "recalibrateSpectra",
+    "resetInfolists",
+    "resetList",
+    "rmb_log_debug",
+    "rmb_log_error",
+    "rmb_log_fatal",
+    "rmb_log_info",
+    "rmb_log_success",
+    "rmb_log_trace",
+    "rmb_log_warn",
+    "RmbDefaultSettings",
+    "RmbSettingsTemplate",
+    "selectPeaks",
+    "selectSpectra",
+    "setAccessionBuilder",
+    "setData",
+    "show",
+    "smiles2mass",
+    "spectraCount",
+    "to.limits.rcdk",
+    "toMassbank",
+    "toRMB",
+    "updateHeader",
+    "updateSettings",
+    "validate"
+  ],
+  "_help": [
+    {
+      "page": "RmbSpectraSet-ANY-method",
+      "title": "Add a negative mass shift to a list of spectra",
+      "topics": [
+        "-,RmbSpectraSet,ANY-method"
+      ]
+    },
+    {
+      "page": "RmbSpectrum2List-ANY-method",
+      "title": "Add a negative mass shift to a list of spectra",
+      "topics": [
+        "-,RmbSpectrum2List,ANY-method"
+      ]
+    },
+    {
+      "page": "Spectrum-numeric-method",
+      "title": "Add a negative mass shift to a spectrum",
+      "topics": [
+        "-,Spectrum,numeric-method"
+      ]
+    },
+    {
+      "page": "dot-parseTitleString",
+      "title": "Parse record title",
+      "topics": [
+        ".parseTitleString"
+      ]
+    },
+    {
+      "page": "dot-updateObject.RmbSpectrum2.formulaSource",
+      "title": "Add formulaSource column to spectrum.",
+      "topics": [
+        ".updateObject.RmbSpectrum2.formulaSource"
+      ]
+    },
+    {
+      "page": "plus-RmbSpectraSet-ANY-method",
+      "title": "Add a mass shift to a list of spectra",
+      "topics": [
+        "+,RmbSpectraSet,ANY-method"
+      ]
+    },
+    {
+      "page": "plus-RmbSpectrum2List-ANY-method",
+      "title": "Add a mass shift to a list of spectra",
+      "topics": [
+        "+,RmbSpectrum2List,ANY-method"
+      ]
+    },
+    {
+      "page": "plus-Spectrum-numeric-method",
+      "title": "Add a mass shift to a spectrum",
+      "topics": [
+        "+,Spectrum,numeric-method"
+      ]
+    },
+    {
+      "page": "add.formula",
+      "title": "Calculations on molecular formulas",
+      "topics": [
+        "add.formula",
+        "multiply.formula"
+      ]
+    },
+    {
+      "page": "addMB",
+      "title": "MassBank-record Addition",
+      "topics": [
+        "addMB"
+      ]
+    },
+    {
+      "page": "addPeaks",
+      "title": "Add additional peaks to spectra",
+      "topics": [
+        "addPeaks"
+      ]
+    },
+    {
+      "page": "addPeaksManually",
+      "title": "Addition of manual peaklists",
+      "topics": [
+        "addPeaksManually"
+      ]
+    },
+    {
+      "page": "addProperty",
+      "title": "Add and initialize dataframe column",
+      "topics": [
+        "addProperty",
+        "addProperty,data.frame,character,character-method",
+        "addProperty,RmbSpectrum2,character,character-method"
+      ]
+    },
+    {
+      "page": "aggregateSpectra",
+      "title": "Aggregate analyzed spectra",
+      "topics": [
+        "aggregateSpectra"
+      ]
+    },
+    {
+      "page": "analyzeMsMs",
+      "title": "Analyze MSMS spectra",
+      "topics": [
+        "analyzeMsMs",
+        "analyzeMsMs.formula",
+        "analyzeMsMs.intensity"
+      ]
+    },
+    {
+      "page": "annotator.default",
+      "title": "Generate peak annotation from peaklist",
+      "topics": [
+        "annotator.default"
+      ]
+    },
+    {
+      "page": "archiveResults",
+      "title": "Backup 'msmsWorkflow' results",
+      "topics": [
+        "archiveResults"
+      ]
+    },
+    {
+      "page": "buildRecord",
+      "title": "Build MassBank records",
+      "topics": [
+        "buildRecord",
+        "buildRecord,RmbSpectraSet-method",
+        "buildRecord,RmbSpectrum2-method"
+      ]
+    },
+    {
+      "page": "CAS2SMILES",
+      "title": "Convert CAS to SMILES",
+      "topics": [
+        "CAS2SMILES"
+      ]
+    },
+    {
+      "page": "checkIsotopes",
+      "title": "Checks for isotopes in a 'msmsWorkspace'",
+      "topics": [
+        "checkIsotopes"
+      ]
+    },
+    {
+      "page": "checkSpectra",
+      "title": "Check if a spectra set is found, complete, empty",
+      "topics": [
+        "checkSpectra",
+        "checkSpectra,RmbSpectraSet,character-method"
+      ]
+    },
+    {
+      "page": "cleanElnoise",
+      "title": "Remove electronic noise",
+      "topics": [
+        "cleanElnoise",
+        "cleanElnoise,data.frame,numeric,numeric-method",
+        "cleanElnoise,RmbSpectraSet,numeric,numeric-method",
+        "cleanElnoise,RmbSpectrum2,numeric,numeric-method",
+        "cleanElnoise,RmbSpectrum2List,numeric,numeric-method"
+      ]
+    },
+    {
+      "page": "combineMultiplicities",
+      "title": "Combine workspaces for multiplicity filtering",
+      "topics": [
+        "combineMultiplicities"
+      ]
+    },
+    {
+      "page": "compoundlist2SDF",
+      "title": "Convert a Compoundlist into an SDF",
+      "topics": [
+        "compoundlist2SDF"
+      ]
+    },
+    {
+      "page": "createCompoundlist",
+      "title": "Create a Compoundlist from JCAMP files",
+      "topics": [
+        "createCompoundlist"
+      ]
+    },
+    {
+      "page": "createMolfile",
+      "title": "Create MOL file for a chemical structure",
+      "topics": [
+        "createMolfile"
+      ]
+    },
+    {
+      "page": "CTS.externalIdSubset",
+      "title": "Select a subset of external IDs from a CTS record.",
+      "topics": [
+        "CTS.externalIdSubset"
+      ]
+    },
+    {
+      "page": "CTS.externalIdTypes",
+      "title": "Find all available databases for a CTS record",
+      "topics": [
+        "CTS.externalIdTypes"
+      ]
+    },
+    {
+      "page": "dbe",
+      "title": "Calculate Double Bond Equivalents",
+      "topics": [
+        "dbe"
+      ]
+    },
+    {
+      "page": "deprofile",
+      "title": "De-profile a high-resolution MS scan in profile mode.",
+      "topics": [
+        "deprofile",
+        "deprofile.fwhm",
+        "deprofile.localMax",
+        "deprofile.scan",
+        "deprofile.spline"
+      ]
+    },
+    {
+      "page": "exportMassbank",
+      "title": "Export internally stored MassBank data to files",
+      "topics": [
+        "exportMassbank"
+      ]
+    },
+    {
+      "page": "fillback",
+      "title": "Fill back reanalyzed / refiltered peak info into spectra",
+      "topics": [
+        "fillback",
+        "fillback,msmsWorkspace,missing,missing-method",
+        "fillback,RmbSpectraSet,missing,data.frame-method",
+        "fillback,RmbSpectrum2,character,data.frame-method"
+      ]
+    },
+    {
+      "page": "filterCompoundlist",
+      "title": "Filter a Compoundlist for missing SMILES values",
+      "topics": [
+        "filterCompoundlist"
+      ]
+    },
+    {
+      "page": "filterLowaccResults",
+      "title": "Filter peaks with low accuracy",
+      "topics": [
+        "filterLowaccResults"
+      ]
+    },
+    {
+      "page": "filterMultiplicity",
+      "title": "filterMultiplicity",
+      "topics": [
+        "filterMultiplicity"
+      ]
+    },
+    {
+      "page": "filterPeakSatellites",
+      "title": "Filter satellite peaks",
+      "topics": [
+        "filterPeakSatellites"
+      ]
+    },
+    {
+      "page": "filterPeaksMultiplicity",
+      "title": "Multiplicity filtering: Removes peaks which occur only once in a n-spectra set.",
+      "topics": [
+        "filterPeaksMultiplicity"
+      ]
+    },
+    {
+      "page": "findEIC",
+      "title": "Extract EICs",
+      "topics": [
+        "findEIC"
+      ]
+    },
+    {
+      "page": "findMass",
+      "title": "Calculate exact mass",
+      "topics": [
+        "findMass"
+      ]
+    },
+    {
+      "page": "findMsMsHR",
+      "title": "Extract MS/MS spectra for specified precursor",
+      "topics": [
+        "findMsMsHR",
+        "findMsMsHR.mass"
+      ]
+    },
+    {
+      "page": "findMsMsHR.direct",
+      "title": "Discontinued: find MS/MS spectrum from open raw file",
+      "topics": [
+        "findMsMsHR.direct"
+      ]
+    },
+    {
+      "page": "findMsMsHR.ticms2",
+      "title": "Extract an MS/MS spectrum from MS2 TIC",
+      "topics": [
+        "findMsMsHR.ticMS2",
+        "findMsMsHR.ticms2"
+      ]
+    },
+    {
+      "page": "findMsMsHRperMsp",
+      "title": "Retrieve spectra from msp files",
+      "topics": [
+        "findMsMsHRperMsp",
+        "findMsMsHRperMsp.direct"
+      ]
+    },
+    {
+      "page": "findMsMsHRperxcms",
+      "title": "Read in mz-files using XCMS",
+      "topics": [
+        "findMsMsHRperxcms",
+        "findMsMsHRperxcms.direct"
+      ]
+    },
+    {
+      "page": "findMz",
+      "title": "Find compound information",
+      "topics": [
+        "findCAS",
+        "findFormula",
+        "findLevel",
+        "findMz",
+        "findName",
+        "findRt",
+        "findSmiles"
+      ]
+    },
+    {
+      "page": "findMz.formula",
+      "title": "Find the exact mass +/- a given margin for a given formula or its ions and adducts.",
+      "topics": [
+        "findMz.formula"
+      ]
+    },
+    {
+      "page": "findProgress",
+      "title": "Determine processed steps",
+      "topics": [
+        "findProgress"
+      ]
+    },
+    {
+      "page": "flatten",
+      "title": "Flatten, or re-read, MassBank header blocks",
+      "topics": [
+        "flatten",
+        "readMbdata"
+      ]
+    },
+    {
+      "page": "formulastring.to.list",
+      "title": "Interconvert molecular formula representations",
+      "topics": [
+        "formulastring.to.list",
+        "list.to.formula"
+      ]
+    },
+    {
+      "page": "gatherCCTE",
+      "title": "Retrieve supplemental annotation data from US EPA",
+      "topics": [
+        "gatherCCTE"
+      ]
+    },
+    {
+      "page": "gatherData",
+      "title": "Retrieve annotation data",
+      "topics": [
+        "gatherData"
+      ]
+    },
+    {
+      "page": "gatherDataBabel",
+      "title": "Retrieve annotation data",
+      "topics": [
+        "gatherDataBabel"
+      ]
+    },
+    {
+      "page": "gatherDataUnknown",
+      "title": "Retrieve annotation data",
+      "topics": [
+        "gatherDataUnknown"
+      ]
+    },
+    {
+      "page": "gatherPubChem",
+      "title": "Retrieve supplemental annotation data from Pubchem",
+      "topics": [
+        "gatherPubChem"
+      ]
+    },
+    {
+      "page": "getAnalyticalInfo",
+      "title": "Get analytical info for MassBank record",
+      "topics": [
+        "getAnalyticalInfo"
+      ]
+    },
+    {
+      "page": "getCactus",
+      "title": "Retrieve information from Cactus",
+      "topics": [
+        "getCactus"
+      ]
+    },
+    {
+      "page": "getCASRN",
+      "title": "Search CCTE CAS registration number",
+      "topics": [
+        "getCASRN"
+      ]
+    },
+    {
+      "page": "getCSID",
+      "title": "Retrieve the Chemspider ID for a given compound",
+      "topics": [
+        "getCSID"
+      ]
+    },
+    {
+      "page": "getCtsKey",
+      "title": "Convert a single ID to another using CTS.",
+      "topics": [
+        "getCtsKey"
+      ]
+    },
+    {
+      "page": "getCtsRecord",
+      "title": "Retrieve information from CTS",
+      "topics": [
+        "getCtsRecord"
+      ]
+    },
+    {
+      "page": "getData",
+      "title": "Get data frame with all present peak data",
+      "topics": [
+        "getData",
+        "getData,RmbSpectrum2-method"
+      ]
+    },
+    {
+      "page": "getDTXCID",
+      "title": "Search CCTE DTXCID",
+      "topics": [
+        "getDTXCID"
+      ]
+    },
+    {
+      "page": "getDTXSID",
+      "title": "Search CCTE DTXSID",
+      "topics": [
+        "getDTXSID"
+      ]
+    },
+    {
+      "page": "getDTXSMILES",
+      "title": "Search CCTE SMILES",
+      "topics": [
+        "getDTXSMILES"
+      ]
+    },
+    {
+      "page": "getField",
+      "title": "Get the content of a field in a JCAMP file",
+      "topics": [
+        "getField"
+      ]
+    },
+    {
+      "page": "getMolecule",
+      "title": "Create Rcdk molecule from SMILES",
+      "topics": [
+        "getMolecule"
+      ]
+    },
+    {
+      "page": "getPcId",
+      "title": "Search Pubchem CID",
+      "topics": [
+        "getPcId"
+      ]
+    },
+    {
+      "page": "getPrefName",
+      "title": "Search CCTE Preferred Name",
+      "topics": [
+        "getPrefName"
+      ]
+    },
+    {
+      "page": "is.valid.formula",
+      "title": "Check validity of formula",
+      "topics": [
+        "is.valid.formula"
+      ]
+    },
+    {
+      "page": "loadInfolists",
+      "title": "Load MassBank compound information lists",
+      "topics": [
+        "loadInfolist",
+        "loadInfolists",
+        "resetInfolists"
+      ]
+    },
+    {
+      "page": "loadList",
+      "title": "Load compound list for RMassBank",
+      "topics": [
+        "loadList",
+        "resetList"
+      ]
+    },
+    {
+      "page": "makeMollist",
+      "title": "Write list.tsv file",
+      "topics": [
+        "makeMollist"
+      ]
+    },
+    {
+      "page": "makePeaksCache",
+      "title": "Generate peaks cache",
+      "topics": [
+        "makePeaksCache"
+      ]
+    },
+    {
+      "page": "makeRecalibration",
+      "title": "Recalibrate MS/MS spectra",
+      "topics": [
+        "makeRecalibration",
+        "recalibrateSingleSpec",
+        "recalibrateSpectra"
+      ]
+    },
+    {
+      "page": "mbWorkflow",
+      "title": "MassBank record creation workflow",
+      "topics": [
+        "mbWorkflow"
+      ]
+    },
+    {
+      "page": "mbWorkspace-class",
+      "title": "Workspace for 'mbWorkflow' data",
+      "topics": [
+        "mbWorkspace-class",
+        "show,mbWorkspace-method"
+      ]
+    },
+    {
+      "page": "mergePeaks",
+      "title": "Merge peaks for spectra merging, FT shoulder elimination etc.",
+      "topics": [
+        "mergePeaks",
+        "mergePeaks,data.frame-method",
+        "mergePeaks,matrix-method",
+        "mergePeaks,RmbSpectrum2-method",
+        "mergePeaks,Spectrum-method"
+      ]
+    },
+    {
+      "page": "mergeSpectra",
+      "title": "Merge multiple spectra into one",
+      "topics": [
+        "mergeSpectra",
+        "mergeSpectra,RmbSpectrum2List-method"
+      ]
+    },
+    {
+      "page": "msmsRead",
+      "title": "Extracts and processes spectra from a specified file list, according to loaded options and given parameters.",
+      "topics": [
+        "msmsRead"
+      ]
+    },
+    {
+      "page": "msmsRead.RAW",
+      "title": "Extracts and processes spectra from a list of xcms-Objects",
+      "topics": [
+        "msmsRead.RAW"
+      ]
+    },
+    {
+      "page": "msmsWorkflow",
+      "title": "RMassBank mass spectrometry pipeline",
+      "topics": [
+        "msmsWorkflow"
+      ]
+    },
+    {
+      "page": "msmsWorkspace-class",
+      "title": "Workspace for 'msmsWorkflow' data",
+      "topics": [
+        ".msmsWorkspace",
+        "msmsWorkspace-class",
+        "show,msmsWorkspace-method"
+      ]
+    },
+    {
+      "page": "newMbWorkspace",
+      "title": "Create new workspace for 'mbWorkflow'",
+      "topics": [
+        "newMbWorkspace"
+      ]
+    },
+    {
+      "page": "newMsmsWorkspace",
+      "title": "Create new empty workspace or load saved data for 'msmsWorkflow'",
+      "topics": [
+        "loadMsmsWorkspace",
+        "newMsmsWorkspace"
+      ]
+    },
+    {
+      "page": "normalize-RmbSpectrum2-method",
+      "title": "Scale spectrum to specified intensity range",
+      "topics": [
+        "normalize,RmbSpectrum2-method"
+      ]
+    },
+    {
+      "page": "normalize-RmbSpectrum2List-method",
+      "title": "Normalize spectra",
+      "topics": [
+        "normalize,RmbSpectrum2List-method"
+      ]
+    },
+    {
+      "page": "order.formula",
+      "title": "Order a chemical formula correctly",
+      "topics": [
+        "order.formula"
+      ]
+    },
+    {
+      "page": "parseMassBank",
+      "title": "MassBank-record Parser",
+      "topics": [
+        "parseMassBank"
+      ]
+    },
+    {
+      "page": "parseMbRecord",
+      "title": "MassBank-record Parser",
+      "topics": [
+        "parseMbRecord"
+      ]
+    },
+    {
+      "page": "peaksMatched",
+      "title": "Select matching/unmatching peaks from aggregate table",
+      "topics": [
+        "peaksMatched",
+        "peaksMatched,data.frame-method",
+        "peaksMatched,msmsWorkspace-method"
+      ]
+    },
+    {
+      "page": "peaksUnmatched",
+      "title": "Select matching/unmatching peaks from aggregate table",
+      "topics": [
+        "peaksUnmatched",
+        "peaksUnmatched,data.frame-method",
+        "peaksUnmatched,msmsWorkspace-method"
+      ]
+    },
+    {
+      "page": "plotMbWorkspaces",
+      "title": "Plots mbWorkspaces",
+      "topics": [
+        "plotMbWorkspaces"
+      ]
+    },
+    {
+      "page": "plotRecalibration",
+      "title": "Plot the recalibration graph.",
+      "topics": [
+        "plotRecalibration",
+        "plotRecalibration.direct"
+      ]
+    },
+    {
+      "page": "ppm",
+      "title": "Calculate ppm values",
+      "topics": [
+        "ppm"
+      ]
+    },
+    {
+      "page": "problematicPeaks",
+      "title": "Identify intense peaks (in a list of unmatched peaks)",
+      "topics": [
+        "problematicPeaks"
+      ]
+    },
+    {
+      "page": "processProblematicPeaks",
+      "title": "Generate list of problematic peaks",
+      "topics": [
+        "processProblematicPeaks"
+      ]
+    },
+    {
+      "page": "progressBarHook",
+      "title": "Standard progress bar hook.",
+      "topics": [
+        "progressBarHook"
+      ]
+    },
+    {
+      "page": "property",
+      "title": "Get a property of an RmbSpectrum2 object",
+      "topics": [
+        "property",
+        "property,RmbSpectrum2,character-method"
+      ]
+    },
+    {
+      "page": "property-set",
+      "title": "Replacement function to set properties of an RmbSpectrum2 object",
+      "topics": [
+        "property<-",
+        "property<-,RmbSpectrum2,character,logical,character-method",
+        "property<-,RmbSpectrum2,character,logical,missing-method",
+        "property<-,RmbSpectrum2,character,missing,character-method",
+        "property<-,RmbSpectrum2,character,missing,missing-method"
+      ]
+    },
+    {
+      "page": "reanalyzeFailpeaks",
+      "title": "Reanalyze unmatched peaks",
+      "topics": [
+        "reanalyzeFailpeak",
+        "reanalyzeFailpeaks"
+      ]
+    },
+    {
+      "page": "recalibrate",
+      "title": "Predefined recalibration functions.",
+      "topics": [
+        "recalibrate",
+        "recalibrate.identity",
+        "recalibrate.linear",
+        "recalibrate.loess",
+        "recalibrate.mean"
+      ]
+    },
+    {
+      "page": "recalibrate.addMS1data",
+      "title": "Return MS1 peaks to be used for recalibration",
+      "topics": [
+        "recalibrate.addMS1data"
+      ]
+    },
+    {
+      "page": "rmb_log_debug",
+      "title": "Pass arguments to logger::log_debug using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_debug"
+      ]
+    },
+    {
+      "page": "rmb_log_error",
+      "title": "Pass arguments to logger::log_error using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_error"
+      ]
+    },
+    {
+      "page": "rmb_log_fatal",
+      "title": "Pass arguments to logger::log_fatal using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_fatal"
+      ]
+    },
+    {
+      "page": "rmb_log_info",
+      "title": "Pass arguments to logger::log_info using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_info"
+      ]
+    },
+    {
+      "page": "rmb_log_success",
+      "title": "Pass arguments to logger::log_success using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_success"
+      ]
+    },
+    {
+      "page": "rmb_log_trace",
+      "title": "Pass arguments to logger::log_trace using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_trace"
+      ]
+    },
+    {
+      "page": "rmb_log_warn",
+      "title": "Pass arguments to logger::log_warn using custom RMassBank-logging settings",
+      "topics": [
+        "rmb_log_warn"
+      ]
+    },
+    {
+      "page": "RmbDefaultSettings",
+      "title": "RMassBank settings",
+      "topics": [
+        "loadRmbSettings",
+        "loadRmbSettingsFromEnv",
+        "RmbDefaultSettings",
+        "RmbSettingsTemplate"
+      ]
+    },
+    {
+      "page": "RmbSettings",
+      "title": "RMassBank settings",
+      "topics": [
+        "RmbSettings"
+      ]
+    },
+    {
+      "page": "RmbSpectraSet-class",
+      "title": "Set of spectra pertaining to one compound",
+      "topics": [
+        ".RmbSpectraSet",
+        "RmbSpectraSet-class"
+      ]
+    },
+    {
+      "page": "RmbSpectrum2-class",
+      "title": "RMassBank Representation of an MSMS Spectrum",
+      "topics": [
+        ".RmbSpectrum2",
+        "RmbSpectrum2-class"
+      ]
+    },
+    {
+      "page": "RmbSpectrum2List",
+      "title": "SimpleList specializations",
+      "topics": [
+        ".RmbSpectraSetList",
+        ".RmbSpectrum2List",
+        "RmbSpectraSetList",
+        "RmbSpectraSetList-class",
+        "RmbSpectrum2List-class"
+      ]
+    },
+    {
+      "page": "selectPeaks",
+      "title": "Select peaks from aggregate table",
+      "topics": [
+        "selectPeaks",
+        "selectPeaks,data.frame-method",
+        "selectPeaks,msmsWorkspace-method",
+        "selectPeaks,RmbSpectraSet-method",
+        "selectPeaks,RmbSpectraSetList-method",
+        "selectPeaks,RmbSpectrum2-method",
+        "selectPeaks,RmbSpectrum2List-method",
+        "selectPeaks,Spectrum-method"
+      ]
+    },
+    {
+      "page": "selectSpectra",
+      "title": "Select a subset of spectra matching properties",
+      "topics": [
+        "selectSpectra",
+        "selectSpectra,msmsWorkspace,character-method",
+        "selectSpectra,RmbSpectraSetList,character-method"
+      ]
+    },
+    {
+      "page": "setAccessionBuilder",
+      "title": "Define a programmatic or gluey ACCESSION builder",
+      "topics": [
+        "setAccessionBuilder"
+      ]
+    },
+    {
+      "page": "setData",
+      "title": "Set 'RmbSpectrum2' data from data.frame",
+      "topics": [
+        "setData",
+        "setData,RmbSpectrum2,data.frame-method"
+      ]
+    },
+    {
+      "page": "smiles2mass",
+      "title": "Calculate the mass from a SMILES-String",
+      "topics": [
+        "smiles2mass"
+      ]
+    },
+    {
+      "page": "spectraCount",
+      "title": "Count MS2 spectra per compound",
+      "topics": [
+        "spectraCount",
+        "spectraCount,msmsWorkspace-method",
+        "spectraCount,RmbSpectraSet-method",
+        "spectraCount,RmbSpectraSetList-method"
+      ]
+    },
+    {
+      "page": "to.limits.rcdk",
+      "title": "Convert formula to Rcdk limits",
+      "topics": [
+        "to.limits.rcdk"
+      ]
+    },
+    {
+      "page": "toMassbank",
+      "title": "Write MassBank record into character array",
+      "topics": [
+        "toMassbank",
+        "toMassbank,RmbSpectraSet-method",
+        "toMassbank,RmbSpectrum2-method"
+      ]
+    },
+    {
+      "page": "toRMB",
+      "title": "Conversion of XCMS-pseudospectra into RMassBank-spectra",
+      "topics": [
+        "toRMB"
+      ]
+    },
+    {
+      "page": "updateHeader",
+      "title": "Add a header to a Multiblock JCAMP file",
+      "topics": [
+        "updateHeader"
+      ]
+    },
+    {
+      "page": "updateSettings",
+      "title": "Update settings to current version",
+      "topics": [
+        "updateSettings"
+      ]
+    },
+    {
+      "page": "validate",
+      "title": "Validate MassBank records with a set of Unit tests",
+      "topics": [
+        "validate"
+      ]
+    }
+  ],
+  "_readme": "https://github.com/bioc/RMassBank/raw/HEAD/README.md",
+  "_rundeps": [
+    "abind",
+    "affy",
+    "affyio",
+    "AnnotationFilter",
+    "askpass",
+    "assertthat",
+    "base64enc",
+    "BH",
+    "Biobase",
+    "BiocBaseUtils",
+    "BiocGenerics",
+    "biocmake",
+    "BiocManager",
+    "BiocParallel",
+    "bit",
+    "bit64",
+    "bitops",
+    "bslib",
+    "cachem",
+    "ChemmineR",
+    "cli",
+    "clipr",
+    "clue",
+    "cluster",
+    "codetools",
+    "cpp11",
+    "crayon",
+    "crosstalk",
+    "curl",
+    "data.table",
+    "data.tree",
+    "DBI",
+    "DelayedArray",
+    "digest",
+    "dir.expiry",
+    "doParallel",
+    "dplyr",
+    "DT",
+    "enviPat",
+    "evaluate",
+    "farver",
+    "fastmap",
+    "filelock",
+    "fingerprint",
+    "fontawesome",
+    "foreach",
+    "formatR",
+    "fs",
+    "futile.logger",
+    "futile.options",
+    "generics",
+    "GenomicRanges",
+    "ggplot2",
+    "glue",
+    "gridExtra",
+    "gtable",
+    "highr",
+    "hms",
+    "htmltools",
+    "htmlwidgets",
+    "httr",
+    "httr2",
+    "igraph",
+    "impute",
+    "IRanges",
+    "isoband",
+    "iterators",
+    "itertools",
+    "jquerylib",
+    "jsonlite",
+    "knitr",
+    "labeling",
+    "lambda.r",
+    "later",
+    "lattice",
+    "lazyeval",
+    "lifecycle",
+    "limma",
+    "logger",
+    "magrittr",
+    "MALDIquant",
+    "MASS",
+    "Matrix",
+    "MatrixGenerics",
+    "matrixStats",
+    "memoise",
+    "MetaboCoreUtils",
+    "mime",
+    "MsCoreUtils",
+    "MSnbase",
+    "MultiAssayExperiment",
+    "mzID",
+    "mzR",
+    "ncdf4",
+    "openssl",
+    "otel",
+    "pcaMethods",
+    "pillar",
+    "pkgconfig",
+    "plotly",
+    "plyr",
+    "png",
+    "preprocessCore",
+    "prettyunits",
+    "progress",
+    "promises",
+    "ProtGenerics",
+    "PSMatch",
+    "PTMods",
+    "purrr",
+    "QFeatures",
+    "R.methodsS3",
+    "R.oo",
+    "R.utils",
+    "R6",
+    "rappdirs",
+    "rcdk",
+    "rcdklibs",
+    "RColorBrewer",
+    "Rcpp",
+    "RCurl",
+    "readJDX",
+    "readr",
+    "reshape2",
+    "Rhdf5lib",
+    "rJava",
+    "rjson",
+    "rlang",
+    "rmarkdown",
+    "rsvg",
+    "rvest",
+    "S4Arrays",
+    "S4Vectors",
+    "S7",
+    "sass",
+    "scales",
+    "selectr",
+    "Seqinfo",
+    "snow",
+    "SparseArray",
+    "Spectra",
+    "statmod",
+    "stringi",
+    "stringr",
+    "SummarizedExperiment",
+    "sys",
+    "tibble",
+    "tidyr",
+    "tidyselect",
+    "tinytex",
+    "tzdb",
+    "utf8",
+    "vctrs",
+    "viridisLite",
+    "vroom",
+    "vsn",
+    "webchem",
+    "withr",
+    "xfun",
+    "XML",
+    "xml2",
+    "XVector",
+    "yaml"
+  ],
+  "_sysdeps": [
+    {
+      "shlib": "libjvm",
+      "package": "openjdk-25-jre-headless",
+      "headers": "openjdk-25-jre-headless",
+      "source": "openjdk",
+      "version": "25.0.3+9-2~26.04.2",
+      "name": "openjdk",
+      "homepage": "https://openjdk.java.net/",
+      "description": "OpenJDK Java runtime, using Hotspot JIT (headless)"
+    }
+  ],
+  "_vignettes": [
+    {
+      "source": "RMassBankNonstandard.Rmd",
+      "filename": "RMassBankNonstandard.html",
+      "title": "RMassBank: Non-standard usage",
+      "author": "Michael Stravs",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Introduction",
+        "Skipping recalibration",
+        "Combining multiplicities",
+        "Session information"
+      ],
+      "created": "2020-10-19 20:16:39",
+      "modified": "2022-03-09 10:37:11",
+      "commits": 2
+    },
+    {
+      "source": "RMassBank.Rmd",
+      "filename": "RMassBank.html",
+      "title": "RMassBank: The workflow by example",
+      "author": "Michael Stravs, Emma Schymanski",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Introduction",
+        "Installation and loading",
+        "Input files",
+        "LC/MS data",
+        "Compound list",
+        "Settings",
+        "The workflow",
+        "Mass spectrometry workflow",
+        "MassBank record workflow",
+        "Session information"
+      ],
+      "created": "2020-10-19 20:16:39",
+      "modified": "2022-03-09 09:54:26",
+      "commits": 3
+    }
+  ],
+  "_score": 5.880813592280791,
+  "_indexed": true,
+  "_nocasepkg": "rmassbank",
+  "_universes": [
+    "bioc",
+    "uchem-massbank"
+  ],
+  "_failure": {
+    "version": "3.23.1",
+    "commit": {
+      "id": "fa37118e05405550ab40f7cc3e70267813a3880a",
+      "author": "lshep <lori.shepherd@roswellpark.org>",
+      "committer": "lshep <lori.shepherd@roswellpark.org>",
+      "message": "unresponsive\n\n - secret found\n",
+      "time": 1789397206
+    },
+    "buildurl": "https://github.com/r-universe/bioc/actions/runs/38152254880",
+    "date": "2026-10-14T06:34:57.836Z",
+    "job": {
+      "job": 115715070553,
+      "time": 346,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "11875150578"
+    }
+  },
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:26:06.000Z",
+      "distro": "resolute",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/669ebc9f2e028acd4f24a95e396a098e3da0c65443b3026953bdc472d7ad7fb8",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:25:18.000Z",
+      "distro": "resolute",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/7f0a4559a8b96538d797fea6ffdcc130306864a3d94ade4746369611ac8702c5",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:22:33.000Z",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/6385eb860e4f5426e159698af711c582c5137289aab222b392634f5befb4f5f8",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:22:58.000Z",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/92d353d2cb8e26a0918f01ce719e27ff567d6367a7fa5a69b81f8586d8152e35",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:24:28.000Z",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/32f18ce39db0b8f35bd4fd41629859d839ad435994efda0f809d5e0188fadd95",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:22:41.000Z",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/8f6d24fed0dce17bdd4562a0f0b8c70147ee54f8db5269cf52cb103bf09b014d",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:23:08.000Z",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/2a455c5e8cca11a676e285de4d3503bb311714c51f5b8c536ac48fd74fd64b40",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "3.23.0",
+      "date": "2026-08-22T03:23:09.000Z",
+      "commit": "bca43b51ad069b7308671399c264ff99f692446a",
+      "fileid": "https://r2.ropensci.org/be8c8dc39d740e51dc7a1c0771aff59f99b6c6c1ec74b15c4ee22e74f52a40e1",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/32548224653"
+    }
+  ]
+}

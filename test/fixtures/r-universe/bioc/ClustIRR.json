@@ -1,0 +1,1262 @@
+{
+  "_id": "6ad5123a7f75c4fbd3a1dfae",
+  "Package": "ClustIRR",
+  "Type": "Package",
+  "Title": "Clustering of Immune Receptor Repertoires",
+  "Version": "1.11.6",
+  "Authors@R": "c(\nperson(\"Simo\", \"Kitanovski\", email = \"simokitanovski@gmail.com\",\nrole = c(\"aut\", \"cre\"), comment=c(ORCID=\"0000-0003-2909-5376\")),\nperson(\"Kai\", \"Wollek\", email = \"kai.wollek@uni-duisburg-essen.de\",\nrole = c(\"aut\"), comment=c(ORCID=\"0009-0008-5941-9160\")))",
+  "Description": "ClustIRR analyzes repertoires of B- and T-cell receptors.\nIt starts by identifying communities of immune receptors with\nsimilar specificities, based on the sequences of their\ncomplementarity-determining regions (CDRs). Next, it employs a\nBayesian probabilistic models to quantify differential\ncommunity occupancy (DCO) between repertoires, allowing the\nidentification of expanding or contracting communities in\nresponse to e.g. infection or cancer treatment.",
+  "License": "GPL-3 + file LICENSE",
+  "SystemRequirements": "GNU make, ncbi-blast+",
+  "Encoding": "UTF-8",
+  "LazyData": "false",
+  "NeedsCompilation": "yes",
+  "biocViews": "Clustering, ImmunoOncology, SingleCell, Software,\nClassification, Bayesian, BiomedicalInformatics,\nImmunoOncology, MathematicalBiology",
+  "RoxygenNote": "7.2.3",
+  "VignetteBuilder": "knitr",
+  "URL": "https://github.com/snaketron/ClustIRR",
+  "BugReports": "https://github.com/snaketron/ClustIRR/issues",
+  "Biarch": "true",
+  "Config/pak/sysreqs": "cmake libfontconfig1-dev libfreetype6-dev\nlibglpk-dev make libicu-dev libuv1-dev libxml2-dev libssl-dev\nzlib1g-dev",
+  "Repository": "https://bioc.r-universe.dev",
+  "Date/Publication": "2026-10-18 13:11:22 UTC",
+  "RemoteUrl": "https://github.com/bioc/ClustIRR",
+  "RemoteRef": "HEAD",
+  "RemoteSha": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+  "Packaged": {
+    "Date": "2026-10-18 18:21:02 UTC",
+    "User": "root"
+  },
+  "Author": "Simo Kitanovski [aut, cre] (ORCID:\n<https://orcid.org/0000-0003-2909-5376>),\nKai Wollek [aut] (ORCID: <https://orcid.org/0009-0008-5941-9160>)",
+  "Maintainer": "Simo Kitanovski <simokitanovski@gmail.com>",
+  "_user": "bioc",
+  "_type": "src",
+  "_file": "ClustIRR_1.11.6.tar.gz",
+  "_fileid": "https://r2.ropensci.org/8788091fec106ac8d1a7297c798cb64243afaae595a3cd18775a760d8da5dd95",
+  "_filesize": 4724392,
+  "_sha256": "8788091fec106ac8d1a7297c798cb64243afaae595a3cd18775a760d8da5dd95",
+  "_expires": "2027-01-26T18:38:48.000Z",
+  "_created": "2026-10-18T18:21:02.000Z",
+  "_published": "2026-10-18T18:38:50.181Z",
+  "_buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629",
+  "_status": "success",
+  "_host": "GitHub-Actions",
+  "_bioccheck": {
+    "error": 0,
+    "warning": 1,
+    "note": 12
+  },
+  "_upstream": "https://github.com/bioc/ClustIRR",
+  "_commit": {
+    "id": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+    "author": "snaketron <snaketron@users.noreply.github.com>",
+    "committer": "snaketron <snaketron@users.noreply.github.com>",
+    "message": "Fix dataset Rd usage entries to remove stray str() calls from data object documentation.",
+    "time": 1792329082
+  },
+  "_maintainer": {
+    "name": "Simo Kitanovski",
+    "email": "simokitanovski@gmail.com",
+    "orcid": "0000-0003-2909-5376"
+  },
+  "_distro": "resolute",
+  "_jobs": [
+    {
+      "job": 117752915505,
+      "time": 235,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "WARNING",
+      "artifact": "12146471382"
+    },
+    {
+      "job": 117752915472,
+      "time": 330,
+      "config": "linux-devel-arm64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "12145949248"
+    },
+    {
+      "job": 117752915543,
+      "time": 463,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "12146746065"
+    },
+    {
+      "job": 117752915500,
+      "time": 300,
+      "config": "linux-release-arm64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12146546422"
+    },
+    {
+      "job": 117752915519,
+      "time": 443,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12146596311"
+    },
+    {
+      "job": 117752915558,
+      "time": 297,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "ERROR",
+      "artifact": "12146262784"
+    },
+    {
+      "job": 117752915484,
+      "time": 710,
+      "config": "macos-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "ERROR",
+      "artifact": "12146841860"
+    },
+    {
+      "job": 117752915515,
+      "time": 342,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12146720422"
+    },
+    {
+      "job": 117752915498,
+      "time": 497,
+      "config": "macos-release-x86_64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12146168725"
+    },
+    {
+      "job": 117751618767,
+      "time": 342,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "12146426199"
+    },
+    {
+      "job": 117752915544,
+      "time": 238,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "12146735085"
+    },
+    {
+      "job": 117752915690,
+      "time": 409,
+      "config": "windows-devel-arm64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "12146336569"
+    },
+    {
+      "job": 117752915843,
+      "time": 448,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "12146172314"
+    },
+    {
+      "job": 117752915811,
+      "time": 409,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "ERROR",
+      "artifact": "12146272858"
+    },
+    {
+      "job": 117752915745,
+      "time": 444,
+      "config": "windows-release-arm64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12146755904"
+    },
+    {
+      "job": 117752915672,
+      "time": 385,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12146436925"
+    }
+  ],
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "R",
+      "version": ">= 4.3.0",
+      "role": "Depends"
+    },
+    {
+      "package": "BH",
+      "version": ">= 1.66.0",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "Rcpp",
+      "version": ">= 0.12.0",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "RcppEigen",
+      "version": ">= 0.3.3.3.0",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "RcppParallel",
+      "version": ">= 5.0.1",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "rstan",
+      "version": ">= 2.18.1",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "StanHeaders",
+      "version": ">= 2.18.0",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "grDevices",
+      "role": "Imports"
+    },
+    {
+      "package": "igraph",
+      "role": "Imports"
+    },
+    {
+      "package": "methods",
+      "role": "Imports"
+    },
+    {
+      "package": "Rcpp",
+      "version": ">= 0.12.0",
+      "role": "Imports"
+    },
+    {
+      "package": "RcppParallel",
+      "version": ">= 5.0.1",
+      "role": "Imports"
+    },
+    {
+      "package": "reshape2",
+      "role": "Imports"
+    },
+    {
+      "package": "rstan",
+      "version": ">= 2.18.1",
+      "role": "Imports"
+    },
+    {
+      "package": "rstantools",
+      "version": ">= 2.4.0",
+      "role": "Imports"
+    },
+    {
+      "package": "stats",
+      "role": "Imports"
+    },
+    {
+      "package": "stringdist",
+      "role": "Imports"
+    },
+    {
+      "package": "utils",
+      "role": "Imports"
+    },
+    {
+      "package": "posterior",
+      "role": "Imports"
+    },
+    {
+      "package": "visNetwork",
+      "role": "Imports"
+    },
+    {
+      "package": "dplyr",
+      "role": "Imports"
+    },
+    {
+      "package": "tidyr",
+      "role": "Imports"
+    },
+    {
+      "package": "ggplot2",
+      "role": "Imports"
+    },
+    {
+      "package": "ggforce",
+      "role": "Imports"
+    },
+    {
+      "package": "scales",
+      "role": "Imports"
+    },
+    {
+      "package": "msa",
+      "role": "Imports"
+    },
+    {
+      "package": "Biostrings",
+      "role": "Imports"
+    },
+    {
+      "package": "RADanalysis",
+      "role": "Imports"
+    },
+    {
+      "package": "ggseqlogo",
+      "role": "Imports"
+    },
+    {
+      "package": "rBLAST",
+      "role": "Imports"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "testthat",
+      "role": "Suggests"
+    },
+    {
+      "package": "ggrepel",
+      "role": "Suggests"
+    },
+    {
+      "package": "patchwork",
+      "role": "Suggests"
+    },
+    {
+      "package": "htmlwidgets",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": true,
+  "_usedby": 0,
+  "_updates": [
+    {
+      "week": "2025-42",
+      "n": 1
+    },
+    {
+      "week": "2025-49",
+      "n": 1
+    },
+    {
+      "week": "2025-52",
+      "n": 1
+    },
+    {
+      "week": "2026-02",
+      "n": 1
+    },
+    {
+      "week": "2026-07",
+      "n": 1
+    },
+    {
+      "week": "2026-08",
+      "n": 4
+    },
+    {
+      "week": "2026-09",
+      "n": 4
+    },
+    {
+      "week": "2026-14",
+      "n": 3
+    },
+    {
+      "week": "2026-15",
+      "n": 13
+    },
+    {
+      "week": "2026-17",
+      "n": 3
+    },
+    {
+      "week": "2026-21",
+      "n": 2
+    },
+    {
+      "week": "2026-23",
+      "n": 2
+    },
+    {
+      "week": "2026-27",
+      "n": 7
+    },
+    {
+      "week": "2026-42",
+      "n": 17
+    }
+  ],
+  "_tags": [],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "1.11.0",
+      "bioc": "3.24",
+      "repository": "bioc"
+    },
+    {
+      "branch": "release",
+      "version": "1.10.0",
+      "bioc": "3.23",
+      "repository": "bioc"
+    }
+  ],
+  "_topics": [
+    "clustering",
+    "immunooncology",
+    "singlecell",
+    "software",
+    "classification",
+    "bayesian",
+    "biomedicalinformatics",
+    "mathematicalbiology",
+    "b-cell-receptor",
+    "bioinformatics",
+    "immunoinformatics",
+    "immunology",
+    "quantitative-methods",
+    "rep-seq",
+    "repertoire-analysis",
+    "t-cell-receptor",
+    "onetbb",
+    "cpp"
+  ],
+  "_stars": 5,
+  "_contributors": [
+    {
+      "user": "snaketron",
+      "count": 516,
+      "uuid": 5060977
+    },
+    {
+      "user": "kaozkai",
+      "count": 165,
+      "uuid": 43067987
+    },
+    {
+      "user": "jwokaty",
+      "count": 12,
+      "uuid": 1744257
+    },
+    {
+      "user": "hpages",
+      "count": 1,
+      "uuid": 8810451
+    }
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 478,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 362,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/ClustIRR"
+  },
+  "_devurl": "https://github.com/snaketron/clustirr",
+  "_searchresults": 16,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/ClustIRR.html",
+    "extra/contents.json",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt",
+    "extra/readme.html",
+    "extra/readme.md",
+    "LICENSE"
+  ],
+  "_homeurl": "https://github.com/snaketron/clustirr",
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    "clustirr",
+    "dco",
+    "decode_all_communities",
+    "decode_community",
+    "detect_communities",
+    "get_ag_gene_hits",
+    "get_ag_species_hits",
+    "get_beta_cprob_ag",
+    "get_beta_violin_ag",
+    "get_cdr3_motifs",
+    "get_clustirr_clust",
+    "get_clustirr_inputs",
+    "get_community_feature_purity",
+    "get_community_feature_stats",
+    "get_cosine_similarity",
+    "get_honeycombs",
+    "get_nrads",
+    "merge_clustirrs",
+    "plot_graph",
+    "save_interactive_graph"
+  ],
+  "_datasets": [
+    {
+      "name": "BLOSUM62",
+      "title": "BLOSUM62 matrix",
+      "object": "BLOSUM62",
+      "file": "BLOSUM62.rda",
+      "class": [
+        "matrix",
+        "array"
+      ],
+      "fields": [
+        "A",
+        "R",
+        "N",
+        "D",
+        "C",
+        "Q",
+        "E",
+        "G",
+        "H",
+        "I",
+        "L",
+        "K",
+        "M",
+        "F",
+        "P",
+        "S",
+        "T",
+        "W",
+        "Y",
+        "V",
+        "B",
+        "J",
+        "Z",
+        "X",
+        "*"
+      ],
+      "rows": 25,
+      "table": true,
+      "tojson": true
+    },
+    {
+      "name": "D_CMV_FLU",
+      "title": "Processed single-cell TCR and gene expression dataset of antigen stimulated T cells",
+      "object": "D_CMV_FLU",
+      "file": "D_CMV_FLU.RData",
+      "class": [
+        "list"
+      ],
+      "fields": [],
+      "table": false,
+      "tojson": true
+    },
+    {
+      "name": "D1",
+      "title": "Synthetic dataset 'D1' with three TCRalphabeta repertoires",
+      "object": "D1",
+      "file": "D1.RData",
+      "class": [
+        "list"
+      ],
+      "fields": [],
+      "table": false,
+      "tojson": true
+    },
+    {
+      "name": "D2",
+      "title": "Synthetic dataset 'D2' with six TCRalphabeta repertoires",
+      "object": "D2",
+      "file": "D2.RData",
+      "class": [
+        "data.frame"
+      ],
+      "fields": [
+        "CDR3a",
+        "CDR3b",
+        "sample",
+        "clone_size"
+      ],
+      "rows": 2773,
+      "table": true,
+      "tojson": true
+    },
+    {
+      "name": "mcpas",
+      "title": "CDR3 sequences and their matching epitopes obtained from McPAS-TCR",
+      "object": "mcpas",
+      "file": "mcpas.RData",
+      "class": [
+        "data.frame"
+      ],
+      "fields": [
+        "CDR3a",
+        "CDR3b",
+        "CDR3g",
+        "CDR3d",
+        "CDR3h",
+        "CDR3l",
+        "CDR3_species",
+        "Antigen_species",
+        "Antigen_gene",
+        "Reference"
+      ],
+      "rows": 35287,
+      "table": true,
+      "tojson": true
+    },
+    {
+      "name": "tcr3d",
+      "title": "CDR3 sequences and their matching epitopes obtained from TCR3d",
+      "object": "tcr3d",
+      "file": "tcr3d.RData",
+      "class": [
+        "data.frame"
+      ],
+      "fields": [
+        "CDR3a",
+        "CDR3b",
+        "CDR3g",
+        "CDR3d",
+        "CDR3h",
+        "CDR3l",
+        "CDR3_species",
+        "Antigen_species",
+        "Antigen_gene",
+        "Reference"
+      ],
+      "rows": 273,
+      "table": true,
+      "tojson": true
+    },
+    {
+      "name": "vdjdb",
+      "title": "CDR3 sequences and their matching epitopes obtained from VDJdb",
+      "object": "vdjdb",
+      "file": "vdjdb.RData",
+      "class": [
+        "data.frame"
+      ],
+      "fields": [
+        "CDR3a",
+        "CDR3b",
+        "CDR3g",
+        "CDR3d",
+        "CDR3h",
+        "CDR3l",
+        "CDR3_species",
+        "Antigen_species",
+        "Antigen_gene",
+        "Reference"
+      ],
+      "rows": 81894,
+      "table": true,
+      "tojson": true
+    }
+  ],
+  "_help": [
+    {
+      "page": "BLOSUM62",
+      "title": "BLOSUM62 matrix",
+      "topics": [
+        "BLOSUM62"
+      ]
+    },
+    {
+      "page": "clust_irr-class",
+      "title": "clust_irr class",
+      "topics": [
+        "class:clust_irr",
+        "clust_irr",
+        "clust_irr-class",
+        "get_clustirr_clust",
+        "get_clustirr_clust,clust_irr-method",
+        "get_clustirr_inputs",
+        "get_clustirr_inputs,clust_irr-method"
+      ]
+    },
+    {
+      "page": "clustirr",
+      "title": "Clustering of immune receptor repertoires (IRRs)",
+      "topics": [
+        "clustirr"
+      ]
+    },
+    {
+      "page": "D_CMV_FLU",
+      "title": "Processed single-cell TCR and gene expression dataset of antigen stimulated T cells",
+      "topics": [
+        "D_CMV_FLU"
+      ]
+    },
+    {
+      "page": "D1",
+      "title": "Synthetic dataset 'D1' with three TCRalphabeta repertoires",
+      "topics": [
+        "D1"
+      ]
+    },
+    {
+      "page": "D2",
+      "title": "Synthetic dataset 'D2' with six TCRalphabeta repertoires",
+      "topics": [
+        "D2"
+      ]
+    },
+    {
+      "page": "dco",
+      "title": "Model-based differential community occupancy (DCO) analysis",
+      "topics": [
+        "dco"
+      ]
+    },
+    {
+      "page": "decode_all_communities",
+      "title": "Decode all graph communities",
+      "topics": [
+        "decode_all_communities"
+      ]
+    },
+    {
+      "page": "decode_community",
+      "title": "Decode graph communities",
+      "topics": [
+        "decode_community"
+      ]
+    },
+    {
+      "page": "detect_communities",
+      "title": "Graph-based community detection (GCD)",
+      "topics": [
+        "detect_communities"
+      ]
+    },
+    {
+      "page": "get_ag_gene_hits",
+      "title": "Annotate antigen gene hits in node summary",
+      "topics": [
+        "get_ag_gene_hits"
+      ]
+    },
+    {
+      "page": "get_ag_species_hits",
+      "title": "Annotate antigen species hits in node summary",
+      "topics": [
+        "get_ag_species_hits"
+      ]
+    },
+    {
+      "page": "get_beta_cprob_ag",
+      "title": "Visualize cumulative probability of beta means for antigen-specific communities",
+      "topics": [
+        "get_beta_cprob_ag"
+      ]
+    },
+    {
+      "page": "get_beta_violin_ag",
+      "title": "Visualize distribution of beta means in each repertoire as violin plots",
+      "topics": [
+        "get_beta_violin_ag"
+      ]
+    },
+    {
+      "page": "get_cdr3_motifs",
+      "title": "Generate CDR3 motif for communities",
+      "topics": [
+        "get_cdr3_motifs"
+      ]
+    },
+    {
+      "page": "get_community_feature_purity",
+      "title": "Compute community purity with respect to a node feature",
+      "topics": [
+        "get_community_feature_purity"
+      ]
+    },
+    {
+      "page": "get_community_feature_stats",
+      "title": "Compute descriptive statistics of a community node feature",
+      "topics": [
+        "get_community_feature_stats"
+      ]
+    },
+    {
+      "page": "get_cosine_similarity",
+      "title": "Compute and Visualize Cosine Similarity (CS)",
+      "topics": [
+        "get_cosine_similarity"
+      ]
+    },
+    {
+      "page": "get_honeycombs",
+      "title": "Generate honycomb plot: visualize community occupancy of pairs of immune receptor repertoires",
+      "topics": [
+        "get_honeycombs"
+      ]
+    },
+    {
+      "page": "get_nrads",
+      "title": "Compute Normalized Rank Abundance Distributions (NRADs)",
+      "topics": [
+        "get_nrads"
+      ]
+    },
+    {
+      "page": "mcpas",
+      "title": "CDR3 sequences and their matching epitopes obtained from McPAS-TCR",
+      "topics": [
+        "mcpas"
+      ]
+    },
+    {
+      "page": "merge_clustirrs",
+      "title": "Merge immune receptor repertoire similarity graphs",
+      "topics": [
+        "merge_clustirrs"
+      ]
+    },
+    {
+      "page": "plot_graph",
+      "title": "Plot ClustIRR graph",
+      "topics": [
+        "plot_graph"
+      ]
+    },
+    {
+      "page": "save_interactive_graph",
+      "title": "Save interactive ClustIRR graph",
+      "topics": [
+        "save_interactive_graph"
+      ]
+    },
+    {
+      "page": "tcr3d",
+      "title": "CDR3 sequences and their matching epitopes obtained from TCR3d",
+      "topics": [
+        "tcr3d"
+      ]
+    },
+    {
+      "page": "vdjdb",
+      "title": "CDR3 sequences and their matching epitopes obtained from VDJdb",
+      "topics": [
+        "vdjdb"
+      ]
+    }
+  ],
+  "_readme": "https://github.com/bioc/ClustIRR/raw/HEAD/README.md",
+  "_rundeps": [
+    "abind",
+    "askpass",
+    "backports",
+    "base64enc",
+    "BH",
+    "BiocFileCache",
+    "BiocGenerics",
+    "Biostrings",
+    "bit",
+    "bit64",
+    "blob",
+    "bslib",
+    "cachem",
+    "callr",
+    "checkmate",
+    "cli",
+    "cpp11",
+    "crayon",
+    "curl",
+    "DBI",
+    "dbplyr",
+    "desc",
+    "digest",
+    "distributional",
+    "dplyr",
+    "evaluate",
+    "farver",
+    "fastmap",
+    "filelock",
+    "fontawesome",
+    "fs",
+    "generics",
+    "ggforce",
+    "ggplot2",
+    "ggseqlogo",
+    "glue",
+    "gridExtra",
+    "gtable",
+    "highr",
+    "htmltools",
+    "htmlwidgets",
+    "httr2",
+    "igraph",
+    "inline",
+    "IRanges",
+    "isoband",
+    "jquerylib",
+    "jsonlite",
+    "knitr",
+    "labeling",
+    "lattice",
+    "lifecycle",
+    "loo",
+    "magrittr",
+    "MASS",
+    "Matrix",
+    "matrixStats",
+    "memoise",
+    "mime",
+    "msa",
+    "MultipleAlignment",
+    "numDeriv",
+    "openssl",
+    "otel",
+    "pillar",
+    "pkgbuild",
+    "pkgconfig",
+    "plyr",
+    "polyclip",
+    "posterior",
+    "processx",
+    "ps",
+    "purrr",
+    "QuickJSR",
+    "R6",
+    "RADanalysis",
+    "rappdirs",
+    "rBLAST",
+    "RColorBrewer",
+    "Rcpp",
+    "RcppEigen",
+    "RcppParallel",
+    "reshape2",
+    "rlang",
+    "rmarkdown",
+    "RSQLite",
+    "rstan",
+    "rstantools",
+    "S4Vectors",
+    "S7",
+    "sass",
+    "scales",
+    "Seqinfo",
+    "sfsmisc",
+    "StanHeaders",
+    "stringdist",
+    "stringi",
+    "stringr",
+    "sys",
+    "systemfonts",
+    "tensorA",
+    "tibble",
+    "tidyr",
+    "tidyselect",
+    "tinytex",
+    "tweenr",
+    "utf8",
+    "vctrs",
+    "viridisLite",
+    "visNetwork",
+    "withr",
+    "xfun",
+    "XVector",
+    "yaml"
+  ],
+  "_sysdeps": [
+    {
+      "shlib": "libtbb",
+      "package": "libtbb12",
+      "headers": "libtbb-dev",
+      "source": "onetbb",
+      "version": "2022.3.0-2",
+      "name": "onetbb",
+      "homepage": "https://uxlfoundation.github.io/oneTBB/",
+      "description": "parallelism library for C++ - runtime files"
+    },
+    {
+      "shlib": "libstdc++",
+      "package": "libstdc++6",
+      "source": "gcc",
+      "version": "16-20260322-1ubuntu1",
+      "name": "c++",
+      "homepage": "http://gcc.gnu.org/",
+      "description": "GNU Standard C++ Library v3"
+    }
+  ],
+  "_vignettes": [
+    {
+      "source": "User_manual_case_study.Rmd",
+      "filename": "User_manual_case_study.html",
+      "title": "Decoding antigen-stimulated T cell receptor repertoires with ClustIRR",
+      "author": "Simo Kitanovski",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Analysis of T cell receptor (TCR) repertoires",
+        "Install and load the current version of ClustIRR",
+        "Familiarize with TCR data",
+        "Familiarize with gene expression data",
+        "Using ClustIRR to compare the two repertoires, CMV vs. Flu",
+        "Step 1 Building a joint graph",
+        "Using igraph functions to inspect $J$",
+        "Step 2 Detecting communities in $J$",
+        "Step 3 Finding differentially abundant communities (DACs)",
+        "Posterior predictive checks",
+        "Taking a peek at the relative community abundances ($\\beta$)",
+        "Inspecting DACs of interest",
+        "Show the CDR3$\\alpha$\\beta$ sequence logos of community 9",
+        "Visualize the graph of community 9",
+        "Integration of TCR and GEX data"
+      ],
+      "created": "2026-07-01 17:04:56",
+      "modified": "2026-10-18 12:37:53",
+      "commits": 2
+    },
+    {
+      "source": "User_manual_introduction.Rmd",
+      "filename": "User_manual_introduction.html",
+      "title": "Decoding T- and B-cell receptor repertoires with ClustIRR",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "Introduction",
+        "Installation",
+        "System requirements",
+        "ClustIRR algorithm",
+        "Input",
+        "Algorithm",
+        "Step 1. Compute TCR clonotype similarities in a repertoire with cluster_irr",
+        "Step 2-3. Construct TCR repertoire graphs and join them into $J$",
+        "Run steps 1-3 with clustirr",
+        "Inspect the content of clust_irrs",
+        "Inspect graphs with plot_graph",
+        "You can evaluate $J$ with igraph",
+        "Step 4. community detection with detect_communities",
+        "Inspecting the outputs of detect_communities",
+        "Qualitative similarity between community abundance vectors with get_honeycombs",
+        "Quantitative similarity between community abundance vectors with get_cosine_similarity",
+        "Summary of communities is provided in the detect_communities outputs",
+        "Special functions: decoding communities with decode_community",
+        "Step 5. differential community occupancy (DCO) with dco",
+        "Step 6. Inspect results",
+        "Visualizing the distribution of $\\beta$ with get_beta_violin_ag",
+        "Posterior predictive checks",
+        "Differential community abundance results $\\rightarrow$ par. $\\delta$",
+        "Conclusion: you can also use custom community occupancy matrix for DCO!"
+      ],
+      "created": "2026-01-05 16:13:08",
+      "modified": "2026-10-18 11:18:37",
+      "commits": 7
+    },
+    {
+      "source": "User_manual_groups.Rmd",
+      "filename": "User_manual_groups.html",
+      "title": "Finding biological condition-specific changes in T- and B-cell receptor repertoires with ClustIRR",
+      "engine": "knitr::rmarkdown",
+      "headings": [],
+      "created": "2026-01-05 16:13:08",
+      "modified": "2026-04-09 11:36:01",
+      "commits": 5
+    }
+  ],
+  "_score": 6.702430536445525,
+  "_indexed": true,
+  "_nocasepkg": "clustirr",
+  "_universes": [
+    "bioc",
+    "snaketron"
+  ],
+  "_previous": "1.11.1",
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:24:55.000Z",
+      "distro": "resolute",
+      "arch": "aarch64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/b4e1b8357ad094e70454d20c896e6289be441c7eed4edaa4dd5ef1980662a68a",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:26:30.000Z",
+      "distro": "resolute",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/67a40fb4d299eab137b6a2cb4ae27cea8baa153f8a762129bb6e19d059cc1d9f",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:24:44.000Z",
+      "distro": "resolute",
+      "arch": "aarch64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/d8a1713e6711e288840f7dce97a844fe5f956c987a8aaa097ea502427567daa4",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:26:10.000Z",
+      "distro": "resolute",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/fa4b8d339b7f5227064dbe57d0839bad10070a386d3101b840f9f01bed79f8cd",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:26:01.000Z",
+      "arch": "aarch64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/f59f603bfc59f047c45c1872301455e7e9404f80e74e4716339c562ef0cdd3cd",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:30:23.000Z",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/874d74567c903b661f7cccd9240804733ec39517b87f3ab464ea00e4f848c9fa",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:26:18.000Z",
+      "arch": "aarch64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/260279bb094cb65d9f1e1af728d3093a7374b50a41a9c65bb2b12a63d0353e36",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:27:01.000Z",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/70be8f02d2cea7c3a886f7ccd4b49a8123665c70087992e35d3423c4c9a7dafc",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:25:08.000Z",
+      "arch": "emscripten",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/59a327dc91e4cd50ac234f5cf40db38abe2febbf9ba5fe3cfb3629d02106fd71",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:25:54.000Z",
+      "arch": "aarch64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/8129163ec5a3237440c83f5e51a3c65e5e01eade38c20805c8601eb1c53ce424",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:24:05.000Z",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/885ebafeae15fa0bfc8fe0399a873676026ff43b242955751e9bb10eccbcae49",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:24:13.000Z",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/29165edabc04d620f3cb4a7b5a11c17d38337c0c4faec9f6da9ae80483bd1953",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:26:36.000Z",
+      "arch": "aarch64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/cd45d78677b7eb6346a5092cd9a9ba4554db27acecbe323667a5bc717a2dae42",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "1.11.6",
+      "date": "2026-10-18T18:23:55.000Z",
+      "arch": "x86_64",
+      "commit": "4bb2099d8e491acae6a0f01a519d5c2df22be6d2",
+      "fileid": "https://r2.ropensci.org/108821cd223a0427a6f8c15112f152f1a3e7b487aa909b0251324a2bc28e77bd",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39153413629"
+    }
+  ]
+}

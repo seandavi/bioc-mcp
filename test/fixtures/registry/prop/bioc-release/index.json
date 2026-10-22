@@ -1,0 +1,156 @@
+{
+  "edgeR": {
+    "version": "4.10.7",
+    "sha256": "d3e7cf0fa3cd9881258280e4669ce2de4b9b275ac6b8b92a97bf366ca8b14e27",
+    "ts": "2026-10-17T14:15:33.279Z",
+    "bioccheck": "ERROR",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "d3e7cf0fa3cd9881258280e4669ce2de4b9b275ac6b8b92a97bf366ca8b14e27",
+        "file": "edgeR_4.10.7.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "03d994dea6040756ac8d62c930930b7198370d736132e7e41542d0fa823dcc0d",
+        "arch": "aarch64",
+        "distro": "resolute",
+        "file": "edgeR_4.10.7.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "1f161955ff59e7fc2317338ada98f14f98a7902e60c3bc0e697503f760f54478",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "edgeR_4.10.7.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "9d8a41c1606b347cf27099b9b582a427bb03034dded6b113f128e9cae3946637",
+        "arch": "aarch64",
+        "distro": "resolute",
+        "file": "edgeR_4.10.7.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "fd1aca3c4c6c6f0e2da1643e5e1f482d32f8c18b01ffa68d0cf6a4c046c55b44",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "edgeR_4.10.7.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "16a17625ad073d33382b61e0ec9f0ae76244a707f54e0aca880ae90a80d7b9a9",
+        "arch": "aarch64",
+        "file": "edgeR_4.10.7.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "4d73f068ea2ec35922b31cd215bf366be1922ca449ad2765365a5a665f2dedee",
+        "arch": "x86_64",
+        "file": "edgeR_4.10.7.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "8b5d6821d67d9f2954d951771736454a0579ef5269773f15d5f79090247f702d",
+        "arch": "aarch64",
+        "file": "edgeR_4.10.7.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "db45f85e90210531326c0352dccb6abd12b884be12a1970536422f11f3b164d1",
+        "arch": "x86_64",
+        "file": "edgeR_4.10.7.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "cbfb38b62246842a240ef87c4794256a95068660dc982a349098b6fbbab93367",
+        "arch": "emscripten",
+        "file": "edgeR_4.10.7.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "04998f76c03ab437f02a540c8c5d10db150054f7ca2d4860ffc72dedf8e30aa4",
+        "arch": "aarch64",
+        "file": "edgeR_4.10.7.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "a51b32e5fb77e30d782ec1c9ec016cd183b8bab3f3eaac00d9bbed1c4312290b",
+        "arch": "x86_64",
+        "file": "edgeR_4.10.7.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "e18a14d4531a47a63a88a177fe53a6108a0f269b513ee04fdb33305363a38a33",
+        "arch": "x86_64",
+        "file": "edgeR_4.10.7.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "35aaf04af24fb470747c2228dfde5fab6aebb1f343d65f400501dc596096726f",
+        "arch": "aarch64",
+        "file": "edgeR_4.10.7.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "2deb579e0fae9bbbe9fd347e06ee270940e8fae9a00fc2b95b6ffcd642f0c223",
+        "arch": "x86_64",
+        "file": "edgeR_4.10.7.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 3.6.0), limma (>= 3.63.6)",
+      "Imports": "methods, graphics, stats, utils, locfit",
+      "Suggests": "jsonlite, knitr, Matrix, nanoparquet, readr, rhdf5, SeuratObject, splines, AnnotationDbi, Biobase, BiocStyle, org.Hs.eg.db, S4Vectors, SummarizedExperiment",
+      "License": "GPL (>=2)",
+      "NeedsCompilation": "yes"
+    },
+    "meta": {
+      "Title": "Empirical Analysis of Digital Gene Expression Data in R",
+      "Description": "Differential expression analysis of sequence count data.\nImplements a range of statistical methodology based on the\nnegative binomial distributions, including empirical Bayes\nestimation, exact tests, generalized linear models,\nquasi-likelihood, and gene set enrichment. Can perform\ndifferential analyses of any type of omics data that produces\nread counts, including RNA-seq, ChIP-seq, ATAC-seq,\nBisulfite-seq, SAGE, CAGE, metabolomics, or proteomics spectral\ncounts. RNA-seq analyses can be conducted at the gene or\nisoform level, and tests can be conducted for differential exon\nor transcript usage.",
+      "biocViews": "AlternativeSplicing, BatchEffect, Bayesian,\nBiomedicalInformatics, CellBiology, ChIPSeq, Clustering,\nCoverage, DifferentialExpression, DifferentialMethylation,\nDifferentialSplicing, DNAMethylation, Epigenetics,\nFunctionalGenomics, GeneExpression, GeneSetEnrichment,\nGenetics, Genetics, ImmunoOncology, MultipleComparison,\nNormalization, Pathways, Proteomics, QualityControl,\nRegression, RNASeq, SAGE, Sequencing, SingleCell,\nSystemsBiology, TimeCourse, Transcription, Transcriptomics",
+      "Author": "Yunshun Chen, Lizhong Chen, Aaron TL Lun, Davis J McCarthy,\nPedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu,\nXiaobei Zhou, Mark D Robinson, Gordon K Smyth",
+      "Maintainer": "Yunshun Chen <yuchen@wehi.edu.au>, Gordon Smyth\n<smyth@wehi.edu.au>, Aaron Lun\n<infinite.monkeys.with.keyboards@gmail.com>, Mark Robinson\n<mark.robinson@imls.uzh.ch>",
+      "URL": "https://bioinf.wehi.edu.au/edgeR/,\nhttps://bioconductor.org/packages/edgeR",
+      "VignetteBuilder": "knitr",
+      "Date": "2026-10-17",
+      "vignettes": [
+        {
+          "filename": "intro.html",
+          "title": "A brief introduction to edgeR"
+        },
+        {
+          "filename": "edgeRUsersGuide.pdf",
+          "title": "edgeR User's Guide"
+        }
+      ],
+      "commit": {
+        "id": "27ba7b39d819e68df2ecdea9f32a4b6039b2a0b5",
+        "time": 1792222100
+      },
+      "git_url": "https://github.com/bioc/edgeR"
+    },
+    "archs": [
+      "linux",
+      "win",
+      "mac"
+    ],
+    "origin": "r-universe"
+  }
+}

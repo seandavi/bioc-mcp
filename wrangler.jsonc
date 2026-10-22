@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bioc-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "vars": {
+    // Comma-separated hostnames, port-agnostic. localhost/127.0.0.1 make `npm run dev` work;
+    // they are harmless on the deployed Worker, whose Host is always the workers.dev name.
+    "ALLOWED_HOSTS": "bioc-mcp.seandavi.workers.dev,localhost,127.0.0.1",
+    "ALLOWED_ORIGINS": "bioc-mcp.seandavi.workers.dev,localhost,127.0.0.1"
+  }
+}

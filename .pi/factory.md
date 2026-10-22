@@ -26,6 +26,11 @@ matters and the fast model where volume does. The script is
 - `security` (label `review:security`): SSRF (no tool fetches a caller-supplied URL), input
   validation, secret handling, fork-PR CI safety, rate limiting, nothing non-public returned.
 
+**Skills:** the built-in `worker` and `reviewer` agents do not inherit skills, so the script names
+them per stage. Implement, revise and the `code`/`security` lenses get the project skill
+`workers-best-practices` (`.agents/skills/`, pinned in `skills-lock.json`). It is a trial: keep it
+if reviews cite it for real findings.
+
 **Seams** (label `seam`, arg `seam: true`): for shared foundations that later issues build on, the
 reviewers are told to rate inherited defects by blast radius, so a bypassable guard is `major`
 even when nothing calls it yet. Added after #2, where four such findings came back as `minor`.
@@ -87,3 +92,4 @@ subagent({
   all in the upstream seam; the `seam` note and v2's fix-judging are the response.)
 - Work done outside the factory after a run. Each instance is a gap in the loop; prefer
   `startAt: "review"`.
+- Skills: do findings or fixes cite `workers-best-practices`? If not after #7 and #11, drop it.

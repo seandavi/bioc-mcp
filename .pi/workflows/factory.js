@@ -46,6 +46,12 @@ Work only inside ${cwd}. Never touch main, never merge, never force-push, never 
 Commit with: git -c user.name="Sean Davis" -c user.email=seandavi@gmail.com commit
 and add the trailer "Co-Authored-By: Claude <noreply@anthropic.com>".`;
 
+// Project skills (.agents/skills) handed to stages that write or review Worker code. The built-in
+// worker/reviewer agents set inheritSkills: false, so a child sees a skill only when named here.
+// A missing skill is a warning, not a failure.
+const BUILD_SKILLS = "workers-best-practices";
+const LENS_SKILLS = { code: "workers-best-practices", security: "workers-best-practices" };
+
 const LENS = {
   code: `CODE review. Correctness against the issue spec and its acceptance criteria; tests that
 would actually catch a regression (fixtures, no network); the one-capability-two-transports rule
@@ -161,6 +167,7 @@ if (stageRuns("implement")) {
     label: `Implement issue #${issue}`,
     agent: "worker",
     model: SONNET,
+    skill: BUILD_SKILLS,
     cwd,
     outputSchema: statusSchema({
       summary: { type: "string" },
@@ -212,7 +219,7 @@ when a finding repeats one from an earlier round, say so in problem. verdict is 
 least one blocker or major finding. Do not pad: zero findings is a valid review.`;
 }
 function reviewBatch(lensList, files, round, prior) {
-  return runs.all(lensList.map((lens) => ({
+  return runs.all(lensList.map((lens) => Object.assign({
     key: `review-${lens}-r${round}`,
     label: `Review issue #${issue} ${lens} r${round}`,
     agent: "reviewer",
@@ -220,7 +227,7 @@ function reviewBatch(lensList, files, round, prior) {
     cwd,
     outputSchema: reviewSchema,
     task: reviewTask(lens, files, round, prior),
-  })));
+  }, LENS_SKILLS[lens] ? { skill: LENS_SKILLS[lens] } : {})));
 }
 function blocking(results, lensList) {
   const out = [];
@@ -257,6 +264,7 @@ while (open.length && round < maxRounds) {
     label: `Revise issue #${issue} r${round}`,
     agent: "worker",
     model: SONNET,
+    skill: BUILD_SKILLS,
     cwd,
     outputSchema: statusSchema({
       responses: {

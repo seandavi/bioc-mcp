@@ -1,0 +1,185 @@
+{
+  "total_count": 40,
+  "workflow_runs": [
+    {
+      "id": 37544425977,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-06T23:04:00Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37544425977",
+      "display_title": "Merge pull request #67 from seandavi/canary-annotation-repos"
+    },
+    {
+      "id": 37529633019,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-06T20:51:42Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37529633019",
+      "display_title": "Merge pull request #66 from seandavi/canary-quote"
+    },
+    {
+      "id": 37524885184,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-06T20:14:02Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37524885184",
+      "display_title": "Merge pull request #65 from seandavi/artifact-pagination"
+    },
+    {
+      "id": 37365170857,
+      "status": "completed",
+      "conclusion": "failure",
+      "event": "push",
+      "created_at": "2026-10-05T19:42:50Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37365170857",
+      "display_title": "Merge pull request #64 from seandavi/canary-timeouts"
+    },
+    {
+      "id": 36512913940,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-29T02:30:25Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/36512913940",
+      "display_title": "Merge pull request #51 from seandavi/topup-binaries"
+    },
+    {
+      "id": 35015284597,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-15T19:43:05Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/35015284597",
+      "display_title": "Merge pull request #49 from seandavi/install-drop-sudo-step"
+    },
+    {
+      "id": 35012876462,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-15T19:18:53Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/35012876462",
+      "display_title": "Merge pull request #48 from seandavi/install-runiverse-image"
+    },
+    {
+      "id": 34079274138,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-07T03:19:44Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/34079274138",
+      "display_title": "install.yml: install libcurl4-openssl-dev before source builds (#46)"
+    },
+    {
+      "id": 33861219131,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-04T10:01:39Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33861219131",
+      "display_title": "Merge pull request #44 from seandavi/s3api-head"
+    },
+    {
+      "id": 33860548348,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-04T09:53:19Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33860548348",
+      "display_title": "Merge pull request #43 from seandavi/skip-older-runs"
+    },
+    {
+      "id": 33859778610,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-04T09:43:54Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33859778610",
+      "display_title": "Merge pull request #42 from seandavi/selfheal-attempts"
+    },
+    {
+      "id": 33859112727,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-04T09:35:38Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33859112727",
+      "display_title": "Merge pull request #41 from seandavi/consolidated-gate"
+    },
+    {
+      "id": 33818409648,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T23:37:40Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33818409648",
+      "display_title": "Merge pull request #40 from seandavi/install-canary-bioc-build"
+    },
+    {
+      "id": 33818113412,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T23:33:32Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33818113412",
+      "display_title": "Merge pull request #39 from seandavi/attempts-self-heal-fix"
+    },
+    {
+      "id": 33808297388,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T21:30:20Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33808297388",
+      "display_title": "Merge pull request #38 from seandavi/publish-fixes"
+    },
+    {
+      "id": 33789901812,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T18:20:23Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33789901812",
+      "display_title": "publish.yml: off-peak cron minutes"
+    },
+    {
+      "id": 33782829081,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T17:08:55Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33782829081",
+      "display_title": "Merge pull request #37 from seandavi/bioc-build-publisher"
+    },
+    {
+      "id": 33241600993,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-08-29T07:46:06Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33241600993",
+      "display_title": "freshness: assert the propagated index is internally consistent (#36)"
+    },
+    {
+      "id": 33241456508,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-08-29T07:42:14Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/33241456508",
+      "display_title": "Gate propagation on dependencies we publish being satisfiable (#35)"
+    },
+    {
+      "id": 32582491168,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-08-22T15:42:12Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/32582491168",
+      "display_title": "Flip the random-sample step to blocking (#33)"
+    }
+  ]
+}

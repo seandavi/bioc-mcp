@@ -1,0 +1,225 @@
+[
+  {
+    "number": 32,
+    "title": "Pin R exactly and serve annotation/experiment deps ourselves",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/32",
+    "created_at": "2026-09-03T17:50:04Z",
+    "updated_at": "2026-09-03T17:50:05Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:build"
+      },
+      {
+        "name": "phase-2"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 31,
+    "title": "Propose upstream: make build-source's 100 MB size limit an env var so our fork can disappear",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/31",
+    "created_at": "2026-09-03T17:50:03Z",
+    "updated_at": "2026-09-03T17:50:03Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:build"
+      },
+      {
+        "name": "phase-2"
+      },
+      {
+        "name": "needs-human"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 25,
+    "title": "Agent triage (SPEC-012)",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/25",
+    "created_at": "2026-09-03T10:05:10Z",
+    "updated_at": "2026-09-03T10:05:11Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "phase-3"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 24,
+    "title": "Revdep check scheduler (SPEC-011)",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/24",
+    "created_at": "2026-09-03T10:05:09Z",
+    "updated_at": "2026-09-03T10:05:09Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "phase-3"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 23,
+    "title": "Push fast path (SPEC-013): git.bioconductor.org post-receive hook",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/23",
+    "created_at": "2026-09-03T10:05:07Z",
+    "updated_at": "2026-09-03T10:05:07Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:dispatcher"
+      },
+      {
+        "name": "phase-2"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 22,
+    "title": "Event catalog + limit_flagged trend query (SPEC-009 phase 2)",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/22",
+    "created_at": "2026-09-03T10:05:05Z",
+    "updated_at": "2026-09-03T10:05:05Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:dispatcher"
+      },
+      {
+        "name": "phase-2"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 21,
+    "title": "Check results into the jobs Parquet table so bioc-website check pages render bioc-build results",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/21",
+    "created_at": "2026-09-03T10:05:03Z",
+    "updated_at": "2026-09-03T10:05:03Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:publisher"
+      },
+      {
+        "name": "repo:bioc-registry"
+      },
+      {
+        "name": "phase-2"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 20,
+    "title": "Presign service (SPEC-005) if artifact staging proves insufficient",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/20",
+    "created_at": "2026-09-03T10:05:01Z",
+    "updated_at": "2026-09-03T10:05:01Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:build"
+      },
+      {
+        "name": "phase-2"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 19,
+    "title": "Hash-chained ledger + snapshots (SPEC-001) on top of prop/<u>/log records",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/19",
+    "created_at": "2026-09-03T10:04:59Z",
+    "updated_at": "2026-09-03T10:04:59Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "component:publisher"
+      },
+      {
+        "name": "phase-2"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 17,
+    "title": "PoC exit: >=20 data-experiment + >=5 workflow packages published on both streams",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/17",
+    "created_at": "2026-09-03T10:04:56Z",
+    "updated_at": "2026-10-06T23:04:45Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "phase-1"
+      },
+      {
+        "name": "tracking"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 11,
+    "title": "Oversized packages (ChIPXpressData class): what fits a GitHub runner, what does not",
+    "html_url": "https://github.com/seandavi/bioc-build/issues/11",
+    "created_at": "2026-09-03T10:04:46Z",
+    "updated_at": "2026-09-04T09:04:46Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "component:build"
+      },
+      {
+        "name": "phase-1"
+      },
+      {
+        "name": "needs-decision"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  }
+]

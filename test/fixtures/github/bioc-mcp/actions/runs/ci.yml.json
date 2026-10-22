@@ -1,0 +1,59 @@
+{
+  "total_count": 6,
+  "workflow_runs": [
+    {
+      "id": 39826547870,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-22T17:53:04Z",
+      "html_url": "https://github.com/seandavi/bioc-mcp/actions/runs/39826547870",
+      "display_title": "Merge pull request #23 from seandavi/issue-3-docs-index"
+    },
+    {
+      "id": 39826516859,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-22T17:52:51Z",
+      "html_url": "https://github.com/seandavi/bioc-mcp/actions/runs/39826516859",
+      "display_title": "Merge pull request #21 from seandavi/issue-6-pkg-status"
+    },
+    {
+      "id": 39822188141,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-22T17:23:05Z",
+      "html_url": "https://github.com/seandavi/bioc-mcp/actions/runs/39822188141",
+      "display_title": "Scaffold follow-ups from the #2 review (#15) (#19)"
+    },
+    {
+      "id": 39822045459,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-22T17:22:11Z",
+      "html_url": "https://github.com/seandavi/bioc-mcp/actions/runs/39822045459",
+      "display_title": "Trial the workers-best-practices skill in the factory (#17)"
+    },
+    {
+      "id": 39793901029,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-22T14:13:54Z",
+      "html_url": "https://github.com/seandavi/bioc-mcp/actions/runs/39793901029",
+      "display_title": "Factory v2: judge fixes, keep the spec current, resume from a stage, …"
+    },
+    {
+      "id": 39792817687,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-22T14:06:13Z",
+      "html_url": "https://github.com/seandavi/bioc-mcp/actions/runs/39792817687",
+      "display_title": "Merge pull request #14 from seandavi/issue-2-scaffold"
+    }
+  ]
+}

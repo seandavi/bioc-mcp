@@ -1,0 +1,32 @@
+{
+  "total_count": 3,
+  "workflow_runs": [
+    {
+      "id": 37365639822,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-05T19:47:14Z",
+      "html_url": "https://github.com/seandavi/bioc-manifest/actions/runs/37365639822",
+      "display_title": "Merge pull request #1 from seandavi/size-limit"
+    },
+    {
+      "id": 33785278910,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T17:33:37Z",
+      "html_url": "https://github.com/seandavi/bioc-manifest/actions/runs/33785278910",
+      "display_title": "Add versions.yaml; import/validate stop depending on bioconductor.org"
+    },
+    {
+      "id": 33742813300,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-03T10:09:43Z",
+      "html_url": "https://github.com/seandavi/bioc-manifest/actions/runs/33742813300",
+      "display_title": "Import bioc-manifest: importer, package entries, policy, validate CI"
+    }
+  ]
+}

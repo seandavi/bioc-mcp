@@ -95,8 +95,10 @@ describe('GET /api/openapi.json', () => {
     const repeat = item.parameters.find((p: { name: string }) => p.name === 'repeat');
     expect(repeat.in).toBe('query');
     expect(repeat.schema).toMatchObject({ type: 'integer', default: 1 });
-    expect(Object.keys(item.responses).sort()).toEqual(['200', '400', '404', '500', '502']);
+    expect(Object.keys(item.responses).sort()).toEqual(['200', '400', '404', '429', '500', '502']);
     expect(body.paths['/api/v1/meta/ping'].get.operationId).toBe('meta_ping');
+    expect(body.paths['/api/v1/meta/ping'].get.responses['429']).toBeDefined();
+    expect(body.paths['/api/v1/about'].get.responses['429']).toBeDefined();
     expect(body.tags).toEqual([
       { name: 'meta', description: metaModule.description },
       { name: 'example', description: exampleModule.description },

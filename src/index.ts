@@ -5,13 +5,23 @@ import { createMcpApp } from './transports/mcp';
 import { createRestApp } from './transports/rest';
 import { createCloudflareCache } from './upstreams/cache';
 import { parseConfig, type AppConfig } from './config';
+import { rateLimitMiddleware, type RateLimiter } from './rate-limit';
+import { createAnalyticsEngineSink, type UsageSink } from './usage';
 
-export function createApp(options: { config: AppConfig; deps: Deps; modules?: readonly Module[] }): Hono {
+export function createApp(options: {
+  config: AppConfig;
+  deps: Deps;
+  usage: UsageSink;
+  rateLimiter: RateLimiter;
+  modules?: readonly Module[];
+}): Hono {
   const modules = options.modules ?? registryModules;
   validateRegistry(modules);
   const app = new Hono();
-  app.route('/mcp', createMcpApp({ modules, deps: options.deps, config: options.config }));
-  app.route('/', createRestApp({ modules, deps: options.deps }));
+  app.use('/mcp/*', rateLimitMiddleware(options.rateLimiter, options.usage, 'mcp'));
+  app.use('/api/*', rateLimitMiddleware(options.rateLimiter, options.usage, 'rest'));
+  app.route('/mcp', createMcpApp({ modules, deps: options.deps, usage: options.usage, config: options.config }));
+  app.route('/', createRestApp({ modules, deps: options.deps, usage: options.usage }));
   app.notFound((c) =>
     c.json(
       {
@@ -30,10 +40,6 @@ export function createApp(options: { config: AppConfig; deps: Deps; modules?: re
   return app;
 }
 
-interface WorkerEnv extends Env {
-  GITHUB_TOKEN?: string;
-}
-
 let app: Hono | undefined;
 
 export default {
@@ -47,7 +53,9 @@ export default {
         now: () => new Date(),
         env: { GITHUB_TOKEN: env.GITHUB_TOKEN },
       },
+      usage: createAnalyticsEngineSink(env.USAGE),
+      rateLimiter: env.RATE_LIMITER,
     });
     return app.fetch(request, env, ctx);
   },
-} satisfies ExportedHandler<WorkerEnv>;
+} satisfies ExportedHandler<Env>;

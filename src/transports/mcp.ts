@@ -6,6 +6,7 @@ import type { Deps } from '../core/deps';
 import { invokeCapability } from '../core/invoke';
 import type { Module } from '../core/registry';
 import type { AppConfig } from '../config';
+import type { UsageSink } from '../usage';
 import { VERSION } from '../version';
 
 const MAX_REQUEST_BODY_BYTES = 65_536;
@@ -13,6 +14,7 @@ const MAX_REQUEST_BODY_BYTES = 65_536;
 export interface McpAppOptions {
   modules: readonly Module[];
   deps: Deps;
+  usage: UsageSink;
   config: AppConfig;
 }
 
@@ -29,7 +31,7 @@ export function parseToolset(
 }
 
 /** One McpServer exposing `selected` modules' tools plus bioc://about for `all`. */
-export function buildMcpServer(all: readonly Module[], selected: readonly Module[], deps: Deps): McpServer {
+export function buildMcpServer(all: readonly Module[], selected: readonly Module[], deps: Deps, usage: UsageSink): McpServer {
   const server = new McpServer(
     { name: 'bioc-mcp', version: VERSION },
     {
@@ -59,7 +61,7 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
       // as isError text "Input validation error: Invalid arguments for tool <name>: …", not
       // "invalid_input: …"; REST reports the same failure as 400 invalid_input.
       async (args: Record<string, unknown>) => {
-        const result = await invokeCapability(capability, args, deps);
+        const result = await invokeCapability(capability, args, deps, { transport: 'mcp', usage });
         return result.ok
           ? { content: [{ type: 'text' as const, text: result.envelope.summary }], structuredContent: result.envelope }
           : {
@@ -86,7 +88,7 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
 }
 
 /** Hono app to mount at /mcp: serves `/` (all modules) and `/:toolset`. */
-export function createMcpApp({ modules, deps, config }: McpAppOptions): Hono {
+export function createMcpApp({ modules, deps, usage, config }: McpAppOptions): Hono {
   const app = createMcpHonoApp({
     host: '0.0.0.0', // not localhost: the allowlists below apply instead
     allowedHosts: config.allowedHosts,
@@ -100,7 +102,7 @@ export function createMcpApp({ modules, deps, config }: McpAppOptions): Hono {
     const key = selected.map((module) => module.name).join('+');
     let handler = handlers.get(key);
     if (!handler) {
-      handler = createMcpHandler(() => buildMcpServer(modules, selected, deps), {
+      handler = createMcpHandler(() => buildMcpServer(modules, selected, deps, usage), {
         maxRequestBodySize: MAX_REQUEST_BODY_BYTES,
         onerror: (error) => console.error('mcp', error),
       });

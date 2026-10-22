@@ -3,6 +3,11 @@
   "name": "bioc-mcp",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
+  // bioc-registry is another Worker on seandavi.workers.dev. Without this flag, fetch() to our own zone
+  // skips the Workers routed there and the registry answers 404 (pkg_status, pkg_check_output and
+  // pkg_build_environment all failed after the first deploy). With it, fetch() goes out through the
+  // public front door like any client.
+  "compatibility_flags": ["global_fetch_strictly_public"],
   // Deployed only at https://bioc-mcp.seandavi.workers.dev; no zone routes, no per-version preview URLs.
   "workers_dev": true,
   "preview_urls": false,

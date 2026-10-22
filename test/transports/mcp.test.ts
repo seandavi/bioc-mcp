@@ -63,7 +63,7 @@ describe('tools', () => {
     }
   });
 
-  test('meta_ping returns the envelope as structuredContent and the summary as text', async () => {
+  test('meta_ping returns the envelope as structuredContent and the summary and data as text', async () => {
     client = await connectClient(makeTestApp().app, '/mcp');
     const result = await client.callTool({ name: 'meta_ping', arguments: {} });
     expect(result.isError).toBeFalsy();
@@ -72,7 +72,10 @@ describe('tools', () => {
       summary: `bioc-mcp ${VERSION} is up.`,
       sources: [],
     });
-    expect(textOf(result)).toBe(`bioc-mcp ${VERSION} is up.`);
+    expect(result.content).toEqual([
+      { type: 'text', text: `bioc-mcp ${VERSION} is up.` },
+      { type: 'text', text: JSON.stringify({ data: { ok: true, version: VERSION }, sources: [] }) },
+    ]);
   });
 
   test('example_item returns data with provenance', async () => {
@@ -81,6 +84,10 @@ describe('tools', () => {
     expect(result.structuredContent).toEqual({
       data: { id: 'alpha', title: 'Alpha item', body: 'Alpha item' },
       summary: 'Item alpha: Alpha item.',
+      sources: [{ url: ALPHA_URL, as_of: '2026-10-01T00:00:00Z' }],
+    });
+    expect(JSON.parse((result.content as { text: string }[])[1]!.text)).toEqual({
+      data: { id: 'alpha', title: 'Alpha item', body: 'Alpha item' },
       sources: [{ url: ALPHA_URL, as_of: '2026-10-01T00:00:00Z' }],
     });
   });
@@ -94,6 +101,7 @@ describe('tools', () => {
     client = await connectClient(makeTestApp({ routes: { [ALPHA_URL]: route } }).app, '/mcp');
     const result = await client.callTool({ name: 'example_item', arguments: { id: 'alpha' } });
     expect(result.isError).toBe(true);
+    expect(result.content).toHaveLength(1);
     expect(textOf(result).startsWith(prefix)).toBe(true);
   });
 

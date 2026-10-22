@@ -512,9 +512,7 @@ describe('input', () => {
 describe('size', () => {
   test.each(KINDS)('%s stays under 8 KB on the full fixtures', async (kind) => {
     const { envelope } = await run(kind);
-    const bytes = envelopeBytes(envelope);
-    console.info(`ops_activity kind=${kind}: ${bytes} bytes`);
-    expect(bytes).toBeLessThan(MAX_RESULT_BYTES);
+    expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
   });
 });
 

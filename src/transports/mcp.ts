@@ -5,7 +5,7 @@ import { buildAbout } from '../core/about';
 import type { Deps } from '../core/deps';
 import { invokeCapability } from '../core/invoke';
 import type { Module } from '../core/registry';
-import type { AppConfig } from '../index';
+import type { AppConfig } from '../config';
 import { VERSION } from '../version';
 
 const MAX_REQUEST_BODY_BYTES = 65_536;

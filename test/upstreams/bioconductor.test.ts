@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
@@ -17,14 +16,14 @@ import {
   CONFIG_URL,
   MANIFEST_URL,
   NOT_FOUND,
+  readBiocFixture,
   statsPageUrl,
   statsTabUrl,
 } from '../support/bioconductor-routes';
 import { fixtureFetch, type FixtureRoute } from '../support/fixture-fetch';
 
-const fixture = (path: string) => readFileSync(new URL(`../fixtures/bioconductor/${path}`, import.meta.url), 'utf8');
-const EDGER_PAGE = fixture('packages/stats/bioc/edgeR/index.html');
-const EDGER_2026 = fixture('packages/stats/bioc/edgeR/edgeR_2026_stats.tab');
+const EDGER_PAGE = readBiocFixture('packages/stats/bioc/edgeR/index.html');
+const EDGER_2026 = readBiocFixture('packages/stats/bioc/edgeR/edgeR_2026_stats.tab');
 
 function makeDeps(extra: Record<string, FixtureRoute> = {}) {
   const now = () => new Date('2026-10-22T12:00:00Z');

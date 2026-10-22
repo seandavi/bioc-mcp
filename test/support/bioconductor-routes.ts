@@ -1,5 +1,15 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { STATS_CATEGORIES, type StatsCategory } from '../../src/upstreams/bioconductor';
 import type { FixtureRoute } from './fixture-fetch';
+
+const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'bioconductor');
+
+/** A recorded file under test/fixtures/bioconductor/. */
+export function readBiocFixture(path: string): string {
+  return readFileSync(join(FIXTURES_DIR, path), 'utf8');
+}
 
 export const CONFIG_URL = 'https://bioconductor.org/config.yaml';
 export const MANIFEST_URL = 'https://bioconductor.org/api/v1/manifest/index.json';

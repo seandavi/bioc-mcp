@@ -24,8 +24,9 @@ export interface UpstreamResponse extends CachedUpstream {
 export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string): Promise<UpstreamResponse> {
   const base = new URL(upstream.baseUrl);
   const url = new URL(path, base);
+  const inside = (candidate: URL) => candidate.origin === base.origin && candidate.pathname.startsWith(base.pathname);
   // SSRF guard: no capability can fetch outside a registered upstream.
-  if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) {
+  if (!inside(url)) {
     throw new CapabilityError('internal', `Refusing to fetch outside ${upstream.name}`, { upstream: upstream.id });
   }
 
@@ -45,6 +46,11 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
       throw new CapabilityError('upstream_timeout', `${upstream.name} did not answer within ${timeoutMs} ms`, details);
     }
     throw new CapabilityError('upstream_error', `Could not reach ${upstream.name}`, details);
+  }
+
+  // Redirects are followed, so the final URL must also stay inside the upstream.
+  if (response.url && !inside(new URL(response.url))) {
+    throw new CapabilityError('upstream_error', `${upstream.name} redirected outside its base URL`, details);
   }
 
   if (response.status === 404) {

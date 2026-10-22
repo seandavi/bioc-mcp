@@ -133,6 +133,29 @@ describe('fetchUpstream', () => {
       },
     );
 
+    test('a redirect that ends outside the base URL throws upstream_error and caches nothing', async () => {
+      const { deps } = makeDeps({});
+      deps.fetch = async () => {
+        const response = new Response('{"stolen":true}');
+        Object.defineProperty(response, 'url', { value: 'https://evil.test/x' });
+        return response;
+      };
+      const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+      expect(error.code).toBe('upstream_error');
+      expect(error.message).toBe('Example upstream redirected outside its base URL');
+      expect(await deps.cache.get(ALPHA)).toBeUndefined();
+    });
+
+    test('a redirect that stays inside the base URL is allowed', async () => {
+      const { deps } = makeDeps({});
+      deps.fetch = async () => {
+        const response = new Response('{}');
+        Object.defineProperty(response, 'url', { value: 'https://upstream.test/items/moved.json' });
+        return response;
+      };
+      expect((await fetchUpstream(deps, exampleUpstream, 'items/alpha.json')).fromCache).toBe(false);
+    });
+
     test('a path inside the base path is allowed', async () => {
       const { deps } = makeDeps({ 'https://upstream.test/api/v1/x': { status: 200, body: '{}' } });
       expect((await fetchUpstream(deps, nested, 'x')).url).toBe('https://upstream.test/api/v1/x');

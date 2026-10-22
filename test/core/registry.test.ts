@@ -111,6 +111,9 @@ describe('validateRegistry', () => {
     ['a username', 'https://user@upstream.test/'],
     ['a username and password', 'https://user:secret@upstream.test/'],
     ['a password only', 'https://:secret@upstream.test/'],
+    ['credentials on http:', 'http://user:secret@upstream.test/'],
+    ['credentials and no scheme (parsed as scheme "user:")', 'user:secret@upstream.test/'],
+    ['credentials and an unparseable host', 'https://user:secret@'],
   ])('rejects an upstream baseUrl with %s, without echoing the password', (_label, baseUrl) => {
     const wrong = demoModule({ upstreams: [{ ...exampleUpstream, baseUrl }] });
     let message = '';
@@ -119,7 +122,7 @@ describe('validateRegistry', () => {
     } catch (error) {
       message = (error as Error).message;
     }
-    expect(message).toMatch(/must not include credentials/);
+    expect(message).toMatch(/Upstream "example" baseUrl (must not include credentials|must use https:|is not an absolute URL)/);
     expect(message).not.toContain('secret');
   });
 

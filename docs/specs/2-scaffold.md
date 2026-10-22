@@ -317,8 +317,8 @@ export function pathSegment(value: string): string;
 
 /**
  * The SSRF guard below is only sound for an https: baseUrl that ends with '/' and has no query or
- * fragment. The baseUrl must not carry credentials (the message leaves the URL out so a password
- * never reaches a client), ttlSeconds must be a positive integer (about and cache-control take
+ * fragment. The baseUrl must not carry credentials. No message ever includes the baseUrl itself, so a
+ * password in a malformed or non-https: URL never reaches a client. ttlSeconds must be a positive integer (about and cache-control take
  * integers) and timeoutMs, when set, positive and finite. Checked at registration
  * (validateRegistry) and again on every fetch, so an adapter cannot bypass it by passing an
  * upstream it never registered.
@@ -337,7 +337,7 @@ export function sourceFor(response: UpstreamResponse, asOf?: string): Source;
 `fetchUpstream` behaviour, in order:
 
 1. `assertUpstream(upstream)`; a failure → `CapabilityError('internal', …)` (the rules are listed
-   under `validateRegistry`; the credentials message leaves the URL out). Then
+   under `validateRegistry`; no message includes the baseUrl, so a password never reaches a client). Then
    `const url = new URL(path, upstream.baseUrl)`. If `url.origin` differs from the base's origin
    or `url.pathname` does not start with the base's pathname, throw
    `CapabilityError('internal', …)`. This is the SSRF guard: no capability can fetch outside a

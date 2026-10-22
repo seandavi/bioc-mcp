@@ -155,6 +155,10 @@ describe('fetchUpstream', () => {
       'https://upstream.test/api',
       'https://upstream.test/?q=1',
       'https://user:secret@upstream.test/',
+      'http://user:secret@upstream.test/',
+      'ftp://user:secret@upstream.test/',
+      'user:secret@upstream.test/',
+      'https://user:secret@',
     ])(
       'an unregistered upstream with an unsafe baseUrl (%s) throws internal without fetching',
       async (baseUrl) => {

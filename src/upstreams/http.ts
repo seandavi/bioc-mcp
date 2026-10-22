@@ -48,14 +48,14 @@ export interface UpstreamResponse extends CachedUpstream {
 
 /**
  * The SSRF guard below is only sound for an https: baseUrl that ends with '/' and has no query or
- * fragment. The baseUrl must not carry credentials (the message leaves the URL out so a password
- * never reaches a client), ttlSeconds must be a positive integer (about and cache-control take
+ * fragment. The baseUrl must not carry credentials. No message ever includes the baseUrl itself, so a
+ * password in a malformed or non-https: URL never reaches a client. ttlSeconds must be a positive integer (about and cache-control take
  * integers) and timeoutMs, when set, positive and finite. Checked at registration
  * (validateRegistry) and again on every fetch, so an adapter cannot bypass it by passing an
  * upstream it never registered.
  */
 export function assertUpstream(upstream: Upstream): void {
-  const label = `Upstream "${upstream.id}" baseUrl "${upstream.baseUrl}"`;
+  const label = `Upstream "${upstream.id}" baseUrl`;
   let url: URL;
   try {
     url = new URL(upstream.baseUrl);
@@ -63,9 +63,7 @@ export function assertUpstream(upstream: Upstream): void {
     throw new Error(`${label} is not an absolute URL`);
   }
   if (url.protocol !== 'https:') throw new Error(`${label} must use https:`);
-  if (url.username !== '' || url.password !== '') {
-    throw new Error(`Upstream "${upstream.id}" baseUrl must not include credentials`);
-  }
+  if (url.username !== '' || url.password !== '') throw new Error(`${label} must not include credentials`);
   if (!url.pathname.endsWith('/')) throw new Error(`${label} must end with "/"`);
   if (url.search !== '' || url.hash !== '') throw new Error(`${label} must not have a query string or fragment`);
   if (!Number.isInteger(upstream.ttlSeconds) || upstream.ttlSeconds <= 0) {

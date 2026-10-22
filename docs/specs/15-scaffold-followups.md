@@ -126,20 +126,21 @@ throws `Error`:
 
 | # | Rule | Message (exact) |
 |---|---|---|
-| 1 | `new URL(baseUrl)` parses | `Upstream "<id>" baseUrl "<baseUrl>" is not an absolute URL` (unchanged) |
-| 2 | `url.protocol === 'https:'` | `… must use https:` (unchanged) |
-| 3 | `url.username === '' && url.password === ''` | `Upstream "<id>" baseUrl must not include credentials` |
-| 4 | `url.pathname.endsWith('/')` | `… must end with "/"` (unchanged) |
-| 5 | `url.search === '' && url.hash === ''` | `… must not have a query string or fragment` (unchanged) |
+| 1 | `new URL(baseUrl)` parses | `Upstream "<id>" baseUrl is not an absolute URL` |
+| 2 | `url.protocol === 'https:'` | `… must use https:` |
+| 3 | `url.username === '' && url.password === ''` | `… must not include credentials` |
+| 4 | `url.pathname.endsWith('/')` | `… must end with "/"` |
+| 5 | `url.search === '' && url.hash === ''` | `… must not have a query string or fragment` |
 | 6 | `Number.isInteger(ttlSeconds) && ttlSeconds > 0` | `Upstream "<id>" ttlSeconds must be a positive integer (got <ttlSeconds>)` |
 | 7 | `timeoutMs === undefined \|\| (Number.isFinite(timeoutMs) && timeoutMs > 0)` | `Upstream "<id>" timeoutMs must be a positive finite number (got <timeoutMs>)` |
 
-"…" is the existing `Upstream "<id>" baseUrl "<baseUrl>"` label. Two of these deliberately go
-beyond the issue text:
+"…" is the label `Upstream "<id>" baseUrl`. Two of these deliberately go beyond the issue text:
 
-- **Rule 3's message leaves out the URL.** `fetchUpstream` turns a failed `assertUpstream` into
-  `CapabilityError('internal', message)`, and that text reaches MCP and REST clients. Echoing a
-  URL with a password would leak it.
+- **No message contains the baseUrl.** `fetchUpstream` turns a failed `assertUpstream` into
+  `CapabilityError('internal', message)`, and that text reaches MCP and REST clients. A password
+  can sit in a URL that also fails rule 1 or 2 (`http://user:secret@host/`, `user:secret@host/`
+  parses with scheme `user:`, `https://user:secret@`), so redacting only in rule 3 is not enough.
+  The messages name the upstream by `id`, which is enough to find the offending declaration.
 - **`ttlSeconds` must be an integer, not just positive and finite.** `AboutSchema` declares
   `ttl_seconds: z.number().int()`, and `cache-control: max-age` takes an integer. A fractional TTL
   would put out an `about` document that fails its own schema.
@@ -427,8 +428,8 @@ inline `deps.fetch` stubs, as `test/upstreams/http.test.ts` already does for the
       nothing. The spec shows `redirect: 'manual'`,
       the 3-hop limit, the `assertUpstream` rules and `pathSegment(id)` in the example snippet.
 - [ ] **security-2-rest:** `validateRegistry` rejects (one `test.each` per rule) a `baseUrl` with a
-      username, username+password, or password only, with a message that does not contain the
-      password; `ttlSeconds` of `0`, `-1`, `1.5`, `NaN`, `Infinity`; `timeoutMs` of `0`, `-1`,
+      username, username+password, or password only (also on `http:`, scheme-less and
+      unparseable URLs), with a message that does not contain the password; `ttlSeconds` of `0`, `-1`, `1.5`, `NaN`, `Infinity`; `timeoutMs` of `0`, `-1`,
       `NaN`, `Infinity`. It accepts an upstream without `timeoutMs`. `fetchUpstream` with an
       unregistered credentialed upstream throws `internal` without fetching, and the message does
       not contain the password.

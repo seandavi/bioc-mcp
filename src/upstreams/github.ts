@@ -163,32 +163,32 @@ async function githubJson<S extends z.ZodType>(
   return { response, data: parsed.data };
 }
 
-export function getRepo(deps: Deps, repo: string): Promise<Fetched<GithubRepo>> {
+export async function getRepo(deps: Deps, repo: string): Promise<Fetched<GithubRepo>> {
   return githubJson(deps, repo, pathSegment(repo), GithubRepoSchema, 'repository');
 }
 
 /** Open issues and PRs together, newest first. */
-export function listOpenIssues(deps: Deps, repo: string): Promise<Fetched<GithubIssue[]>> {
+export async function listOpenIssues(deps: Deps, repo: string): Promise<Fetched<GithubIssue[]>> {
   const path = `${pathSegment(repo)}/issues?state=open&per_page=100&sort=created&direction=desc`;
   return githubJson(deps, repo, path, z.array(GithubIssueSchema), 'issue list');
 }
 
-export function listOpenPulls(deps: Deps, repo: string): Promise<Fetched<GithubPull[]>> {
+export async function listOpenPulls(deps: Deps, repo: string): Promise<Fetched<GithubPull[]>> {
   const path = `${pathSegment(repo)}/pulls?state=open&per_page=100&sort=created&direction=desc`;
   return githubJson(deps, repo, path, z.array(GithubPullSchema), 'pull request list');
 }
 
-export function getPull(deps: Deps, repo: string, number: number): Promise<Fetched<GithubPullDetail>> {
+export async function getPull(deps: Deps, repo: string, number: number): Promise<Fetched<GithubPullDetail>> {
   const path = `${pathSegment(repo)}/pulls/${pathSegment(String(number))}`;
   return githubJson(deps, repo, path, GithubPullDetailSchema, 'pull request');
 }
 
-export function listCheckRuns(deps: Deps, repo: string, sha: string): Promise<Fetched<GithubCheckRuns>> {
+export async function listCheckRuns(deps: Deps, repo: string, sha: string): Promise<Fetched<GithubCheckRuns>> {
   const path = `${pathSegment(repo)}/commits/${pathSegment(sha)}/check-runs?per_page=100`;
   return githubJson(deps, repo, path, GithubCheckRunsSchema, 'check run list');
 }
 
-export function getCombinedStatus(deps: Deps, repo: string, sha: string): Promise<Fetched<GithubCombinedStatus>> {
+export async function getCombinedStatus(deps: Deps, repo: string, sha: string): Promise<Fetched<GithubCombinedStatus>> {
   const path = `${pathSegment(repo)}/commits/${pathSegment(sha)}/status`;
   return githubJson(deps, repo, path, GithubCombinedStatusSchema, 'commit status');
 }

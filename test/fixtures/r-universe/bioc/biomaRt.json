@@ -1,0 +1,806 @@
+{
+  "_id": "6ad78ae669e274306bae872d",
+  "Package": "biomaRt",
+  "Title": "Interface to BioMart databases (i.e. Ensembl)",
+  "Version": "2.69.5",
+  "Authors@R": "c(\nperson(\"Steffen\", \"Durinck\", , \"biomartdev@gmail.com\", role = \"aut\"),\nperson(\"Wolfgang\", \"Huber\", role = \"aut\"),\nperson(\"Sean\", \"Davis\", , \"sdavis2@mail.nih.gov\", role = \"ctb\"),\nperson(\"Francois\", \"Pepin\", role = \"ctb\"),\nperson(\"Vince S\", \"Buffalo\", role = \"ctb\"),\nperson(\"Mike\", \"Smith\", , \"grimbough@gmail.com\", role = \"ctb\",\ncomment = c(ORCID = \"0000-0002-7800-3848\")),\nperson(\"Hugo\", \"Gruson\", , \"hugo.gruson@embl.de\", role = c(\"ctb\", \"cre\"),\ncomment = c(ORCID = \"0000-0002-4094-1476\")),\nperson(\"German Network for Bioinformatics Infrastructure - de.NBI\", role = \"fnd\")\n)",
+  "Description": "In recent years a wealth of biological data has become\navailable in public data repositories. Easy access to these\nvaluable data resources and firm integration with data analysis\nis needed for comprehensive bioinformatics data analysis.\nbiomaRt provides an interface to a growing collection of\ndatabases implementing the BioMart software suite\n(<https://www.ensembl.org/info/data/biomart/index.html>). The\npackage enables retrieval of large amounts of data in a uniform\nway without the need to know the underlying database schemas or\nwrite complex SQL queries.  The most prominent examples of\nBioMart databases are maintained by Ensembl, which provides\nbiomaRt users direct access to a diverse set of data and\nenables a wide range of powerful online queries from gene\nannotation to database mining.",
+  "License": "Artistic-2.0",
+  "URL": "https://github.com/Huber-group-EMBL/biomaRt,\nhttps://huber-group-embl.github.io/biomaRt/",
+  "BugReports": "https://github.com/Huber-group-EMBL/biomaRt/issues",
+  "VignetteBuilder": "knitr",
+  "biocViews": "Annotation",
+  "Config/Needs/website": "xfun",
+  "Config/testthat/edition": "3",
+  "Encoding": "UTF-8",
+  "LazyLoad": "yes",
+  "NeedsCompilation": "no",
+  "Roxygen": "list(markdown = TRUE)",
+  "Config/roxygen2/version": "8.1.0.9000",
+  "Config/pak/sysreqs": "libicu-dev libpng-dev libxml2-dev libssl-dev\nzlib1g-dev",
+  "Repository": "https://bioc.r-universe.dev",
+  "Date/Publication": "2026-10-20 08:35:50 UTC",
+  "RemoteUrl": "https://github.com/bioc/biomaRt",
+  "RemoteRef": "HEAD",
+  "RemoteSha": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+  "Packaged": {
+    "Date": "2026-10-20 15:24:07 UTC",
+    "User": "root"
+  },
+  "Author": "Steffen Durinck [aut],\nWolfgang Huber [aut],\nSean Davis [ctb],\nFrancois Pepin [ctb],\nVince S Buffalo [ctb],\nMike Smith [ctb] (ORCID: <https://orcid.org/0000-0002-7800-3848>),\nHugo Gruson [ctb, cre] (ORCID: <https://orcid.org/0000-0002-4094-1476>),\nGerman Network for Bioinformatics Infrastructure - de.NBI [fnd]",
+  "Maintainer": "Hugo Gruson <hugo.gruson@embl.de>",
+  "_user": "bioc",
+  "_type": "src",
+  "_file": "biomaRt_2.69.5.tar.gz",
+  "_fileid": "https://r2.ropensci.org/da6228b4f52edf527bbb6a3737cceb34fcfb13c2d8f5fcfad7334d6c7811ad0a",
+  "_filesize": 542214,
+  "_sha256": "da6228b4f52edf527bbb6a3737cceb34fcfb13c2d8f5fcfad7334d6c7811ad0a",
+  "_expires": "2027-01-28T15:38:12.000Z",
+  "_created": "2026-10-20T15:24:07.000Z",
+  "_published": "2026-10-20T15:38:14.060Z",
+  "_upstream": "https://github.com/bioc/biomaRt",
+  "_status": "failure",
+  "_maintainer": {
+    "name": "Hugo Gruson",
+    "email": "hugo.gruson@embl.de",
+    "login": "bisaloo",
+    "mastodon": "@grusonh@mastodon.social",
+    "orcid": "0000-0002-4094-1476",
+    "description": "Evolutionary Biologist turned Research Software Engineer in R.",
+    "uuid": 10783929
+  },
+  "_jobs": [
+    {
+      "job": 118715404942,
+      "time": 157,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "WARNING",
+      "artifact": "12277023233"
+    },
+    {
+      "job": 118715404688,
+      "time": 286,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "ERROR",
+      "artifact": "12275849814"
+    },
+    {
+      "job": 118715404855,
+      "time": 338,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12276229678"
+    },
+    {
+      "job": 118715405008,
+      "time": 265,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "WARNING",
+      "artifact": "12278185801"
+    },
+    {
+      "job": 118715404364,
+      "time": 240,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12276429585"
+    },
+    {
+      "job": 118712870903,
+      "time": 281,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "ERROR",
+      "artifact": "12277277962"
+    },
+    {
+      "job": 118715404691,
+      "time": 111,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "12277457875"
+    },
+    {
+      "job": 118715404376,
+      "time": 268,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "WARNING",
+      "artifact": "12277670137"
+    },
+    {
+      "job": 118715404451,
+      "time": 177,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "ERROR",
+      "artifact": "12277078539"
+    },
+    {
+      "job": 118715405140,
+      "time": 228,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "WARNING",
+      "artifact": "12276084051"
+    }
+  ],
+  "_bioccheck": {
+    "error": 0,
+    "warning": 2,
+    "note": 12
+  },
+  "_buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653",
+  "_commit": {
+    "id": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+    "author": "Hugo Gruson <git@hugogruson.fr>",
+    "committer": "Hugo Gruson <hugo.gruson@protonmail.com>",
+    "message": "Bump version\n",
+    "time": 1792485350
+  },
+  "_distro": "resolute",
+  "_host": "GitHub-Actions",
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "methods",
+      "role": "Depends"
+    },
+    {
+      "package": "R",
+      "version": ">= 4.5.0",
+      "role": "Depends"
+    },
+    {
+      "package": "AnnotationDbi",
+      "role": "Imports"
+    },
+    {
+      "package": "BiocFileCache",
+      "role": "Imports"
+    },
+    {
+      "package": "curl",
+      "role": "Imports"
+    },
+    {
+      "package": "httr2",
+      "role": "Imports"
+    },
+    {
+      "package": "progress",
+      "role": "Imports"
+    },
+    {
+      "package": "stringr",
+      "role": "Imports"
+    },
+    {
+      "package": "utils",
+      "role": "Imports"
+    },
+    {
+      "package": "xml2",
+      "role": "Imports"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    },
+    {
+      "package": "httptest2",
+      "role": "Suggests"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "mockery",
+      "role": "Suggests"
+    },
+    {
+      "package": "rmarkdown",
+      "role": "Suggests"
+    },
+    {
+      "package": "testthat",
+      "version": ">= 3.0.0",
+      "role": "Suggests"
+    },
+    {
+      "package": "withr",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": true,
+  "_usedby": 233,
+  "_updates": [
+    {
+      "week": "2025-43",
+      "n": 1
+    },
+    {
+      "week": "2025-44",
+      "n": 3
+    },
+    {
+      "week": "2026-03",
+      "n": 3
+    },
+    {
+      "week": "2026-07",
+      "n": 2
+    },
+    {
+      "week": "2026-08",
+      "n": 2
+    },
+    {
+      "week": "2026-09",
+      "n": 1
+    },
+    {
+      "week": "2026-11",
+      "n": 13
+    },
+    {
+      "week": "2026-14",
+      "n": 1
+    },
+    {
+      "week": "2026-15",
+      "n": 6
+    },
+    {
+      "week": "2026-18",
+      "n": 2
+    },
+    {
+      "week": "2026-27",
+      "n": 1
+    },
+    {
+      "week": "2026-34",
+      "n": 32
+    },
+    {
+      "week": "2026-38",
+      "n": 7
+    },
+    {
+      "week": "2026-39",
+      "n": 7
+    },
+    {
+      "week": "2026-43",
+      "n": 3
+    }
+  ],
+  "_tags": [],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "2.69.3",
+      "bioc": "3.24",
+      "repository": "bioc"
+    },
+    {
+      "branch": "release",
+      "version": "2.68.0",
+      "bioc": "3.23",
+      "repository": "bioc"
+    }
+  ],
+  "_topics": [
+    "annotation",
+    "bioconductor",
+    "biomart",
+    "ensembl"
+  ],
+  "_stars": 51,
+  "_contributors": [
+    {
+      "user": "grimbough",
+      "count": 349,
+      "uuid": 971237
+    },
+    {
+      "user": "bisaloo",
+      "count": 223,
+      "uuid": 10783929
+    },
+    {
+      "user": "dtenenba",
+      "count": 23,
+      "uuid": 2286826
+    },
+    {
+      "user": "jwokaty",
+      "count": 16,
+      "uuid": 1744257
+    },
+    {
+      "user": "nturaga",
+      "count": 14,
+      "uuid": 2746443
+    },
+    {
+      "user": "jmacdon",
+      "count": 6,
+      "uuid": 5940924
+    },
+    {
+      "user": "leyerds",
+      "count": 5,
+      "uuid": 134183214
+    },
+    {
+      "user": "hpages",
+      "count": 2,
+      "uuid": 8810451
+    },
+    {
+      "user": "vobencha",
+      "count": 2,
+      "uuid": 2466173
+    }
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 479,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 46622,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/biomaRt"
+  },
+  "_mentions": 446,
+  "_devurl": "https://github.com/huber-group-embl/biomart",
+  "_pkgdown": "https://huber-group-embl.github.io/biomaRt/",
+  "_searchresults": 18240,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/biomaRt.html",
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/contents.json",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt",
+    "extra/readme.html",
+    "extra/readme.md"
+  ],
+  "_homeurl": "https://github.com/huber-group-embl/biomart",
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    "attributePages",
+    "biomartCacheClear",
+    "biomartCacheInfo",
+    "columns",
+    "exportFASTA",
+    "filterOptions",
+    "filterType",
+    "getBM",
+    "getGene",
+    "getHomologs",
+    "getLDS",
+    "getSequence",
+    "keys",
+    "keytypes",
+    "listAttributes",
+    "listDatasets",
+    "listEnsembl",
+    "listEnsemblArchives",
+    "listEnsemblGenomes",
+    "listFilterOptions",
+    "listFilters",
+    "listFilterValues",
+    "listMarts",
+    "NP2009code",
+    "searchAttributes",
+    "searchDatasets",
+    "searchFilterOptions",
+    "searchFilters",
+    "searchFilterValues",
+    "select",
+    "setEnsemblSSL",
+    "show",
+    "useDataset",
+    "useEnsembl",
+    "useEnsemblGenomes",
+    "useMart"
+  ],
+  "_datasets": [
+    {
+      "name": "ensembl_versions",
+      "title": "Mapping of Ensembl versions to their release dates",
+      "object": "ensembl_versions",
+      "file": "ensembl_versions.rda",
+      "class": [
+        "data.frame"
+      ],
+      "fields": [
+        "name",
+        "date",
+        "url",
+        "version",
+        "current_release"
+      ],
+      "rows": 35,
+      "table": true,
+      "tojson": true
+    }
+  ],
+  "_help": [
+    {
+      "page": "attributePages",
+      "title": "Gives a summary of the attribute pages",
+      "topics": [
+        "attributePages"
+      ]
+    },
+    {
+      "page": "biomaRt-deprecated",
+      "title": "Deprecated and defunct functions in package 'biomaRt'",
+      "topics": [
+        "biomaRt-deprecated",
+        "filterOptions",
+        "listFilterValues",
+        "searchFilterValues"
+      ]
+    },
+    {
+      "page": "biomartCache",
+      "title": "'biomaRt' result caching",
+      "topics": [
+        "biomartCache",
+        "biomartCacheClear",
+        "biomartCacheInfo"
+      ]
+    },
+    {
+      "page": "ensembl_versions",
+      "title": "Mapping of Ensembl versions to their release dates",
+      "topics": [
+        "ensembl_versions"
+      ]
+    },
+    {
+      "page": "exportFASTA",
+      "title": "Exports getSequence results to FASTA format",
+      "topics": [
+        "exportFASTA"
+      ]
+    },
+    {
+      "page": "filterType",
+      "title": "Displays the filter type",
+      "topics": [
+        "filterType"
+      ]
+    },
+    {
+      "page": "getBM",
+      "title": "Retrieves information from the BioMart database",
+      "topics": [
+        "getBM"
+      ]
+    },
+    {
+      "page": "getGene",
+      "title": "Retrieves gene annotation information given a vector of identifiers",
+      "topics": [
+        "getGene"
+      ]
+    },
+    {
+      "page": "getHomologs",
+      "title": "List homologous genes between two species.",
+      "concept": [
+        "non-biomart"
+      ],
+      "topics": [
+        "getHomologs"
+      ]
+    },
+    {
+      "page": "getLDS",
+      "title": "Retrieves information from two linked datasets",
+      "topics": [
+        "getLDS"
+      ]
+    },
+    {
+      "page": "getSequence",
+      "title": "Retrieves sequences",
+      "topics": [
+        "getSequence"
+      ]
+    },
+    {
+      "page": "listAttributes",
+      "title": "lists the attributes available in the selected dataset",
+      "topics": [
+        "listAttributes",
+        "searchAttributes"
+      ]
+    },
+    {
+      "page": "listDatasets",
+      "title": "List or search the datasets available in the selected BioMart database",
+      "topics": [
+        "listDatasets",
+        "searchDatasets"
+      ]
+    },
+    {
+      "page": "listEnsembl",
+      "title": "lists the available BioMart databases hosted by Ensembl",
+      "topics": [
+        "listEnsembl",
+        "listEnsemblGenomes"
+      ]
+    },
+    {
+      "page": "listEnsemblArchives",
+      "title": "Lists the available archived versions of Ensembl",
+      "topics": [
+        "listEnsemblArchives"
+      ]
+    },
+    {
+      "page": "listFilters",
+      "title": "List or search the filters available in the selected dataset",
+      "topics": [
+        "listFilters",
+        "searchFilters"
+      ]
+    },
+    {
+      "page": "listMarts",
+      "title": "lists the available BioMart databases",
+      "topics": [
+        "listMarts"
+      ]
+    },
+    {
+      "page": "NP2009code",
+      "title": "Display the analysis code from the 2009 Nature protocols paper",
+      "topics": [
+        "NP2009code"
+      ]
+    },
+    {
+      "page": "listFilterOptions",
+      "title": "List or search the options available for a specified filter.",
+      "topics": [
+        "listFilterOptions",
+        "searchFilterOptions"
+      ]
+    },
+    {
+      "page": "select-methods",
+      "title": "Retrieve information from the BioMart databases",
+      "topics": [
+        "columns",
+        "columns,Mart-method",
+        "keys",
+        "keys,Mart-method",
+        "keytypes",
+        "keytypes,Mart-method",
+        "select",
+        "select,Mart-method",
+        "select-methods"
+      ]
+    },
+    {
+      "page": "setEnsemblSSL",
+      "title": "Save system specific SSL settings for contacting Ensembl",
+      "topics": [
+        "setEnsemblSSL"
+      ]
+    },
+    {
+      "page": "Mart-class",
+      "title": "Class Mart",
+      "topics": [
+        "Mart-class",
+        "show,Mart-method"
+      ]
+    },
+    {
+      "page": "useDataset",
+      "title": "Select a dataset to use and updates Mart object",
+      "topics": [
+        "useDataset"
+      ]
+    },
+    {
+      "page": "useEnsembl",
+      "title": "Connects to the selected BioMart database and dataset hosted by Ensembl",
+      "topics": [
+        "useEnsembl",
+        "useEnsemblGenomes"
+      ]
+    },
+    {
+      "page": "useMart",
+      "title": "Connects to the selected BioMart database and dataset",
+      "topics": [
+        "useMart"
+      ]
+    }
+  ],
+  "_pkglogo": "https://github.com/bioc/biomaRt/raw/HEAD/man/figures/logo.png",
+  "_readme": "https://github.com/bioc/biomaRt/raw/HEAD/README.md",
+  "_rundeps": [
+    "AnnotationDbi",
+    "askpass",
+    "Biobase",
+    "BiocBaseUtils",
+    "BiocFileCache",
+    "BiocGenerics",
+    "Biostrings",
+    "bit",
+    "bit64",
+    "blob",
+    "cachem",
+    "cli",
+    "cpp11",
+    "crayon",
+    "curl",
+    "DBI",
+    "dbplyr",
+    "dplyr",
+    "fastmap",
+    "filelock",
+    "generics",
+    "glue",
+    "hms",
+    "httr",
+    "httr2",
+    "IRanges",
+    "jsonlite",
+    "KEGGREST",
+    "lifecycle",
+    "magrittr",
+    "memoise",
+    "mime",
+    "openssl",
+    "pillar",
+    "pkgconfig",
+    "png",
+    "prettyunits",
+    "progress",
+    "purrr",
+    "R6",
+    "rlang",
+    "RSQLite",
+    "S4Vectors",
+    "Seqinfo",
+    "stringi",
+    "stringr",
+    "sys",
+    "tibble",
+    "tidyr",
+    "tidyselect",
+    "utf8",
+    "vctrs",
+    "withr",
+    "xml2",
+    "XVector"
+  ],
+  "_score": 15.259814336256493,
+  "_indexed": true,
+  "_nocasepkg": "biomart",
+  "_universes": [
+    "bioc",
+    "bisaloo",
+    "huber-group-embl"
+  ],
+  "_previous": "2.69.4",
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:27:49.000Z",
+      "distro": "resolute",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/484c2b2165f81b3852f1fabcfe930711d06d000c4fe85b74e6d5ca4b7ed1f1f2",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:28:59.000Z",
+      "distro": "resolute",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/f53138f8f3f3e5ca4698b81cecddb88afe8f110f29e317c4f097f54b837870a7",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:34:49.000Z",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/1e12f96f8df4b3ed52fe47988db32a8391b0b27de0850216c3e66b95ca7dba81",
+      "status": "success",
+      "check": "WARNING",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:33:33.000Z",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/2d1b82ba849d90935515f0ff3534243c1a22cdfa28d22db2a20e72a4c5743f9d",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:26:26.000Z",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/3a41e85bda84a07392f90d18c323e7194af834c042f76573b97f29910aef0d5c",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:25:59.000Z",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/7a13b340db4eaa277f7928a71dc2c1e26925d9f4b251002f43c879c8e5c286ae",
+      "status": "success",
+      "check": "WARNING",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:25:35.000Z",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/1be60f5edbff260b634447e49c7f5cd1f56af583b39b879b44fcd54d8dd8acf7",
+      "status": "failure",
+      "check": "ERROR",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "2.69.5",
+      "date": "2026-10-20T15:25:44.000Z",
+      "commit": "ba00684e7d8282b927ea8d650f96d218483d6ce4",
+      "fileid": "https://r2.ropensci.org/95485cd081be7107507d7bea823786f6f8fed4994a617fc23b77800136a0e53e",
+      "status": "success",
+      "check": "WARNING",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/39447365653"
+    }
+  ]
+}

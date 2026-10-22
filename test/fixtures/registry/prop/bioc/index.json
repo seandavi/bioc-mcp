@@ -1,0 +1,990 @@
+{
+  "trackViewer": {
+    "version": "1.49.3",
+    "sha256": "00f889a99dfa2acd320026762e7c2b66dca057a7ce8aae0afed60bf847a7c92b",
+    "ts": "2026-09-30T01:16:10.678Z",
+    "bioccheck": "WARNING",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "00f889a99dfa2acd320026762e7c2b66dca057a7ce8aae0afed60bf847a7c92b",
+        "file": "trackViewer_1.49.3.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "54484a04124274e600c7caf8f3e223f8399bd8b8f8744f5fe82736c7f78fcd2f",
+        "distro": "resolute",
+        "file": "trackViewer_1.49.3.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "bb7a4b008a95437b777e015c7bf4337fe9566a6391657f8de2d2e94d133a4598",
+        "distro": "resolute",
+        "file": "trackViewer_1.49.3.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "09fb697771277ab0b29ad2747bcbda2a068514d2757f01b05b8cd17ee9610ea7",
+        "file": "trackViewer_1.49.3.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "47952af74de5e5b58696601dabcb2d93a23e9a055a2f928c6c7dc70ad12b4380",
+        "file": "trackViewer_1.49.3.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "bb1990061b522dade0fc2d51b85f081324f5df9b78a8a0f55bcc5fbb1c00516a",
+        "file": "trackViewer_1.49.3.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "adf2d36d8260921a55ef8691fd310e1c813caae6a298adbae8c3d5f1862dd417",
+        "file": "trackViewer_1.49.3.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "190cfac0a47beeacf2f5b7bbc456026540118af75c10a5d650bfdbce380a4308",
+        "file": "trackViewer_1.49.3.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "562fdf146c2fdf517d303dc3389696697dc1e69fda764c4fccf2c1e713313bb5",
+        "file": "trackViewer_1.49.3.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 3.5.0), grDevices, methods, GenomicRanges, grid",
+      "Imports": "Seqinfo, GenomeInfoDb, GenomicAlignments, GenomicFeatures, Rsamtools, S4Vectors, rtracklayer, BiocGenerics, scales, tools, IRanges, AnnotationDbi, grImport, htmlwidgets, InteractionSet, utils, rhdf5, strawr, txdbmaker",
+      "Suggests": "biomaRt, TxDb.Hsapiens.UCSC.hg19.knownGene, RUnit, org.Hs.eg.db, BiocStyle, knitr, VariantAnnotation, httr, htmltools, rmarkdown, motifStack, Gviz",
+      "License": "GPL (>= 2)",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "A R/Bioconductor package with web interface for drawing elegant\ninteractive tracks or lollipop plot to facilitate integrated\nanalysis of multi-omics data",
+      "Description": "Visualize mapped reads along with annotation as track\nlayers for NGS dataset such as ChIP-seq, RNA-seq, miRNA-seq,\nDNA-seq, SNPs and methylation data.",
+      "biocViews": "Visualization",
+      "Author": "Jianhong Ou [aut, cre] (ORCID: <https://orcid.org/0000-0002-8652-2488>),\nJulie Lihua Zhu [aut]",
+      "Maintainer": "Jianhong Ou <jou@morgridge.org>",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "changeTracksStyles.html",
+          "title": "trackViewer Vignette: change the track styles"
+        },
+        {
+          "filename": "dandelionPlot.html",
+          "title": "trackViewer Vignette: dandelionPlot"
+        },
+        {
+          "filename": "lollipopPlot.html",
+          "title": "trackViewer Vignette: lollipopPlot"
+        },
+        {
+          "filename": "trackViewer.html",
+          "title": "trackViewer Vignette: overview"
+        },
+        {
+          "filename": "plotInteractionData.html",
+          "title": "trackViewer Vignette: plot interaction data"
+        }
+      ],
+      "commit": {
+        "id": "602809b79fda0f3f14b5280340f7fbb2110fc0cf",
+        "time": 1790710331
+      },
+      "git_url": "https://github.com/bioc/trackViewer"
+    },
+    "archs": [
+      "linux",
+      "win",
+      "mac"
+    ],
+    "origin": "r-universe"
+  },
+  "Chromatograms": {
+    "version": "1.3.3",
+    "sha256": "bebde84bb80b0e34cb517f19453d344e014e164f3351637756e9f7d557aee90c",
+    "ts": "2026-08-18T14:31:07.254Z",
+    "bioccheck": "NOTE",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "bebde84bb80b0e34cb517f19453d344e014e164f3351637756e9f7d557aee90c",
+        "file": "Chromatograms_1.3.3.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "8d4e7f539a210cf5ed1cd714537dfd8662b0e4519a7269c177050ff81f67b774",
+        "file": "Chromatograms_1.3.3.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "acd75153b435b062e88eb337007ebbbbe92ac86d5faa89351be45c3ee68761c7",
+        "file": "Chromatograms_1.3.3.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "b62127576006b3b6392c7e9c39d680d2e8325ef7491973586946eadd443fa39f",
+        "file": "Chromatograms_1.3.3.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "79dc5a66565d2e61e8fcb392170a1ed255b93c55cb44d6cb7600e467c5afdad2",
+        "file": "Chromatograms_1.3.3.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "20119f2c43c795ccf1788be3b37b6d836738fea47ef70fe8bd31b920f95c6f57",
+        "file": "Chromatograms_1.3.3.zip"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "1cb6085c4c60319c823d947b8c465c596bc1466f5fd02f23449ae2b1064faa1b",
+        "distro": "resolute",
+        "file": "Chromatograms_1.3.3.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "4f4f14cbb77f0a05a1e0c1b27ce53cdd7b83be40192a41189605fd6eecf34bc7",
+        "distro": "resolute",
+        "file": "Chromatograms_1.3.3.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "d6721077bd78a7b77fceea30d87bdd1daaa462ad75f418ff40aa3bb148e8ba0c",
+        "file": "Chromatograms_1.3.3.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "BiocParallel, ProtGenerics (>= 1.39.2), R (>= 4.5.0)",
+      "Imports": "data.table, methods, S4Vectors, MsCoreUtils (>= 1.7.5), Spectra",
+      "Suggests": "MsDataHub, roxygen2, BiocStyle (>= 2.5.19), testthat, knitr (>= 1.1.0), rmarkdown, mzR (>= 2.41.4), MsBackendMetaboLights (>= 1.3.1), pheatmap, vdiffr, IRanges, RColorBrewer",
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Infrastructure for Chromatographic Mass Spectrometry Data",
+      "Description": "The Chromatograms packages defines an efficient\ninfrastructure for storing and handling of chromatographic mass\nspectrometry data. It provides different implementations of\n*backends* to store and represent the data. Such backends can\nbe optimized for small memory footprint or fast data\naccess/processing. A lazy evaluation queue and chunk-wise\nprocessing capabilities ensure efficient analysis of also very\nlarge data sets.",
+      "biocViews": "Infrastructure, Metabolomics, MassSpectrometry, Proteomics",
+      "Author": "Johannes Rainer [aut] (ORCID: <https://orcid.org/0000-0002-6977-7147>),\nLaurent Gatto [aut] (ORCID: <https://orcid.org/0000-0002-1520-2268>),\nPhilippine Louail [aut, cre] (ORCID:\n<https://orcid.org/0009-0007-5429-6846>, fnd: European Union\nHORIZON-MSCA-2021 project Grant No. 101073062: HUMAN – Harmonising\nand Unifying Blood Metabolic Analysis Networks)",
+      "Maintainer": "Philippine Louail <philippine.louail@outlook.com>",
+      "URL": "https://github.com/RforMassSpectrometry/Chromatograms",
+      "BugReports": "https://github.com/RforMassSpectrometry/Chromatograms/issues",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "creating-backend-classes.html",
+          "title": "Creating new ChromBackend classes for Chromatograms"
+        },
+        {
+          "filename": "using-a-chromatograms-object.html",
+          "title": "Using and understanding a Chromatograms object"
+        }
+      ],
+      "commit": {
+        "id": "ec9fec96a7a38e2a11f053215026fcc20d4373f1",
+        "time": 1787054385
+      },
+      "git_url": "https://github.com/bioc/Chromatograms"
+    },
+    "archs": [
+      "linux",
+      "win",
+      "mac"
+    ],
+    "origin": "r-universe"
+  },
+  "RMassBank": {
+    "version": "3.23.0",
+    "sha256": "d2f879d5bfee56c96538c3500aad4eef9d6e8908bd6443a900c1830d87b5f36d",
+    "ts": "2026-08-09T02:52:58.719Z",
+    "bioccheck": "ERROR",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "d2f879d5bfee56c96538c3500aad4eef9d6e8908bd6443a900c1830d87b5f36d",
+        "file": "RMassBank_3.23.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "ca1ac8c399234a484bbb1d3140fdae5f618e997a4c09dc3d2703acf8cd58c56d",
+        "file": "RMassBank_3.23.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "6d7b182a042713bb66a31e481e063f642a3a882a2d9f7ee3ced6daeebe98b559",
+        "file": "RMassBank_3.23.0.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "61d23777d007c1303b1c7f90178ab77a325a4ef9de751afc10434308fa409c95",
+        "file": "RMassBank_3.23.0.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "f55d28ce6172845eeeec47a166aa2a4af0c33dc9316459bf9b9faadbadb782e7",
+        "file": "RMassBank_3.23.0.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "8a321265721c711b9f25216405b07a52c64a43736107370d115ccdaff72d37b2",
+        "file": "RMassBank_3.23.0.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "57b2e790ae89882d087a3aa1c4d85a3bbe9d340669cdd1f73dc7682678fd49a5",
+        "file": "RMassBank_3.23.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "60215c23407174924ded5e12bad7cda7bdf32baddfdb0ebe7b338759c380ecc7",
+        "file": "RMassBank_3.23.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "1e12c289fec45afea543926b389d6e9a0ca35c9d11601555034a41e01d195e53",
+        "file": "RMassBank_3.23.0.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 4.1.0), Rcpp",
+      "Imports": "assertthat, Biobase, ChemmineR, data.table, digest, dplyr, enviPat, glue, httr, httr2, logger, methods, MSnbase, mzR, purrr, R.utils, rcdk, readJDX, readr, rjson, S4Vectors, tibble, tidyselect, webchem, XML, yaml",
+      "Suggests": "BiocStyle, CAMERA, gplots, knitr, magick, rmarkdown, RMassBankData (>= 1.33.1), RUnit, xcms (>= 1.37.1)",
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Workflow to process tandem MS files and build MassBank records",
+      "Description": "Workflow to process tandem MS files and build MassBank\nrecords.  Functions include automated extraction of tandem MS\nspectra, formula assignment to tandem MS fragments,\nrecalibration of tandem MS spectra with assigned fragments,\nspectrum cleanup, automated retrieval of compound information\nfrom Internet databases, and export to MassBank records.",
+      "biocViews": "ImmunoOncology, Bioinformatics, MassSpectrometry,\nMetabolomics, Software",
+      "Author": "Michael Stravs, Emma Schymanski, Steffen Neumann, Erik Mueller,\nPaul Stahlhofen, Tobias Schulze with contributions of Hendrik\nTreutler",
+      "Maintainer": "RMassBank at Eawag <massbank@eawag.ch>",
+      "SystemRequirements": "OpenBabel",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "RMassBankNonstandard.html",
+          "title": "RMassBank: Non-standard usage"
+        },
+        {
+          "filename": "RMassBank.html",
+          "title": "RMassBank: The workflow by example"
+        }
+      ],
+      "commit": {
+        "id": "bca43b51ad069b7308671399c264ff99f692446a",
+        "time": 1777379804
+      },
+      "git_url": "https://github.com/bioc/RMassBank"
+    }
+  },
+  "biomaRt": {
+    "version": "2.69.0",
+    "sha256": "e8be877b9773a67633aaa726c81d1a8776b3bc70dc9dfeeaa63cd4b60b803d16",
+    "ts": "2026-08-14T21:22:31.174Z",
+    "bioccheck": null,
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "e8be877b9773a67633aaa726c81d1a8776b3bc70dc9dfeeaa63cd4b60b803d16",
+        "file": "biomaRt_2.69.0.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.6",
+        "arch": "x86_64",
+        "sha256": "067e39764047a78a36590c1dc3c13d0444a5ca0aef05a1faf6d3be74cc3ed5b8",
+        "file": "biomaRt_2.69.0.zip"
+      },
+      {
+        "os": "mac",
+        "r": "4.6",
+        "arch": "arm64",
+        "sha256": "a9802588ffe8bdcffb65e3394b1b18735e3d9e5f89471c1cb3b28b98d8c38579",
+        "file": "biomaRt_2.69.0.tgz"
+      }
+    ],
+    "desc": {
+      "Depends": "methods, R (>= 4.5.0)",
+      "Imports": "AnnotationDbi, BiocFileCache, curl, httr2, progress, stringr, utils, xml2",
+      "Suggests": "BiocStyle, httptest2, knitr, mockery, rmarkdown, testthat (>= 3.0.0), withr",
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Interface to BioMart databases (i.e. Ensembl)",
+      "Description": "In recent years a wealth of biological data has become available in public data repositories. Easy access to these valuable data resources and firm integration with data analysis is needed for comprehensive bioinformatics data analysis. biomaRt provides an interface to a growing collection of databases implementing the BioMart software suite (<https://www.ensembl.org/info/data/biomart/index.html>). The package enables retrieval of large amounts of data in a uniform way without the need to know the underlying database schemas or write complex SQL queries.  The most prominent examples of BioMart databases are maintained by Ensembl, which provides biomaRt users direct access to a diverse set of data and enables a wide range of powerful online queries from gene annotation to database mining.",
+      "biocViews": "Annotation",
+      "Author": "Steffen Durinck [aut], Wolfgang Huber [aut], Sean Davis [ctb], Francois Pepin [ctb], Vince S Buffalo [ctb], Mike Smith [ctb] (ORCID: <https://orcid.org/0000-0002-7800-3848>), Hugo Gruson [ctb, cre] (ORCID: <https://orcid.org/0000-0002-4094-1476>), German Network for Bioinformatics Infrastructure - de.NBI [fnd]",
+      "Maintainer": "Hugo Gruson <hugo.gruson@embl.de>",
+      "URL": "https://github.com/Huber-group-EMBL/biomaRt, https://huber-group-embl.github.io/biomaRt/",
+      "BugReports": "https://github.com/Huber-group-EMBL/biomaRt/issues",
+      "VignetteBuilder": "knitr",
+      "git_url": "https://git.bioconductor.org/packages/biomaRt",
+      "vignettes": [
+        {
+          "filename": "vignettes/biomaRt/inst/doc/accessing_ensembl.html",
+          "title": "Accessing Ensembl annotation with biomaRt"
+        },
+        {
+          "filename": "vignettes/biomaRt/inst/doc/accessing_other_marts.html",
+          "title": "Using a BioMart other than Ensembl"
+        }
+      ],
+      "commit": {
+        "id": "0b83a47",
+        "time": 1777334400
+      }
+    },
+    "archs": [],
+    "origin": "bioconductor"
+  },
+  "ClustIRR": {
+    "version": "1.11.0",
+    "sha256": "29bdd5b2b0d83e21033237e37e7d2da65b49d8281f1e495c31ff6c2b8e39c57e",
+    "ts": "2026-08-14T21:23:07.786Z",
+    "bioccheck": null,
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "29bdd5b2b0d83e21033237e37e7d2da65b49d8281f1e495c31ff6c2b8e39c57e",
+        "file": "ClustIRR_1.11.0.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.6",
+        "arch": "x86_64",
+        "sha256": "adf6e52ac491c5d89f017cad68d3f7e1e5177708ead5a3fdf093baa94deea8c5",
+        "file": "ClustIRR_1.11.0.zip"
+      },
+      {
+        "os": "mac",
+        "r": "4.6",
+        "arch": "arm64",
+        "sha256": "3a3ff53b2b631a31489fa9f9da1181dcecbbd902ce9f43f61109e9869e19671f",
+        "file": "ClustIRR_1.11.0.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6",
+        "arch": "x86_64",
+        "sha256": "c1e8067fa8537ef693fb50e3d37f9069a9579dedd78eb2003036f7ad1162ed2c",
+        "file": "ClustIRR_1.11.0.tgz"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 4.3.0)",
+      "Imports": "grDevices, igraph, methods, Rcpp (>= 0.12.0), RcppParallel (>= 5.0.1), reshape2, rstan (>= 2.18.1), rstantools (>= 2.4.0), stats, stringdist, utils, posterior, visNetwork, dplyr, tidyr, ggplot2, ggforce, scales, msa, Biostrings, RADanalysis, ggseqlogo, rBLAST",
+      "LinkingTo": "BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0), RcppParallel (>= 5.0.1), rstan (>= 2.18.1), StanHeaders (>= 2.18.0)",
+      "Suggests": "BiocStyle, knitr, testthat, ggrepel, patchwork, htmlwidgets",
+      "License": "GPL-3 + file LICENSE",
+      "NeedsCompilation": "yes"
+    },
+    "meta": {
+      "Title": "Clustering of Immune Receptor Repertoires",
+      "Description": "ClustIRR analyzes repertoires of B- and T-cell receptors. It starts by identifying communities of immune receptors with similar specificities, based on the sequences of their complementarity-determining regions (CDRs). Next, it employs a Bayesian probabilistic models to quantify differential community occupancy (DCO) between repertoires, allowing the identification of expanding or contracting communities in response to e.g. infection or cancer treatment.",
+      "biocViews": "Clustering, ImmunoOncology, SingleCell, Software, Classification, Bayesian, BiomedicalInformatics, ImmunoOncology, MathematicalBiology",
+      "Author": "Simo Kitanovski [aut, cre] (ORCID: <https://orcid.org/0000-0003-2909-5376>), Kai Wollek [aut] (ORCID: <https://orcid.org/0009-0008-5941-9160>)",
+      "Maintainer": "Simo Kitanovski <simokitanovski@gmail.com>",
+      "URL": "https://github.com/snaketron/ClustIRR",
+      "BugReports": "https://github.com/snaketron/ClustIRR/issues",
+      "SystemRequirements": "GNU make, ncbi-blast+",
+      "VignetteBuilder": "knitr",
+      "git_url": "https://git.bioconductor.org/packages/ClustIRR",
+      "vignettes": [
+        {
+          "filename": "vignettes/ClustIRR/inst/doc/User_manual_groups.html",
+          "title": "Finding biological condition-specific changes in T- and B-cell receptor repertoires with ClustIRR"
+        },
+        {
+          "filename": "vignettes/ClustIRR/inst/doc/User_manual_introduction.html",
+          "title": "Decoding T- and B-cell receptor repertoires with ClustIRR"
+        }
+      ],
+      "commit": {
+        "id": "2fea7dd",
+        "time": 1777334400
+      }
+    },
+    "archs": [],
+    "origin": "bioconductor"
+  },
+  "SEMPLR": {
+    "version": "1.1.2",
+    "sha256": "6ed04614232b7ddbeb2260e8ba81c792f805d8dd6bcf1144f864834facfab8d1",
+    "ts": "2026-08-08T19:37:31.326Z",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "6ed04614232b7ddbeb2260e8ba81c792f805d8dd6bcf1144f864834facfab8d1",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "985207a313c8234fd234136cd84c9bc7a8badfdc5178d6c6ad4dfa8313e39f3b",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "eac9759568abcf7d7436fa532bdfb04e182188cddef17563b0bf105b48a8293c",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "08fd28984c08bdc10f8ab8277f4968892e9a69f6074211eb0e5243ad899bc04b",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "cd936979794723ebbb894c99e74e18dd9d77455587980f19ed97a07eeeb03446",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "ef1d224b6aaf156aeeb0a6701cc95a82463cd9fc2ee74bf0ffcca823ffcf5f9e",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "8baad5d7e2907b4a2ace85918cb2f791d5293cc8d807347d344c0c3cfd2d4133",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "c7047436fb8485a070e6f41de2ff48b72962bd45f6da171b45c063f7a187e7f7",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "2f9c21d02c28f408aaa7a1c29f8ec90507185d03c21ebff2fd1635c3dc6b1f24",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "e9e625d561f9871d5847fea8630f868f1cf21d9f8d7e179f555a0e8a50cf3df3",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "b83163719cd054f46ba5ca4622159a82adddcf92ddac087f7d8e3aeddd05016c",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "b5aff74e2f3ee3b27eef513175a10cb601bc84a842a253e65cbd62509ac4211d",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "7bb75c591655b78fcd745c3af74a97f38ed8757efbea832e982ad37f5c2c3277",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "4599d9facf883fb16809a038df2581e85ca5d22c0cc1b03156ce3a8ab8e034e0",
+        "arch": "aarch64",
+        "distro": "resolute",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "57932a8762b5a85404778cb04ae001344afb7ed3969083c17ac5959336aaca2b",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "b78a0fcd5b9416e8357160ff32025e59e36a99e4e830cdf1c2cb615a64a01604",
+        "arch": "aarch64",
+        "distro": "resolute",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "f807b01a959ee2109e985111d2924e564014e5ea4520d5ba9b734f6330a040b2",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "a3db938d2eb4c7629d3dd12786c036e407337432c98d4e9e4ce7f7563b1eb7cc",
+        "arch": "aarch64",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "dc3fa62518645a1e3bf4deb614e10ec1fe0a2ed1f00aee0c9aee1a5e2caba7cd",
+        "arch": "x86_64",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "d697e50a3675eda099d96bb63a43b745eba355e3e58de04b48c18c4782f4d562",
+        "arch": "aarch64",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "2b815800b4ddcb42d5dadc28ea67b59e93589e48766fa504f1c99a645e381f26",
+        "arch": "x86_64",
+        "file": "SEMPLR_1.1.2.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "29d977709a405928b7371fd7f8669799a41590bd9aabe5d8b4d2ff2a03f30c6c",
+        "arch": "emscripten",
+        "file": "SEMPLR_1.1.2.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "011863db69bc1488bca83960fd33b70428e22941543d38f04ec723431e5763d8",
+        "arch": "aarch64",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "c958e5aad535d396612206182c7bc16809c42071c94b58fd320ada1eee6bf887",
+        "arch": "x86_64",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "5d37b38a953d608fbcb5c34f7dc1173f91b72ddd986c2b2340e15fa5d586c924",
+        "arch": "x86_64",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "d520d9118fe69fd2b0e9a634e1b8b80f6860c26c576c2783fb0a62a8f1525651",
+        "arch": "aarch64",
+        "file": "SEMPLR_1.1.2.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "11f9584ee2b71f886c2295db39ce1bdd98291ae5ecbae0d2b6ce39f8a4b4cdf4",
+        "arch": "x86_64",
+        "file": "SEMPLR_1.1.2.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 4.1.0)",
+      "Imports": "BiocGenerics, Biostrings, GenomeInfoDb, AnnotationDbi, ggplot2, ggrepel, VariantAnnotation, GenomicRanges, GenomicFeatures, data.table, methods, scales, S4Vectors, stats, rlang, stringi, universalmotif, Rcpp, ggtree",
+      "LinkingTo": "Rcpp",
+      "Suggests": "knitr, rmarkdown, BiocStyle, devtools, testthat (>= 3.0.0), IRanges, BSgenome.Hsapiens.UCSC.hg38, BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg38.knownGene, org.Hs.eg.db",
+      "License": "MIT + file LICENSE",
+      "NeedsCompilation": "yes"
+    },
+    "meta": {
+      "Title": "SNP Effect Matrix Pipeline in R",
+      "Description": "SEMPLR computes transcription factor binding affinity\nscores for genomic positions and genetic variants. Scores are\ncomputed from SNP Effect Matrices (SEMs) produced by SEMpl. 223\npre-computed SEMs are included with the package or custom sets\ncan be provided. Enrichment can be tested among sets of genomic\npositions to determine if transcription factor binding events\noccur more often than expected. Comparing binding affinity\nscores between alleles can reveal differences in transcription\nfactor binding with genetic variation. This package also\nincludes several visualization functions to view scores both on\nthe motif and variant/position level.",
+      "biocViews": "MotifAnnotation, Transcription, SNP, GenomicVariation",
+      "Author": "Grace Kenney [aut, cre] (ORCID:\n<https://orcid.org/0009-0009-6308-3150>),\nDouglas Phanstiel [aut],\nNIH NIGMS [fnd],\nNSF GRFP [fnd]",
+      "Maintainer": "Grace Kenney <kenney.grace6@gmail.com>",
+      "URL": "https://github.com/grkenney/SEMPLR,\nhttps://grkenney.github.io/SEMPLR",
+      "BugReports": "https://www.github.com/grkenney/SEMPLR/issues",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "SEMPLR.html",
+          "title": "SEMPLR Vignette"
+        }
+      ],
+      "commit": {
+        "id": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+        "time": 1778976740
+      },
+      "git_url": "https://github.com/bioc/SEMPLR"
+    }
+  },
+  "Fletcher2013a": {
+    "version": "1.49.0",
+    "sha256": "e2dcc85d2b6b53993397e75f05cd98561509df998b5eaa4bd3e54ab0e7a9a2a1",
+    "ts": "2026-10-06T09:19:13Z",
+    "bioccheck": "error",
+    "archs": [
+      "linux"
+    ],
+    "origin": "bioc-build",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "4.6",
+        "sha256": "e2dcc85d2b6b53993397e75f05cd98561509df998b5eaa4bd3e54ab0e7a9a2a1",
+        "file": "Fletcher2013a_1.49.0.tar.gz"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 2.15), limma",
+      "Imports": "Biobase ,VennDiagram, gplots,grid",
+      "License": "GPL (>= 2)",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Gene expression data from breast cancer cells under FGFR2\nsignalling perturbation",
+      "Description": "The package Fletcher2013a contains time-course gene\nexpression data from MCF-7 cells treated under different\nexperimental systems in order to perturb FGFR2 signalling. The\ndata comes from Fletcher et al. (Nature Comms 4:2464, 2013)\nwhere further details about the background and the experimental\ndesign of the study can be found.",
+      "URL": "http://dx.doi.org/10.1038/ncomms3464",
+      "Maintainer": "Mauro Castro <mauro.a.castro@gmail.com>",
+      "Author": "Mauro Castro, Michael Fletcher, Florian Markowetz and Kerstin\nMeyer.",
+      "biocViews": "ExperimentData, ExpressionData, CancerData,\nBreastCancerData, MicroarrayData",
+      "commit": {
+        "id": "3f2f39bc1d636f8c2044272138a23d4f732cb123",
+        "time": 1777379163
+      },
+      "git_url": "https://git.bioconductor.org/packages/Fletcher2013a"
+    }
+  },
+  "edgeR": {
+    "version": "4.99.10",
+    "sha256": "c33c3f85edf6a67abbcb3e899124d266adc039b32e811d11e69fc34cedba6218",
+    "ts": "2026-10-18T06:30:40.510Z",
+    "bioccheck": "ERROR",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "c33c3f85edf6a67abbcb3e899124d266adc039b32e811d11e69fc34cedba6218",
+        "file": "edgeR_4.99.10.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "0c650e214ef4e8b432f8f3fe7e3fe4ee7d9906f7f82bc17ed8e6408927e6137e",
+        "arch": "aarch64",
+        "distro": "resolute",
+        "file": "edgeR_4.99.10.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "655ede38d1667935d5f073d5adef6e477da16c7475b4fdeccb3d18ab05b3132a",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "edgeR_4.99.10.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "e998d1697361462e289c450e7ba1a0bedbae1da3ccda6304931475093a80147a",
+        "arch": "aarch64",
+        "distro": "resolute",
+        "file": "edgeR_4.99.10.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "1fec84e4102da33a6f17012c337a875ba5c3a76c6a8f829869c3e62153eb0e65",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "edgeR_4.99.10.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "f08616bfd1dc392bdaa37d254b4d0aa872351f65ee9c709ede5a540b9933d06f",
+        "arch": "aarch64",
+        "file": "edgeR_4.99.10.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "7683042ad626fc2ce7df4207a9d2dbcea2d388c5c0bca8985c9fc1d0fd2048d3",
+        "arch": "x86_64",
+        "file": "edgeR_4.99.10.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "a3e6986be7824d3c9f39793bd6eeceb15beb9e94ee7747af8c5ae10a166b454e",
+        "arch": "aarch64",
+        "file": "edgeR_4.99.10.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "0a411d862d4e03747c25ab69d8333fd2355543bcd1ceef1bd4b8c26e8f5aa6a6",
+        "arch": "x86_64",
+        "file": "edgeR_4.99.10.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "4ebda0a8d813ab02392a397f984fd61bff853a0a9e23e3dcd658e0d157f0fb93",
+        "arch": "emscripten",
+        "file": "edgeR_4.99.10.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "6e543b5471f55d088540bc8c8c6909f17679c8e98e3e9adfaaa4777f46d0b67a",
+        "arch": "aarch64",
+        "file": "edgeR_4.99.10.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "c519416f86faaae416f84b8cf8cb2a89ab4d656bb704a92527dcbcad34b9bbf1",
+        "arch": "x86_64",
+        "file": "edgeR_4.99.10.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "10ab629adc0e0d49a5d83f6802b1ef968d898f654fde2e3b52d0fceb3b722e7c",
+        "arch": "x86_64",
+        "file": "edgeR_4.99.10.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "5adfcc5756286fd0e93381f67156bd6a61256e3f9744d969ecec9c68ac6506c6",
+        "arch": "aarch64",
+        "file": "edgeR_4.99.10.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "03e370e456fafd10809dc07ccca148a1057095069a4eb8ac54cc136f25c2b1c0",
+        "arch": "x86_64",
+        "file": "edgeR_4.99.10.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 3.6.0), limma (>= 3.63.6)",
+      "Imports": "methods, graphics, stats, utils, locfit",
+      "Suggests": "jsonlite, knitr, Matrix, nanoparquet, readr, rhdf5, SeuratObject, splines, AnnotationDbi, Biobase, BiocStyle, org.Hs.eg.db, S4Vectors, SummarizedExperiment",
+      "License": "GPL (>=2)",
+      "NeedsCompilation": "yes"
+    },
+    "meta": {
+      "Title": "Empirical Analysis of Digital Gene Expression Data in R",
+      "Description": "Differential expression analysis of sequence count data.\nImplements a range of statistical methodology based on the\nnegative binomial distributions, including empirical Bayes\nestimation, exact tests, generalized linear models,\nquasi-likelihood, and gene set enrichment. Can perform\ndifferential analyses of any type of omics data that produces\nread counts, including RNA-seq, ChIP-seq, ATAC-seq,\nBisulfite-seq, SAGE, CAGE, metabolomics, or proteomics spectral\ncounts. RNA-seq analyses can be conducted at the gene or\nisoform level, and tests can be conducted for differential exon\nor transcript usage.",
+      "biocViews": "AlternativeSplicing, BatchEffect, Bayesian,\nBiomedicalInformatics, CellBiology, ChIPSeq, Clustering,\nCoverage, DifferentialExpression, DifferentialMethylation,\nDifferentialSplicing, DNAMethylation, Epigenetics,\nFunctionalGenomics, GeneExpression, GeneSetEnrichment,\nGenetics, Genetics, ImmunoOncology, MultipleComparison,\nNormalization, Pathways, Proteomics, QualityControl,\nRegression, RNASeq, SAGE, Sequencing, SingleCell,\nSystemsBiology, TimeCourse, Transcription, Transcriptomics",
+      "Author": "Yunshun Chen, Lizhong Chen, Aaron TL Lun, Davis J McCarthy,\nPedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu,\nXiaobei Zhou, Mark D Robinson, Gordon K Smyth",
+      "Maintainer": "Yunshun Chen <yuchen@wehi.edu.au>, Gordon Smyth\n<smyth@wehi.edu.au>",
+      "URL": "https://bioinf.wehi.edu.au/edgeR/,\nhttps://bioconductor.org/packages/edgeR",
+      "VignetteBuilder": "knitr",
+      "Date": "2026-10-18",
+      "vignettes": [
+        {
+          "filename": "intro.html",
+          "title": "A brief introduction to edgeR"
+        },
+        {
+          "filename": "edgeRUsersGuide.pdf",
+          "title": "edgeR User's Guide"
+        }
+      ],
+      "commit": {
+        "id": "aeaebafc6dd4fdd029bf1895cfc03040af650659",
+        "time": 1792290531
+      },
+      "git_url": "https://github.com/bioc/edgeR"
+    },
+    "archs": [
+      "linux",
+      "win",
+      "mac"
+    ],
+    "origin": "r-universe"
+  },
+  "edge": {
+    "version": "2.45.0",
+    "sha256": "b81b61a4f54725f62324673ce616e19d739fb9bb98bdebf06f39d69b31e84acd",
+    "ts": "2026-08-09T02:37:10.742Z",
+    "bioccheck": "ERROR",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "b81b61a4f54725f62324673ce616e19d739fb9bb98bdebf06f39d69b31e84acd",
+        "file": "edge_2.45.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "5d37dd8d3ef26a16b55196c959e1d8c9ac7d0604866820464350c6c0d56db670",
+        "arch": "aarch64",
+        "file": "edge_2.45.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "5492084324bb9a6c098fe89bc61c8a969fe07609774d8ffbe0d2a60fe8c907d2",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "dac98285113b9d5b0428aeaaff89a48108a078bd14c6cd85912c8584e6e4db64",
+        "arch": "aarch64",
+        "file": "edge_2.45.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "d791c1aa4d0789a0620bb6c7458c2e1f89d51f016300f3f949e00e242d6d134d",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "34d02eacdce0c51075442120f5bf55ee3baf8ada2d1d5858cb4079bb4d82caa0",
+        "arch": "aarch64",
+        "file": "edge_2.45.0.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "fb7100d4239e6831d43c39469a58d39da5ba4425a861fbf9a1ccb5a74fa75ff4",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "0ec650d748fa72cd503b9a6bab9c9bbef3a67d9a48eec9b36e756136e7994f5e",
+        "arch": "aarch64",
+        "file": "edge_2.45.0.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "a88f7a9e58e8e6c380e5e8e7d9be3893d4211cbac91f58f567b306e3fb380ca9",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "ede1c4002f48988873ef4e035c96c86ab154c7948fd7b54ad8f30ec9195b7d9c",
+        "arch": "emscripten",
+        "file": "edge_2.45.0.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "cc67d9edef8807873f60441c98fbfd924ee51105ea3fe2554fece8f9eeecc3f5",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "fcef64cdc4421a69ac3de925c172467c76c985170eddc4341eb19182fdd8ad08",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "3e4008d75ac337913af5a3ef9f4721544c0d608e22385e05bc277b7e88844365",
+        "arch": "x86_64",
+        "file": "edge_2.45.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "8204f600bef2fe24f2602e5aba3f5ff5a627f54569148b86a7412213397097de",
+        "arch": "aarch64",
+        "file": "edge_2.45.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "95ce0b236a663fe78e419681297e4ff3b42295eb4c09086955105fe9613535f8",
+        "arch": "aarch64",
+        "file": "edge_2.45.0.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 3.1.0), Biobase",
+      "Imports": "methods, splines, sva, qvalue (>= 1.99.0), MASS",
+      "Suggests": "testthat, knitr, ggplot2, reshape2",
+      "License": "MIT + file LICENSE",
+      "NeedsCompilation": "yes"
+    },
+    "meta": {
+      "Title": "Extraction of Differential Gene Expression",
+      "Description": "The edge package implements methods for carrying out\ndifferential expression analyses of genome-wide gene expression\nstudies. Significance testing using the optimal discovery\nprocedure and generalized likelihood ratio tests (equivalent to\nF-tests and t-tests) are implemented for general study designs.\nSpecial functions are available to facilitate the analysis of\ncommon study designs, including time course experiments. Other\npackages such as sva and qvalue are integrated in edge to\nprovide a wide range of tools for gene expression analysis.",
+      "biocViews": "MultipleComparison, DifferentialExpression, TimeCourse,\nRegression, GeneExpression, DataImport",
+      "Author": "John D. Storey, Jeffrey T. Leek and Andrew J. Bass",
+      "Maintainer": "John D. Storey <jstorey@princeton.edu>, Andrew J. Bass\n<ajbass@emory.edu>",
+      "URL": "https://github.com/jdstorey/edge",
+      "BugReports": "https://github.com/jdstorey/edge/issues",
+      "VignetteBuilder": "knitr",
+      "Date": "2015-04-15",
+      "vignettes": [
+        {
+          "filename": "edge.pdf",
+          "title": "edge Package"
+        }
+      ],
+      "commit": {
+        "id": "92259f8fb42447d24cecc2a8b683f0f3d5fc24b6",
+        "time": 1777380077
+      },
+      "git_url": "https://github.com/bioc/edge"
+    }
+  }
+}

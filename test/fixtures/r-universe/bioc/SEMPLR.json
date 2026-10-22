@@ -1,0 +1,1028 @@
+{
+  "_id": "6ac771a9de46216d5edcff2d",
+  "Package": "SEMPLR",
+  "Title": "SNP Effect Matrix Pipeline in R",
+  "Version": "1.1.2",
+  "Authors@R": "c(\nperson(\"Grace\", \"Kenney\",\nemail = \"kenney.grace6@gmail.com\",\nrole = c(\"aut\", \"cre\"),\ncomment = c(ORCID = \"0009-0009-6308-3150\")),\nperson(\"Douglas\", \"Phanstiel\",\nrole = c(\"aut\")),\nperson(\"NIH NIGMS\", role = \"fnd\"),\nperson(\"NSF GRFP\", role = \"fnd\"))",
+  "Description": "SEMPLR computes transcription factor binding affinity\nscores for genomic positions and genetic variants. Scores are\ncomputed from SNP Effect Matrices (SEMs) produced by SEMpl. 223\npre-computed SEMs are included with the package or custom sets\ncan be provided. Enrichment can be tested among sets of genomic\npositions to determine if transcription factor binding events\noccur more often than expected. Comparing binding affinity\nscores between alleles can reveal differences in transcription\nfactor binding with genetic variation. This package also\nincludes several visualization functions to view scores both on\nthe motif and variant/position level.",
+  "Encoding": "UTF-8",
+  "Roxygen": "list(markdown = TRUE)",
+  "RoxygenNote": "7.3.3",
+  "VignetteBuilder": "knitr",
+  "License": "MIT + file LICENSE",
+  "Config/testthat/edition": "3",
+  "URL": "https://github.com/grkenney/SEMPLR,\nhttps://grkenney.github.io/SEMPLR",
+  "BugReports": "https://www.github.com/grkenney/SEMPLR/issues",
+  "biocViews": "MotifAnnotation, Transcription, SNP, GenomicVariation",
+  "LazyData": "true",
+  "Config/pak/sysreqs": "libcairo2-dev cmake libfontconfig1-dev\nlibfreetype6-dev make libbz2-dev libicu-dev liblzma-dev\nlibpng-dev libuv1-dev libxml2-dev libssl-dev xz-utils\nzlib1g-dev",
+  "Repository": "https://bioc.r-universe.dev",
+  "Date/Publication": "2026-05-17 00:12:20 UTC",
+  "RemoteUrl": "https://github.com/bioc/SEMPLR",
+  "RemoteRef": "HEAD",
+  "RemoteSha": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+  "NeedsCompilation": "yes",
+  "Packaged": {
+    "Date": "2026-10-08 09:30:19 UTC",
+    "User": "root"
+  },
+  "Author": "Grace Kenney [aut, cre] (ORCID:\n<https://orcid.org/0009-0009-6308-3150>),\nDouglas Phanstiel [aut],\nNIH NIGMS [fnd],\nNSF GRFP [fnd]",
+  "Maintainer": "Grace Kenney <kenney.grace6@gmail.com>",
+  "_user": "bioc",
+  "_type": "src",
+  "_file": "SEMPLR_1.1.2.tar.gz",
+  "_fileid": "https://r2.ropensci.org/10b57a0d05359f66784676151d04e0ad2a890dc7a49eb8dadaea2a1dcbe942e9",
+  "_filesize": 1994220,
+  "_sha256": "10b57a0d05359f66784676151d04e0ad2a890dc7a49eb8dadaea2a1dcbe942e9",
+  "_expires": "2027-01-16T10:34:15.000Z",
+  "_created": "2026-10-08T09:30:19.000Z",
+  "_published": "2026-10-08T10:34:17.619Z",
+  "_buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459",
+  "_status": "success",
+  "_host": "GitHub-Actions",
+  "_bioccheck": {
+    "error": 0,
+    "warning": 0,
+    "note": 4
+  },
+  "_upstream": "https://github.com/bioc/SEMPLR",
+  "_commit": {
+    "id": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+    "author": "Grace Kenney <kenney.grace6@gmail.com>",
+    "committer": "Grace Kenney <kenney.grace6@gmail.com>",
+    "message": "fix headings\n",
+    "time": 1778976740
+  },
+  "_maintainer": {
+    "name": "Grace Kenney",
+    "email": "kenney.grace6@gmail.com",
+    "login": "grkenney",
+    "orcid": "0009-0009-6308-3150",
+    "twitter": "@gkenney66",
+    "description": "Bioinformatics and Computational Biology PhD candidate at the University of North Carolina at Chapel Hill | Phanstiel Lab\n",
+    "uuid": 64295790
+  },
+  "_distro": "resolute",
+  "_jobs": [
+    {
+      "job": 113244686219,
+      "time": 350,
+      "config": "bioc-checks",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11540772794"
+    },
+    {
+      "job": 113244686432,
+      "time": 521,
+      "config": "linux-devel-arm64",
+      "r": "4.7.0",
+      "check": "NOTE",
+      "artifact": "11541231826"
+    },
+    {
+      "job": 113244686325,
+      "time": 613,
+      "config": "linux-devel-x86_64",
+      "r": "4.7.0",
+      "check": "NOTE",
+      "artifact": "11540663862"
+    },
+    {
+      "job": 113244686332,
+      "time": 440,
+      "config": "linux-release-arm64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11540453840"
+    },
+    {
+      "job": 113244686455,
+      "time": 625,
+      "config": "linux-release-x86_64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11540324931"
+    },
+    {
+      "job": 113244686378,
+      "time": 468,
+      "config": "macos-oldrel-arm64",
+      "r": "4.5.3",
+      "check": "NOTE",
+      "artifact": "11542879267"
+    },
+    {
+      "job": 113244686450,
+      "time": 1029,
+      "config": "macos-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "NOTE",
+      "artifact": "11542596150"
+    },
+    {
+      "job": 113244686472,
+      "time": 547,
+      "config": "macos-release-arm64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11543442295"
+    },
+    {
+      "job": 113244686427,
+      "time": 712,
+      "config": "macos-release-x86_64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11541509136"
+    },
+    {
+      "job": 113241508815,
+      "time": 488,
+      "config": "source",
+      "r": "4.6.1",
+      "check": "OK",
+      "artifact": "11540292126"
+    },
+    {
+      "job": 113244686412,
+      "time": 241,
+      "config": "wasm-release",
+      "r": "4.6.0",
+      "check": "OK",
+      "artifact": "11540478147"
+    },
+    {
+      "job": 113244686490,
+      "time": 587,
+      "config": "windows-devel-arm64",
+      "r": "4.7.0",
+      "check": "NOTE",
+      "artifact": "11541416446"
+    },
+    {
+      "job": 113244686482,
+      "time": 496,
+      "config": "windows-devel-x86_64",
+      "r": "4.7.0",
+      "check": "NOTE",
+      "artifact": "11541256513"
+    },
+    {
+      "job": 113244686451,
+      "time": 528,
+      "config": "windows-oldrel-x86_64",
+      "r": "4.5.3",
+      "check": "NOTE",
+      "artifact": "11541172022"
+    },
+    {
+      "job": 113244686458,
+      "time": 557,
+      "config": "windows-release-arm64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11541580101"
+    },
+    {
+      "job": 113244686426,
+      "time": 479,
+      "config": "windows-release-x86_64",
+      "r": "4.6.1",
+      "check": "NOTE",
+      "artifact": "11541261666"
+    }
+  ],
+  "_registered": true,
+  "_dependencies": [
+    {
+      "package": "R",
+      "version": ">= 4.1.0",
+      "role": "Depends"
+    },
+    {
+      "package": "Rcpp",
+      "role": "LinkingTo"
+    },
+    {
+      "package": "BiocGenerics",
+      "role": "Imports"
+    },
+    {
+      "package": "Biostrings",
+      "role": "Imports"
+    },
+    {
+      "package": "GenomeInfoDb",
+      "role": "Imports"
+    },
+    {
+      "package": "AnnotationDbi",
+      "role": "Imports"
+    },
+    {
+      "package": "ggplot2",
+      "role": "Imports"
+    },
+    {
+      "package": "ggrepel",
+      "role": "Imports"
+    },
+    {
+      "package": "VariantAnnotation",
+      "role": "Imports"
+    },
+    {
+      "package": "GenomicRanges",
+      "role": "Imports"
+    },
+    {
+      "package": "GenomicFeatures",
+      "role": "Imports"
+    },
+    {
+      "package": "data.table",
+      "role": "Imports"
+    },
+    {
+      "package": "methods",
+      "role": "Imports"
+    },
+    {
+      "package": "scales",
+      "role": "Imports"
+    },
+    {
+      "package": "S4Vectors",
+      "role": "Imports"
+    },
+    {
+      "package": "stats",
+      "role": "Imports"
+    },
+    {
+      "package": "rlang",
+      "role": "Imports"
+    },
+    {
+      "package": "stringi",
+      "role": "Imports"
+    },
+    {
+      "package": "universalmotif",
+      "role": "Imports"
+    },
+    {
+      "package": "Rcpp",
+      "role": "Imports"
+    },
+    {
+      "package": "ggtree",
+      "role": "Imports"
+    },
+    {
+      "package": "knitr",
+      "role": "Suggests"
+    },
+    {
+      "package": "rmarkdown",
+      "role": "Suggests"
+    },
+    {
+      "package": "BiocStyle",
+      "role": "Suggests"
+    },
+    {
+      "package": "devtools",
+      "role": "Suggests"
+    },
+    {
+      "package": "testthat",
+      "version": ">= 3.0.0",
+      "role": "Suggests"
+    },
+    {
+      "package": "IRanges",
+      "role": "Suggests"
+    },
+    {
+      "package": "BSgenome.Hsapiens.UCSC.hg38",
+      "role": "Suggests"
+    },
+    {
+      "package": "BSgenome.Hsapiens.UCSC.hg19",
+      "role": "Suggests"
+    },
+    {
+      "package": "TxDb.Hsapiens.UCSC.hg38.knownGene",
+      "role": "Suggests"
+    },
+    {
+      "package": "org.Hs.eg.db",
+      "role": "Suggests"
+    }
+  ],
+  "_owner": "bioc",
+  "_selfowned": true,
+  "_usedby": 0,
+  "_updates": [
+    {
+      "week": "2025-43",
+      "n": 5
+    },
+    {
+      "week": "2025-51",
+      "n": 4
+    },
+    {
+      "week": "2025-52",
+      "n": 2
+    },
+    {
+      "week": "2026-06",
+      "n": 21
+    },
+    {
+      "week": "2026-07",
+      "n": 1
+    },
+    {
+      "week": "2026-08",
+      "n": 4
+    },
+    {
+      "week": "2026-09",
+      "n": 1
+    },
+    {
+      "week": "2026-11",
+      "n": 3
+    },
+    {
+      "week": "2026-18",
+      "n": 1
+    },
+    {
+      "week": "2026-20",
+      "n": 7
+    }
+  ],
+  "_tags": [
+    {
+      "name": "v0.99.1",
+      "date": "2026-02-24"
+    }
+  ],
+  "_bioc": [
+    {
+      "branch": "devel",
+      "version": "1.1.2",
+      "bioc": "3.24",
+      "repository": "bioc"
+    },
+    {
+      "branch": "release",
+      "version": "1.0.1",
+      "bioc": "3.23",
+      "repository": "bioc"
+    }
+  ],
+  "_topics": [
+    "motifannotation",
+    "transcription",
+    "snp",
+    "genomicvariation",
+    "cpp"
+  ],
+  "_stars": 1,
+  "_contributors": [
+    {
+      "user": "grkenney",
+      "count": 162,
+      "uuid": 64295790
+    },
+    {
+      "user": "jwokaty",
+      "count": 2,
+      "uuid": 1744257
+    }
+  ],
+  "_userbio": {
+    "uuid": 2286807,
+    "type": "organization",
+    "name": "Bioconductor",
+    "followers": 474,
+    "description": "Software for the analysis and comprehension of high-throughput genomic data"
+  },
+  "_downloads": {
+    "count": 258,
+    "source": "https://www.bioconductor.org/packages/stats/bioc/SEMPLR"
+  },
+  "_devurl": "https://github.com/grkenney/semplr",
+  "_pkgdown": "https://grkenney.github.io/SEMPLR",
+  "_searchresults": 2,
+  "_rbuild": "4.6.1",
+  "_assets": [
+    "extra/citation.cff",
+    "extra/citation.html",
+    "extra/citation.json",
+    "extra/citation.txt",
+    "extra/contents.json",
+    "extra/manual.pdf",
+    "extra/NEWS.html",
+    "extra/NEWS.txt",
+    "extra/readme.html",
+    "extra/readme.md",
+    "extra/SEMPLR.html",
+    "LICENSE"
+  ],
+  "_homeurl": "https://github.com/grkenney/semplr",
+  "_realowner": "bioc",
+  "_cranurl": false,
+  "_exports": [
+    "convertSEMsToPPMs",
+    "enrichmentSets",
+    "enrichSEMs",
+    "getBaseline",
+    "getRanges",
+    "getRangeSeqs",
+    "getSEM",
+    "getSEMId",
+    "getSEMs",
+    "loadSEMCollection",
+    "plotEnrich",
+    "plotSEM",
+    "plotSEMMotifs",
+    "plotSEMVariants",
+    "scoreBinding",
+    "scores",
+    "scoreVariants",
+    "semData",
+    "SEMScores",
+    "show",
+    "SNPEffectMatrix",
+    "SNPEffectMatrixCollection"
+  ],
+  "_datasets": [
+    {
+      "name": "SEMC",
+      "title": "Default SNP Effect Matrix Data Collection",
+      "object": "SEMC",
+      "class": [
+        "SNPEffectMatrixCollection"
+      ],
+      "fields": [],
+      "table": false,
+      "tojson": false
+    }
+  ],
+  "_help": [
+    {
+      "page": "convertSEMsToPPMs",
+      "title": "Convert a SNP Effect Matrix to a position probability matrices (PPMs)",
+      "topics": [
+        "convertSEMsToPPMs"
+      ]
+    },
+    {
+      "page": "enrichmentSets",
+      "title": "Run the Full Differential‐Expression Motif Enrichment Pipeline",
+      "topics": [
+        "enrichmentSets"
+      ]
+    },
+    {
+      "page": "enrichSEMs",
+      "title": "Calculates binding enrichment for motif(s)",
+      "topics": [
+        "enrichSEMs"
+      ]
+    },
+    {
+      "page": "getBaseline",
+      "title": "Access baseline from a SNPEffectMatrix object",
+      "topics": [
+        "getBaseline",
+        "getBaseline,SNPEffectMatrix-method"
+      ]
+    },
+    {
+      "page": "getRanges",
+      "title": "Access ranges slot in a SEMScores object",
+      "topics": [
+        "getRanges",
+        "getRanges,SEMScores-method"
+      ]
+    },
+    {
+      "page": "getRangeSeqs",
+      "title": "Get sequence for genomic ranges and variants",
+      "topics": [
+        "getRangeSeqs"
+      ]
+    },
+    {
+      "page": "getSEM",
+      "title": "Access the SEM from a SNPEffectMatrix object",
+      "topics": [
+        "getSEM",
+        "getSEM,SNPEffectMatrix-method"
+      ]
+    },
+    {
+      "page": "getSEMId",
+      "title": "Access semId from a SNPEffectMatrix object",
+      "topics": [
+        "getSEMId",
+        "getSEMId,SNPEffectMatrix-method"
+      ]
+    },
+    {
+      "page": "getSEMs",
+      "title": "Access sems matrix from a SNPEffectMatrixCollection object",
+      "topics": [
+        "getSEMs",
+        "getSEMs,SNPEffectMatrixCollection-method"
+      ]
+    },
+    {
+      "page": "loadSEMCollection",
+      "title": "Load .sem files and meta data into a SNPEffectMatrixCollection",
+      "topics": [
+        "loadSEMCollection"
+      ]
+    },
+    {
+      "page": "plotEnrich",
+      "title": "Plot the results of 'enrichSEMs'",
+      "topics": [
+        "plotEnrich"
+      ]
+    },
+    {
+      "page": "plotSEM",
+      "title": "Plot SEM scores for each nucleic acid in each position of the motif",
+      "topics": [
+        "plotSEM"
+      ]
+    },
+    {
+      "page": "plotSEMMotifs",
+      "title": "Plot non-alt versus alt binding propensity for a single variant",
+      "topics": [
+        "plotSEMMotifs"
+      ]
+    },
+    {
+      "page": "plotSEMVariants",
+      "title": "Plot non-alt versus alt binding propensity for a single motif",
+      "topics": [
+        "plotSEMVariants"
+      ]
+    },
+    {
+      "page": "scoreBinding",
+      "title": "Calculate binding propensity for all SEM motifs and genomic positions provided",
+      "topics": [
+        "scoreBinding"
+      ]
+    },
+    {
+      "page": "scoreVariants",
+      "title": "Calculate risk/non-risk binding propensity for all SEM motifs and variants provided",
+      "topics": [
+        "scoreVariants"
+      ]
+    },
+    {
+      "page": "SEMC",
+      "title": "Default SNP Effect Matrix Data Collection",
+      "topics": [
+        "SEMC"
+      ]
+    },
+    {
+      "page": "semData",
+      "title": "Accessor semData slot in a SEMScores object",
+      "topics": [
+        "semData",
+        "semData,SEMScores-method",
+        "semData,SNPEffectMatrixCollection-method"
+      ]
+    },
+    {
+      "page": "SEMScores",
+      "title": "SEMScores object and constructor",
+      "topics": [
+        "SEMScores"
+      ]
+    },
+    {
+      "page": "SEMScores-class",
+      "title": "Class for storing SEM motif binding calculations for multiple genomic ranges or variants",
+      "topics": [
+        "SEMScores-class"
+      ]
+    },
+    {
+      "page": "show-SEMScores",
+      "title": "Show method for SEMScores objects",
+      "topics": [
+        "show,SEMScores-method"
+      ]
+    },
+    {
+      "page": "show-SNPEffectMatrix",
+      "title": "Show for SNPEffectMatrix",
+      "topics": [
+        "show,SNPEffectMatrix-method"
+      ]
+    },
+    {
+      "page": "show-SNPEffectMatrixCollection",
+      "title": "Show method for SNPEffectMatrixCollection objects",
+      "topics": [
+        "show,SNPEffectMatrixCollection-method"
+      ]
+    },
+    {
+      "page": "SNPEffectMatrix",
+      "title": "SNPEffectMatrix object and constructor",
+      "topics": [
+        "SNPEffectMatrix"
+      ]
+    },
+    {
+      "page": "SNPEffectMatrix-class",
+      "title": "SNP Effect Matrix (SEM)",
+      "topics": [
+        "SNPEffectMatrix-class"
+      ]
+    },
+    {
+      "page": "SNPEffectMatrixCollection",
+      "title": "SNPEffectMatrixCollection object and constructor",
+      "topics": [
+        "SNPEffectMatrixCollection"
+      ]
+    },
+    {
+      "page": "SNPEffectMatrixCollection-class",
+      "title": "A collection of SNPEffectMatrix objects and their corresponding meta data",
+      "topics": [
+        "SNPEffectMatrixCollection-class"
+      ]
+    }
+  ],
+  "_readme": "https://github.com/bioc/SEMPLR/raw/HEAD/README.md",
+  "_rundeps": [
+    "abind",
+    "AnnotationDbi",
+    "ape",
+    "aplot",
+    "askpass",
+    "base64enc",
+    "BH",
+    "Biobase",
+    "BiocBaseUtils",
+    "BiocGenerics",
+    "BiocIO",
+    "BiocParallel",
+    "Biostrings",
+    "bit",
+    "bit64",
+    "bitops",
+    "blob",
+    "BSgenome",
+    "bslib",
+    "cachem",
+    "cigarillo",
+    "cli",
+    "codetools",
+    "cpp11",
+    "crayon",
+    "curl",
+    "data.table",
+    "DBI",
+    "DelayedArray",
+    "digest",
+    "dplyr",
+    "evaluate",
+    "farver",
+    "fastmap",
+    "fontawesome",
+    "fontBitstreamVera",
+    "fontLiberation",
+    "fontquiver",
+    "formatR",
+    "fs",
+    "futile.logger",
+    "futile.options",
+    "gdtools",
+    "generics",
+    "GenomeInfoDb",
+    "GenomicAlignments",
+    "GenomicFeatures",
+    "GenomicRanges",
+    "ggfun",
+    "ggiraph",
+    "ggplot2",
+    "ggplotify",
+    "ggrepel",
+    "ggtree",
+    "glue",
+    "gridGraphics",
+    "gtable",
+    "highr",
+    "htmltools",
+    "htmlwidgets",
+    "httr",
+    "IRanges",
+    "isoband",
+    "jquerylib",
+    "jsonlite",
+    "KEGGREST",
+    "knitr",
+    "labeling",
+    "lambda.r",
+    "lattice",
+    "lazyeval",
+    "lifecycle",
+    "magrittr",
+    "MASS",
+    "Matrix",
+    "MatrixGenerics",
+    "matrixStats",
+    "memoise",
+    "mime",
+    "nlme",
+    "openssl",
+    "patchwork",
+    "pillar",
+    "pkgconfig",
+    "png",
+    "purrr",
+    "R6",
+    "rappdirs",
+    "RColorBrewer",
+    "Rcpp",
+    "RcppThread",
+    "RCurl",
+    "restfulr",
+    "Rhtslib",
+    "rjson",
+    "rlang",
+    "rmarkdown",
+    "Rsamtools",
+    "RSQLite",
+    "rtracklayer",
+    "S4Arrays",
+    "S4Vectors",
+    "S7",
+    "sass",
+    "scales",
+    "Seqinfo",
+    "snow",
+    "SparseArray",
+    "stringi",
+    "stringr",
+    "SummarizedExperiment",
+    "sys",
+    "systemfonts",
+    "tibble",
+    "tidyr",
+    "tidyselect",
+    "tidytree",
+    "tinytex",
+    "treeio",
+    "UCSC.utils",
+    "universalmotif",
+    "utf8",
+    "VariantAnnotation",
+    "vctrs",
+    "viridisLite",
+    "withr",
+    "xfun",
+    "XML",
+    "XVector",
+    "yaml",
+    "yulab.utils"
+  ],
+  "_sysdeps": [
+    {
+      "shlib": "libstdc++",
+      "package": "libstdc++6",
+      "source": "gcc",
+      "version": "16-20260322-1ubuntu1",
+      "name": "c++",
+      "homepage": "http://gcc.gnu.org/",
+      "description": "GNU Standard C++ Library v3"
+    }
+  ],
+  "_vignettes": [
+    {
+      "source": "SEMPLR.Rmd",
+      "filename": "SEMPLR.html",
+      "title": "SEMPLR Vignette",
+      "engine": "knitr::rmarkdown",
+      "headings": [
+        "SNP Effect Matrices",
+        "Scoring Binding",
+        "Prepare Inputs",
+        "Scoring",
+        "Enrichment",
+        "Test for Enrichment",
+        "Visualization",
+        "Enrichment in Promoters",
+        "Scoring Variants",
+        "Extras",
+        "Scoring Method",
+        "Sequence preparation",
+        "Loading a custom set of SEMs"
+      ],
+      "created": "2026-02-02 23:34:15",
+      "modified": "2026-05-16 23:53:17",
+      "commits": 5
+    }
+  ],
+  "_score": 4.698970004336019,
+  "_indexed": true,
+  "_nocasepkg": "semplr",
+  "_universes": [
+    "bioc",
+    "grkenney"
+  ],
+  "_binaries": [
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:36:18.000Z",
+      "distro": "resolute",
+      "arch": "aarch64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/03645d69d49d34e039029ba1a830ab86f1a6e93069def459646def873042d0af",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.7.0",
+      "os": "linux",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:37:10.000Z",
+      "distro": "resolute",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/9484fc8f98436599ef1ef063d5e30f5cc7e05962f9482e989fa22e1d7966ec70",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:35:24.000Z",
+      "distro": "resolute",
+      "arch": "aarch64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/4ca08040ee4c4f4407248aef44de5176e6b514c89886bf064cb401570e504561",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.1",
+      "os": "linux",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:37:07.000Z",
+      "distro": "resolute",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/a2f282374d959b16fb45b6ae4a80b358b61b6a144733b0448ebe0637bda77c1a",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "1.1.2",
+      "date": "2026-10-08T10:22:56.000Z",
+      "arch": "aarch64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/ce966e427136b1a27882ba436ad7c208ecd8e21ec8b257a292f5b8766a37d279",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.5.3",
+      "os": "mac",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:56:31.000Z",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/5bed5ea526f0c0d2dad31fd1adc515c38439aefcc36ea54c19b98ac6394cba09",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "1.1.2",
+      "date": "2026-10-08T10:28:12.000Z",
+      "arch": "aarch64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/5da2d6b6094e66ec1d2d0ce646ef2c20c4e9345c959f28fa1fb576f784cd30c7",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.1",
+      "os": "mac",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:53:24.000Z",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/d61394b7741c632d3447a7715fd3acd5bc65c9bd65277492ec1225c917f2ae55",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.0",
+      "os": "wasm",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:35:13.000Z",
+      "arch": "emscripten",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/c5491c5767cb5ab3d45b1dbb05b689ed00298649905e32f7bc7692fb4a9191c8",
+      "status": "success",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:36:28.000Z",
+      "arch": "aarch64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/7b3be0294d6df9c38b6faa7e6cd85c83a808a173c05e5a85f454fd0cea8f262a",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.7.0",
+      "os": "win",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:34:28.000Z",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/61db14d1a0f98de444c0b60edef6f85c158db11ef612668b2bf2a40445a30a40",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.5.3",
+      "os": "win",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:34:33.000Z",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/9bbc2edcb46d5b68aa194d177c45aadce4a15ed431e32ce121318c89070c8146",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:36:27.000Z",
+      "arch": "aarch64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/1aec71f97a915b33f8e8401c94e943b0e4fd0ee4fb0c7aafbbd0107a56acaad5",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    },
+    {
+      "r": "4.6.1",
+      "os": "win",
+      "version": "1.1.2",
+      "date": "2026-10-08T09:34:58.000Z",
+      "arch": "x86_64",
+      "commit": "fcecf410ed0390191b132ba9d8370eb4c9c3e7c5",
+      "fileid": "https://r2.ropensci.org/ce10c9b4e4d898bfb202c21c6c08387fecdeac01e4053e1d9f2016ea72eb4b7d",
+      "status": "success",
+      "check": "NOTE",
+      "buildurl": "https://github.com/r-universe/bioc/actions/runs/37756232459"
+    }
+  ]
+}

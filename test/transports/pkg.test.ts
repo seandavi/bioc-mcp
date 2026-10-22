@@ -4,6 +4,7 @@ import { AboutSchema } from '../../src/core/about';
 import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
+import { bioconductorRoutes, statsPageUrl, statsTabUrl } from '../support/bioconductor-routes';
 import { BIOC_INDEX_URL, buildsUrl, checksUrl, pkgRoutes, RELEASE_INDEX_URL, ruUrl } from '../support/pkg-routes';
 
 let client: Client | undefined;
@@ -13,7 +14,7 @@ afterEach(async () => {
 });
 
 function testApp() {
-  return makeTestApp({ routes: pkgRoutes, extraModules: [pkgModule] });
+  return makeTestApp({ routes: { ...pkgRoutes, ...bioconductorRoutes }, extraModules: [pkgModule] });
 }
 
 async function get(path: string) {
@@ -30,18 +31,22 @@ test('the production registry, including pkg, validates', () => {
 });
 
 describe('MCP', () => {
-  test('/mcp/pkg lists exactly the three pkg tools; /mcp also lists meta_ping', async () => {
+  test('/mcp/pkg lists exactly the pkg tools; /mcp also lists meta_ping', async () => {
     client = await connectClient(testApp().app, '/mcp/pkg');
     expect((await client.listTools()).tools.map((t) => t.name)).toEqual([
       'pkg_status',
       'pkg_check_output',
       'pkg_build_environment',
+      'pkg_release_info',
+      'pkg_downloads',
     ]);
     await client.close();
     client = await connectClient(testApp().app, '/mcp');
     const names = (await client.listTools()).tools.map((t) => t.name);
     expect(names).toContain('meta_ping');
     expect(names).toContain('pkg_status');
+    expect(names).toContain('pkg_release_info');
+    expect(names).toContain('pkg_downloads');
     expect(names).toContain('pkg_check_output');
     expect(names).toContain('pkg_build_environment');
   });
@@ -87,6 +92,15 @@ describe('MCP', () => {
     expect(textOf(result).startsWith('not_found:')).toBe(true);
     expect(fetch.calls).toContain(BIOC_INDEX_URL);
     expect(fetch.calls).toContain(ruUrl('bioc', 'edgr'));
+  });
+
+  test('an unknown package in pkg_downloads is an isError result starting not_found:', async () => {
+    const { app, fetch } = testApp();
+    client = await connectClient(app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_downloads', arguments: { package: 'edgr' } });
+    expect(result.isError).toBe(true);
+    expect(textOf(result).startsWith('not_found:')).toBe(true);
+    expect(fetch.calls).toContain(statsPageUrl('workflows', 'edgr'));
   });
 });
 
@@ -245,18 +259,75 @@ describe('GET /api/v1/pkg/build_environment', () => {
   });
 });
 
+describe('GET /api/v1/pkg/release_info', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body } = await get('/api/v1/pkg/release_info');
+    expect(response.status).toBe(200);
+    expect(body.data.release.version).toBe('3.23');
+    expect(body.sources).toHaveLength(2);
+    client = await connectClient(testApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_release_info', arguments: {} });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+  });
+});
+
+describe('GET /api/v1/pkg/downloads', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body } = await get('/api/v1/pkg/downloads?package=edgeR');
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({ package: 'edgeR', category: 'bioc', year: 2026 });
+    client = await connectClient(testApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_downloads', arguments: { package: 'edgeR' } });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+  });
+
+  test('year=2025 selects that year', async () => {
+    const { response, body, fetch } = await get('/api/v1/pkg/downloads?package=edgeR&year=2025');
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({ year: 2025, year_requested: 2025 });
+    expect(fetch.calls).toContain(statsTabUrl('bioc', 'edgeR', 2025));
+  });
+
+  test('an unknown package is 404 not_found naming the categories', async () => {
+    const { response, body } = await get('/api/v1/pkg/downloads?package=edgr');
+    expect(response.status).toBe(404);
+    expect(body.error.code).toBe('not_found');
+    expect(body.error.message).toContain('bioc, data-annotation, data-experiment, workflows');
+    expect(body.error.message).toContain('case-sensitive');
+  });
+
+  test.each(["package=a'b", 'package=x', 'package=edgeR&year=2008', 'package=edgeR&year=2101', 'package=edgeR&year=2025.5', 'package=edgeR&year=abc'])(
+    'invalid query %j is 400 invalid_input with no fetch',
+    async (query) => {
+      const { response, body, fetch } = await get(`/api/v1/pkg/downloads?${query}`);
+      expect(response.status).toBe(400);
+      expect(body.error.code).toBe('invalid_input');
+      expect(fetch.calls).toEqual([]);
+    },
+  );
+});
+
 describe('GET /api/v1/about', () => {
-  test('lists the registry and both r-universe upstreams as used by pkg', async () => {
+  test('lists the registry, both r-universe upstreams and bioconductor.org as used by pkg', async () => {
     const { response, body } = await get('/api/v1/about');
     expect(response.status).toBe(200);
     const about = AboutSchema.parse(body);
     for (const id of ['registry', 'r-universe-bioc', 'r-universe-bioc-release']) {
       expect(about.upstreams.find((u) => u.id === id)?.used_by).toEqual(['pkg']);
     }
+    expect(about.upstreams.find((u) => u.id === 'bioconductor')).toMatchObject({
+      base_url: 'https://bioconductor.org/',
+      ttl_seconds: 3600,
+      used_by: ['pkg'],
+    });
     expect(about.modules.find((m) => m.name === 'pkg')?.tools).toEqual([
       'pkg_status',
       'pkg_check_output',
       'pkg_build_environment',
+      'pkg_release_info',
+      'pkg_downloads',
     ]);
   });
 });

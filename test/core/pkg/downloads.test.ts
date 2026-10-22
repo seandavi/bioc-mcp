@@ -6,6 +6,7 @@ import { createMemoryCache } from '../../../src/upstreams/cache';
 import { bioconductorRoutes, readBiocFixture, statsPageUrl, statsTabUrl } from '../../support/bioconductor-routes';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import type * as z from 'zod';
+import { testContext } from '../../support/invoke-context';
 
 type Data = z.output<typeof PkgDownloadsDataSchema>;
 
@@ -23,7 +24,7 @@ function setup(at: string, extra: Record<string, FixtureRoute> = {}) {
 
 async function run(input: { package: string; year?: number }, at = OCT, extra: Record<string, FixtureRoute> = {}) {
   const { fetch, deps } = setup(at, extra);
-  return { result: await invokeCapability(pkgDownloads, input, deps), fetch };
+  return { result: await invokeCapability(pkgDownloads, input, deps, testContext()), fetch };
 }
 
 async function downloads(input: { package: string; year?: number }, at = OCT, extra: Record<string, FixtureRoute> = {}) {
@@ -171,9 +172,9 @@ describe('pkg_downloads', () => {
 
   test('a second identical call within the TTL makes no new requests', async () => {
     const { fetch, deps } = setup(OCT);
-    await invokeCapability(pkgDownloads, { package: 'edgeR' }, deps);
+    await invokeCapability(pkgDownloads, { package: 'edgeR' }, deps, testContext());
     const calls = fetch.calls.length;
-    const second = await invokeCapability(pkgDownloads, { package: 'edgeR' }, deps);
+    const second = await invokeCapability(pkgDownloads, { package: 'edgeR' }, deps, testContext());
     expect(second.ok).toBe(true);
     expect(fetch.calls).toHaveLength(calls);
   });

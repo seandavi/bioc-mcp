@@ -6,6 +6,7 @@ import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/env
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import { buildsUrl, pkgRoutes } from '../../support/pkg-routes';
+import { testContext } from '../../support/invoke-context';
 
 type Data = z.output<typeof PkgBuildEnvironmentDataSchema>;
 type Input = { universe: string; job: string; dependencies?: string[] };
@@ -20,7 +21,7 @@ async function run(input: Input, routes: Record<string, FixtureRoute> = pkgRoute
     cache: createMemoryCache(now),
     now,
     env: {},
-  });
+  }, testContext());
   return { result, fetch };
 }
 

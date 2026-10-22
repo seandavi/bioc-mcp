@@ -11,6 +11,7 @@ import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/env
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import { GITHUB_RECORDED_AT, githubRoutes, githubUrl } from '../../support/github-routes';
+import { testContext } from '../../support/invoke-context';
 
 const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'fixtures', 'github');
 
@@ -35,14 +36,14 @@ function makeDeps(routes: Record<string, FixtureRoute> = githubRoutes(), now: ()
 
 async function run<K extends Kind>(kind: K, extra: { repo?: string } = {}, routes = githubRoutes()) {
   const { deps, fetch } = makeDeps(routes);
-  const result = await invokeCapability(opsActivity, { kind, ...extra }, deps);
+  const result = await invokeCapability(opsActivity, { kind, ...extra }, deps, testContext());
   if (!result.ok) throw result.error;
   const envelope = result.envelope as Envelope<Of<K>>;
   return { envelope, data: envelope.data, summary: envelope.summary, sources: envelope.sources, fetch };
 }
 
 async function failure(input: Record<string, unknown>, routes = githubRoutes(), deps = makeDeps(routes).deps) {
-  const result = await invokeCapability(opsActivity, input, deps);
+  const result = await invokeCapability(opsActivity, input, deps, testContext());
   if (result.ok) throw new Error('expected a failure');
   return result.error;
 }
@@ -493,7 +494,7 @@ describe('failure isolation', () => {
       request.url === url && kind === 'timeout'
         ? Promise.reject(new DOMException('timed out', 'TimeoutError'))
         : inner(request);
-    const result = await invokeCapability(opsActivity, { kind: 'issues' }, deps);
+    const result = await invokeCapability(opsActivity, { kind: 'issues' }, deps, testContext());
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     const data = result.envelope.data as Of<'issues'>;
@@ -536,7 +537,7 @@ describe('failure isolation', () => {
 
 describe('input', () => {
   test('kind defaults to summary', async () => {
-    const result = await invokeCapability(opsActivity, {}, makeDeps().deps);
+    const result = await invokeCapability(opsActivity, {}, makeDeps().deps, testContext());
     expect(result.ok && (result.envelope.data as Data).kind).toBe('summary');
   });
 
@@ -579,7 +580,7 @@ describe('caching', () => {
     let nowMs = GITHUB_RECORDED_AT.getTime();
     const { deps, fetch } = makeDeps(githubRoutes(), () => new Date(nowMs));
     const ask = async () => {
-      const result = await invokeCapability(opsActivity, { kind: 'workflows', repo: 'bioc-website' }, deps);
+      const result = await invokeCapability(opsActivity, { kind: 'workflows', repo: 'bioc-website' }, deps, testContext());
       expect(result.ok).toBe(true);
     };
     await ask();
@@ -597,7 +598,7 @@ describe('caching', () => {
   test('summary, issues and failures share the bioc-edge issues request', async () => {
     const { deps, fetch } = makeDeps();
     for (const kind of ['summary', 'issues', 'failures'] as const) {
-      expect((await invokeCapability(opsActivity, { kind }, deps)).ok).toBe(true);
+      expect((await invokeCapability(opsActivity, { kind }, deps, testContext())).ok).toBe(true);
     }
     const edgeIssues = githubUrl('bioc-edge', ISSUES_SUFFIX);
     expect(fetch.calls.filter((url) => url === edgeIssues)).toHaveLength(1);

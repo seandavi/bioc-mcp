@@ -10,6 +10,7 @@ import { checksUrl, pkgRoutes } from '../../support/pkg-routes';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { testContext } from '../../support/invoke-context';
 
 type Data = z.output<typeof PkgCheckOutputDataSchema>;
 type Input = { universe: string; job: string; file?: string; full?: boolean; offset?: number };
@@ -20,7 +21,7 @@ const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'fixt
 async function run(input: Input, routes: Record<string, FixtureRoute> = pkgRoutes) {
   const fetch = fixtureFetch(routes);
   const now = () => new Date(NOW);
-  const result = await invokeCapability(pkgCheckOutput, input, { fetch, cache: createMemoryCache(now), now, env: {} });
+  const result = await invokeCapability(pkgCheckOutput, input, { fetch, cache: createMemoryCache(now), now, env: {} }, testContext());
   return { result, fetch };
 }
 

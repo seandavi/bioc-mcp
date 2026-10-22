@@ -6,6 +6,7 @@ import { createMemoryCache } from '../../../src/upstreams/cache';
 import { bioconductorRoutes, CONFIG_URL, MANIFEST_URL, readBiocFixture } from '../../support/bioconductor-routes';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import type * as z from 'zod';
+import { testContext } from '../../support/invoke-context';
 
 type Data = z.output<typeof PkgReleaseInfoDataSchema>;
 
@@ -22,7 +23,7 @@ function manifestRoute(change: (index: Record<string, any>) => void): Record<str
 async function run(extra: Record<string, FixtureRoute> = {}) {
   const fetch = fixtureFetch({ ...bioconductorRoutes, ...extra });
   const now = () => new Date(NOW);
-  const result = await invokeCapability(pkgReleaseInfo, {}, { fetch, cache: createMemoryCache(now), now, env: {} });
+  const result = await invokeCapability(pkgReleaseInfo, {}, { fetch, cache: createMemoryCache(now), now, env: {} }, testContext());
   return { result, fetch };
 }
 

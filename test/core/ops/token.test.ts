@@ -8,6 +8,7 @@ import { createMemoryCache, type CachedUpstream } from '../../../src/upstreams/c
 import { connectClient, makeTestApp } from '../../support/app';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import { GITHUB_RECORDED_AT, githubRoutes, githubUrl } from '../../support/github-routes';
+import { testContext } from '../../support/invoke-context';
 
 const SENTINEL = 'ghp_SENTINEL_0123456789abcdef';
 const KINDS = ['summary', 'issues', 'prs', 'workflows', 'failures'] as const;
@@ -61,7 +62,7 @@ const leaks = (value: unknown) => JSON.stringify(value).includes(SENTINEL);
 describe('with a token', () => {
   test.each(KINDS)('%s sends the token and headers on every request and leaks it nowhere', async (kind) => {
     const { deps, requests, puts } = recordingDeps(githubRoutes(), { GITHUB_TOKEN: SENTINEL });
-    const result = await invokeCapability(opsActivity, { kind }, deps);
+    const result = await invokeCapability(opsActivity, { kind }, deps, testContext());
     expect(result.ok).toBe(true);
     expect(requests.length).toBeGreaterThan(0);
     for (const { url, headers } of requests) {
@@ -79,7 +80,7 @@ describe('with a token', () => {
   test.each([403, 404, 500, 'timeout', 'network-error'] as const)('a %s on every repo leaks nothing', async (status) => {
     for (const kind of KINDS) {
       const { deps, requests, puts } = recordingDeps(overridden(status), { GITHUB_TOKEN: SENTINEL }, status === 'timeout' ? 'timeout' : undefined);
-      const result = await invokeCapability(opsActivity, { kind }, deps);
+      const result = await invokeCapability(opsActivity, { kind }, deps, testContext());
       expect(result.ok).toBe(false);
       expect(requests.every((r) => r.headers.get('authorization') === `Bearer ${SENTINEL}`)).toBe(true);
       expect(leaks(result)).toBe(false);
@@ -92,7 +93,7 @@ describe('with a token', () => {
   test('a partial failure leaks nothing', async () => {
     const routes = { ...githubRoutes(), [githubUrl('bioc-traffic', ISSUES_SUFFIX)]: { status: 500 } as FixtureRoute };
     const { deps } = recordingDeps(routes, { GITHUB_TOKEN: SENTINEL });
-    const result = await invokeCapability(opsActivity, { kind: 'summary' }, deps);
+    const result = await invokeCapability(opsActivity, { kind: 'summary' }, deps, testContext());
     expect(result.ok).toBe(true);
     expect(leaks(result)).toBe(false);
   });
@@ -125,7 +126,7 @@ describe('without a token', () => {
   test('no request carries an authorization header, but the other headers are sent', async () => {
     for (const env of [{}, { GITHUB_TOKEN: '  ' }]) {
       const { deps, requests } = recordingDeps(githubRoutes(), env);
-      expect((await invokeCapability(opsActivity, { kind: 'summary' }, deps)).ok).toBe(true);
+      expect((await invokeCapability(opsActivity, { kind: 'summary' }, deps, testContext())).ok).toBe(true);
       expect(requests.length).toBeGreaterThan(0);
       for (const { headers } of requests) {
         expect(headers.has('authorization')).toBe(false);

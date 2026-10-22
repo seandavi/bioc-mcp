@@ -6,7 +6,8 @@ Bioconductor infrastructure docs, check a package's build and propagation state,
 failed, and see what is happening across the stack, with every answer linked to the public source
 it came from.
 
-> **Status: pre-alpha.** Nothing is deployed yet. The design is in the
+> **Status: pre-alpha.** Deploys from `main` to `https://bioc-mcp.seandavi.workers.dev/mcp` (REST: `/api/v1`); expect
+> breaking changes. The design is in the
 > [spec](https://github.com/seandavi/bioc-infrastructure/blob/main/proposal-mcp.qmd)
 > ([bioc-infrastructure#122](https://github.com/seandavi/bioc-infrastructure/pull/122)); progress is
 > tracked in [#1](https://github.com/seandavi/bioc-mcp/issues/1).

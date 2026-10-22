@@ -5,11 +5,13 @@ import type { Deps } from '../core/deps';
 import { invokeCapability } from '../core/invoke';
 import { restPath, type Module } from '../core/registry';
 import { ErrorBodySchema, httpStatusFor } from '../errors';
+import type { UsageSink } from '../usage';
 import { VERSION } from '../version';
 
 export interface RestAppOptions {
   modules: readonly Module[];
   deps: Deps;
+  usage: UsageSink;
 }
 
 interface QueryProperty {
@@ -58,8 +60,13 @@ const json = <S extends z.ZodType>(schema: S, description: string) => ({
   content: { 'application/json': { schema } },
 });
 
+const tooManyRequests = json(
+  ErrorBodySchema,
+  'Too many requests from this client address; wait Retry-After seconds',
+);
+
 /** OpenAPIHono with full paths: /api/v1/<module>/<cap>, /api/v1/about, /api/openapi.json. */
-export function createRestApp({ modules, deps }: RestAppOptions): OpenAPIHono {
+export function createRestApp({ modules, deps, usage }: RestAppOptions): OpenAPIHono {
   const api = new OpenAPIHono();
 
   for (const capability of modules.flatMap((module) => module.capabilities)) {
@@ -76,6 +83,7 @@ export function createRestApp({ modules, deps }: RestAppOptions): OpenAPIHono {
         200: json(capability.output, 'The result envelope (same as MCP structuredContent)'),
         400: json(ErrorBodySchema, 'Invalid input'),
         404: json(ErrorBodySchema, 'Not found upstream'),
+        429: tooManyRequests,
         500: json(ErrorBodySchema, 'Server error'),
         502: json(ErrorBodySchema, 'Upstream failed or timed out'),
       },
@@ -85,7 +93,7 @@ export function createRestApp({ modules, deps }: RestAppOptions): OpenAPIHono {
     api.openAPIRegistry.registerPath(route);
     api.get(path, async (c) => {
       const input = queryToInput(capability.input, new URL(c.req.url).searchParams);
-      const result = await invokeCapability(capability, input, deps);
+      const result = await invokeCapability(capability, input, deps, { transport: 'rest', usage });
       if (result.ok) return c.json(result.envelope, 200);
       return c.json(
         { error: { code: result.error.code, message: result.error.message } },
@@ -102,7 +110,7 @@ export function createRestApp({ modules, deps }: RestAppOptions): OpenAPIHono {
       tags: ['meta'],
       summary: 'About this server',
       description: 'Modules, tools, upstream sources and their cache TTLs (same JSON as the bioc://about resource).',
-      responses: { 200: json(AboutSchema, 'Server description') },
+      responses: { 200: json(AboutSchema, 'Server description'), 429: tooManyRequests },
     }),
   );
   api.get('/api/v1/about', (c) => c.json(buildAbout(modules), 200));

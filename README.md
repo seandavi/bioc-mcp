@@ -42,7 +42,7 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `pkg` | `pkg_status` | Is this package propagated, and did its latest build and check pass? |
 | `pkg` | `pkg_check_output` | Why did the check fail? The failing part of the log. |
 | `pkg` | `pkg_build_environment` | What R and OS did the check run on? |
-| `pkg` | `pkg_release_info` | When are the Bioconductor releases? |
+| `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
 | `pkg` | `pkg_downloads` | Who downloads this package? |
 | `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
 
@@ -142,7 +142,7 @@ The client loads fewer tools into its context.
 - "Why is *package* failing check on devel? Show the failing part of the log." (`pkg_status`, then
   `pkg_check_output`)
 - "What R and OS did that check run on?" (`pkg_build_environment`)
-- "When is the next Bioconductor release?" (`pkg_release_info`)
+- "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)
 - "Which bioc-* workflows are failing right now?" (`ops_activity`)
 

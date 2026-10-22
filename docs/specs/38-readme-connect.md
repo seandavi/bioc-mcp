@@ -205,7 +205,8 @@ Sections in this order. Keep the existing voice (short declarative sentences); k
      "Is edgeR propagated in Bioconductor release, and did its last check pass?" (`pkg_status`);
      "Why is <package> failing check on devel? Show the failing part of the log."
      (`pkg_status` → `pkg_check_output`); "What R and OS did that check run on?"
-     (`pkg_build_environment`); "When is the next Bioconductor release?" (`pkg_release_info`);
+     (`pkg_build_environment`); "Which Bioconductor versions are current release and devel, and which R does each use?"
+     (`pkg_release_info`);
      "How many downloads did edgeR have this year?" (`pkg_downloads`);
      "Which bioc-* workflows are failing right now?" (`ops_activity`).
 7. **REST quickstart**:

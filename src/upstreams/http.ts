@@ -45,8 +45,31 @@ export interface UpstreamResponse extends CachedUpstream {
   fromCache: boolean;
 }
 
+/**
+ * The SSRF guard below is only sound for an https: baseUrl that ends with '/' and has no query or
+ * fragment. Checked at registration (validateRegistry) and again on every fetch, so an adapter
+ * cannot bypass it by passing an upstream it never registered.
+ */
+export function assertBaseUrl(upstream: Upstream): void {
+  const label = `Upstream "${upstream.id}" baseUrl "${upstream.baseUrl}"`;
+  let url: URL;
+  try {
+    url = new URL(upstream.baseUrl);
+  } catch {
+    throw new Error(`${label} is not an absolute URL`);
+  }
+  if (url.protocol !== 'https:') throw new Error(`${label} must use https:`);
+  if (!url.pathname.endsWith('/')) throw new Error(`${label} must end with "/"`);
+  if (url.search !== '' || url.hash !== '') throw new Error(`${label} must not have a query string or fragment`);
+}
+
 /** GET `path` relative to upstream.baseUrl, through the cache. */
 export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string): Promise<UpstreamResponse> {
+  try {
+    assertBaseUrl(upstream);
+  } catch (error) {
+    throw new CapabilityError('internal', (error as Error).message, { upstream: upstream.id });
+  }
   const base = new URL(upstream.baseUrl);
   const url = new URL(path, base);
   const inside = (candidate: URL) => candidate.origin === base.origin && candidate.pathname.startsWith(base.pathname);
@@ -79,6 +102,8 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
 
     const location = REDIRECT_STATUSES.has(response.status) ? response.headers.get('location') : null;
     if (location === null) break;
+    // Release the redirect's connection before following or failing (Workers cap concurrent connections).
+    await response.body?.cancel().catch(() => {});
     const next = parseLocation(location, target);
     if (!next || !inside(next)) {
       throw new CapabilityError('upstream_error', `${upstream.name} redirected outside its base URL`, details);

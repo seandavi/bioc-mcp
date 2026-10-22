@@ -111,6 +111,16 @@ describe('fetchUpstream', () => {
   });
 
   describe('SSRF guard', () => {
+    test.each(['http://upstream.test/', 'https://upstream.test/api', 'https://upstream.test/?q=1'])(
+      'an unregistered upstream with an unsafe baseUrl (%s) throws internal without fetching',
+      async (baseUrl) => {
+        const { deps, fetch } = makeDeps({});
+        const error = await codeOf(fetchUpstream(deps, { ...exampleUpstream, id: 'rogue', baseUrl }, 'items/alpha.json'));
+        expect(error.code).toBe('internal');
+        expect(fetch.calls).toEqual([]);
+      },
+    );
+
     const nested: Upstream = { ...exampleUpstream, id: 'nested', baseUrl: 'https://upstream.test/api/v1/' };
 
     test.each(['https://evil.test/', '//evil.test/x', 'http://upstream.test/items/alpha.json'])(

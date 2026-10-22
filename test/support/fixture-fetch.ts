@@ -5,6 +5,8 @@ import type { FetchFn } from '../../src/core/deps';
 
 const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'fixtures');
 
+const pendingSignals = new Set<AbortSignal>();
+
 export type FixtureRoute =
   | { file: string; status?: number; headers?: Record<string, string> }
   | { status: number; body?: string; headers?: Record<string, string> }
@@ -20,8 +22,18 @@ export function fixtureFetch(routes: Record<string, FixtureRoute>): FetchFn & { 
     if (route === undefined) throw new Error(`Unexpected upstream request: ${request.url}`);
     if (route === 'network-error') throw new TypeError('fetch failed');
     if (route === 'timeout') {
+      // A Request's signal only follows AbortSignal.timeout() weakly, so nothing else keeps it
+      // alive while this promise is pending; hold it until it aborts or GC can swallow the timeout.
+      pendingSignals.add(request.signal);
       return new Promise<Response>((_resolve, reject) => {
-        request.signal.addEventListener('abort', () => reject(request.signal.reason), { once: true });
+        request.signal.addEventListener(
+          'abort',
+          () => {
+            pendingSignals.delete(request.signal);
+            reject(request.signal.reason);
+          },
+          { once: true },
+        );
       });
     }
     if ('file' in route) {

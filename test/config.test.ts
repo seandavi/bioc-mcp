@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { parseConfig } from '../src/index';
+import { parseConfig } from '../src/config';
 
 describe('parseConfig', () => {
   test('splits on commas, trims and drops empties', () => {

@@ -17,6 +17,7 @@ export const DEFAULT_TIMEOUT_MS = 10_000;
 export const USER_AGENT = `bioc-mcp/${VERSION} (+https://github.com/seandavi/bioc-mcp)`;
 
 const MAX_REDIRECTS = 3;
+const RETRY = 'Try again shortly.';
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
 function parseLocation(location: string, base: URL): URL | undefined {
@@ -47,11 +48,14 @@ export interface UpstreamResponse extends CachedUpstream {
 
 /**
  * The SSRF guard below is only sound for an https: baseUrl that ends with '/' and has no query or
- * fragment. Checked at registration (validateRegistry) and again on every fetch, so an adapter
- * cannot bypass it by passing an upstream it never registered.
+ * fragment. The baseUrl must not carry credentials. No message ever includes the baseUrl itself, so a
+ * password in a malformed or non-https: URL never reaches a client. ttlSeconds must be a positive integer (about and cache-control take
+ * integers) and timeoutMs, when set, positive and finite. Checked at registration
+ * (validateRegistry) and again on every fetch, so an adapter cannot bypass it by passing an
+ * upstream it never registered.
  */
-export function assertBaseUrl(upstream: Upstream): void {
-  const label = `Upstream "${upstream.id}" baseUrl "${upstream.baseUrl}"`;
+export function assertUpstream(upstream: Upstream): void {
+  const label = `Upstream "${upstream.id}" baseUrl`;
   let url: URL;
   try {
     url = new URL(upstream.baseUrl);
@@ -59,14 +63,28 @@ export function assertBaseUrl(upstream: Upstream): void {
     throw new Error(`${label} is not an absolute URL`);
   }
   if (url.protocol !== 'https:') throw new Error(`${label} must use https:`);
+  if (url.username !== '' || url.password !== '') throw new Error(`${label} must not include credentials`);
   if (!url.pathname.endsWith('/')) throw new Error(`${label} must end with "/"`);
   if (url.search !== '' || url.hash !== '') throw new Error(`${label} must not have a query string or fragment`);
+  if (!Number.isInteger(upstream.ttlSeconds) || upstream.ttlSeconds <= 0) {
+    throw new Error(`Upstream "${upstream.id}" ttlSeconds must be a positive integer (got ${upstream.ttlSeconds})`);
+  }
+  const { timeoutMs } = upstream;
+  if (timeoutMs !== undefined && !(Number.isFinite(timeoutMs) && timeoutMs > 0)) {
+    throw new Error(`Upstream "${upstream.id}" timeoutMs must be a positive finite number (got ${timeoutMs})`);
+  }
+}
+
+/** AbortSignal.timeout rejects fetch and body reads with TimeoutError (AbortError in some runtimes). */
+function isTimeout(error: unknown): boolean {
+  const name = error instanceof Error ? error.name : '';
+  return name === 'TimeoutError' || name === 'AbortError';
 }
 
 /** GET `path` relative to upstream.baseUrl, through the cache. */
 export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string): Promise<UpstreamResponse> {
   try {
-    assertBaseUrl(upstream);
+    assertUpstream(upstream);
   } catch (error) {
     throw new CapabilityError('internal', (error as Error).message, { upstream: upstream.id });
   }
@@ -83,6 +101,12 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
 
   const timeoutMs = upstream.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const details = { upstream: upstream.id, url: url.href };
+  const timeoutError = () =>
+    new CapabilityError(
+      'upstream_timeout',
+      `${upstream.name} did not answer within ${timeoutMs} ms (${url.href}). ${RETRY}`,
+      details,
+    );
   const signal = AbortSignal.timeout(timeoutMs);
   let response: Response;
   let target = url;
@@ -93,11 +117,8 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
         new Request(target, { headers: { 'user-agent': USER_AGENT }, redirect: 'manual', signal }),
       );
     } catch (error) {
-      const name = error instanceof Error ? error.name : '';
-      if (name === 'TimeoutError' || name === 'AbortError') {
-        throw new CapabilityError('upstream_timeout', `${upstream.name} did not answer within ${timeoutMs} ms`, details);
-      }
-      throw new CapabilityError('upstream_error', `Could not reach ${upstream.name}`, details);
+      if (isTimeout(error)) throw timeoutError();
+      throw new CapabilityError('upstream_error', `Could not reach ${upstream.name} (${url.href}). ${RETRY}`, details);
     }
 
     const location = REDIRECT_STATUSES.has(response.status) ? response.headers.get('location') : null;
@@ -121,7 +142,8 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
     });
   }
   if (!response.ok) {
-    throw new CapabilityError('upstream_error', `${upstream.name} returned HTTP ${response.status}`, {
+    const advice = response.status >= 500 ? ` (${url.href}). ${RETRY}` : '';
+    throw new CapabilityError('upstream_error', `${upstream.name} returned HTTP ${response.status}${advice}`, {
       ...details,
       status: response.status,
     });
@@ -130,8 +152,13 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
   let body: string;
   try {
     body = await response.text();
-  } catch {
-    throw new CapabilityError('upstream_error', `Could not read the response from ${upstream.name}`, details);
+  } catch (error) {
+    if (isTimeout(error)) throw timeoutError();
+    throw new CapabilityError(
+      'upstream_error',
+      `Could not read the response from ${upstream.name} (${url.href}). ${RETRY}`,
+      details,
+    );
   }
   const lastModifiedHeader = response.headers.get('last-modified');
   const lastModifiedMs = lastModifiedHeader ? Date.parse(lastModifiedHeader) : Number.NaN;

@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { metaModule } from '../../src/core/meta';
 import { metaPing } from '../../src/core/meta/ping';
 import { defineCapability, modules, restPath, validateRegistry, type Module } from '../../src/core/registry';
+import type { Upstream } from '../../src/upstreams/http';
 import { exampleItem, exampleModule, exampleUpstream } from '../support/example-module';
 
 function capability(overrides: Partial<Parameters<typeof defineCapability>[0]> = {}) {
@@ -86,6 +87,60 @@ describe('validateRegistry', () => {
     expect(() => validateRegistry([wrong])).toThrow(message);
   });
 
+  test('accepts the same upstream declared with keys in a different order', () => {
+    const reordered: Upstream = {
+      description: 'Synthetic upstream used only in tests.',
+      timeoutMs: 50,
+      ttlSeconds: 300,
+      baseUrl: 'https://upstream.test/',
+      name: 'Example upstream',
+      id: 'example',
+    };
+    const a = demoModule({ upstreams: [exampleUpstream] });
+    const b = demoModule({ name: 'demob', capabilities: [], upstreams: [reordered] });
+    expect(() => validateRegistry([a, b])).not.toThrow();
+  });
+
+  test('rejects the same upstream when only timeoutMs differs', () => {
+    const a = demoModule({ upstreams: [exampleUpstream] });
+    const b = demoModule({ name: 'demob', capabilities: [], upstreams: [{ ...exampleUpstream, timeoutMs: 51 }] });
+    expect(() => validateRegistry([a, b])).toThrow(/Upstream "example" is declared twice/);
+  });
+
+  test.each([
+    ['a username', 'https://user@upstream.test/'],
+    ['a username and password', 'https://user:secret@upstream.test/'],
+    ['a password only', 'https://:secret@upstream.test/'],
+    ['credentials on http:', 'http://user:secret@upstream.test/'],
+    ['credentials and no scheme (parsed as scheme "user:")', 'user:secret@upstream.test/'],
+    ['credentials and an unparseable host', 'https://user:secret@'],
+  ])('rejects an upstream baseUrl with %s, without echoing the password', (_label, baseUrl) => {
+    const wrong = demoModule({ upstreams: [{ ...exampleUpstream, baseUrl }] });
+    let message = '';
+    try {
+      validateRegistry([wrong]);
+    } catch (error) {
+      message = (error as Error).message;
+    }
+    expect(message).toMatch(/Upstream "example" baseUrl (must not include credentials|must use https:|is not an absolute URL)/);
+    expect(message).not.toContain('secret');
+  });
+
+  test.each([0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY])('rejects ttlSeconds %s', (ttlSeconds) => {
+    const wrong = demoModule({ upstreams: [{ ...exampleUpstream, ttlSeconds }] });
+    expect(() => validateRegistry([wrong])).toThrow(/ttlSeconds must be a positive integer/);
+  });
+
+  test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY])('rejects timeoutMs %s', (timeoutMs) => {
+    const wrong = demoModule({ upstreams: [{ ...exampleUpstream, timeoutMs }] });
+    expect(() => validateRegistry([wrong])).toThrow(/timeoutMs must be a positive finite number/);
+  });
+
+  test('accepts an upstream without timeoutMs', () => {
+    const { timeoutMs: _omit, ...noTimeout } = exampleUpstream;
+    expect(() => validateRegistry([demoModule({ upstreams: [noTimeout] })])).not.toThrow();
+  });
+
   test('accepts the same upstream declared identically by two modules', () => {
     const a = demoModule({ upstreams: [exampleUpstream] });
     const b = demoModule({ name: 'demob', capabilities: [], upstreams: [{ ...exampleUpstream }] });
@@ -111,6 +166,35 @@ describe('validateRegistry', () => {
         b: z.boolean(),
         e: z.enum(['a', 'b']),
         list: z.array(z.string()),
+      }),
+    });
+    expect(() => validateRegistry([demoModule({ capabilities: [fine] })])).not.toThrow();
+  });
+});
+
+describe('validateRegistry: idempotent input', () => {
+  test.each([
+    ['a transform', z.object({ t: z.string().transform((value) => value.trim()) }), /input field "t" has a transform/],
+    [
+      'a pipe to another type',
+      z.object({ t: z.string().pipe(z.coerce.number()) }),
+      /input field "t" parses to a different type than it accepts/,
+    ],
+    ['z.stringbool()', z.object({ t: z.stringbool() }), /input field "t" parses to a different type than it accepts/],
+  ])('rejects %s', (_label, input, message) => {
+    const wrong = capability({ input });
+    expect(() => validateRegistry([demoModule({ capabilities: [wrong] })])).toThrow(message);
+  });
+
+  test('accepts defaults, prefault, catch, trim, toLowerCase and coerce.number', () => {
+    const fine = capability({
+      input: z.object({
+        d: z.string().default('x'),
+        p: z.string().prefault('x'),
+        c: z.number().catch(0),
+        t: z.string().trim(),
+        l: z.string().toLowerCase(),
+        n: z.coerce.number(),
       }),
     });
     expect(() => validateRegistry([demoModule({ capabilities: [fine] })])).not.toThrow();

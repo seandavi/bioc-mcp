@@ -70,7 +70,8 @@ vitest.config.ts
 .github/workflows/ci.yml
 AGENTS.md                     "Commands" section filled in (text below)
 src/
-  index.ts                    createApp(), parseConfig(), Worker default export
+  config.ts                   AppConfig, parseConfig()
+  index.ts                    createApp(), Worker default export
   version.ts                  VERSION constant
   envelope.ts                 SourceSchema, envelopeSchema(), Envelope, size guard
   errors.ts                   ErrorCode, CapabilityError, httpStatusFor(), ErrorBodySchema
@@ -83,7 +84,8 @@ src/
   core/meta/index.ts          metaModule
   transports/mcp.ts           createMcpApp(), buildMcpServer(), parseToolset()
   transports/rest.ts          createRestApp(), queryToInput()
-  upstreams/http.ts           Upstream, fetchUpstream(), fetchUpstreamJson(), sourceFor()
+  upstreams/http.ts           Upstream, pathSegment(), assertUpstream(), fetchUpstream(),
+                              fetchUpstreamJson(), sourceFor()
   upstreams/cache.ts          UpstreamCache, CachedUpstream, createMemoryCache(),
                               createCloudflareCache()
 test/
@@ -91,12 +93,15 @@ test/
   support/app.ts              makeTestApp(), appFetch(), connectClient()
   support/fixture-fetch.ts    fixtureFetch()
   support/example-module.ts   test-only `example` module and upstream
+  support/leaky-module.ts     test-only capability that returns an undeclared field
   fixtures/example/items/alpha.json
   envelope.test.ts
   errors.test.ts
+  config.test.ts
   version.test.ts
   no-network.test.ts
   core/registry.test.ts
+  core/invoke.test.ts
   core/about.test.ts
   upstreams/http.test.ts
   upstreams/cache.test.ts
@@ -233,7 +238,11 @@ export interface Envelope<T> { data: T; summary: string; sources: Source[] }
 export const MAX_RESULT_BYTES = 8192;
 /** UTF-8 byte length of JSON.stringify(envelope). */
 export function envelopeBytes(envelope: Envelope<unknown>): number;
-/** Throws CapabilityError('result_too_large', `${tool} returned ${n} bytes; the limit is 8192. Narrow the request.`). */
+/**
+ * Throws CapabilityError('result_too_large', `${tool} returned ${n} bytes; the limit is 8192. If the
+ * tool takes a limit or filter, narrow the request; otherwise this is a server bug, please report
+ * it at https://github.com/seandavi/bioc-mcp/issues.`).
+ */
 export function assertEnvelopeSize(envelope: Envelope<unknown>, tool: string): void;
 ```
 
@@ -287,15 +296,34 @@ a miss, never an error).
 export interface Upstream {
   id: string;            // stable, kebab-case, e.g. 'registry', 'r-universe'
   name: string;          // human name used in messages, e.g. 'Bioconductor registry'
-  baseUrl: string;       // absolute, ends with '/', e.g. 'https://registry.bioconductor.org/'
-  ttlSeconds: number;    // cache TTL for 200 responses
-  timeoutMs?: number;    // default DEFAULT_TIMEOUT_MS
+  baseUrl: string;       // https:, no credentials, ends with '/', no query/fragment
+  ttlSeconds: number;    // positive integer; cache TTL for 200 responses
+  timeoutMs?: number;    // positive; default DEFAULT_TIMEOUT_MS
   description: string;   // one line for bioc://about
 }
 export const DEFAULT_TIMEOUT_MS = 10_000;
 export const USER_AGENT = `bioc-mcp/${VERSION} (+https://github.com/seandavi/bioc-mcp)`;
 
 export interface UpstreamResponse extends CachedUpstream { fromCache: boolean }
+
+/**
+ * Encode one caller-supplied value as a single URL path segment.
+ *
+ * Every adapter must build upstream paths through this helper (`items/${pathSegment(id)}.json`),
+ * never by interpolating raw input. It rejects values that could climb out of the segment:
+ * '', '.', '..', and anything containing '/', '\\' or an encoded dot or slash (%2e, %2f).
+ */
+export function pathSegment(value: string): string;
+
+/**
+ * The SSRF guard below is only sound for an https: baseUrl that ends with '/' and has no query or
+ * fragment. The baseUrl must not carry credentials. No message ever includes the baseUrl itself, so a
+ * password in a malformed or non-https: URL never reaches a client. ttlSeconds must be a positive integer (about and cache-control take
+ * integers) and timeoutMs, when set, positive and finite. Checked at registration
+ * (validateRegistry) and again on every fetch, so an adapter cannot bypass it by passing an
+ * upstream it never registered.
+ */
+export function assertUpstream(upstream: Upstream): void;
 
 /** GET `path` relative to upstream.baseUrl, through the cache. */
 export function fetchUpstream(deps: Deps, upstream: Upstream, path: string): Promise<UpstreamResponse>;
@@ -308,20 +336,39 @@ export function sourceFor(response: UpstreamResponse, asOf?: string): Source;
 
 `fetchUpstream` behaviour, in order:
 
-1. `const url = new URL(path, upstream.baseUrl)`. If `url.origin` differs from the base's origin
+1. `assertUpstream(upstream)`; a failure → `CapabilityError('internal', …)` (the rules are listed
+   under `validateRegistry`; no message includes the baseUrl, so a password never reaches a client). Then
+   `const url = new URL(path, upstream.baseUrl)`. If `url.origin` differs from the base's origin
    or `url.pathname` does not start with the base's pathname, throw
    `CapabilityError('internal', …)`. This is the SSRF guard: no capability can fetch outside a
-   registered upstream. Callers `encodeURIComponent` every caller-supplied path segment.
+   registered upstream. Adapters build every path through `pathSegment()` for each
+   caller-supplied value; it rejects `''`, `.`, `..`, `/`, `\`, `%2e` and `%2f`, and
+   percent-encodes the rest.
 2. `deps.cache.get(url.href)`; a hit returns `{ ...hit, fromCache: true }`.
-3. `deps.fetch(new Request(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(upstream.timeoutMs ?? DEFAULT_TIMEOUT_MS) }))`.
-4. A rejection whose `name` is `'TimeoutError'` or `'AbortError'` → `upstream_timeout`
-   (`"<name> did not answer within <ms> ms"`); any other rejection → `upstream_error`
-   (`"Could not reach <name>"`).
-5. Status 404 → `not_found` (`"<name> has nothing at <url>"`); capabilities may catch and
-   rephrase it. Any other non-2xx → `upstream_error` (`"<name> returned HTTP <status>"`,
-   `details.status`).
-6. Read the body as text; build the `CachedUpstream`; `deps.cache.put(…, upstream.ttlSeconds)`
-   only for status 200; return with `fromCache: false`.
+3. `deps.fetch(new Request(target, { headers: { 'user-agent': USER_AGENT }, redirect: 'manual', signal }))`
+   with `signal = AbortSignal.timeout(upstream.timeoutMs ?? DEFAULT_TIMEOUT_MS)`. A
+   301/302/303/307/308 with a `Location` is resolved against the current target, released
+   (`response.body?.cancel()`) and re-checked against the base origin and path (outside →
+   `upstream_error` "…redirected outside its base URL"). At most 3 redirects are followed; a 4th
+   → `upstream_error` "…redirected more than 3 times". A 3xx without `Location` is an ordinary
+   non-2xx.
+4. Errors, with `<url>` the requested URL (`url.href`, also `details.url`) and `RETRY` the literal
+   `Try again shortly.`:
+
+   | Case | Code | Message |
+   |---|---|---|
+   | fetch rejects, `name` is `TimeoutError` or `AbortError` | `upstream_timeout` | `<name> did not answer within <ms> ms (<url>). Try again shortly.` |
+   | fetch rejects, other | `upstream_error` | `Could not reach <name> (<url>). Try again shortly.` |
+   | status 404 | `not_found` | `<name> has nothing at <url>` |
+   | status ≥ 500 | `upstream_error` | `<name> returned HTTP <status> (<url>). Try again shortly.` |
+   | other non-2xx | `upstream_error` | `<name> returned HTTP <status>` |
+   | `response.text()` rejects, timeout | `upstream_timeout` | same as the fetch timeout row |
+   | `response.text()` rejects, other | `upstream_error` | `Could not read the response from <name> (<url>). Try again shortly.` |
+
+   Capabilities may catch the 404 and rephrase it. `details.status` is set for the status rows.
+5. Read the body as text; build the `CachedUpstream`; `deps.cache.put(…, upstream.ttlSeconds)`
+   only for status 200; return with `fromCache: false`. The cache key and `url` stay the
+   requested URL, not a redirect target.
 
 ### `src/core/registry.ts`
 
@@ -331,7 +378,7 @@ export interface Capability<I extends z.ZodObject = z.ZodObject, D extends z.Zod
   name: string;                         // `${module}_<verb_or_noun>`, /^[a-z]+_[a-z][a-z0-9_]*$/
   title: string;                        // short human title; MCP `title`, OpenAPI `summary`
   description: string;                  // what it answers; which tool to use instead
-  input: I;                             // flat object (see validateRegistry)
+  input: I;                             // flat, REST-carriable, and accepts its own output (see validateRegistry)
   data: D;                              // schema of envelope.data
   output: ReturnType<typeof envelopeSchema<D>>;   // = envelopeSchema(data), set by defineCapability
   // Method syntax on purpose: bivariant parameters let Capability<Specific> sit in Capability[].
@@ -361,11 +408,25 @@ export function restPath(capability: Capability): string;
 `validateRegistry` rejects: a module name not matching `/^[a-z]+$/`; duplicate module names; a
 capability whose `module` differs from its containing module, whose name does not match the
 pattern or start with `<module>_`, or whose `description` is empty; duplicate capability names;
-two upstreams with the same `id` but different fields; and any input field that the REST
-transport cannot carry. For the last check, compute
+two upstreams with the same `id` but different fields (compared field by field with
+`sameUpstream`, so key order does not matter); an upstream that fails `assertUpstream` (`https:`,
+no credentials, trailing `/`, no query or fragment, positive-integer `ttlSeconds`, positive
+finite `timeoutMs`); any input field that the REST transport cannot carry; and any input field
+whose schema does not accept its own output. For the REST check, compute
 `z.toJSONSchema(capability.input, { io: 'input' })`; every property must have `type` in
 `string | number | integer | boolean`, or `type: 'array'` whose `items.type` is one of those.
 (Enums are `type: 'string'` and pass; nullable fields and unions produce `anyOf` and fail.)
+
+**Idempotent input.** MCP parses input twice: the SDK validates the arguments and hands the
+parsed value to our callback, then `invokeCapability` parses it again. REST parses once. A
+`.transform()`, or a `.pipe()` to another type, would pass on REST and fail on MCP, so a
+capability's input schema must accept its own output; transform in the handler instead. For each
+field, `z.toJSONSchema(field, { io: 'output' })` must not throw ("has a transform") and must equal
+`io: 'input'` apart from `default` ("parses to a different type than it accepts"); `.prefault()`
+sets `default` on the input side only. `.default()`, `.catch()`, `.trim()`, `.toLowerCase()` and
+`z.coerce.number()` pass; `.transform()`, `.pipe(z.coerce.number())` on a string and
+`z.stringbool()` fail. The check compares JSON Schemas, so it cannot see value-rewriting
+`.overwrite(fn)` or `z.preprocess(fn, …)`; those must be idempotent by construction.
 
 ### `src/core/invoke.ts`
 
@@ -424,7 +485,8 @@ export const metaPing = defineCapability({
   title: 'Ping',
   description: 'Check that the Bioconductor MCP server is reachable and report its version. ' +
     'Use only as a connectivity check; read the bioc://about resource (REST: GET /api/v1/about) ' +
-    'for what the server covers and how fresh each source is.',
+    'for the modules, tools and upstream sources the server covers and each source\'s cache TTL. ' +
+    'Freshness is per result: every tool result lists its sources with an as_of time.',
   input: z.object({}),
   data: z.object({ ok: z.literal(true), version: z.string() }),
   async handler() {
@@ -486,7 +548,8 @@ const server = new McpServer(
   { name: 'bioc-mcp', version: VERSION },
   {
     instructions: 'Read-only access to public Bioconductor infrastructure data. Every tool result ' +
-      'carries `sources` (URL and as_of); cite them. Read bioc://about for coverage and freshness.',
+      'carries `sources` (URL and as_of, the freshness of that data); cite them. Read bioc://about ' +
+      'for the modules, tools and upstream sources covered and their cache TTLs.',
     cacheHints: {
       'tools/list': { ttlMs: 3_600_000, cacheScope: 'public' },
       'resources/read': { ttlMs: 300_000, cacheScope: 'public' },
@@ -501,7 +564,11 @@ for (const capability of selected.flatMap((m) => m.capabilities)) {
     inputSchema: capability.input,
     outputSchema: capability.output,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
-  }, async (args: Record<string, unknown>) => {
+  },
+  // The SDK validates args against inputSchema before this callback runs. Its failures come back
+  // as isError text "Input validation error: Invalid arguments for tool <name>: …", not
+  // "invalid_input: …"; REST reports the same failure as 400 invalid_input.
+  async (args: Record<string, unknown>) => {
     const result = await invokeCapability(capability, args, deps);
     return result.ok
       ? { content: [{ type: 'text', text: result.envelope.summary }], structuredContent: result.envelope }
@@ -515,8 +582,12 @@ server.registerResource('about', 'bioc://about', {
 }, async (uri) => ({ contents: [{ uri: uri.href, mimeType: 'application/json', text: JSON.stringify(buildAbout(all)) }] }));
 ```
 
-The SDK validates arguments against `inputSchema` (failures come back as `isError` results) and
-`structuredContent` against `outputSchema` (**Verified**). The text content is the summary only,
+The SDK validates arguments against `inputSchema` and `structuredContent` against `outputSchema`
+(**Verified**). Input failures come back as `isError` text
+`Input validation error: Invalid arguments for tool <name>: <details>` (for example
+`… example_item: id: Invalid string: must match pattern /^[a-z0-9-]+$/`), not `invalid_input: …`;
+REST reports the same failure as 400 `invalid_input`. We keep the SDK's wording, because dropping
+`inputSchema` would drop it from `tools/list`. The text content is the summary only,
 as the issue specifies.
 
 ### `src/transports/rest.ts`
@@ -556,15 +627,23 @@ Also:
 
 - `GET /api/v1/about` → `c.json(buildAbout(modules), 200)`, registered the same way with
   `AboutSchema` as the 200 response.
-- `api.doc31('/api/openapi.json', { openapi: '3.1.0', info: { title: 'Bioconductor MCP REST API', version: VERSION, description: 'Read-only REST mirror of the bioc-mcp tools. Unstable until v1.' } })`.
+- `api.doc31('/api/openapi.json', { openapi: '3.1.0', info: { title: 'Bioconductor MCP REST API', version: VERSION, description: 'Read-only REST mirror of the bioc-mcp tools. Unstable until v1.' }, tags: modules.map((module) => ({ name: module.name, description: module.description })) })`
+  (one tag per module, registry order; each capability route uses its module name as its tag).
 
 ### `src/index.ts`
+
+`AppConfig` and `parseConfig()` live in `src/config.ts` (`src/index.ts` imports them; nothing
+re-exports them, and nothing under `src/transports/` or `src/core/` imports `../index`):
 
 ```ts
 export interface AppConfig { allowedHosts: string[]; allowedOrigins: string[] }
 
 /** Splits on ',', trims, drops empties. Throws if ALLOWED_HOSTS yields no hosts (fail closed). */
 export function parseConfig(env: { ALLOWED_HOSTS?: string; ALLOWED_ORIGINS?: string }): AppConfig;
+```
+
+```ts
+import { parseConfig, type AppConfig } from './config';
 
 export function createApp(options: { config: AppConfig; deps: Deps; modules?: readonly Module[] }): Hono {
   const modules = options.modules ?? registryModules;
@@ -605,6 +684,8 @@ This issue adds no real upstream, so there are no real URLs to call or record. T
 tested against a synthetic upstream defined only in `test/support/example-module.ts`:
 
 ```ts
+import { fetchUpstreamJson, pathSegment, sourceFor, type Upstream } from '../../src/upstreams/http';
+
 export const exampleUpstream: Upstream = {
   id: 'example', name: 'Example upstream', baseUrl: 'https://upstream.test/',
   ttlSeconds: 300, timeoutMs: 50, description: 'Synthetic upstream used only in tests.',
@@ -618,7 +699,7 @@ export const exampleItem = defineCapability({
   }),
   data: z.object({ id: z.string(), title: z.string(), body: z.string() }),
   async handler({ id, repeat }, deps) {
-    const { response, json } = await fetchUpstreamJson(deps, exampleUpstream, `items/${encodeURIComponent(id)}.json`);
+    const { response, json } = await fetchUpstreamJson(deps, exampleUpstream, `items/${pathSegment(id)}.json`);
     const item = z.object({ id: z.string(), title: z.string(), updated: z.string() }).parse(json);
     return {
       data: { id: item.id, title: item.title, body: item.title.repeat(repeat) },
@@ -668,6 +749,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -741,7 +824,10 @@ it up; `validateRegistry` enforces naming and REST-compatible input.
 - [ ] Upstream helper: a second fetch of the same URL within TTL is served from cache (fixture
       fetch called once, `fromCache: true`); after TTL (advanced clock) it refetches; non-200
       responses are not cached; a path that resolves outside `baseUrl` (`'../x'`,
-      `'https://evil.test/'`) throws `internal` without calling fetch; `Last-Modified` becomes
+      `'https://evil.test/'`) throws `internal` without calling fetch; an unregistered upstream
+      with an unsafe `baseUrl` (including credentials) throws `internal` without calling fetch;
+      redirects are followed manually and re-checked against the base, exactly 3 succeed and a 4th
+      fails; `Last-Modified` becomes
       `as_of` when the capability passes no `asOf`.
 - [ ] `validateRegistry` accepts the production `modules` and `[metaModule, exampleModule]`, and
       rejects each violation listed in its section (one test per rule).
@@ -759,11 +845,12 @@ example timeout.
 | `test/errors.test.ts` | `httpStatusFor` for every `ErrorCode` |
 | `test/version.test.ts` | `VERSION` equals `package.json` version (read with `node:fs`) |
 | `test/no-network.test.ts` | the global `fetch` throws |
+| `test/core/invoke.test.ts` | non-`CapabilityError` throw → `internal`; output schema mismatch → `internal`; `CapabilityError` passthrough; invalid input never reaches the handler |
 | `test/core/registry.test.ts` | production registry and test registry validate; one rejection test per rule; `restPath(metaPing) === '/api/v1/meta/ping'` |
 | `test/core/about.test.ts` | `buildAbout` output parses with `AboutSchema`; upstream de-duplication and `used_by` |
 | `test/upstreams/cache.test.ts` | memory cache expiry with an injected clock; `createCloudflareCache` round-trip against a Map-backed fake `Cache`, and a throwing fake treated as a miss |
-| `test/upstreams/http.test.ts` | success; cache hit; TTL expiry; 404 → `not_found`; 500 → `upstream_error` with `details.status`; `'timeout'` → `upstream_timeout`; `'network-error'` → `upstream_error`; invalid JSON → `upstream_error`; SSRF guard; `Last-Modified` → `as_of`; User-Agent header sent |
-| `test/transports/mcp.test.ts` | toolset listing (modern client); unknown toolset 404; output schemas present; `meta_ping` and `example_item` calls; error mapping (404, 500, timeout, too large); input validation error from the SDK (`id: 'Bad Id'` → `isError`); `bioc://about`; Host and Origin rejection; the legacy `curl`-shaped POST |
+| `test/upstreams/http.test.ts` | success; cache hit; TTL expiry; 404 → `not_found`; 500 → `upstream_error` with `details.status` and a retry hint; 403 without one; `'timeout'` → `upstream_timeout`; a body-read timeout → `upstream_timeout`; `'network-error'` → `upstream_error`; invalid JSON → `upstream_error`; SSRF guard (unsafe `baseUrl`, paths, redirects, exactly 3 hops); `pathSegment`; `Last-Modified` → `as_of`; User-Agent header sent |
+| `test/transports/mcp.test.ts` | toolset listing (modern client); unknown toolset 404; output schemas present; `meta_ping` and `example_item` calls; error mapping (404, 500, timeout, too large); input validation error from the SDK (`id: 'Bad Id'` → `isError`, text starting `Input validation error: Invalid arguments for tool example_item:`); `bioc://about`; Host and Origin rejection; the legacy `curl`-shaped POST |
 | `test/transports/rest.test.ts` | ping parity with MCP; query coercion; 400s; 404/502/500 mapping; OpenAPI document contents; `/api/v1/about` equals the resource; unknown REST path → 404 JSON `not_found` |
 
 Manual, reported in the PR: `npm run dev`, then the `curl` from the Commands section.

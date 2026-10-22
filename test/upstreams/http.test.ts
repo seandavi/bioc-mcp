@@ -80,22 +80,61 @@ describe('fetchUpstream', () => {
     const { deps } = makeDeps({ [ALPHA]: { status: 500 } });
     const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toBe('Example upstream returned HTTP 500');
+    expect(error.message).toBe(`Example upstream returned HTTP 500 (${ALPHA}). Try again shortly.`);
     expect(error.details.status).toBe(500);
+  });
+
+  test('403 keeps the plain message without a retry hint', async () => {
+    const { deps } = makeDeps({ [ALPHA]: { status: 403 } });
+    const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+    expect(error.code).toBe('upstream_error');
+    expect(error.message).toBe('Example upstream returned HTTP 403');
+    expect(error.details.status).toBe(403);
   });
 
   test('a timeout becomes upstream_timeout', async () => {
     const { deps } = makeDeps({ [ALPHA]: 'timeout' });
     const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('upstream_timeout');
-    expect(error.message).toBe('Example upstream did not answer within 50 ms');
+    expect(error.message).toBe(`Example upstream did not answer within 50 ms (${ALPHA}). Try again shortly.`);
+  });
+
+  test('a timeout while reading the body becomes upstream_timeout and caches nothing', async () => {
+    const { deps } = makeDeps({});
+    deps.fetch = async (request) =>
+      new Response(
+        new ReadableStream({
+          start(controller) {
+            request.signal.addEventListener('abort', () => controller.error(request.signal.reason), { once: true });
+          },
+        }),
+      );
+    const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+    expect(error.code).toBe('upstream_timeout');
+    expect(error.message).toBe(`Example upstream did not answer within 50 ms (${ALPHA}). Try again shortly.`);
+    expect(await deps.cache.get(ALPHA)).toBeUndefined();
+  });
+
+  test('a body-read failure that is not a timeout becomes upstream_error', async () => {
+    const { deps } = makeDeps({});
+    deps.fetch = async () =>
+      new Response(
+        new ReadableStream({
+          start(controller) {
+            controller.error(new TypeError('terminated'));
+          },
+        }),
+      );
+    const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+    expect(error.code).toBe('upstream_error');
+    expect(error.message).toBe(`Could not read the response from Example upstream (${ALPHA}). Try again shortly.`);
   });
 
   test('a network failure becomes upstream_error', async () => {
     const { deps } = makeDeps({ [ALPHA]: 'network-error' });
     const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toBe('Could not reach Example upstream');
+    expect(error.message).toBe(`Could not reach Example upstream (${ALPHA}). Try again shortly.`);
   });
 
   test('sends the bioc-mcp User-Agent', async () => {
@@ -111,12 +150,22 @@ describe('fetchUpstream', () => {
   });
 
   describe('SSRF guard', () => {
-    test.each(['http://upstream.test/', 'https://upstream.test/api', 'https://upstream.test/?q=1'])(
+    test.each([
+      'http://upstream.test/',
+      'https://upstream.test/api',
+      'https://upstream.test/?q=1',
+      'https://user:secret@upstream.test/',
+      'http://user:secret@upstream.test/',
+      'ftp://user:secret@upstream.test/',
+      'user:secret@upstream.test/',
+      'https://user:secret@',
+    ])(
       'an unregistered upstream with an unsafe baseUrl (%s) throws internal without fetching',
       async (baseUrl) => {
         const { deps, fetch } = makeDeps({});
         const error = await codeOf(fetchUpstream(deps, { ...exampleUpstream, id: 'rogue', baseUrl }, 'items/alpha.json'));
         expect(error.code).toBe('internal');
+        expect(error.message).not.toContain('secret');
         expect(fetch.calls).toEqual([]);
       },
     );
@@ -188,6 +237,19 @@ describe('fetchUpstream', () => {
       const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
       expect(error.message).toBe('Example upstream redirected outside its base URL');
       expect(fetch.calls).toEqual([ALPHA, moved]);
+    });
+
+    test('follows exactly 3 redirects', async () => {
+      const hop = (n: number) => `https://upstream.test/hop${n}`;
+      const { deps, fetch } = makeDeps({
+        [ALPHA]: { status: 302, headers: { location: hop(1) } },
+        [hop(1)]: { status: 302, headers: { location: hop(2) } },
+        [hop(2)]: { status: 302, headers: { location: hop(3) } },
+        [hop(3)]: { status: 200, body: '{}' },
+      });
+      const response = await fetchUpstream(deps, exampleUpstream, 'items/alpha.json');
+      expect(response.fromCache).toBe(false);
+      expect(fetch.calls).toEqual([ALPHA, hop(1), hop(2), hop(3)]);
     });
 
     test('follows at most 3 redirects', async () => {

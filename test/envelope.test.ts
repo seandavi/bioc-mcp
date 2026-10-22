@@ -44,7 +44,8 @@ describe('assertEnvelopeSize', () => {
     expect(envelopeBytes(envelope)).toBe(8193);
     expect(() => assertEnvelopeSize(envelope, 'x_tool')).toThrow(CapabilityError);
     expect(() => assertEnvelopeSize(envelope, 'x_tool')).toThrow(
-      'x_tool returned 8193 bytes; the limit is 8192. Narrow the request.',
+      'x_tool returned 8193 bytes; the limit is 8192. If the tool takes a limit or filter, narrow the request; ' +
+        'otherwise this is a server bug, please report it at https://github.com/seandavi/bioc-mcp/issues.',
     );
   });
 

@@ -38,7 +38,7 @@ export function assertEnvelopeSize(envelope: Envelope<unknown>, tool: string): v
   if (bytes > MAX_RESULT_BYTES) {
     throw new CapabilityError(
       'result_too_large',
-      `${tool} returned ${bytes} bytes; the limit is ${MAX_RESULT_BYTES}. Narrow the request.`,
+      `${tool} returned ${bytes} bytes; the limit is ${MAX_RESULT_BYTES}. If the tool takes a limit or filter, narrow the request; otherwise this is a server bug, please report it at https://github.com/seandavi/bioc-mcp/issues.`,
     );
   }
 }

@@ -37,5 +37,6 @@ export async function invokeCapability(
       error: new CapabilityError('internal', `${capability.name} produced output that does not match its schema`),
     };
   }
-  return { ok: true, envelope };
+  // Return the parsed value so fields the output schema does not declare never leave the server.
+  return { ok: true, envelope: output.data as Envelope<unknown> };
 }

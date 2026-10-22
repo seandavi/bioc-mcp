@@ -30,6 +30,7 @@ export function validateRegistry(registered: readonly Module[]): void {
       if (seen && JSON.stringify(seen) !== JSON.stringify(upstream)) {
         throw new Error(`Upstream "${upstream.id}" is declared twice with different fields (module "${module.name}")`);
       }
+      assertBaseUrl(upstream);
       upstreams.set(upstream.id, upstream);
     }
 
@@ -47,6 +48,19 @@ export function validateRegistry(registered: readonly Module[]): void {
       assertRestCompatible(capability, label);
     }
   }
+}
+
+function assertBaseUrl(upstream: Upstream): void {
+  const label = `Upstream "${upstream.id}" baseUrl "${upstream.baseUrl}"`;
+  let url: URL;
+  try {
+    url = new URL(upstream.baseUrl);
+  } catch {
+    throw new Error(`${label} is not an absolute URL`);
+  }
+  if (url.protocol !== 'https:') throw new Error(`${label} must use https:`);
+  if (!url.pathname.endsWith('/')) throw new Error(`${label} must end with "/"`);
+  if (url.search !== '' || url.hash !== '') throw new Error(`${label} must not have a query string or fragment`);
 }
 
 interface JsonSchemaProperty {

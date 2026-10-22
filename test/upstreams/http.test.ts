@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache } from '../../src/upstreams/cache';
-import { fetchUpstream, fetchUpstreamJson, sourceFor, USER_AGENT, type Upstream } from '../../src/upstreams/http';
+import { fetchUpstream, fetchUpstreamJson, pathSegment, sourceFor, USER_AGENT, type Upstream } from '../../src/upstreams/http';
 import { exampleUpstream } from '../support/example-module';
 import { fixtureFetch, type FixtureRoute } from '../support/fixture-fetch';
 
@@ -133,33 +133,108 @@ describe('fetchUpstream', () => {
       },
     );
 
-    test('a redirect that ends outside the base URL throws upstream_error and caches nothing', async () => {
+    test.each(['https://evil.test/x', '//evil.test/x', 'http://upstream.test/items/moved.json', 'https://[bad'])(
+      'a 302 to %s throws upstream_error after exactly one fetch and caches nothing',
+      async (location) => {
+        const { deps, fetch } = makeDeps({ [ALPHA]: { status: 302, headers: { location } } });
+        const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+        expect(error.code).toBe('upstream_error');
+        expect(error.message).toBe('Example upstream redirected outside its base URL');
+        expect(fetch.calls).toEqual([ALPHA]);
+        expect(await deps.cache.get(ALPHA)).toBeUndefined();
+      },
+    );
+
+    test('requests are built with redirect: manual', async () => {
+      const modes: string[] = [];
       const { deps } = makeDeps({});
-      deps.fetch = async () => {
-        const response = new Response('{"stolen":true}');
-        Object.defineProperty(response, 'url', { value: 'https://evil.test/x' });
-        return response;
+      deps.fetch = async (request) => {
+        modes.push(request.redirect);
+        return new Response('{}');
       };
-      const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
-      expect(error.code).toBe('upstream_error');
-      expect(error.message).toBe('Example upstream redirected outside its base URL');
-      expect(await deps.cache.get(ALPHA)).toBeUndefined();
+      await fetchUpstream(deps, exampleUpstream, 'items/alpha.json');
+      expect(modes).toEqual(['manual']);
     });
 
-    test('a redirect that stays inside the base URL is allowed', async () => {
-      const { deps } = makeDeps({});
-      deps.fetch = async () => {
-        const response = new Response('{}');
-        Object.defineProperty(response, 'url', { value: 'https://upstream.test/items/moved.json' });
-        return response;
-      };
-      expect((await fetchUpstream(deps, exampleUpstream, 'items/alpha.json')).fromCache).toBe(false);
+    test('a redirect that stays inside the base URL is followed and cached under the requested URL', async () => {
+      const moved = 'https://upstream.test/items/moved.json';
+      const { deps, fetch } = makeDeps({
+        [ALPHA]: { status: 301, headers: { location: '/items/moved.json' } },
+        [moved]: { status: 200, body: '{"id":"moved"}' },
+      });
+      const response = await fetchUpstream(deps, exampleUpstream, 'items/alpha.json');
+      expect(response.fromCache).toBe(false);
+      expect(JSON.parse(response.body)).toEqual({ id: 'moved' });
+      expect(fetch.calls).toEqual([ALPHA, moved]);
+      expect((await fetchUpstream(deps, exampleUpstream, 'items/alpha.json')).fromCache).toBe(true);
+    });
+
+    test('every hop is re-checked: an in-base redirect that then leaves the base stops there', async () => {
+      const moved = 'https://upstream.test/items/moved.json';
+      const { deps, fetch } = makeDeps({
+        [ALPHA]: { status: 302, headers: { location: moved } },
+        [moved]: { status: 302, headers: { location: 'https://evil.test/x' } },
+      });
+      const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+      expect(error.message).toBe('Example upstream redirected outside its base URL');
+      expect(fetch.calls).toEqual([ALPHA, moved]);
+    });
+
+    test('follows at most 3 redirects', async () => {
+      const hop = (n: number) => `https://upstream.test/hop${n}`;
+      const { deps, fetch } = makeDeps({
+        [ALPHA]: { status: 302, headers: { location: hop(1) } },
+        [hop(1)]: { status: 302, headers: { location: hop(2) } },
+        [hop(2)]: { status: 302, headers: { location: hop(3) } },
+        [hop(3)]: { status: 302, headers: { location: hop(4) } },
+        [hop(4)]: { status: 200, body: '{}' },
+      });
+      const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+      expect(error.code).toBe('upstream_error');
+      expect(error.message).toBe('Example upstream redirected more than 3 times');
+      expect(fetch.calls).toEqual([ALPHA, hop(1), hop(2), hop(3)]);
+    });
+
+    test('a 3xx without a Location is an HTTP error', async () => {
+      const { deps } = makeDeps({ [ALPHA]: { status: 302 } });
+      const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
+      expect(error.message).toBe('Example upstream returned HTTP 302');
     });
 
     test('a path inside the base path is allowed', async () => {
       const { deps } = makeDeps({ 'https://upstream.test/api/v1/x': { status: 200, body: '{}' } });
       expect((await fetchUpstream(deps, nested, 'x')).url).toBe('https://upstream.test/api/v1/x');
     });
+  });
+});
+
+describe('pathSegment', () => {
+  test('percent-encodes an ordinary value', () => {
+    expect(pathSegment('a b?c#d')).toBe('a%20b%3Fc%23d');
+    expect(pathSegment('BiocGenerics')).toBe('BiocGenerics');
+    expect(pathSegment('..a')).toBe('..a');
+  });
+
+  test.each([
+    ['empty', ''],
+    ['dot', '.'],
+    ['dot-dot', '..'],
+    ['forward slash', 'a/b'],
+    ['leading slash', '/etc'],
+    ['backslash', 'a\\b'],
+    ['encoded dot', '%2e'],
+    ['encoded dot, upper case', '%2E%2E'],
+    ['encoded slash', 'a%2fb'],
+    ['encoded slash, upper case', 'a%2Fb'],
+  ])('rejects %s', (_label, value) => {
+    try {
+      pathSegment(value);
+    } catch (error) {
+      expect(error).toBeInstanceOf(CapabilityError);
+      expect((error as CapabilityError).code).toBe('invalid_input');
+      return;
+    }
+    throw new Error('expected a CapabilityError');
   });
 });
 

@@ -16,6 +16,31 @@ export interface Upstream {
 export const DEFAULT_TIMEOUT_MS = 10_000;
 export const USER_AGENT = `bioc-mcp/${VERSION} (+https://github.com/seandavi/bioc-mcp)`;
 
+const MAX_REDIRECTS = 3;
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+
+function parseLocation(location: string, base: URL): URL | undefined {
+  try {
+    return new URL(location, base);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Encode one caller-supplied value as a single URL path segment.
+ *
+ * Every adapter must build upstream paths through this helper (`items/${pathSegment(id)}.json`),
+ * never by interpolating raw input. It rejects values that could climb out of the segment:
+ * '', '.', '..', and anything containing '/', '\\' or an encoded dot or slash (%2e, %2f).
+ */
+export function pathSegment(value: string): string {
+  if (value === '' || value === '.' || value === '..' || /[/\\]|%2e|%2f/i.test(value)) {
+    throw new CapabilityError('invalid_input', `"${value}" cannot be used as a URL path segment`);
+  }
+  return encodeURIComponent(value);
+}
+
 export interface UpstreamResponse extends CachedUpstream {
   fromCache: boolean;
 }
@@ -35,22 +60,33 @@ export async function fetchUpstream(deps: Deps, upstream: Upstream, path: string
 
   const timeoutMs = upstream.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const details = { upstream: upstream.id, url: url.href };
+  const signal = AbortSignal.timeout(timeoutMs);
   let response: Response;
-  try {
-    response = await deps.fetch(
-      new Request(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(timeoutMs) }),
-    );
-  } catch (error) {
-    const name = error instanceof Error ? error.name : '';
-    if (name === 'TimeoutError' || name === 'AbortError') {
-      throw new CapabilityError('upstream_timeout', `${upstream.name} did not answer within ${timeoutMs} ms`, details);
+  let target = url;
+  for (let hops = 0; ; hops++) {
+    try {
+      // Redirects are never followed by the runtime: each hop is re-checked against the base below.
+      response = await deps.fetch(
+        new Request(target, { headers: { 'user-agent': USER_AGENT }, redirect: 'manual', signal }),
+      );
+    } catch (error) {
+      const name = error instanceof Error ? error.name : '';
+      if (name === 'TimeoutError' || name === 'AbortError') {
+        throw new CapabilityError('upstream_timeout', `${upstream.name} did not answer within ${timeoutMs} ms`, details);
+      }
+      throw new CapabilityError('upstream_error', `Could not reach ${upstream.name}`, details);
     }
-    throw new CapabilityError('upstream_error', `Could not reach ${upstream.name}`, details);
-  }
 
-  // Redirects are followed, so the final URL must also stay inside the upstream.
-  if (response.url && !inside(new URL(response.url))) {
-    throw new CapabilityError('upstream_error', `${upstream.name} redirected outside its base URL`, details);
+    const location = REDIRECT_STATUSES.has(response.status) ? response.headers.get('location') : null;
+    if (location === null) break;
+    const next = parseLocation(location, target);
+    if (!next || !inside(next)) {
+      throw new CapabilityError('upstream_error', `${upstream.name} redirected outside its base URL`, details);
+    }
+    if (hops >= MAX_REDIRECTS) {
+      throw new CapabilityError('upstream_error', `${upstream.name} redirected more than ${MAX_REDIRECTS} times`, details);
+    }
+    target = next;
   }
 
   if (response.status === 404) {

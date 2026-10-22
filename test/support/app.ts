@@ -1,6 +1,7 @@
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import type { Hono } from 'hono';
 import { createApp } from '../../src/index';
+import type { Module } from '../../src/core/registry';
 import { metaModule } from '../../src/core/meta';
 import { createMemoryCache } from '../../src/upstreams/cache';
 import { exampleModule } from './example-module';
@@ -9,13 +10,13 @@ import { fixtureFetch, type FixtureRoute } from './fixture-fetch';
 export const ALPHA_URL = 'https://upstream.test/items/alpha.json';
 export const ALPHA_ROUTE: FixtureRoute = { file: 'example/items/alpha.json' };
 
-export function makeTestApp(options: { routes?: Record<string, FixtureRoute>; now?: () => Date } = {}) {
+export function makeTestApp(options: { routes?: Record<string, FixtureRoute>; now?: () => Date; extraModules?: Module[] } = {}) {
   const now = options.now ?? (() => new Date('2026-10-22T12:00:00Z'));
   const fetch = fixtureFetch(options.routes ?? { [ALPHA_URL]: ALPHA_ROUTE });
   const cache = createMemoryCache(now);
   const app = createApp({
     config: { allowedHosts: ['test.local'], allowedOrigins: ['test.local'] },
-    modules: [metaModule, exampleModule],
+    modules: [metaModule, exampleModule, ...(options.extraModules ?? [])],
     deps: { fetch, cache, now, env: {} },
   });
   return { app, fetch, cache };

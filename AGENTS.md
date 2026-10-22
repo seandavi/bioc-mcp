@@ -49,6 +49,9 @@ test/
   which tool to use instead when it does not fit.
 - Every tool declares `inputSchema` and `outputSchema` and returns the provenance block
   (`sources: [{ url, as_of }]`).
+- Upstream adapters build every path through `pathSegment()` (`src/upstreams/http.ts`) for each
+  caller-supplied value and fetch only through `fetchUpstream`, which refuses redirects that leave
+  the upstream's base URL. Upstream `baseUrl`s are `https:` and end with `/`.
 - No tool returns more than ~8 KB of text.
 - Tests never hit the network: upstream calls go through an injectable `fetch`, fed from
   `test/fixtures/`.

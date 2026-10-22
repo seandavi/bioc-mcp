@@ -75,6 +75,17 @@ describe('validateRegistry', () => {
     expect(() => validateRegistry([a, b])).toThrow(/Upstream "example" is declared twice/);
   });
 
+  test.each([
+    ['is not https:', 'http://upstream.test/', /must use https:/],
+    ['does not end with "/"', 'https://upstream.test/api', /must end with "\/"/],
+    ['has a query string', 'https://upstream.test/?x=1', /query string or fragment/],
+    ['has a fragment', 'https://upstream.test/#top', /query string or fragment/],
+    ['is not a URL', 'upstream.test/', /not an absolute URL/],
+  ])('rejects an upstream baseUrl that %s', (_label, baseUrl, message) => {
+    const wrong = demoModule({ upstreams: [{ ...exampleUpstream, baseUrl }] });
+    expect(() => validateRegistry([wrong])).toThrow(message);
+  });
+
   test('accepts the same upstream declared identically by two modules', () => {
     const a = demoModule({ upstreams: [exampleUpstream] });
     const b = demoModule({ name: 'demob', capabilities: [], upstreams: [{ ...exampleUpstream }] });

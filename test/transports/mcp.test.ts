@@ -2,6 +2,7 @@ import type { Client } from '@modelcontextprotocol/client';
 import { afterEach, describe, expect, test } from 'vitest';
 import { AboutSchema } from '../../src/core/about';
 import { VERSION } from '../../src/version';
+import { leakyModule } from '../support/leaky-module';
 import { ALPHA_URL, appFetch, connectClient, makeTestApp } from '../support/app';
 
 let client: Client | undefined;
@@ -176,5 +177,13 @@ describe('legacy (2025-era) clients', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toContain('text/event-stream');
     expect(await response.text()).toContain('meta_ping');
+  });
+});
+
+describe('output stripping', () => {
+  test('structuredContent omits fields the data schema does not declare', async () => {
+    client = await connectClient(makeTestApp({ extraModules: [leakyModule] }).app, '/mcp/leaky');
+    const result = await client.callTool({ name: 'leaky_thing', arguments: {} });
+    expect(result.structuredContent).toEqual({ data: { visible: 'yes' }, summary: 'Leaky.', sources: [] });
   });
 });

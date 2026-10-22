@@ -5,6 +5,7 @@ import { AboutSchema } from '../../src/core/about';
 import { exampleItem } from '../support/example-module';
 import { queryToInput } from '../../src/transports/rest';
 import { VERSION } from '../../src/version';
+import { leakyModule } from '../support/leaky-module';
 import { ALPHA_URL, connectClient, makeTestApp } from '../support/app';
 import type { FixtureRoute } from '../support/fixture-fetch';
 
@@ -69,6 +70,15 @@ describe('GET /api/v1/example/item', () => {
     const { response, body } = await get('/api/v1/example/item?id=alpha&repeat=1000');
     expect(response.status).toBe(500);
     expect(body.error.code).toBe('result_too_large');
+  });
+});
+
+describe('GET /api/v1/leaky/thing', () => {
+  test('does not return fields the data schema does not declare', async () => {
+    const { app } = makeTestApp({ extraModules: [leakyModule] });
+    const response = await app.fetch(new Request('http://test.local/api/v1/leaky/thing'));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ data: { visible: 'yes' }, summary: 'Leaky.', sources: [] });
   });
 });
 

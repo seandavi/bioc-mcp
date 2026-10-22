@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { defineCapability, type Module } from '../../src/core/registry';
-import { fetchUpstreamJson, sourceFor, type Upstream } from '../../src/upstreams/http';
+import { fetchUpstreamJson, pathSegment, sourceFor, type Upstream } from '../../src/upstreams/http';
 
 export const exampleUpstream: Upstream = {
   id: 'example',
@@ -25,7 +25,7 @@ export const exampleItem = defineCapability({
     const { response, json } = await fetchUpstreamJson(
       deps,
       exampleUpstream,
-      `items/${encodeURIComponent(id)}.json`,
+      `items/${pathSegment(id)}.json`,
     );
     const item = z.object({ id: z.string(), title: z.string(), updated: z.string() }).parse(json);
     return {

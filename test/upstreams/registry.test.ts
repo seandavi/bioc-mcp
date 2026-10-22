@@ -2,9 +2,9 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache, type UpstreamCache } from '../../src/upstreams/cache';
-import { getPropagationIndex, registryEntry } from '../../src/upstreams/registry';
+import { getBuildManifest, getCheckFiles, getPropagationIndex, registryEntry } from '../../src/upstreams/registry';
 import { fixtureFetch, type FixtureRoute } from '../support/fixture-fetch';
-import { BIOC_INDEX_URL, pkgRoutes } from '../support/pkg-routes';
+import { BIOC_INDEX_URL, buildsUrl, checksUrl, pkgRoutes } from '../support/pkg-routes';
 
 function makeDeps(routes: Record<string, FixtureRoute> = pkgRoutes) {
   const clock = { now: new Date('2026-10-22T12:00:00Z') };
@@ -171,6 +171,110 @@ describe('registryEntry', () => {
     const { deps } = makeDeps({ [BIOC_INDEX_URL]: { status: 200, body: '{"bad":{"version":1}}' } });
     const index = await getPropagationIndex(deps, 'bioc');
     const error = await errorOf(Promise.resolve().then(() => registryEntry(index, 'bad')));
+    expect(error.code).toBe('upstream_error');
+    expect(error.message).toContain('unexpected shape');
+  });
+});
+
+describe('getCheckFiles', () => {
+  test('returns the files as parsed and the response for provenance', async () => {
+    const { deps, fetch } = makeDeps();
+    const { response, files } = await getCheckFiles(deps, 'bioc', '96299707840');
+    expect(Object.keys(files).sort()).toEqual(['00check.log', '00install.out', 'pkgdata.txt', 'testthat.Rout', 'yarn-Ex.Rout']);
+    expect(files['00check.log']).toContain('Status: 1 ERROR');
+    expect(response.url).toBe(checksUrl('bioc', '96299707840'));
+    expect(response.lastModified).toBeNull();
+    expect(fetch.calls).toEqual([checksUrl('bioc', '96299707840')]);
+  });
+
+  test('the second call is a cache hit with no fetch', async () => {
+    const { deps, fetch } = makeDeps();
+    await getCheckFiles(deps, 'bioc', '96299707840');
+    const second = await getCheckFiles(deps, 'bioc', '96299707840');
+    expect(second.response.fromCache).toBe(true);
+    expect(fetch.calls).toHaveLength(1);
+  });
+
+  test('404 is not_found with the capture explanation and the upstream status', async () => {
+    const { deps } = makeDeps();
+    const error = await errorOf(getCheckFiles(deps, 'bioc', '112702240220'));
+    expect(error.code).toBe('not_found');
+    expect(error.message).toContain('has no captured check output for bioc job 112702240220');
+    expect(error.message).toContain('stays unavailable');
+    expect(error.message).toContain('https://github.com/r-universe/bioc/runs/112702240220');
+    expect(error.details).toEqual({ upstream: 'registry', url: checksUrl('bioc', '112702240220'), status: 404 });
+  });
+
+  test('500 is upstream_error', async () => {
+    const { deps } = makeDeps({ [checksUrl('bioc', '5')]: { status: 500 } });
+    expect((await errorOf(getCheckFiles(deps, 'bioc', '5'))).code).toBe('upstream_error');
+  });
+
+  test.each([
+    ['an array', '[]'],
+    ['null', 'null'],
+    ['a string', '"x"'],
+    ['a non-string value', '{"00check.log":"ok","pkgdata.txt":null}'],
+  ])('%s is upstream_error', async (_name, body) => {
+    const { deps } = makeDeps({ [checksUrl('bioc', '5')]: { status: 200, body } });
+    const error = await errorOf(getCheckFiles(deps, 'bioc', '5'));
+    expect(error.code).toBe('upstream_error');
+    expect(error.details).toEqual({ upstream: 'registry', url: checksUrl('bioc', '5') });
+  });
+
+  test('a __proto__ key stays an own property', async () => {
+    const { deps } = makeDeps({ [checksUrl('bioc', '5')]: { status: 200, body: '{"__proto__":"x"}' } });
+    const { files } = await getCheckFiles(deps, 'bioc', '5');
+    expect(Object.hasOwn(files, '__proto__')).toBe(true);
+  });
+
+  test.each(['../1', '1/2', '', '%2e%2e'])('job %j cannot become a URL path', async (job) => {
+    const { deps, fetch } = makeDeps();
+    expect((await errorOf(getCheckFiles(deps, 'bioc', job))).code).toBe('invalid_input');
+    expect(fetch.calls).toEqual([]);
+  });
+});
+
+describe('getBuildManifest', () => {
+  test('returns the parsed manifest', async () => {
+    const { deps, fetch } = makeDeps();
+    const { response, manifest } = await getBuildManifest(deps, 'bioc', '96299707840');
+    expect(manifest.image).toMatch(/^ghcr\.io\/r-universe-org\/base-image@sha256:/);
+    expect(manifest.repos).toHaveLength(2);
+    expect(Object.keys(manifest.deps ?? {})).toHaveLength(174);
+    expect(response.url).toBe(buildsUrl('bioc', '96299707840'));
+    expect(fetch.calls).toEqual([buildsUrl('bioc', '96299707840')]);
+  });
+
+  test('the second call is a cache hit with no fetch', async () => {
+    const { deps, fetch } = makeDeps();
+    await getBuildManifest(deps, 'bioc', '96299707840');
+    expect((await getBuildManifest(deps, 'bioc', '96299707840')).response.fromCache).toBe(true);
+    expect(fetch.calls).toHaveLength(1);
+  });
+
+  test('404 is not_found naming the build manifest, with the upstream status', async () => {
+    const { deps } = makeDeps();
+    const error = await errorOf(getBuildManifest(deps, 'bioc', '112702240220'));
+    expect(error.code).toBe('not_found');
+    expect(error.message).toContain('has no build manifest for bioc job 112702240220');
+    expect(error.message).toContain('https://github.com/r-universe/bioc/runs/112702240220');
+    expect(error.details).toEqual({ upstream: 'registry', url: buildsUrl('bioc', '112702240220'), status: 404 });
+  });
+
+  test('500 is upstream_error', async () => {
+    const { deps } = makeDeps({ [buildsUrl('bioc', '5')]: { status: 500 } });
+    expect((await errorOf(getBuildManifest(deps, 'bioc', '5'))).code).toBe('upstream_error');
+  });
+
+  test.each([
+    ['deps as an array', '{"image":"x","repos":[],"deps":[]}'],
+    ['repos as a string', '{"repos":"https://x.test"}'],
+    ['a non-string version', '{"deps":{"a":1}}'],
+    ['an array', '[]'],
+  ])('%s is upstream_error', async (_name, body) => {
+    const { deps } = makeDeps({ [buildsUrl('bioc', '5')]: { status: 200, body } });
+    const error = await errorOf(getBuildManifest(deps, 'bioc', '5'));
     expect(error.code).toBe('upstream_error');
     expect(error.message).toContain('unexpected shape');
   });

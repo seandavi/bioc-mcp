@@ -277,7 +277,7 @@ and runs `fetchUpstreamJson(githubDeps(deps), githubUpstream, path)` then `schem
 where `r = pathSegment(repo)`. Query strings are written in exactly this order, so URLs match the
 fixture routes. `per_page=20` is `THRESHOLDS.runsPerWorkflow`; import it rather than repeating it.
 
-Error mapping, in a private `githubJson(deps, path, schema, what)` that every fetcher uses:
+Error mapping, in a private `githubJson(deps, repo, path, schema, what)` that every fetcher uses (`repo` appears only in the unexpected-shape message below):
 
 - `CapabilityError` with `details.status` 403 or 429 → rethrow as
   `CapabilityError('upstream_error', \`GitHub refused the request (HTTP ${status}), most likely its rate limit${tokenless ? '; this server has no GITHUB_TOKEN, so the limit is 60 requests per hour' : ''}. Try again later.\`, details)`.
@@ -353,8 +353,11 @@ export function summarizeRuns(runs: readonly GithubWorkflowRun[]): {
   runs_examined: number; // runs.length (≤ 20)
 };
 
-/** bioc-health crossref TITLE. Group 1 is the unit. */
-export const FAILURE_ISSUE_TITLE = /^(\S+\.service) is failing$/;
+/**
+ * bioc-health crossref TITLE, with the unit bounded to systemd's name charset and 72 characters in
+ * all, because anyone can title an issue in a public repo. Group 1 is the unit.
+ */
+export const FAILURE_ISSUE_TITLE = /^([A-Za-z0-9:_.@\-]{1,64}\.service) is failing$/;
 
 /** At most 80 UTF-16 code units: the first 79 plus '…' when longer. */
 export function truncateTitle(title: string): string;
@@ -379,7 +382,7 @@ next to the threshold. Accept it.
 | stale issues: `updated_at` age > `issue_stale_days` | same | Yes |
 | new issues: `created_at[:10] >= since` | same | Yes |
 | `truncated: len == ISSUE_LIMIT` (200 issues, PRs listed apart) | `truncated: items.length === 100` over the mixed issues+PRs list | Same rule, smaller page (one call) |
-| crossref `TITLE` over open `failure_issue_repo` issues | `FAILURE_ISSUE_TITLE` over open, non-PR `bioc-edge` issues; first issue per unit kept, as `filed.setdefault` does | Yes, without the unit-state comparison |
+| crossref `TITLE` over open `failure_issue_repo` issues | `FAILURE_ISSUE_TITLE` over open, non-PR `bioc-edge` issues opened by `OPS_OWNER`; first issue per unit kept, as `filed.setdefault` does | Yes, without the unit-state comparison. Differs on purpose: crossref.py trusts the repo's issues, but this server shows the text to a model and `bioc-edge` is public, so titles from other accounts are ignored and the unit is bounded |
 
 **Verified:** the `<unit> is failing` issues are authored by `seandavi` (the account `gh` runs as on
 the host) with label `bug`, not by a `bioc-notify` account. The title is the only marker, as in
@@ -513,7 +516,7 @@ const SummaryDataSchema = z.object({
         .number()
         .int()
         .nullable()
-        .describe("Open '<unit> is failing' issues; only for bioc-edge, null for other repos"),
+        .describe("Open '<unit> is failing' issues; only for bioc-edge, null for other repos and when the repo could not be read"),
     }),
   ),
 });
@@ -639,7 +642,8 @@ bytes of provenance instead of 2.5 KB for one per endpoint.
   `truncateTitle`. `workflows` as in the workflows collector, counted by status; `needs_attention`
   lists the files with status `fail` or `warn`, in path order. `failure_issues`: for
   `FAILURE_ISSUE_REPO`, the number of distinct units from the same issues list (as in the failures
-  collector); `null` for every other repo.
+  collector); `null` for every other repo and for a repo that could not be read (`error` set), so a
+  reader can tell "none open" from "could not read".
 - **issues:** `listOpenIssues`. Per repo `open`, `stale`, `new`, `truncated` as above. Items: every
   non-PR issue of every repo, sorted by `created_at` descending, ties by config order then `number`
   descending; the first `ISSUE_ITEM_LIMIT` are listed (`labels` = label names, `title` truncated),
@@ -664,7 +668,8 @@ bytes of provenance instead of 2.5 KB for one per endpoint.
   order then path, first `WORKFLOW_ITEM_LIMIT`, `omitted` = the rest of the eligible ones.
 - **failures:** `listOpenIssues(deps, FAILURE_ISSUE_REPO)` (the same URL as issues and summary, so
   one cache entry). Non-PR items whose title matches `FAILURE_ISSUE_TITLE`, sorted by `created_at`
-  descending, first per unit kept. First `FAILURE_ITEM_LIMIT` listed, `omitted` the rest. A failed
+  descending, first per unit kept. Only issues whose `user.login === OPS_OWNER` count (the notifier
+  posts as that account; a deleted or other user's issue is ignored). First `FAILURE_ITEM_LIMIT` listed, `omitted` the rest. A failed
   read throws (one repo).
 
 #### Summary (the MCP text content)
@@ -674,7 +679,9 @@ not 1. Sentences are joined with `' '`. "Problems" below are workflows with stat
 fail first, then config order and path; each is written `` `${repo}/${file} ${reason}` `` plus
 `' (experimental)'` when `EXPERIMENTAL_REPOS.has(repo) && FAILED_CONCLUSIONS.has(latest_conclusion)`
 (a failure capped at `warn`).
-`moreSuffix(n, shown)` is `` ` and ${n - shown} more` `` when `n > shown`, else `''`.
+`moreSuffix(n, shown)` is `` ` and ${n - shown} more` `` when `n > shown`, else `''`. A unit list
+(`unitList`) names the first `FAILURE_ITEM_LIMIT` units followed by `moreSuffix`, so the text stays
+bounded however many issues are open.
 
 - **Errors** (every kind with more than one repo, appended last when any repo failed):
   `` `Could not read ${failedRepos.join(', ')}: ${firstError.message}` `` (the message ends with its
@@ -684,7 +691,7 @@ fail first, then config order and path; each is written `` `${repo}/${file} ${re
   2. No problems → `'No default-branch workflow needs attention.'`; else
      `` `Workflows needing attention: ${first SUMMARY_PROBLEM_LIMIT joined '; '}${moreSuffix}.` ``
   3. When `bioc-edge` is in scope: `` `${k} open "<unit> is failing" issues in bioc-edge` `` +
-     (k > 0 ? `` ` (${units joined ', '}); nothing closes them when a unit recovers, so check before acting.` `` : `'.'`)
+     (k > 0 ? `` ` (${unitList}); nothing closes them when a unit recovers, so check before acting.` `` : `'.'`)
 - **issues:** `` `${scope}: ${open} open issues, ${stale} untouched over 30 days, ${new} opened in the last 7 days.` ``
   + (items ? `` ` The ${items.length} newest are listed` `` + (omitted ? `` `; ${omitted} more are not${repo ? '' : ' (pass repo to narrow)'}` `` : '') + '.' : '')
 - **prs:** `` `${scope}: ${open} open PRs (${draft} draft, ${stale} non-draft untouched over 14 days).` ``
@@ -693,7 +700,7 @@ fail first, then config order and path; each is written `` `${repo}/${file} ${re
 - **workflows:** `` `${scope}: ${total} default-branch workflows: ${fail} failing, ${warn} warn, ${info} with no completed run, ${ok} ok.` ``
   + the problems sentence from summary step 2.
 - **failures:** `` `${k} open "<unit> is failing" issues in bioc-edge` `` + (k > 0 ?
-  `` `: ${units joined ', '}. bioc-notify@ comments on the open issue at each failure and nothing closes it on recovery, so an open issue does not prove the unit is still failing.` `` : `'.'`)
+  `` `: ${unitList}. bioc-notify@ comments on the open issue at each failure and nothing closes it on recovery, so an open issue does not prove the unit is still failing.` `` : `'.'`)
 
 #### Capability
 
@@ -786,6 +793,10 @@ nine sources about 0.85 KB; issues with the 15 longest items about 4.3 KB of ite
 about 330 bytes (10 → 3.3 KB), a workflow item about 330 bytes (12 → 4 KB). Every kind stays under
 about 7 KB with the caps. The envelope guard throws `result_too_large` rather than truncating if
 labels or error messages ever push one over.
+
+Text built from caller-controlled strings is bounded at the source: failure units are limited to 72
+characters, only `OPS_OWNER`'s issues count, and the summary names at most `FAILURE_ITEM_LIMIT` of
+them, so a flood of issues in the public `bioc-edge` repo cannot push an envelope over the limit.
 
 ### Fixtures
 
@@ -950,16 +961,19 @@ All tests run in Node with `fixtureFetch(githubRoutes())`, `createMemoryCache`, 
     `newest_run_at` = the in-progress run's; `[failure, cancelled, failure]` → streak 1; `[]` → all
     null, streak 0.
   - `ageDays`, `activitySince` (the 7-day boundary is inclusive by date), `truncateTitle` (80 kept,
-    81 → 79 + `…`), `FAILURE_ISSUE_TITLE` (matches `bioc-sync.service is failing`; not
-    `bioc-sync is failing`, not `Re: bioc-sync.service is failing`).
+    81 → 79 + `…`), `FAILURE_ISSUE_TITLE` (matches `bioc-sync.service is failing` and a 64-character unit;
+    not `bioc-sync is failing`, `Re: bioc-sync.service is failing`, a unit with a space or over 64
+    characters).
 - `test/upstreams/github.test.ts`: each fetcher's URL (exactly the table), schema stripping,
   `pathSegment` rejecting a `..` repo, 403/429 → rate-limit `upstream_error` (with and without a
   token in `deps.env`), 404 → `upstream_error`, an unexpected shape → `upstream_error` naming `what`,
   500 and timeout passed through, and `githubTokenWarning`.
 - `test/core/ops/activity.test.ts`: one `describe` per kind through
   `invokeCapability(opsActivity, input, deps)`, covering the scenario rows; partial and total
-  failure; the `failures` + other `repo` rejection; caps and `omitted`; `envelopeBytes` per kind;
-  the cache test.
+  failure (including `failure_issues: null` when bioc-edge is unreadable); the `failures` + other
+  `repo` rejection; failure issues from other accounts or with out-of-charset units ignored; 60
+  maximum-length failure issues keep summary and failures under 8,192 bytes; caps and `omitted`;
+  `envelopeBytes` per kind; the cache test.
 - `test/core/ops/token.test.ts`: `deps.env = { GITHUB_TOKEN: SENTINEL }`; `deps.fetch` records each
   `Request` and its headers before delegating to `fixtureFetch`; a cache wrapper records every
   `put`; `vi.spyOn(console, …)` on `log`, `info`, `warn`, `error` and `debug`. Runs every kind, plus

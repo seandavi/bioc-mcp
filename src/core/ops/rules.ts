@@ -95,8 +95,11 @@ export function summarizeRuns(runs: readonly GithubWorkflowRun[]): {
   };
 }
 
-/** bioc-health crossref TITLE. Group 1 is the unit. */
-export const FAILURE_ISSUE_TITLE = /^(\S+\.service) is failing$/;
+/**
+ * bioc-health crossref TITLE, with the unit bounded to systemd's name charset and 72 characters in
+ * all, because anyone can title an issue in a public repo. Group 1 is the unit.
+ */
+export const FAILURE_ISSUE_TITLE = /^([A-Za-z0-9:_.@\-]{1,64}\.service) is failing$/;
 
 const TITLE_LIMIT = 80;
 

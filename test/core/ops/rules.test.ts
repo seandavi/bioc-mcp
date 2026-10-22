@@ -176,7 +176,18 @@ describe('FAILURE_ISSUE_TITLE', () => {
     expect(FAILURE_ISSUE_TITLE.exec('bioc-sync.service is failing')?.[1]).toBe('bioc-sync.service');
   });
 
-  test.each(['bioc-sync is failing', 'Re: bioc-sync.service is failing', 'bioc-sync.service is failing again'])(
+  test('accepts up to 64 characters before .service, and instance names', () => {
+    expect(FAILURE_ISSUE_TITLE.test(`${'x'.repeat(64)}.service is failing`)).toBe(true);
+    expect(FAILURE_ISSUE_TITLE.exec('bioc-sync@1.service is failing')?.[1]).toBe('bioc-sync@1.service');
+  });
+
+  test.each([
+    'bioc-sync is failing',
+    'Re: bioc-sync.service is failing',
+    'bioc-sync.service is failing again',
+    'two words.service is failing',
+    `${'x'.repeat(65)}.service is failing`,
+  ])(
     'does not match %j',
     (title) => {
       expect(FAILURE_ISSUE_TITLE.test(title)).toBe(false);

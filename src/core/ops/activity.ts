@@ -23,6 +23,7 @@ import {
   FAILURE_ITEM_LIMIT,
   ISSUE_ITEM_LIMIT,
   OPS_KINDS,
+  OPS_OWNER,
   OPS_REPOS,
   PR_ITEM_LIMIT,
   SUMMARY_PROBLEM_LIMIT,
@@ -139,7 +140,7 @@ const SummaryDataSchema = z.object({
         .number()
         .int()
         .nullable()
-        .describe("Open '<unit> is failing' issues; only for bioc-edge, null for other repos"),
+        .describe("Open '<unit> is failing' issues; only for bioc-edge, null for other repos and when the repo could not be read"),
     }),
   ),
 });
@@ -584,10 +585,14 @@ async function collectWorkflows(ctx: Context): Promise<Envelope<OpsActivityData>
 
 // ---- failures -----------------------------------------------------------------------------
 
-/** Open "<unit> is failing" issues, newest first, first per unit (crossref.py `filed.setdefault`). */
+/**
+ * Open "<unit> is failing" issues opened by OPS_OWNER (the notifier posts as that account; anyone
+ * else's issue is not a failure notice), newest first, first per unit (crossref.py `filed.setdefault`).
+ */
 function failureItems(issues: readonly GithubIssue[]): FailureItem[] {
   const units = new Map<string, FailureItem>();
   const candidates = issuesOnly(issues)
+    .filter((issue) => issue.user?.login === OPS_OWNER)
     .map((issue) => ({ issue, unit: FAILURE_ISSUE_TITLE.exec(issue.title)?.[1] }))
     .sort((a, b) => Date.parse(b.issue.created_at) - Date.parse(a.issue.created_at) || b.issue.number - a.issue.number);
   for (const { issue, unit } of candidates) {
@@ -606,6 +611,10 @@ function failureItems(issues: readonly GithubIssue[]): FailureItem[] {
 
 const failureCount = (count: number) => plural(count, `open "<unit> is failing" issue`);
 
+/** Names at most FAILURE_ITEM_LIMIT units, so the summary text stays bounded however many issues are open. */
+const unitList = (units: readonly FailureItem[]) =>
+  units.slice(0, FAILURE_ITEM_LIMIT).map((item) => item.unit).join(', ') + moreSuffix(units.length, FAILURE_ITEM_LIMIT);
+
 async function collectFailures(ctx: Context): Promise<Envelope<OpsActivityData>> {
   const outcomes = await readRepos([FAILURE_ISSUE_REPO], async (repo, track) => {
     const { response, data } = await listOpenIssues(ctx.deps, repo);
@@ -619,7 +628,7 @@ async function collectFailures(ctx: Context): Promise<Envelope<OpsActivityData>>
   const summary =
     `${failureCount(units.length)} in ${FAILURE_ISSUE_REPO}` +
     (units.length > 0
-      ? `: ${units.map((item) => item.unit).join(', ')}. bioc-notify@ comments on the open issue at each failure ` +
+      ? `: ${unitList(units)}. bioc-notify@ comments on the open issue at each failure ` +
         'and nothing closes it on recovery, so an open issue does not prove the unit is still failing.'
       : '.');
   return {
@@ -678,7 +687,7 @@ async function collectSummary(ctx: Context): Promise<Envelope<OpsActivityData>> 
           .filter((item) => item.status === 'fail' || item.status === 'warn')
           .map((item) => item.file),
       },
-      failure_issues: outcome.repo === FAILURE_ISSUE_REPO ? failureItems(items).length : null,
+      failure_issues: outcome.repo === FAILURE_ISSUE_REPO && outcome.ok ? failureItems(items).length : null,
     };
   });
 
@@ -694,7 +703,7 @@ async function collectSummary(ctx: Context): Promise<Envelope<OpsActivityData>> 
     edgeUnits
       ? `${failureCount(edgeUnits.length)} in ${FAILURE_ISSUE_REPO}` +
         (edgeUnits.length > 0
-          ? ` (${edgeUnits.map((item) => item.unit).join(', ')}); nothing closes them when a unit recovers, so check before acting.`
+          ? ` (${unitList(edgeUnits)}); nothing closes them when a unit recovers, so check before acting.`
           : '.')
       : undefined,
     errorsSentence(outcomes),

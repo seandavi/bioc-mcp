@@ -399,6 +399,7 @@ describe('failures', () => {
   });
 
   test('keeps the first issue per unit and ignores PRs and other titles', async () => {
+    const author = 'seandavi';
     const issue = (number: number, title: string, createdAt: string, pr = false) => ({
       number,
       title,
@@ -407,7 +408,7 @@ describe('failures', () => {
       updated_at: createdAt,
       comments: 1,
       labels: [],
-      user: null,
+      user: { login: author },
       ...(pr ? { pull_request: {} } : {}),
     });
     const routes = {
@@ -426,6 +427,35 @@ describe('failures', () => {
     expect(data.items.map((i) => [i.unit, i.number])).toEqual([['a.service', 5]]);
   });
 
+  test('ignores issues not opened by the ops owner, and units outside the systemd charset', async () => {
+    const routes = edgeIssues([
+      failureIssue(6, 'a.service is failing', { author: 'someone-else' }),
+      failureIssue(5, 'b.service is failing', { author: null }),
+      failureIssue(4, 'bad unit.service is failing'),
+      failureIssue(3, `${'x'.repeat(65)}.service is failing`),
+      failureIssue(2, 'c.service is failing'),
+    ]);
+    const { data, summary } = await run('failures', {}, routes);
+    expect(data.items.map((i) => i.unit)).toEqual(['c.service']);
+    expect(summary).toContain('1 open "<unit> is failing" issue in bioc-edge: c.service.');
+  });
+
+  test('60 issues with maximum-length units still fit: summary and failures name at most 15 units', async () => {
+    const issues = Array.from({ length: 60 }, (_, i) =>
+      failureIssue(100 + i, `${String(i).padStart(2, '0')}${'u'.repeat(62)}.service is failing`),
+    );
+    const routes = edgeIssues(issues);
+    for (const kind of ['failures', 'summary'] as const) {
+      const { envelope, summary } = await run(kind, kind === 'summary' ? { repo: 'bioc-edge' } : {}, routes);
+      expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+      expect(summary).toContain('60 open "<unit> is failing" issues in bioc-edge');
+      expect(summary).toContain('and 45 more');
+    }
+    const { data } = await run('failures', {}, routes);
+    expect(data.items).toHaveLength(15);
+    expect(data.omitted).toBe(45);
+  });
+
   test('with none open, says so', async () => {
     const routes = { ...githubRoutes(), [githubUrl('bioc-edge', ISSUES_SUFFIX)]: { status: 200, body: '[]' } };
     const { data, summary } = await run('failures', {}, routes);
@@ -435,6 +465,14 @@ describe('failures', () => {
 });
 
 describe('failure isolation', () => {
+  test('an unreadable bioc-edge reports failure_issues null, not 0', async () => {
+    const routes = { ...githubRoutes(), [githubUrl('bioc-edge', ISSUES_SUFFIX)]: { status: 500 } as FixtureRoute };
+    const { data } = await run('summary', {}, routes);
+    const edge = data.repos.find((r) => r.repo === 'bioc-edge')!;
+    expect(edge.error).toContain('HTTP 500');
+    expect(edge.failure_issues).toBeNull();
+  });
+
   test('one failing repo is reported, the others are intact, and it has no source', async () => {
     const routes = { ...githubRoutes(), [githubUrl('bioc-traffic', ISSUES_SUFFIX)]: { status: 500 } as FixtureRoute };
     const { data, summary, sources } = await run('summary', {}, routes);
@@ -507,6 +545,26 @@ describe('input', () => {
     expect((await failure(input, undefined, deps)).code).toBe('invalid_input');
     expect(fetch.calls).toEqual([]);
   });
+});
+
+/** A bioc-edge issue as GitHub returns it; `author` null is a deleted user. */
+function failureIssue(number: number, title: string, { author = 'seandavi' }: { author?: string | null } = {}) {
+  const createdAt = new Date(Date.UTC(2026, 9, 1, 0, number)).toISOString();
+  return {
+    number,
+    title,
+    html_url: `https://github.com/seandavi/bioc-edge/issues/${number}`,
+    created_at: createdAt,
+    updated_at: createdAt,
+    comments: 1,
+    labels: [],
+    user: author === null ? null : { login: author },
+  };
+}
+
+const edgeIssues = (issues: readonly object[]) => ({
+  ...githubRoutes(),
+  [githubUrl('bioc-edge', ISSUES_SUFFIX)]: { status: 200, body: JSON.stringify(issues) } as FixtureRoute,
 });
 
 describe('size', () => {

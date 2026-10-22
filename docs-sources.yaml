@@ -1,0 +1,52 @@
+# Docs corpus for the docs index, built by scripts/build-docs-index.ts.
+# Every URL must be public. After editing, run `npm run docs:record` to re-record
+# test/fixtures/docs, then `npx vitest run -u test/docs-index` and review the snapshot diff.
+
+# Upper bound on generated/docs-index.js, in bytes. The Worker bundle limit is 3 MB gzip (free
+# plan); the module is about 1.7 MB raw / 0.4 MB gzip on 2026-10-22.
+max_artifact_bytes: 4000000
+
+# The bioc-infrastructure docs site. Its Quarto search.json is fetched from here, and record URLs
+# are resolved against it.
+site_url: https://seandavi.github.io/bioc-infrastructure/
+
+# Component docs, fetched from https://raw.githubusercontent.com/<github_owner>/<repo>/<ref>/<file>
+# and linked as https://github.com/<github_owner>/<repo>/blob/<ref>/<file>#<anchor>.
+github_owner: seandavi
+repos:
+  - repo: bioc-registry
+    ref: main
+    files: [README.md, docs/api.md]
+  - repo: bioc-edge
+    ref: main
+    files: [README.md, DATAPLANE.md]
+  - repo: bioc-traffic
+    ref: main
+    files: [README.md, docs/published-comparison.md]
+  - repo: bioc-build
+    ref: main
+    files: [README.md]
+  - repo: bioc-manifest
+    ref: main
+    files: [README.md]
+  - repo: bioc-website
+    ref: main
+    files: [README.md]
+  - repo: bioc-infrastructure
+    ref: main
+    files: [README.md]
+  - repo: bioc-r-universe-build-db
+    ref: main
+    files: [README.md]
+  - repo: bioc-intelligence
+    ref: main
+    files: [README.md]
+  - repo: bioc-on-ice
+    ref: main
+    files: [README.md]
+  - repo: bioc-harnesses
+    ref: main
+    files: [README.md]
+  - repo: bioc-mcp
+    ref: main
+    files: [README.md]

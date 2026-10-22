@@ -48,6 +48,33 @@ describe('getPropagationIndex', () => {
     expect(gets).toEqual([BIOC_INDEX_URL]);
   });
 
+  test('concurrent calls on a cold memo share one cache read, fetch and parse', async () => {
+    const { deps, fetch, gets } = makeDeps();
+    const [a, b] = await Promise.all([getPropagationIndex(deps, 'bioc'), getPropagationIndex(deps, 'bioc')]);
+    expect(b.packages).toBe(a.packages);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
+    expect(gets).toEqual([BIOC_INDEX_URL]);
+  });
+
+  test('concurrent calls after the TTL share one refresh', async () => {
+    const { deps, fetch, clock } = makeDeps();
+    await getPropagationIndex(deps, 'bioc');
+    clock.now = new Date(clock.now.getTime() + 301_000);
+    await Promise.all([getPropagationIndex(deps, 'bioc'), getPropagationIndex(deps, 'bioc')]);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL, BIOC_INDEX_URL]);
+  });
+
+  test('a failed load is shared by concurrent callers but not cached', async () => {
+    const routes: Record<string, FixtureRoute> = { [BIOC_INDEX_URL]: { status: 500 } };
+    const { deps, fetch } = makeDeps(routes);
+    const results = await Promise.allSettled([getPropagationIndex(deps, 'bioc'), getPropagationIndex(deps, 'bioc')]);
+    expect(results.map((r) => r.status)).toEqual(['rejected', 'rejected']);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
+
+    routes[BIOC_INDEX_URL] = pkgRoutes[BIOC_INDEX_URL]!;
+    expect(Object.keys((await getPropagationIndex(deps, 'bioc')).packages)).toContain('trackViewer');
+  });
+
   test('fetches again after the TTL', async () => {
     const { deps, fetch, clock } = makeDeps();
     const first = await getPropagationIndex(deps, 'bioc');

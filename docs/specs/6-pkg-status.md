@@ -148,19 +148,26 @@ export async function getPropagationIndex(deps: Deps, universe: Universe): Promi
 Behaviour:
 
 1. `path = \`data/prop/${pathSegment(universe)}/index.json\``, `url = new URL(path, REGISTRY_BASE_URL).href`.
-2. Memo: `const parsedIndexes = new WeakMap<UpstreamCache, Map<string, PropagationIndex>>()` at
-   module scope, keyed by `deps.cache` then `url`. The memo lives exactly as long as the cache
-   it sits in front of, so each test app (fresh `createMemoryCache`) gets a fresh memo and the
-   Worker (one cache per isolate) parses at most once per TTL. If a memo entry exists and
-   `deps.now().getTime() < Date.parse(memo.response.fetchedAt) + registryUpstream.ttlSeconds * 1000`,
-   return it with `response.fromCache = true`. Neither `deps.cache` nor `deps.fetch` is called.
-3. Otherwise `fetchUpstreamJson(deps, registryUpstream, path)`. If the JSON is not a plain object
+2. Memo: `const parsedIndexes = new WeakMap<UpstreamCache, Map<string, MemoEntry>>()` at module
+   scope, keyed by `deps.cache` then `url`, where `MemoEntry = { load: Promise<PropagationIndex>;
+   expiresAt: number }`. The memo lives exactly as long as the cache it sits in front of, so each
+   test app (fresh `createMemoryCache`) gets a fresh memo and the Worker (one cache per isolate)
+   parses at most once per TTL. It memoizes the **in-flight Promise**, not the resolved value:
+   the entry is stored before anything is awaited (`expiresAt = Infinity`), so concurrent callers
+   on a cold or expired entry await the same load instead of each reading the 8 MB body from the
+   cache and parsing it. When the load resolves, `expiresAt` becomes
+   `Date.parse(response.fetchedAt) + registryUpstream.ttlSeconds * 1000`. If a live entry exists
+   (`deps.now().getTime() < expiresAt`), await its `load` and return it with
+   `response.fromCache = true`. Neither `deps.cache` nor `deps.fetch` is called by such a caller.
+   If the load rejects, delete the entry (errors are not cached); callers already awaiting it see
+   the same rejection. Replacing an expired entry drops the old parsed index at once.
+3. The load is `fetchUpstreamJson(deps, registryUpstream, path)`. If the JSON is not a plain object
    (`typeof json !== 'object' || json === null || Array.isArray(json)`), throw
    `CapabilityError('upstream_error', 'Bioconductor propagation registry returned an index that is not a JSON object', { upstream: 'registry', url })`.
 4. A `not_found` from the registry (the index file is missing) is rethrown as
    `CapabilityError('upstream_error', \`Bioconductor propagation registry has no propagation index for ${universe}\`, …)`
    so it is never mistaken for "package not found".
-5. Store `{ response, packages: json }` in the memo and return it.
+5. The load resolves to `{ response, packages: json }`, which the memo keeps and the first caller returns.
 
 **Why the memo:** a cold `JSON.parse` of the 8 MB index took 11–18 ms in Node 26 on an Apple
 M-series laptop (five runs) and retained about 13 MB of heap. Without the memo, every call would
@@ -608,7 +615,8 @@ above to its file or inline 404, and constants `BIOC_INDEX_URL`, `RELEASE_INDEX_
       then the r-universe URL (`as_of` = Last-Modified when present, else the test clock).
 - [ ] The `SEMPLR` envelope is under 8,192 bytes (`envelopeBytes`). The PR reports the figure.
 - [ ] Parse memo: two calls within 300 s request the index once and call `cache.get` for its URL
-      once. After advancing the clock 301 s it is fetched again.
+      once. After advancing the clock 301 s it is fetched again. Two concurrent calls (cold, and
+      after expiry) also request the index once; a failed load is not cached.
 - [ ] Registry errors: index JSON that is an array gives `upstream_error`, a registry 404 gives
       `upstream_error` (not `not_found`), and an entry with the wrong shape gives `upstream_error`.
 - [ ] r-universe errors: a 500 gives `upstream_error` (no partial result), a record whose
@@ -635,7 +643,7 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. No network.
     `deps = { fetch: fixtureFetch(pkgRoutes), cache: createMemoryCache(now), now, env: {} }`.
   - The `behind_reasons` cap: `ClustIRR` lists five configs and then `and 8 more`.
 - `test/upstreams/registry.test.ts`: the memo (a counting wrapper around `createMemoryCache`'s
-  `get`, plus `fetch.calls`), memo isolation between two caches, array JSON, registry 404, an
+  `get`, plus `fetch.calls`), concurrent calls sharing one load, a failed load not cached, memo isolation between two caches, array JSON, registry 404, an
   invalid entry, and `registryEntry` with `constructor` returning `undefined`.
 - `test/upstreams/r-universe.test.ts`: found, 404 → `{ found: false, source }`, 500 →
   `upstream_error`, `Package` mismatch, and a schema mismatch.
@@ -648,7 +656,7 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. No network.
 
 - **Worker CPU on a cold parse.** The Node measurement is 11–18 ms. Workers' free plan allows
   10 ms of CPU per request, so a cold isolate on the free plan may exceed it. The memo bounds this
-  to one parse per isolate per 5 min, but does not remove it. The fix belongs upstream: a
+  to one parse per isolate per 5 min (concurrent callers share it), but does not remove it. The fix belongs upstream: a
   per-package registry route (gap 1, #13). Reported in the PR, not solved here.
 - **Memory.** The parsed index holds about 13 MB per universe per isolate (about 26 MB when both
   universes are warm), against 128 MB. That is acceptable. A slimmer memo (only the fields

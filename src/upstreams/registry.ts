@@ -49,21 +49,52 @@ export interface PropagationIndex {
   packages: Record<string, unknown>; // parsed index.json; entries unvalidated
 }
 
+interface MemoEntry {
+  load: Promise<PropagationIndex>;
+  expiresAt: number; // Infinity while the load is in flight; fetchedAt + TTL once it settles
+}
+
 // The parsed index lives exactly as long as the cache in front of it: a fresh cache (each test
 // app) gets a fresh memo, and the Worker (one cache per isolate) parses at most once per TTL.
-const parsedIndexes = new WeakMap<UpstreamCache, Map<string, PropagationIndex>>();
+// The memo holds the load Promise, so concurrent callers on a cold or expired entry share one
+// cache read, fetch and parse instead of each holding their own copy of the 8 MB body.
+const parsedIndexes = new WeakMap<UpstreamCache, Map<string, MemoEntry>>();
 
 /** GET data/prop/{universe}/index.json, parsed once per cache TTL per isolate. */
 export async function getPropagationIndex(deps: Deps, universe: Universe): Promise<PropagationIndex> {
   const path = `data/prop/${pathSegment(universe)}/index.json`;
   const url = new URL(path, REGISTRY_BASE_URL).href;
 
-  const memo = parsedIndexes.get(deps.cache)?.get(url);
-  if (memo) {
-    const expiresAt = Date.parse(memo.response.fetchedAt) + registryUpstream.ttlSeconds * 1000;
-    if (deps.now().getTime() < expiresAt) return { ...memo, response: { ...memo.response, fromCache: true } };
+  let byUrl = parsedIndexes.get(deps.cache);
+  if (!byUrl) {
+    byUrl = new Map();
+    parsedIndexes.set(deps.cache, byUrl);
   }
 
+  const memo = byUrl.get(url);
+  if (memo && deps.now().getTime() < memo.expiresAt) {
+    const shared = await memo.load;
+    return { ...shared, response: { ...shared.response, fromCache: true } };
+  }
+
+  const entry: MemoEntry = { load: loadPropagationIndex(deps, universe, path, url), expiresAt: Infinity };
+  byUrl.set(url, entry);
+  try {
+    const index = await entry.load;
+    entry.expiresAt = Date.parse(index.response.fetchedAt) + registryUpstream.ttlSeconds * 1000;
+    return index;
+  } catch (error) {
+    if (byUrl.get(url) === entry) byUrl.delete(url); // errors are not cached
+    throw error;
+  }
+}
+
+async function loadPropagationIndex(
+  deps: Deps,
+  universe: Universe,
+  path: string,
+  url: string,
+): Promise<PropagationIndex> {
   const details = { upstream: registryUpstream.id, url };
   let fetched: Awaited<ReturnType<typeof fetchUpstreamJson>>;
   try {
@@ -86,15 +117,7 @@ export async function getPropagationIndex(deps: Deps, universe: Universe): Promi
       details,
     );
   }
-
-  const index: PropagationIndex = { response, packages: json as Record<string, unknown> };
-  let byUrl = parsedIndexes.get(deps.cache);
-  if (!byUrl) {
-    byUrl = new Map();
-    parsedIndexes.set(deps.cache, byUrl);
-  }
-  byUrl.set(url, index);
-  return index;
+  return { response, packages: json as Record<string, unknown> };
 }
 
 /** packages[name] validated with RegistryEntrySchema; undefined when absent. */

@@ -1,15 +1,26 @@
 import * as z from 'zod';
 import { assertUpstream, type Upstream } from '../upstreams/http';
-import type { Capability, Module } from './capability';
+import type { Capability, Module, PromptDef } from './capability';
 import { metaModule } from './meta';
+import { docsModule } from './docs';
 import { pkgModule } from './pkg';
 
-export { defineCapability, type Capability, type Module } from './capability';
+export {
+  defineCapability,
+  definePrompt,
+  type BundledDataset,
+  type Capability,
+  type Module,
+  type PromptDef,
+  type ResourceListing,
+  type ResourceTemplateDef,
+} from './capability';
 
 /** Production registry. Later issues append their modules here. */
-export const modules: readonly Module[] = [metaModule, pkgModule];
+export const modules: readonly Module[] = [metaModule, pkgModule, docsModule];
 
 const MODULE_NAME = /^[a-z]+$/;
+const KEBAB_NAME = /^[a-z]+(-[a-z]+)*$/;
 const CAPABILITY_NAME = /^[a-z]+_[a-z][a-z0-9_]*$/;
 const SCALAR_TYPES = new Set(['string', 'number', 'integer', 'boolean']);
 
@@ -32,6 +43,8 @@ export function validateRegistry(registered: readonly Module[]): void {
   const moduleNames = new Set<string>();
   const capabilityNames = new Set<string>();
   const upstreams = new Map<string, Upstream>();
+  const templateNames = new Set<string>();
+  const promptNames = new Set<string>();
 
   for (const module of registered) {
     if (!MODULE_NAME.test(module.name)) {
@@ -62,6 +75,46 @@ export function validateRegistry(registered: readonly Module[]): void {
       capabilityNames.add(capability.name);
       assertRestCompatible(capability, label);
       assertIdempotentInput(capability, label);
+    }
+
+    for (const template of module.resources ?? []) {
+      if (!KEBAB_NAME.test(template.name)) {
+        throw new Error(`Resource template "${template.name}" must match ${KEBAB_NAME}`);
+      }
+      if (templateNames.has(template.name)) throw new Error(`Duplicate resource template name "${template.name}"`);
+      templateNames.add(template.name);
+      if (!template.uriTemplate.startsWith(`bioc://${module.name}/`)) {
+        throw new Error(
+          `Resource template "${template.name}" uriTemplate must start with "bioc://${module.name}/"`,
+        );
+      }
+    }
+
+    for (const prompt of module.prompts ?? []) {
+      const label = `Prompt "${prompt.name}"`;
+      if (!KEBAB_NAME.test(prompt.name)) throw new Error(`${label} must match ${KEBAB_NAME}`);
+      if (promptNames.has(prompt.name)) throw new Error(`Duplicate prompt name "${prompt.name}"`);
+      promptNames.add(prompt.name);
+      if (prompt.description.trim() === '') throw new Error(`${label} has an empty description`);
+      assertStringArguments(prompt, label);
+    }
+  }
+
+  // Prompts may name tools of any module, so check once every capability is known.
+  for (const module of registered) {
+    for (const prompt of module.prompts ?? []) {
+      for (const tool of prompt.tools) {
+        if (!capabilityNames.has(tool)) throw new Error(`Prompt "${prompt.name}" names unknown tool "${tool}"`);
+      }
+    }
+  }
+}
+
+function assertStringArguments(prompt: PromptDef, label: string): void {
+  const schema = z.toJSONSchema(prompt.args, { io: 'input' }) as { properties?: Record<string, JsonSchemaProperty> };
+  for (const [field, property] of Object.entries(schema.properties ?? {})) {
+    if (property.type !== 'string') {
+      throw new Error(`${label} argument "${field}" must be a string; MCP prompt arguments are strings`);
     }
   }
 }

@@ -2,7 +2,8 @@ import * as z from 'zod';
 import type { Client } from '@modelcontextprotocol/client';
 import { afterEach, describe, expect, test } from 'vitest';
 import { AboutSchema } from '../../src/core/about';
-import { exampleItem } from '../support/example-module';
+import { metaModule } from '../../src/core/meta';
+import { exampleItem, exampleModule } from '../support/example-module';
 import { queryToInput } from '../../src/transports/rest';
 import { VERSION } from '../../src/version';
 import { leakyModule } from '../support/leaky-module';
@@ -96,6 +97,10 @@ describe('GET /api/openapi.json', () => {
     expect(repeat.schema).toMatchObject({ type: 'integer', default: 1 });
     expect(Object.keys(item.responses).sort()).toEqual(['200', '400', '404', '500', '502']);
     expect(body.paths['/api/v1/meta/ping'].get.operationId).toBe('meta_ping');
+    expect(body.tags).toEqual([
+      { name: 'meta', description: metaModule.description },
+      { name: 'example', description: exampleModule.description },
+    ]);
   });
 });
 

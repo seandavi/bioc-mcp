@@ -9,7 +9,8 @@ export const metaPing = defineCapability({
   description:
     'Check that the Bioconductor MCP server is reachable and report its version. ' +
     'Use only as a connectivity check; read the bioc://about resource (REST: GET /api/v1/about) ' +
-    'for what the server covers and how fresh each source is.',
+    'for the modules, tools and upstream sources the server covers and each source\'s cache TTL. ' +
+    'Freshness is per result: every tool result lists its sources with an as_of time.',
   input: z.object({}),
   data: z.object({ ok: z.literal(true), version: z.string() }),
   async handler() {

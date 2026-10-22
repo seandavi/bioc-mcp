@@ -35,7 +35,8 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
     {
       instructions:
         'Read-only access to public Bioconductor infrastructure data. Every tool result ' +
-        'carries `sources` (URL and as_of); cite them. Read bioc://about for coverage and freshness.',
+        'carries `sources` (URL and as_of, the freshness of that data); cite them. Read bioc://about ' +
+        'for the modules, tools and upstream sources covered and their cache TTLs.',
       cacheHints: {
         'tools/list': { ttlMs: 3_600_000, cacheScope: 'public' },
         'resources/read': { ttlMs: 300_000, cacheScope: 'public' },
@@ -54,6 +55,9 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
         outputSchema: capability.output,
         annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
       },
+      // The SDK validates args against inputSchema before this callback runs. Its failures come back
+      // as isError text "Input validation error: Invalid arguments for tool <name>: …", not
+      // "invalid_input: …"; REST reports the same failure as 400 invalid_input.
       async (args: Record<string, unknown>) => {
         const result = await invokeCapability(capability, args, deps);
         return result.ok

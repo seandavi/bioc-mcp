@@ -108,6 +108,8 @@ describe('tools', () => {
     client = await connectClient(makeTestApp().app, '/mcp');
     const result = await client.callTool({ name: 'example_item', arguments: { id: 'Bad Id' } });
     expect(result.isError).toBe(true);
+    // SDK-owned wording (see buildMcpServer); REST reports the same failure as 400 invalid_input.
+    expect(textOf(result)).toMatch(/^Input validation error: Invalid arguments for tool example_item:/);
   });
 });
 

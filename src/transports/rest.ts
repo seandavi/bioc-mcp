@@ -114,6 +114,7 @@ export function createRestApp({ modules, deps }: RestAppOptions): OpenAPIHono {
       version: VERSION,
       description: 'Read-only REST mirror of the bioc-mcp tools. Unstable until v1.',
     },
+    tags: modules.map((module) => ({ name: module.name, description: module.description })),
   });
   return api;
 }

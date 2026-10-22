@@ -34,7 +34,7 @@ src/
   transports/rest.ts  builds OpenAPI routes from the same capabilities
   upstreams/<name>.ts one adapter per upstream (fetch + cache + shape)
   docs-index/         docs index schemas and loader; bundled.ts imports generated/docs-index
-  envelope.ts         result envelope: data + text summary + provenance
+  envelope.ts         result envelope: data + text summary + provenance; size limit; MCP text blocks
   usage.ts            usage events → Analytics Engine (the usage metric)
   rate-limit.ts       per-address rate limit on /mcp and /api
 scripts/              build-time Node code (never bundled); build-docs-index.ts builds the index
@@ -68,7 +68,12 @@ test/
   `docs-sources.yaml`, and the Worker imports the result from `generated/`. Adding a docs source
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
   fixtures and the updated snapshot (`npx vitest run -u test/docs-index`).
-- No tool returns more than ~8 KB of text.
+- MCP text content carries the data, not only the summary: a successful tool result's `content` is
+  the summary, then `JSON.stringify({ data, sources })` (`envelopeTextBlocks` in src/envelope.ts),
+  so clients that ignore `structuredContent` see the same facts. Never build `content` any other way.
+- No tool returns more than ~8 KB of text. `assertEnvelopeSize` checks `JSON.stringify(envelope)`
+  against `MAX_RESULT_BYTES` (8192), which is always larger than the MCP text content, so one
+  check bounds REST, `structuredContent` and `content`.
 - Usage events carry no argument values and no client addresses; the Analytics Engine layout in
   src/usage.ts is append-only, and a layout change needs a new dataset name.
 - Tests never hit the network: upstream calls go through an injectable `fetch`, fed from

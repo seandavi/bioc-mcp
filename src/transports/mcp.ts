@@ -4,6 +4,7 @@ import type { Context, Hono } from 'hono';
 import { buildAbout } from '../core/about';
 import type { Deps } from '../core/deps';
 import { invokeCapability } from '../core/invoke';
+import { envelopeTextBlocks } from '../envelope';
 import type { Module } from '../core/registry';
 import type { AppConfig } from '../config';
 import type { UsageSink } from '../usage';
@@ -63,7 +64,10 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
       async (args: Record<string, unknown>) => {
         const result = await invokeCapability(capability, args, deps, { transport: 'mcp', usage });
         return result.ok
-          ? { content: [{ type: 'text' as const, text: result.envelope.summary }], structuredContent: result.envelope }
+          ? {
+              content: envelopeTextBlocks(result.envelope).map((text) => ({ type: 'text' as const, text })),
+              structuredContent: result.envelope,
+            }
           : {
               content: [{ type: 'text' as const, text: `${result.error.code}: ${result.error.message}` }],
               isError: true,

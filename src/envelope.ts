@@ -14,7 +14,7 @@ export type Source = z.infer<typeof SourceSchema>;
 export function envelopeSchema<D extends z.ZodType>(data: D) {
   return z.object({
     data,
-    summary: z.string().describe('One or two sentences answering the question; the MCP text content'),
+    summary: z.string().describe('One or two sentences answering the question; the first MCP text content block'),
     sources: z.array(SourceSchema).describe('Provenance: every upstream URL used, with freshness'),
   });
 }
@@ -32,7 +32,19 @@ export function envelopeBytes(envelope: Envelope<unknown>): number {
   return new TextEncoder().encode(JSON.stringify(envelope)).length;
 }
 
-/** Rejects, never truncates: structured data cannot be cut generically. */
+/**
+ * MCP text content for a successful result: the summary, then JSON of data and sources, so
+ * clients that pass only text to the model see the same facts as structuredContent. Its UTF-8
+ * size is envelopeBytes(envelope) − 13 − the summary's JSON escapes, so assertEnvelopeSize bounds it.
+ */
+export function envelopeTextBlocks(envelope: Envelope<unknown>): [summary: string, data: string] {
+  return [envelope.summary, JSON.stringify({ data: envelope.data, sources: envelope.sources })];
+}
+
+/**
+ * Rejects, never truncates: structured data cannot be cut generically. It also bounds the MCP text
+ * content (see envelopeTextBlocks).
+ */
 export function assertEnvelopeSize(envelope: Envelope<unknown>, tool: string): void {
   const bytes = envelopeBytes(envelope);
   if (bytes > MAX_RESULT_BYTES) {

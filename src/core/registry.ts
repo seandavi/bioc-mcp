@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { assertBaseUrl, type Upstream } from '../upstreams/http';
+import { assertUpstream, type Upstream } from '../upstreams/http';
 import type { Capability, Module } from './capability';
 import { metaModule } from './meta';
 
@@ -11,6 +11,20 @@ export const modules: readonly Module[] = [metaModule];
 const MODULE_NAME = /^[a-z]+$/;
 const CAPABILITY_NAME = /^[a-z]+_[a-z][a-z0-9_]*$/;
 const SCALAR_TYPES = new Set(['string', 'number', 'integer', 'boolean']);
+
+// Record<keyof Upstream, true> makes tsc fail when Upstream gains a field this list lacks.
+const UPSTREAM_FIELDS: Record<keyof Upstream, true> = {
+  id: true,
+  name: true,
+  baseUrl: true,
+  ttlSeconds: true,
+  timeoutMs: true,
+  description: true,
+};
+
+function sameUpstream(a: Upstream, b: Upstream): boolean {
+  return (Object.keys(UPSTREAM_FIELDS) as (keyof Upstream)[]).every((field) => a[field] === b[field]);
+}
 
 /** Throws Error with a specific message on the first violation. createApp calls it. */
 export function validateRegistry(registered: readonly Module[]): void {
@@ -27,10 +41,10 @@ export function validateRegistry(registered: readonly Module[]): void {
 
     for (const upstream of module.upstreams) {
       const seen = upstreams.get(upstream.id);
-      if (seen && JSON.stringify(seen) !== JSON.stringify(upstream)) {
+      if (seen && !sameUpstream(seen, upstream)) {
         throw new Error(`Upstream "${upstream.id}" is declared twice with different fields (module "${module.name}")`);
       }
-      assertBaseUrl(upstream);
+      assertUpstream(upstream);
       upstreams.set(upstream.id, upstream);
     }
 
@@ -46,6 +60,7 @@ export function validateRegistry(registered: readonly Module[]): void {
       if (capabilityNames.has(capability.name)) throw new Error(`Duplicate capability name "${capability.name}"`);
       capabilityNames.add(capability.name);
       assertRestCompatible(capability, label);
+      assertIdempotentInput(capability, label);
     }
   }
 }
@@ -74,4 +89,43 @@ function assertRestCompatible(capability: Capability, label: string): void {
 /** `/api/v1/<module>/<name without "<module>_">`, e.g. meta_ping → /api/v1/meta/ping. */
 export function restPath(capability: Capability): string {
   return `/api/v1/${capability.module}/${capability.name.slice(capability.module.length + 1)}`;
+}
+
+/** Structural equality for JSON values; object key order does not matter. */
+function jsonEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const left = a as Record<string, unknown>;
+  const right = b as Record<string, unknown>;
+  const keys = Object.keys(left);
+  return (
+    keys.length === Object.keys(right).length &&
+    keys.every((key) => Object.hasOwn(right, key) && jsonEqual(left[key], right[key]))
+  );
+}
+
+/** `default` differs legitimately between io sides (.prefault sets it on input only). */
+function withoutDefault(schema: unknown): unknown {
+  const { default: _default, ...rest } = schema as Record<string, unknown>;
+  return rest;
+}
+
+const IDEMPOTENT_RULE =
+  'input schemas must accept their own output because MCP parses input twice (the SDK, then ' +
+  'invokeCapability). Transform in the handler instead';
+
+function assertIdempotentInput(capability: Capability, label: string): void {
+  for (const [field, schema] of Object.entries(capability.input.shape)) {
+    let output: unknown;
+    try {
+      output = z.toJSONSchema(schema, { io: 'output' });
+    } catch {
+      throw new Error(`${label} input field "${field}" has a transform; ${IDEMPOTENT_RULE}`);
+    }
+    const input = z.toJSONSchema(schema, { io: 'input' });
+    if (!jsonEqual(withoutDefault(input), withoutDefault(output))) {
+      throw new Error(`${label} input field "${field}" parses to a different type than it accepts; ${IDEMPOTENT_RULE}`);
+    }
+  }
 }

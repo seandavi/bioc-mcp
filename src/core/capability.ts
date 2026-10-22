@@ -11,7 +11,7 @@ export interface Capability<I extends z.ZodObject = z.ZodObject, D extends z.Zod
   name: string; // `${module}_<verb_or_noun>`, /^[a-z]+_[a-z][a-z0-9_]*$/
   title: string; // short human title; MCP `title`, OpenAPI `summary`
   description: string; // what it answers; which tool to use instead
-  input: I; // flat object (see validateRegistry)
+  input: I; // flat, REST-carriable, and accepts its own output (see validateRegistry)
   data: D; // schema of envelope.data
   output: ReturnType<typeof envelopeSchema<D>>; // = envelopeSchema(data), set by defineCapability
   // Method syntax on purpose: bivariant parameters let Capability<Specific> sit in Capability[].

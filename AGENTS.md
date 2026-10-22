@@ -43,6 +43,10 @@ test/
 - **One capability, two transports.** Never put logic in a transport. A capability added to
   `core/` appears in MCP and REST, or the PR explains why not (MCP prompts, for example, have no
   REST form).
+- Capability input schemas must accept their own output: MCP parses input twice (the SDK, then
+  invokeCapability). No .transform(), no .pipe() to another type, no z.stringbool(); transform in
+  the handler. validateRegistry rejects type-changing input; .overwrite() and z.preprocess() must
+  be idempotent by construction.
 - REST: `GET /api/v1/<module>/<capability>` with query params mirroring the input schema; the JSON
   body is the same envelope MCP returns as `structuredContent`. The REST API is unstable until v1.
 - Tool names are `<module>_<verb_or_noun>`, snake_case. Descriptions say what the tool answers and

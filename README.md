@@ -30,6 +30,20 @@ Every module is served at `/mcp`; a subset is served at `/mcp/{module}` or
 - **Provenance on every answer.** Results carry the upstream URL and its freshness.
 - **Small results.** Check logs are cut to their failing sections; lists paginate.
 
+## Try it locally
+
+With Node ≥ 22.12:
+
+```sh
+npm ci
+npm run dev
+```
+
+`npm run dev` serves the Worker at http://127.0.0.1:8787. Point an MCP client that speaks
+Streamable HTTP at `http://127.0.0.1:8787/mcp` (or `/mcp/<module>` for one module), or call the
+REST API: `curl http://127.0.0.1:8787/api/v1/meta/ping`. Today the only tool is `meta_ping`.
+More commands are in [AGENTS.md](AGENTS.md#commands).
+
 ## Contributing
 
 New modules, docs sources and evaluation questions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).

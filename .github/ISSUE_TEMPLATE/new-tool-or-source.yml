@@ -1,0 +1,32 @@
+name: New tool or docs source
+description: Propose a tool, a module, or a docs page to make searchable.
+title: "proposal: "
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - New tool
+        - New docs source
+        - New module
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: The question it answers
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Public endpoint or page URL
+      description: Must be reachable without credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example call and answer

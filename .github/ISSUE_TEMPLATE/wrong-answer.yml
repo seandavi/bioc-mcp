@@ -1,0 +1,39 @@
+name: Wrong or stale answer
+description: A tool returned something wrong, stale or misleading.
+title: "wrong answer: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports like this become evaluation cases: a question, the answer we gave, and where the
+        right answer lives.
+  - type: textarea
+    id: question
+    attributes:
+      label: The question you asked
+    validations:
+      required: true
+  - type: input
+    id: call
+    attributes:
+      label: Tool and arguments, or REST URL
+    validations:
+      required: true
+  - type: textarea
+    id: returned
+    attributes:
+      label: What the server returned
+      description: Include `sources` and `as_of`.
+    validations:
+      required: true
+  - type: input
+    id: right-answer
+    attributes:
+      label: Where the right answer lives (URL)
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client

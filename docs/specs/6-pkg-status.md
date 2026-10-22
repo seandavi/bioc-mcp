@@ -150,17 +150,29 @@ Behaviour:
 1. `path = \`data/prop/${pathSegment(universe)}/index.json\``, `url = new URL(path, REGISTRY_BASE_URL).href`.
 2. Memo: `const parsedIndexes = new WeakMap<UpstreamCache, Map<string, MemoEntry>>()` at module
    scope, keyed by `deps.cache` then `url`, where `MemoEntry = { load: Promise<PropagationIndex>;
-   expiresAt: number }`. The memo lives exactly as long as the cache it sits in front of, so each
+   expiresAt: number;
+   loadDeadline: number | undefined }`. The memo lives exactly as long as the cache it sits in front of, so each
    test app (fresh `createMemoryCache`) gets a fresh memo and the Worker (one cache per isolate)
    parses at most once per TTL. It memoizes the **in-flight Promise**, not the resolved value:
-   the entry is stored before anything is awaited (`expiresAt = Infinity`), so concurrent callers
+   the entry is stored before anything is awaited, so concurrent callers
    on a cold or expired entry await the same load instead of each reading the 8 MB body from the
-   cache and parsing it. When the load resolves, `expiresAt` becomes
-   `Date.parse(response.fetchedAt) + registryUpstream.ttlSeconds * 1000`. If a live entry exists
-   (`deps.now().getTime() < expiresAt`), await its `load` and return it with
-   `response.fromCache = true`. Neither `deps.cache` nor `deps.fetch` is called by such a caller.
+   cache and parsing it. While the load is in flight the entry is bounded:
+   `loadDeadline = expiresAt = now + LOAD_DEADLINE_MS`, where `LOAD_DEADLINE_MS =
+   registryUpstream.timeoutMs + 5000` (the allowance covers the cache read and the parse, which
+   `fetchUpstream`'s timeout does not). When the load resolves, `expiresAt` becomes
+   `Date.parse(response.fetchedAt) + registryUpstream.ttlSeconds * 1000` and `loadDeadline` is
+   cleared. If a live entry exists (`deps.now().getTime() < expiresAt`), await its `load` and
+   return it with `response.fromCache = true`. Neither `deps.cache` nor `deps.fetch` is called by such a caller.
    If the load rejects, delete the entry (errors are not cached); callers already awaiting it see
    the same rejection. Replacing an expired entry drops the old parsed index at once.
+
+   **No caller waits on a load without a deadline.** The load runs on request A's I/O, which the
+   runtime cancels when A's client disconnects and which can stall in `cache.match` or
+   `hit.text()` outside `fetchUpstream`'s timeout; a promise shared through a module-level memo
+   would then never settle for requests B, C and so on. So the owner and every joiner race the
+   load against their own timer (the owner for `LOAD_DEADLINE_MS`, a joiner for the time left to
+   `loadDeadline`) and fail with `upstream_timeout`; an in-flight entry past its `loadDeadline`
+   is replaced by the next caller, which starts a fresh load.
 3. The load is `fetchUpstreamJson(deps, registryUpstream, path)`. If the JSON is not a plain object
    (`typeof json !== 'object' || json === null || Array.isArray(json)`), throw
    `CapabilityError('upstream_error', 'Bioconductor propagation registry returned an index that is not a JSON object', { upstream: 'registry', url })`.
@@ -643,7 +655,7 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. No network.
     `deps = { fetch: fixtureFetch(pkgRoutes), cache: createMemoryCache(now), now, env: {} }`.
   - The `behind_reasons` cap: `ClustIRR` lists five configs and then `and 8 more`.
 - `test/upstreams/registry.test.ts`: the memo (a counting wrapper around `createMemoryCache`'s
-  `get`, plus `fetch.calls`), concurrent calls sharing one load, a failed load not cached, memo isolation between two caches, array JSON, registry 404, an
+  `get`, plus `fetch.calls`), concurrent calls sharing one load, a failed load not cached, a load that never settles (the owner and joiners get `upstream_timeout`; past the deadline the next caller loads afresh), memo isolation between two caches, array JSON, registry 404, an
   invalid entry, and `registryEntry` with `constructor` returning `undefined`.
 - `test/upstreams/r-universe.test.ts`: found, 404 → `{ found: false, source }`, 500 →
   `upstream_error`, `Package` mismatch, and a schema mismatch.

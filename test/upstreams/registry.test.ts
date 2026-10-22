@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache, type UpstreamCache } from '../../src/upstreams/cache';
@@ -73,6 +73,52 @@ describe('getPropagationIndex', () => {
 
     routes[BIOC_INDEX_URL] = pkgRoutes[BIOC_INDEX_URL]!;
     expect(Object.keys((await getPropagationIndex(deps, 'bioc')).packages)).toContain('trackViewer');
+  });
+
+  describe('a load that never settles', () => {
+    afterEach(() => vi.useRealTimers());
+
+    function hangingFirstFetch() {
+      const { deps, fetch, clock } = makeDeps();
+      const calls: string[] = [];
+      deps.fetch = ((request: Request) => {
+        calls.push(request.url);
+        return calls.length === 1 ? new Promise<Response>(() => {}) : fetch(request);
+      }) as Deps['fetch'];
+      return { deps, calls, clock };
+    }
+
+    test('is replaced by the next caller once its deadline has passed', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      const { deps, calls, clock } = hangingFirstFetch();
+      const stuck = getPropagationIndex(deps, 'bioc');
+      const stuckSettled = errorOf(stuck);
+      await vi.advanceTimersByTimeAsync(0);
+
+      clock.now = new Date(clock.now.getTime() + 21_000);
+      const fresh = await getPropagationIndex(deps, 'bioc');
+      expect(Object.keys(fresh.packages)).toContain('trackViewer');
+      expect(calls).toEqual([BIOC_INDEX_URL, BIOC_INDEX_URL]);
+
+      await vi.advanceTimersByTimeAsync(21_000);
+      expect((await stuckSettled).code).toBe('upstream_timeout');
+      // the stuck owner must not evict the entry that replaced it
+      expect((await getPropagationIndex(deps, 'bioc')).response.fromCache).toBe(true);
+      expect(calls).toHaveLength(2);
+    });
+
+    test('fails the owner and every joined caller with upstream_timeout', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      const { deps, calls } = hangingFirstFetch();
+      const owner = errorOf(getPropagationIndex(deps, 'bioc'));
+      const joiner = errorOf(getPropagationIndex(deps, 'bioc'));
+      await vi.advanceTimersByTimeAsync(20_000);
+      expect([(await owner).code, (await joiner).code]).toEqual(['upstream_timeout', 'upstream_timeout']);
+
+      // the failure is not cached: the next caller loads again
+      expect(Object.keys((await getPropagationIndex(deps, 'bioc')).packages)).toContain('trackViewer');
+      expect(calls).toEqual([BIOC_INDEX_URL, BIOC_INDEX_URL]);
+    });
   });
 
   test('fetches again after the TTL', async () => {

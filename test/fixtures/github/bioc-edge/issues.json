@@ -1,0 +1,310 @@
+[
+  {
+    "number": 69,
+    "title": "bioc-sync.service is failing",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/69",
+    "created_at": "2026-10-17T14:19:29Z",
+    "updated_at": "2026-10-17T14:19:29Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 65,
+    "title": "sync.sh crawl mode would delete packages/stats/ (no protected prefixes)",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/65",
+    "created_at": "2026-10-16T02:06:02Z",
+    "updated_at": "2026-10-17T12:27:54Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 64,
+    "title": "notify-failure: throttle repeat comments to one per 6h per unit",
+    "html_url": "https://github.com/seandavi/bioc-edge/pull/64",
+    "created_at": "2026-10-16T01:32:43Z",
+    "updated_at": "2026-10-16T01:32:43Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": false,
+    "pull_request": {}
+  },
+  {
+    "number": 63,
+    "title": "Script uses GNU-only `touch -d` (fails on macOS)",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/63",
+    "created_at": "2026-10-15T22:20:54Z",
+    "updated_at": "2026-10-15T22:20:54Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "agent-ready"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 61,
+    "title": "Directory listings under packages/ so mirrors can use plain rclone sync",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/61",
+    "created_at": "2026-10-06T18:44:23Z",
+    "updated_at": "2026-10-07T01:22:37Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 57,
+    "title": "bioc-rollup-minute.service is failing",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/57",
+    "created_at": "2026-10-02T21:20:03Z",
+    "updated_at": "2026-10-03T21:35:29Z",
+    "comments": 97,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 55,
+    "title": "Normalize duplicate URLs at the edge: www to apex, collapse //, noindex and canonical headers for mirror-served pages",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/55",
+    "created_at": "2026-10-02T13:03:57Z",
+    "updated_at": "2026-10-02T13:04:10Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 47,
+    "title": "Text files under checkResults are served as application/octet-stream, so browsers download instead of display",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/47",
+    "created_at": "2026-09-29T13:55:45Z",
+    "updated_at": "2026-09-29T13:55:45Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 46,
+    "title": "/packages/<version>/<name> soft-404s to /about/removed-packages/; master returns 404",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/46",
+    "created_at": "2026-09-29T13:55:43Z",
+    "updated_at": "2026-09-29T13:55:43Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 45,
+    "title": "/packages/ is 404; master redirects to the BiocViews page",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/45",
+    "created_at": "2026-09-29T13:55:42Z",
+    "updated_at": "2026-09-29T13:55:42Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 44,
+    "title": "Container-binary redirects are 301; master sends 302",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/44",
+    "created_at": "2026-09-29T13:55:41Z",
+    "updated_at": "2026-09-29T13:55:41Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 43,
+    "title": "checkResults raw-results/ directory listings are 404: every build report's raw-results link is broken",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/43",
+    "created_at": "2026-09-29T13:55:39Z",
+    "updated_at": "2026-09-29T13:55:39Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 41,
+    "title": "Books: decide whether versioned book URLs should exist, then set redirects to match",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/41",
+    "created_at": "2026-09-28T22:08:05Z",
+    "updated_at": "2026-09-28T22:08:05Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 33,
+    "title": "Review the fixed-target catch-all redirects against the redirect policy (ADR 0013)",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/33",
+    "created_at": "2026-09-28T20:57:39Z",
+    "updated_at": "2026-09-28T20:57:39Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 26,
+    "title": "Tracking: consolidate logging, download stats and traffic metrics on R2",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/26",
+    "created_at": "2026-09-28T19:50:38Z",
+    "updated_at": "2026-10-17T12:27:53Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 25,
+    "title": "Logging: token inventory, decommission GCP, superseding ADRs",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/25",
+    "created_at": "2026-09-28T19:50:26Z",
+    "updated_at": "2026-09-28T19:50:49Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 24,
+    "title": "Logging: generate /packages/stats/ as static files (ADR 0004)",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/24",
+    "created_at": "2026-09-28T19:50:25Z",
+    "updated_at": "2026-10-17T12:27:51Z",
+    "comments": 2,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 22,
+    "title": "Logging: move all Logpush delivery from GCS to R2 with no gap",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/22",
+    "created_at": "2026-09-28T19:50:22Z",
+    "updated_at": "2026-10-21T22:59:10Z",
+    "comments": 2,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 3,
+    "title": "Two /developers/how-to redirects land on 404s (mirror gap + upstream rot)",
+    "html_url": "https://github.com/seandavi/bioc-edge/issues/3",
+    "created_at": "2026-08-22T13:51:01Z",
+    "updated_at": "2026-08-22T13:51:01Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  }
+]

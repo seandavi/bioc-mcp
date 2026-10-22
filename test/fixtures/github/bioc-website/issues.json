@@ -1,0 +1,345 @@
+[
+  {
+    "number": 75,
+    "title": "Port section sidebar to Astro layout",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/75",
+    "created_at": "2026-10-16T02:08:31Z",
+    "updated_at": "2026-10-16T02:08:31Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 74,
+    "title": "fetch-site: fetch + reset the shallow site mirror (fixes bioc-site-refresh failing every 20 min)",
+    "html_url": "https://github.com/seandavi/bioc-website/pull/74",
+    "created_at": "2026-10-16T01:32:10Z",
+    "updated_at": "2026-10-16T01:44:07Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": false,
+    "pull_request": {}
+  },
+  {
+    "number": 73,
+    "title": "pipeline tests: pyyaml used but not declared",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/73",
+    "created_at": "2026-10-15T22:20:46Z",
+    "updated_at": "2026-10-15T22:20:46Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "agent-ready"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 57,
+    "title": "Scheduled daily rebuild so date-dependent output (events strip, years-in-Bioconductor) stays current",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/57",
+    "created_at": "2026-10-05T21:29:02Z",
+    "updated_at": "2026-10-05T21:29:02Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      },
+      {
+        "name": "area:ci-deploy"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 56,
+    "title": "Mobile menu toggle is a div: unreachable by keyboard and screen readers",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/56",
+    "created_at": "2026-10-05T21:29:00Z",
+    "updated_at": "2026-10-05T21:29:00Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      },
+      {
+        "name": "accessibility"
+      },
+      {
+        "name": "area:renderer"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 50,
+    "title": "robots.txt: lift the numbered-release Disallow lines once those pages carry canonical or noindex",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/50",
+    "created_at": "2026-10-05T21:16:48Z",
+    "updated_at": "2026-10-05T21:29:27Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 40,
+    "title": "Package pages: add Date (last updated) and In Bioconductor since to Details",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/40",
+    "created_at": "2026-10-05T20:55:50Z",
+    "updated_at": "2026-10-05T22:57:17Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "enhancement"
+      },
+      {
+        "name": "area:renderer"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 35,
+    "title": "schema.org JSON-LD on package pages (SoftwareSourceCode, Dataset)",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/35",
+    "created_at": "2026-10-02T13:03:58Z",
+    "updated_at": "2026-10-02T13:03:58Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      },
+      {
+        "name": "area:renderer"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 29,
+    "title": "links: daily check red since 2026-09-06 -- code.bioconductor.org TLS cert expired (footer link, 44/46 errors)",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/29",
+    "created_at": "2026-09-06T20:09:06Z",
+    "updated_at": "2026-09-06T20:11:42Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 27,
+    "title": "Work down astro/.lycheeignore instead of only growing it",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/27",
+    "created_at": "2026-08-26T20:48:28Z",
+    "updated_at": "2026-08-26T20:48:28Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 23,
+    "title": "Catalog: inherited link rot in imported legacy prose (tracked in astro/.lycheeignore)",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/23",
+    "created_at": "2026-08-22T13:57:57Z",
+    "updated_at": "2026-08-22T13:57:57Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 22,
+    "title": "/next pages link package pages and r-universe vignettes that don't exist",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/22",
+    "created_at": "2026-08-22T13:46:35Z",
+    "updated_at": "2026-08-22T13:46:35Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 19,
+    "title": "BiocViews island links non-software packages under /bioc/html/ (404s)",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/19",
+    "created_at": "2026-08-22T13:24:06Z",
+    "updated_at": "2026-08-22T13:24:06Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 14,
+    "title": "Next.astro: match Site.astro's html lang",
+    "html_url": "https://github.com/seandavi/bioc-website/pull/14",
+    "created_at": "2026-08-16T14:22:43Z",
+    "updated_at": "2026-08-16T21:14:20Z",
+    "comments": 2,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": false,
+    "pull_request": {}
+  },
+  {
+    "number": 13,
+    "title": "Legacy trailing-slash redirect corrupts query strings (?search-bar=limma/)",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/13",
+    "created_at": "2026-08-16T13:50:26Z",
+    "updated_at": "2026-08-16T13:52:49Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 12,
+    "title": "bioconductor.js throws three uncaught TypeErrors on every page",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/12",
+    "created_at": "2026-08-16T13:50:26Z",
+    "updated_at": "2026-08-16T13:52:48Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 11,
+    "title": "Nested <html lang> in imported legacy content splits the Pagefind index",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/11",
+    "created_at": "2026-08-16T13:50:25Z",
+    "updated_at": "2026-08-16T14:33:32Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 10,
+    "title": "CI secrets should come from a Bioconductor shared secrets location, not cdsci-infra",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/10",
+    "created_at": "2026-08-14T16:04:10Z",
+    "updated_at": "2026-08-14T16:04:10Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 5,
+    "title": "Data snapshot refresh: manual today, should be scheduled",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/5",
+    "created_at": "2026-08-13T23:46:11Z",
+    "updated_at": "2026-10-08T12:15:58Z",
+    "comments": 4,
+    "labels": [
+      {
+        "name": "area:pipeline"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 4,
+    "title": "Subdomain previews (pr-<n>.preview.*) to fix internal links",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/4",
+    "created_at": "2026-08-13T23:46:10Z",
+    "updated_at": "2026-08-14T08:13:11Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "area:ci-deploy"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 3,
+    "title": "Scoped R2 credentials for CI (and the fork-PR question before going public)",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/3",
+    "created_at": "2026-08-13T23:46:09Z",
+    "updated_at": "2026-08-13T23:46:09Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "area:ci-deploy"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 2,
+    "title": "Retention/GC for old site/<sha> builds",
+    "html_url": "https://github.com/seandavi/bioc-website/issues/2",
+    "created_at": "2026-08-13T23:46:08Z",
+    "updated_at": "2026-08-13T23:46:08Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "area:ci-deploy"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "number": 64,
+    "title": "notify-failure: throttle repeat comments to one per 6h per unit",
+    "html_url": "https://github.com/seandavi/bioc-edge/pull/64",
+    "created_at": "2026-10-16T01:32:43Z",
+    "updated_at": "2026-10-16T01:32:43Z",
+    "draft": false,
+    "user": {
+      "login": "seandavi"
+    },
+    "head": {
+      "sha": "7104be97a86821d2068c0c0bb864b94557b96501",
+      "ref": "notify-throttle"
+    }
+  }
+]

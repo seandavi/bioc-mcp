@@ -1,0 +1,185 @@
+{
+  "total_count": 79,
+  "workflow_runs": [
+    {
+      "id": 37651491785,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T16:22:22Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37651491785",
+      "display_title": "docs: API-default enrichment in the spec and About page (#83) (#86)"
+    },
+    {
+      "id": 37651213231,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T16:20:09Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37651213231",
+      "display_title": "data: monthly mart refresh 2026-10-07"
+    },
+    {
+      "id": 37649713225,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T16:08:33Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37649713225",
+      "display_title": "feat: API-backed enrichment sources (--source api default) (#84)"
+    },
+    {
+      "id": 37618596539,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T12:05:52Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37618596539",
+      "display_title": "data: cited-by edges from the OpenAlex references scan (#49): 365,166…"
+    },
+    {
+      "id": 37565414783,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T03:09:14Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37565414783",
+      "display_title": "data: views file regenerated with the installer mart and installs_yea…"
+    },
+    {
+      "id": 37565285680,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T03:07:34Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37565285680",
+      "display_title": "feat: project-level usage uses the installer proxy (#80 frontend) (#82)"
+    },
+    {
+      "id": 37565035361,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T03:04:30Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37565035361",
+      "display_title": "feat: project-level installs via the installer proxy (#80 backend) (#81)"
+    },
+    {
+      "id": 37562418642,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T02:31:49Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37562418642",
+      "display_title": "feat: repo link in the About ownership note"
+    },
+    {
+      "id": 37562393909,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T02:31:30Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37562393909",
+      "display_title": "feat: maintainer link to seandavis.net in footer and About"
+    },
+    {
+      "id": 37558783324,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T01:46:53Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37558783324",
+      "display_title": "fix: citations scan falls back to the OpenAlex id for citing works wi…"
+    },
+    {
+      "id": 37558649362,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T01:45:14Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37558649362",
+      "display_title": "docs: publication venue research for the site, dataset and metaresear…"
+    },
+    {
+      "id": 37556674155,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T01:21:23Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37556674155",
+      "display_title": "feat: serve from impact.bioconductor.org (CNAME, root base, URL updat…"
+    },
+    {
+      "id": 37556646337,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T01:21:02Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37556646337",
+      "display_title": "feat: Bioconductor brand palette with semantic metric colours (scheme…"
+    },
+    {
+      "id": 37550252936,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T00:07:05Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37550252936",
+      "display_title": "docs: implementation status note on the review"
+    },
+    {
+      "id": 37550214788,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T00:06:40Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37550214788",
+      "display_title": "data: views file regenerated against the published marts"
+    },
+    {
+      "id": 37550069967,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T00:05:11Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37550069967",
+      "display_title": "fix: export-api serialises dates (git_last_commit_date broke the deploy)"
+    },
+    {
+      "id": 37549913288,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T00:03:30Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37549913288",
+      "display_title": "data: mart refresh after the review backlog (all releases, historic C…"
+    },
+    {
+      "id": 37549881978,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-07T00:03:09Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37549881978",
+      "display_title": "feat: static per-entity JSON API and badges rendered at deploy (#52) …"
+    },
+    {
+      "id": 37548895151,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-06T23:52:07Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37548895151",
+      "display_title": "feat: countries and institutions of linked papers on Growth (#48 fron…"
+    },
+    {
+      "id": 37548746031,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-06T23:50:27Z",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/runs/37548746031",
+      "display_title": "feat: iCite percentile/APT/clinical, retraction flag, patent citation…"
+    }
+  ]
+}

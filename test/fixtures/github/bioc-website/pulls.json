@@ -1,0 +1,32 @@
+[
+  {
+    "number": 74,
+    "title": "fetch-site: fetch + reset the shallow site mirror (fixes bioc-site-refresh failing every 20 min)",
+    "html_url": "https://github.com/seandavi/bioc-website/pull/74",
+    "created_at": "2026-10-16T01:32:10Z",
+    "updated_at": "2026-10-16T01:44:07Z",
+    "draft": false,
+    "user": {
+      "login": "seandavi"
+    },
+    "head": {
+      "sha": "87c427974dd00029c68624541011b823e4d79c96",
+      "ref": "fetch-site-shallow-reset"
+    }
+  },
+  {
+    "number": 14,
+    "title": "Next.astro: match Site.astro's html lang",
+    "html_url": "https://github.com/seandavi/bioc-website/pull/14",
+    "created_at": "2026-08-16T14:22:43Z",
+    "updated_at": "2026-08-16T21:14:20Z",
+    "draft": false,
+    "user": {
+      "login": "seandavi"
+    },
+    "head": {
+      "sha": "2f727661185b31c1fdf53a6cae7b48fbbde992cd",
+      "ref": "fix/legacy-js-errors"
+    }
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "total_count": 1,
+  "workflows": [
+    {
+      "id": 349225034,
+      "name": "validate",
+      "path": ".github/workflows/validate.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-manifest/blob/main/.github/workflows/validate.yml"
+    }
+  ]
+}

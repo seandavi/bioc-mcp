@@ -1,0 +1,15 @@
+{
+  "total_count": 2,
+  "check_runs": [
+    {
+      "name": "mirror-sync",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "health",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}

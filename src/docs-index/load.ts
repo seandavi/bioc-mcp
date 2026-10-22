@@ -20,7 +20,7 @@ export interface DocsIndex {
   get(id: string): DocsRecord | undefined;
   /** The input (search.json or raw file) a record was built from, for provenance. */
   inputFor(id: string): DocsInput | undefined;
-  /** Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits. */
+  /** Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. */
   search(query: string, limit?: number): DocsSearchHit[];
 }
 
@@ -74,13 +74,13 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
     get: (id) => byId.get(id),
     inputFor: (id) => inputById.get(id),
     search(query, limit = DEFAULT_LIMIT) {
+      if (!Number.isInteger(limit) || limit < 1) throw new RangeError(`limit must be a positive integer, got ${limit}`);
       const hits: DocsSearchHit[] = [];
       for (const result of miniSearch.search(query)) {
         const record = byId.get(result.id as string);
         if (record) hits.push({ record, score: result.score });
-        if (hits.length >= limit) break;
       }
-      return hits;
+      return hits.slice(0, limit);
     },
   };
 }

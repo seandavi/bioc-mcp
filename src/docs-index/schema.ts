@@ -6,7 +6,7 @@ export const DOCS_FORMAT_VERSION = 1;
 export const DocsSourceKindSchema = z.enum(['site', 'adr', 'repo']);
 export const DocsRecordSchema = z.object({
   id: z.string().min(1), // 'site:<href>' or 'repo:<repo>/<file>[#<anchor>]'
-  url: z.url(), // absolute public URL a person can open
+  url: z.url({ protocol: /^https$/ }), // absolute public https URL a person can open
   title: z.string(), // page or document title
   section: z.string(), // section heading; '' for a page/document-level record
   crumbs: z.array(z.string()), // breadcrumb, outermost first

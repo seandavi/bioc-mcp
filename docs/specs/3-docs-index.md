@@ -243,7 +243,7 @@ export const DOCS_FORMAT_VERSION = 1;
 export const DocsSourceKindSchema = z.enum(['site', 'adr', 'repo']);
 export const DocsRecordSchema = z.object({
   id: z.string().min(1),          // 'site:<href>' or 'repo:<repo>/<file>[#<anchor>]'
-  url: z.url(),                   // absolute public URL a person can open
+  url: z.url({ protocol: /^https$/ }), // absolute public https URL a person can open
   title: z.string(),              // page or document title
   section: z.string(),            // section heading; '' for a page/document-level record
   crumbs: z.array(z.string()),    // breadcrumb, outermost first
@@ -304,7 +304,7 @@ export interface DocsIndex {
   get(id: string): DocsRecord | undefined;
   /** The input (search.json or raw file) a record was built from, for provenance. */
   inputFor(id: string): DocsInput | undefined;
-  /** Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits. */
+  /** Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. */
   search(query: string, limit?: number): DocsSearchHit[];
 }
 
@@ -325,7 +325,9 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex;
    `miniSearch.documentCount === records.length`.
 4. `search(query, limit = 8)`: `miniSearch.search(query)` (constructor `searchOptions` apply),
    map each result's `id` to its record (skip ids missing from the store, which step 3 rules out),
-   `slice(0, limit)`, return `{ record, score }`.
+   `slice(0, limit)`, return `{ record, score }`. `limit` that is not a positive integer (0, negative,
+   fractional, `NaN`, `Infinity`) throws `RangeError` before searching, so the cap cannot be
+   bypassed by a caller that skips validation.
 
 ### `src/docs-index/bundled.ts`
 
@@ -380,7 +382,7 @@ Record, in `search.json` order:
 | Field | Value |
 |---|---|
 | `id` | `` `site:${href}` `` |
-| `url` | `new URL(href, siteUrl).href`, e.g. `https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls` |
+| `url` | `new URL(href, siteUrl).href`, which must stay on `siteUrl`'s origin and under its path (else the build throws `search.json entry <i> href leaves site_url: <href>`), e.g. `https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls` |
 | `title`, `section`, `text` | entity-decoded (below), otherwise as published |
 | `crumbs` | `(crumbs ?? []).map(decode)` |
 | `source` | `'adr'` if `href` starts with `adr/`, else `'site'` |
@@ -676,10 +678,10 @@ an error status. A shared helper in `test/docs-index/build.test.ts` builds once 
 | File | Covers |
 |---|---|
 | `test/docs-index/config.test.ts` | the committed `docs-sources.yaml` parses; rejections: `http:` `site_url`, `site_url` without trailing `/`, unknown key, duplicate repo, `files: ['notes.txt']`, empty `repos` |
-| `test/docs-index/site.test.ts` | field mapping on a two-entry inline array (one `adr/`, one not); absolute URLs; entity decoding including `&amp;lt;` → `&lt;`; `crumbs: null` → `[]`; non-array input throws; an entry missing `href` throws naming index 1; duplicate `href` throws |
+| `test/docs-index/site.test.ts` | field mapping on a two-entry inline array (one `adr/`, one not); absolute URLs; entity decoding including `&amp;lt;` → `&lt;`; `crumbs: null` → `[]`; non-array input throws; an entry missing `href` throws naming index 1; duplicate `href` throws; hrefs that leave `site_url` (`https://other.example/x`, `//other.example/x`, `javascript:alert(1)`, `../x.html`) throw |
 | `test/docs-index/markdown.test.ts` | inline Markdown strings: document-level record from preamble + first `#`; `##`/`###` split, `####` kept in body; `#` inside a fenced block (backtick and tilde) ignored; duplicate headings get `-1`; link/code/emphasis stripped from section and anchor; empty sections skipped but named in children's crumbs; no `#` → title `repo/file`; CRLF input; crumbs drop a title equal to the repo; the `bioc-edge/DATAPLANE.md` fixture yields `repo:bioc-edge/DATAPLANE.md#cloudflare-workflows-v` with the crumbs in the example |
 | `test/docs-index/build.test.ts` | byte-identical rebuild; `toMatchFileSnapshot('./__snapshots__/build-summary.json')` of `JSON.stringify({ meta, store_sha256, index_sha256, records: records.map(({ text, ...rest }) => ({ ...rest, text_chars: text.length })) }, null, 2)`; 264 site/adr records; input sha256s equal the fixture files' hashes; `last_modified` comes through when `search.json` is served by `fixtureFetch` with a `last-modified` header; missing fixture → rejects `not_found`; `renderArtifactModule` output imports back (write to a temp dir, `import()` it, `loadDocsIndex` the constants); `writeArtifactModule` size limit at `bytes - 1` / `bytes` (temp dir via `mkdtemp`) |
-| `test/docs-index/load.test.ts` | ranking for the two queries; `limit`; `get`; `inputFor` for a site and a repo id; throws on `format_version: 2`, a dropped record, and bad input counts |
+| `test/docs-index/load.test.ts` | ranking for the two queries; `limit` (0, negative, 2.5, `NaN`, `Infinity` throw `RangeError`); `get`; `inputFor` for a site and a repo id; throws on `format_version: 2`, a dropped record, and bad input counts |
 | `test/docs-index/bundled.test.ts` | `bundledDocsIndex()` loads `generated/docs-index` (whatever build is present), `DocsIndexMetaSchema` parses its `meta`, records are non-empty, the same instance is returned twice. No ranking assertion, because a local `docs:build` may have replaced the fixture build |
 
 Manual, reported in the PR: `npm run docs:build` against the live sources, and the top 3 ids for

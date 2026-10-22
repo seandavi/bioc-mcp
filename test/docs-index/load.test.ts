@@ -30,6 +30,10 @@ describe('loadDocsIndex', () => {
     expect(index.search('registry', 3)).toHaveLength(3);
   });
 
+  it.each([0, -1, 2.5, Number.NaN, Number.POSITIVE_INFINITY])('rejects limit %s', (limit) => {
+    expect(() => index.search('registry', limit)).toThrow(RangeError);
+  });
+
   it('gets a record and finds its input', () => {
     expect(index.get('site:propagation-gate.html')?.source).toBe('site');
     expect(index.get('site:nope')).toBeUndefined();

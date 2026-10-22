@@ -19,6 +19,7 @@ function decode(value: string): string {
 /** Quarto search.json → records. Throws Error naming the first entry that does not parse. */
 export function siteRecords(searchJson: unknown, siteUrl: string): DocsRecord[] {
   if (!Array.isArray(searchJson)) throw new Error('search.json is not an array');
+  const base = new URL(siteUrl);
   const seen = new Set<string>();
   return searchJson.map((raw: unknown, index) => {
     const parsed = SearchEntrySchema.safeParse(raw);
@@ -29,9 +30,13 @@ export function siteRecords(searchJson: unknown, siteUrl: string): DocsRecord[] 
     const id = `site:${entry.href}`;
     if (seen.has(id)) throw new Error(`Duplicate docs record id: ${id}`);
     seen.add(id);
+    const url = new URL(entry.href, siteUrl);
+    if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) {
+      throw new Error(`search.json entry ${index} href leaves site_url: ${entry.href}`);
+    }
     return {
       id,
-      url: new URL(entry.href, siteUrl).href,
+      url: url.href,
       title: decode(entry.title),
       section: decode(entry.section),
       crumbs: (entry.crumbs ?? []).map(decode),

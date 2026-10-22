@@ -56,6 +56,13 @@ describe('siteRecords', () => {
     ).toThrow(/entry 1/);
   });
 
+  it.each(['https://other.example/x', '//other.example/x', 'javascript:alert(1)', 'data:text/html,x', '../x.html', '/elsewhere.html'])(
+    'rejects href %s that leaves site_url',
+    (href) => {
+      expect(() => siteRecords([{ href, title: 't', section: '', text: '' }], SITE)).toThrow(/entry 0 href leaves site_url/);
+    },
+  );
+
   it('throws on duplicate hrefs', () => {
     const entry = { href: 'a.html', title: 't', section: '', text: '' };
     expect(() => siteRecords([entry, entry], SITE)).toThrow('Duplicate docs record id: site:a.html');

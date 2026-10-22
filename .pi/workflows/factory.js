@@ -1,7 +1,9 @@
 // Factory: spec (Opus) → implement (Sonnet) → review lenses (Opus, parallel)
 // → revise ≤ maxRounds (Sonnet) → PR (Sonnet). See .pi/factory.md.
 //
-// args: { repo, issue, slug, worktree, branch, lenses?: string[], maxRounds?: number }
+// args: { repo, issue, slug, worktree, branch, lenses?: string[], maxRounds?: number, seam?: boolean }
+// seam: the change is a shared foundation later issues build on (label `seam`); reviewers
+// then rate inherited defects by blast radius.
 // The caller creates `worktree` on `branch` before launching; every stage runs there.
 
 const OPUS = "claude-bridge/claude-opus-5-5";
@@ -15,6 +17,13 @@ const cwd = args.worktree;
 const branch = args.branch;
 const lenses = args.lenses && args.lenses.length ? args.lenses : ["code"];
 const maxRounds = args.maxRounds || 2;
+const seam = !!args.seam;
+const SEAM_NOTE = seam
+  ? `\nThis change is a SHARED SEAM: later issues build adapters and modules on it. Rate by blast
+radius, not by current reach: a defect every later caller would inherit or copy (a guard that can
+be bypassed, a missing validation, a leaky contract) is at least "major", even if nothing reaches
+it yet.`
+  : "";
 const specPath = `docs/specs/${issue}-${args.slug}.md`;
 
 const COMMON = `
@@ -137,11 +146,12 @@ if (!impl.ok || implOut.status !== "done") {
 function reviewTask(lens, files, round) {
   return `${COMMON}
 
-You are a READ-ONLY reviewer (round ${round}). Lens: ${LENS[lens]}
+You are a READ-ONLY reviewer (round ${round}). Lens: ${LENS[lens]}${SEAM_NOTE}
 Read ${specPath}, AGENTS.md and the changed files: ${files.join(", ")}.
 Read any other file you need. Do not edit anything.
 Report findings with severity: blocker (wrong or unsafe; must fix), major (should fix before merge),
-minor, nit. Give each a short stable id like "${lens}-1". verdict is "changes" only if there is at
+minor, nit. Give each an id of the form "${lens}-r${round}-<n>" (e.g. "${lens}-r${round}-1");
+when a finding repeats one from an earlier round, say so in problem. verdict is "changes" only if there is at
 least one blocker or major finding. Do not pad: zero findings is a valid review.`;
 }
 function reviewBatch(lensList, files, round) {

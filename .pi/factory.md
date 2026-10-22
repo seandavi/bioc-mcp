@@ -24,6 +24,12 @@ matters and the fast model where volume does. The script is
 - `security` (label `review:security`): SSRF (no tool fetches a caller-supplied URL), input
   validation, secret handling, fork-PR CI safety, rate limiting, nothing non-public returned.
 
+**Seams** (label `seam`, arg `seam: true`): for shared foundations that later issues build on, the
+reviewers are told to rate inherited defects by blast radius, so a bypassable guard is `major`
+even when nothing calls it yet. Added after #2, where four such findings came back as `minor`.
+
+**Finding ids** are `<lens>-r<round>-<n>`, unique across rounds.
+
 **Revise rounds:** at most two. Only `blocker` and `major` findings trigger a round, and only the
 lenses that asked for changes review again. If findings remain after round two, the PR opens as a
 **draft** listing them. `minor` and `nit` findings go into the PR body as a follow-up checklist.
@@ -50,7 +56,7 @@ subagent({
   args: {
     repo: "seandavi/bioc-mcp", issue: 2, slug: "scaffold",
     worktree: "/Users/<you>/Documents/git/bioc-mcp-worktrees/issue-2",
-    branch: "issue-2-scaffold", lenses: ["code", "ux", "security"]
+    branch: "issue-2-scaffold", lenses: ["code", "ux", "security"], seam: true
   }
 })
 ```

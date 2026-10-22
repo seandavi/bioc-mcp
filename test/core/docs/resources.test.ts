@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { docsPages, renderPage, renderSection } from '../../../src/core/docs/pages';
 import { docsPageResource } from '../../../src/core/docs/resources';
 import type { ResourceTemplateDef } from '../../../src/core/capability';
@@ -54,5 +54,28 @@ describe('docsPageResource', () => {
       expect((error as CapabilityError).code).toBe('not_found');
       expect((error as CapabilityError).message).toContain('docs_search');
     }
+  });
+
+  it('searches the index with at most 8 terms for a long fragment, and not at all for a URI over 2,048 characters', async () => {
+    const index = await fixtureDocsIndex();
+    const search = vi.fn(index.search);
+    const spied = docsPageResource(() => ({ ...index, search }));
+    const fragment = Array.from({ length: 500 }, (_, i) => 'a' + String.fromCharCode(97 + Math.floor(i / 26)) + String.fromCharCode(97 + (i % 26))).join('.');
+
+    expect(() => spied.read(`bioc://docs/propagation-gate.html#${fragment.slice(0, 1900)}`)).toThrow(/not_found|No section/);
+    expect(search).toHaveBeenCalledTimes(1);
+    expect(search.mock.calls[0]![0].split(' ').length).toBeLessThanOrEqual(8);
+
+    search.mockClear();
+    let error: unknown;
+    try {
+      spied.read(`bioc://docs/propagation-gate.html#${'a.'.repeat(30_000)}`);
+    } catch (e) {
+      error = e;
+    }
+    expect(error).toBeInstanceOf(CapabilityError);
+    expect((error as CapabilityError).code).toBe('not_found');
+    expect((error as CapabilityError).message).toContain('docs_search');
+    expect(search).not.toHaveBeenCalled();
   });
 });

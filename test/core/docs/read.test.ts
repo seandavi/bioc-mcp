@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../src/core/capability';
 import type { Deps } from '../../../src/core/deps';
 import { invokeCapability } from '../../../src/core/invoke';
@@ -200,5 +200,71 @@ describe('not_found', () => {
     const error = await failure({ id_or_url: 'http://seandavi.github.io/bioc-infrastructure/propagation-gate.html' });
     expect(error.code).toBe('not_found');
     expect(error.message).toContain(GATE);
+  });
+});
+
+describe('close-match search bound', () => {
+  const MAX_TERMS = 8;
+  const MAX_TERM_LENGTH = 32;
+
+  /** n distinct 3-letter words joined by `separator`: 'aaa', 'aab', … */
+  function words(n: number, separator: string): string {
+    return Array.from({ length: n }, (_, i) => 'a' + String.fromCharCode(97 + Math.floor(i / 26)) + String.fromCharCode(97 + (i % 26))).join(separator);
+  }
+
+  function spiedIndex() {
+    const search = vi.fn(index.search);
+    return { search, index: { ...index, search } satisfies DocsIndex };
+  }
+
+  /** The search calls made while docs_read fails on `input`, as arrays of query terms. */
+  async function termsSearched(input: string): Promise<string[][]> {
+    const spied = spiedIndex();
+    const result = await invokeCapability(docsReadCapability(() => spied.index), { id_or_url: input }, deps().deps);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe('not_found');
+    return spied.search.mock.calls.map(([query]) => query.split(' '));
+  }
+
+  function expectBounded(calls: string[][]) {
+    for (const terms of calls) {
+      expect(terms.length).toBeLessThanOrEqual(MAX_TERMS);
+      expect(new Set(terms).size).toBe(terms.length);
+      for (const term of terms) expect(term.length).toBeLessThanOrEqual(MAX_TERM_LENGTH);
+    }
+  }
+
+  it('caps a ~2,000-character section fragment of distinct words at 8 terms', async () => {
+    const fragment = words(500, '.');
+    const calls = await termsSearched(`${GATE}#${fragment}`.slice(0, 2048));
+    expect(calls).toHaveLength(1);
+    expect(calls[0]).toHaveLength(MAX_TERMS);
+    expectBounded(calls);
+  });
+
+  it('searches once, with one term, for a fragment of repeated words', async () => {
+    const calls = await termsSearched(`${GATE}#${'abc.'.repeat(500)}`.slice(0, 2048));
+    expect(calls).toEqual([['abc']]);
+  });
+
+  it('does not search for a fragment of one- and two-letter words', async () => {
+    expect(await termsSearched(`${GATE}#${'a.'.repeat(1000)}`.slice(0, 2048))).toEqual([]);
+  });
+
+  it('caps a 2,048-character unknown URL of distinct 3-letter words at 8 terms', async () => {
+    const calls = await termsSearched(`https://docs.example/${words(500, '-')}`.slice(0, 2048));
+    expect(calls).toHaveLength(1);
+    expect(calls[0]).toHaveLength(MAX_TERMS);
+    expectBounded(calls);
+  });
+
+  it('searches once, with one term, for an unknown URL of repeated words', async () => {
+    const calls = await termsSearched(`site:${'foo-'.repeat(500)}`.slice(0, 2048));
+    expect(calls).toEqual([['foo']]);
+  });
+
+  it('cuts a very long word to 32 characters', async () => {
+    const calls = await termsSearched(`${GATE}#${'x'.repeat(2000)}`.slice(0, 2048));
+    expect(calls).toEqual([['x'.repeat(MAX_TERM_LENGTH)]]);
   });
 });

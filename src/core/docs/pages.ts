@@ -128,13 +128,25 @@ export function renderSection(record: DocsRecord): string {
   return withBody(`## ${sectionLabel(record) || record.title}\n\n${record.url}`, body(record));
 }
 
-/** '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record. */
+/**
+ * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record.
+ * An ADR's page-level record holds the whole ADR, and its section records repeat that text; the page-level
+ * body is cut where the first section's body starts, which keeps the 'Status:' and 'Date:' lines.
+ */
 export function renderPage(page: DocsPage): string {
   const [head, ...rest] = page.records as [DocsRecord, ...DocsRecord[]];
   const isPageLevel = head.id === page.id;
-  const parts = [withBody(`# ${page.title}\n\n${page.url}`, isPageLevel ? body(head) : '')];
-  for (const record of isPageLevel ? rest : page.records) parts.push(renderSection(record));
+  const sections = isPageLevel ? rest : page.records;
+  const parts = [withBody(`# ${page.title}\n\n${page.url}`, isPageLevel ? pagePreamble(head, rest) : '')];
+  for (const record of sections) parts.push(renderSection(record));
   return parts.join('\n\n');
+}
+
+function pagePreamble(head: DocsRecord, sections: DocsRecord[]): string {
+  const pageBody = body(head);
+  const first = sections.map(body).find((text) => text !== '');
+  const at = first === undefined ? -1 : pageBody.indexOf(first);
+  return at === -1 ? pageBody : pageBody.slice(0, at).trim();
 }
 
 /** Provenance for an index input: { url: input.url, as_of: input.last_modified ?? input.fetched_at }. */

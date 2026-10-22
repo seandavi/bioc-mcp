@@ -325,7 +325,7 @@ export function sectionLabel(record: DocsRecord): string;
 /** '## <label>\n\n<url>\n\n<body>' (see Rendering). */
 export function renderSection(record: DocsRecord): string;
 
-/** '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record. */
+/** '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record; an ADR's page-level body stops where its first section starts. */
 export function renderPage(page: DocsPage): string;
 
 /** Provenance for an index input: { url: input.url, as_of: input.last_modified ?? input.fetched_at }. */
@@ -351,7 +351,11 @@ and the first character upper-cased. Example: `#why-at-the-edge-rather-than-at-i
 `renderSection(r)` = `` `## ${sectionLabel(r) || r.title}\n\n${r.url}\n\n${body(r)}` `` (an empty
 body leaves the URL line last). `renderPage(page)` = `` `# ${page.title}\n\n${page.url}\n\n` `` + the
 page-level body, then `'\n\n' + renderSection(r)` for every other record in `page.records`
-order. With no page-level record, the header is followed directly by the sections. The output is a
+order. An ADR's page-level record holds the whole ADR and its section records repeat that text
+(**Verified**, `search.json`), so the page-level body is cut where the first section's non-empty
+`body()` starts (`pageBody.indexOf(body)`, trimmed). That keeps the `Status:` and `Date:` lines and
+shows each section once. If that body is not found in the page-level body (site pages, whose
+page-level text is only the intro), the page-level body is kept whole. With no page-level record, the header is followed directly by the sections. The output is a
 pure function of the records, and the same text serves `docs_read` and the resource.
 
 ### `src/core/docs/chunk.ts`
@@ -575,13 +579,17 @@ The input is never fetched, whatever its host.
 **`docsNotFound`.** `shown` is the input truncated to 200 characters, with `…` appended when
 truncated.
 
+- **Bounded search terms.** Caller text reaches MiniSearch, which runs one prefix + fuzzy sub-query
+  per token with no dedupe, so both branches take their words from `closeMatchTerms(text, ignore)`:
+  lower-case, split on `/[^a-z0-9]+/`, keep words of at least 3 characters that are not in
+  `ignore`, drop duplicates, keep at most 8 words, each cut to 32 characters. One call is at most
+  8 sub-queries whatever the input length.
 - **Known page, unknown section.** `matches` are the `url`s of
   `index.search(fragmentWords, 5, (r) => r.id !== page.id && page.records.includes(r))`, where
-  `fragmentWords = fragment.split(/[^A-Za-z0-9]+/).filter(Boolean).join(' ')`. If that is empty
+  `fragmentWords = closeMatchTerms(fragment).join(' ')`. If that is empty
   or gives no hits, use the first 5 non-page-level records of the page, in order. The message is
   `` `No section "#${fragment}" on ${page.url}. Sections on that page include: ${matches.join(', ')}. docs_read reads only the docs index and never fetches URLs.` ``
-- **Otherwise.** `words` = the lower-cased tokens of the input, split on `/[^a-z0-9]+/`, keeping
-  those with at least 3 characters that are not in `URL_NOISE`:
+- **Otherwise.** `words` = `closeMatchTerms(input, URL_NOISE)`, where `URL_NOISE` is:
 
   ```ts
   const URL_NOISE = new Set(['https', 'http', 'www', 'com', 'org', 'github', 'githubusercontent', 'raw', 'blob', 'tree', 'main', 'seandavi', 'html', 'htm', 'bioc', 'infrastructure', 'docs', 'site', 'repo']);
@@ -633,7 +641,9 @@ export function docsPageResource(getIndex: () => DocsIndex): ResourceTemplateDef
   `section` target returns `renderSection(record)`: **Verified**, the template matches
   `bioc://docs/x.html#frag` with `path: 'x.html#frag'`, so a URI with a fragment reads that
   section. A query string stays in `path` and does not match a page. A `missing` target throws
-  `docsNotFound(…)`. The resource returns the **whole** page with no 8 KB limit. AGENTS.md's limit
+  `docsNotFound(…)`. A URI longer than `MAX_DOCS_REFERENCE_LENGTH` (2048, also the `id_or_url`
+  maximum, exported from `read.ts`) throws `CapabilityError('not_found', …)` naming `docs_search`
+  before anything is resolved, because the SDK's URI template accepts up to 1e6 characters. The resource returns the **whole** page with no 8 KB limit. AGENTS.md's limit
   is for tool results, and a resource is attached deliberately. The largest page today is 37 KB.
 
 ### `src/core/docs/prompts.ts`
@@ -766,6 +776,14 @@ export function docsTestModule(): Promise<Module>;
       `calls` equal to `[]`, over MCP and over REST (404).
 - [ ] `…/propagation-gate.html#nope` returns `not_found` naming the page and listing section URLs
       of that page only.
+- [ ] **Bounded close-match search:** a spy on `index.search` shows `docs_read` with a ~2,000-character
+      `#a.b.c…` fragment of distinct words, or a 2,048-character unknown URL of distinct 3-letter
+      words, searches once with exactly 8 terms; repeated words give one term; words under 3
+      characters give no search; a 2,000-character word is cut to 32. The resource `read()` with a
+      1,900-character fragment searches with ≤ 8 terms, and with a URI over 2,048 characters throws
+      `not_found` without searching.
+- [ ] **ADR pages show each section once:** for all 13 ADR pages, `renderPage` contains the
+      `Status:` and `Date:` lines and each section body exactly once.
 - [ ] **Resources:** on `/mcp/docs`, `resources/templates/list` has `docs-page` with
       `uriTemplate: 'bioc://docs/{+path}'`. `resources/list` has `bioc://about` plus one
       `bioc://docs/…` entry per page (56 on the fixture index) with `mimeType: 'text/markdown'`.
@@ -790,6 +808,11 @@ export function docsTestModule(): Promise<Module>;
 - [ ] No change under `scripts/`, `src/upstreams/`, `src/envelope.ts`, `src/core/invoke.ts` or
       `src/transports/rest.ts`.
 - [ ] AGENTS.md has the resources/prompts paragraph.
+- [ ] Manual, pasted in the PR: call `docs_read` from Claude Code (or Claude Desktop) and note whether
+      the model sees `data.text`, given that the MCP text content is only the summary (see Risks). If
+      it does not, put each part's text in `docs_read`'s summary (header line + `\n\n` + text) and
+      lower `DOCS_READ_TEXT_BUDGET` to about 2,600 so the envelope stays under 8,192 bytes; otherwise
+      record the result in #12.
 - [ ] Manual, pasted in the PR: `npm run dev`, then `curl` of
       `/api/v1/docs/search?query=propagation+gate&source=adr` and of `/api/v1/docs/read` for the top
       hit, and an MCP `prompts/list` on `/mcp/docs`.
@@ -803,11 +826,11 @@ with `deps = { fetch: fixtureFetch({}), cache: createMemoryCache(now), now, env:
 
 | File | Covers |
 |---|---|
-| `test/core/docs/pages.test.ts` | 56 pages on the fixture index; `path`/`uri` for a site page, an ADR and `repo/bioc-edge/DATAPLANE.md`; `byUrl`/`byId`/`byPath`; `section()` with a percent-encoded fragment; `sectionLabel` for a site section, an ADR `#context` (→ `Context`) and a page-level record (`''`); `renderSection` drops the repeated heading line and collapses blank-line runs; `renderPage` header, page-level body first, one `## ` per other record; synthetic duplicate page path throws |
+| `test/core/docs/pages.test.ts` | 56 pages on the fixture index; `path`/`uri` for a site page, an ADR and `repo/bioc-edge/DATAPLANE.md`; `byUrl`/`byId`/`byPath`; `section()` with a percent-encoded fragment; `sectionLabel` for a site section, an ADR `#context` (→ `Context`) and a page-level record (`''`); `renderSection` drops the repeated heading line and collapses blank-line runs; `renderPage` header, page-level body first, one `## ` per other record; every ADR section appears once with its `Status:`/`Date:` lines; synthetic page-level body without the first section stays whole; synthetic duplicate page path throws |
 | `test/core/docs/chunk.test.ts` | text under budget → one part; cut after the last `\n` in the second half, else a space, else hard; escapes counted (`"`, `\n`, `\u0001` = 6); 3- and 4-byte characters counted and an emoji never split; `start === length` → empty; `start` out of range or `budget` 5 → RangeError; repeated calls cover the text exactly |
 | `test/core/docs/search.test.ts` | the five ranking questions; `adr` and `repo:bioc-edge` filters; unknown repo; input rejections; default/explicit limit; hit shape and snippet length; ADR `section` label; `sources` distinct with `as_of`; zero-hit summary mentions `pkg_status`; size guard on a synthetic index; `snippet()` unit cases (no match → leading 200 chars + `…`, match mid-text → leading `…`, word-start only, short text unchanged) |
-| `test/core/docs/read.test.ts` | every resolution form in Acceptance; whole-corpus pagination loop; summary wording for one part and for several; cursor errors; not_found close matches (unknown page, unknown section, free text with no usable words, `http:` URL, foreign host) with `fetch.calls` `[]`; long input truncated to 200 characters in the message |
-| `test/core/docs/resources.test.ts` | `list()` count, uri/name/title/description; `read()` of a page, of a repo doc, and of an unknown URI (throws `not_found`) |
+| `test/core/docs/read.test.ts` | every resolution form in Acceptance; whole-corpus pagination loop; summary wording for one part and for several; cursor errors; not_found close matches (unknown page, unknown section, free text with no usable words, `http:` URL, foreign host) with `fetch.calls` `[]`; long input truncated to 200 characters in the message; spy on `index.search`: ≤ 8 distinct terms of ≤ 32 characters for long fragments and URLs |
+| `test/core/docs/resources.test.ts` | `list()` count, uri/name/title/description; `read()` of a page, of a repo doc, and of an unknown URI (throws `not_found`); a long fragment searches with ≤ 8 terms; a URI over 2,048 characters throws `not_found` without searching |
 | `test/core/docs/prompts.test.ts` | `render` contains the topic, `docs_search`, `source "adr"`, `docs_read`; `tools` all registered in `modules`; `args` rejects `''` |
 | `test/transports/docs.test.ts` | `makeTestApp({ extraModules: [await docsTestModule()] })`: `tools/list` on `/mcp/docs`; MCP `docs_search` structuredContent deep-equals REST `GET /api/v1/docs/search` body; same for `docs_read`; REST 404 JSON for an unknown URL with `fetch.calls` `[]`; REST 400 for `limit=11`; `resources/templates/list`, `resources/list`, `resources/read`, the -32602 not-found; prompts present/absent per toolset (`/mcp/docs`, `/mcp/example`); `prompts/get`; about `datasets`; production `modules` contains `docs`; descriptions name only registered tools |
 | `test/core/registry.test.ts` | the five new rejection cases, and a module with a valid template and prompt passes |
@@ -822,8 +845,9 @@ Manual (in the PR): the `npm run dev` checks in Acceptance, and `npm run build`'
   rule; #12 checks clients). `docs_search`'s summary lists every hit with its URL, so it works
   text-only. `docs_read`'s summary does not carry the page text, so a client that ignores
   `structuredContent` sees a summary and no content. Repeating the text in the summary would halve
-  the per-call budget. Not verified against real clients here; #12 decides whether `docs_read`
-  needs a different text content.
+  the per-call budget. Not verified against real clients here; the PR's manual steps check
+  Claude Code (or Claude Desktop), and if the model does not see `data.text` the text moves into the
+  summary. Otherwise #12 decides whether `docs_read` needs a different text content.
 - **Bundle size and isolate memory.** Registering `docsModule` puts the 1.7 MB index module in the
   Worker (about 650 KiB gzip total; #3 Verified). The first docs call or `bioc://about` read costs
   the ~16 ms load. `bioc://about` now loads the index, because `datasets` reads `meta`.

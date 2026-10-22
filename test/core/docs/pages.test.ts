@@ -123,6 +123,31 @@ describe('rendering', () => {
     expect(text).not.toMatch(/\n{3,}/);
   });
 
+  it('shows each ADR section once and keeps the Status and Date lines', () => {
+    const adrs = pages.list.filter((page) => page.source === 'adr');
+    expect(adrs).toHaveLength(13);
+    for (const page of adrs) {
+      const text = renderPage(page);
+      expect(text, page.id).toMatch(/\nStatus: /);
+      expect(text, page.id).toMatch(/\nDate: /);
+      for (const section of page.records.slice(1)) {
+        const sectionBody = renderSection(section).split('\n\n').slice(2).join('\n\n');
+        expect(sectionBody, section.id).not.toBe('');
+        expect(text.split(sectionBody), section.id).toHaveLength(2);
+      }
+    }
+  });
+
+  it('keeps a page-level body that does not contain the first section', () => {
+    const page = docsPages(
+      syntheticDocsIndex([
+        record({ id: 'site:z.html', url: 'https://docs.test/z.html', text: 'intro' }),
+        record({ id: 'site:z.html#a', url: 'https://docs.test/z.html#a', section: 'A', text: 'A\nbody' }),
+      ]),
+    ).list[0]!;
+    expect(renderPage(page)).toBe('# T\n\nhttps://docs.test/z.html\n\nintro\n\n## A\n\nhttps://docs.test/z.html#a\n\nbody');
+  });
+
   it('puts sections directly after the header when a page has no page-level record', () => {
     const only = docsPages(
       syntheticDocsIndex([record({ id: 'site:y.html#a', url: 'https://docs.test/y.html#a', section: 'A', text: 'A\nbody' })]),

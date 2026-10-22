@@ -6,11 +6,14 @@ import { defineCapability, type Capability } from '../capability';
 import { chunkText } from './chunk';
 import { docsPages, docsSource, renderPage, renderSection, sectionLabel, type DocsPage, type DocsPages } from './pages';
 
+/** Longest id_or_url that docs_read and the docs-page resource accept. */
+export const MAX_DOCS_REFERENCE_LENGTH = 2048;
+
 export const DocsReadInputSchema = z.object({
   id_or_url: z
     .string()
     .min(1)
-    .max(2048)
+    .max(MAX_DOCS_REFERENCE_LENGTH)
     .describe(
       'A url from docs_search (with #anchor for one section, without for the whole page), a record id ' +
         "('site:propagation-gate.html#why-the-registry-polls'), or a bioc://docs/ resource URI",
@@ -45,6 +48,8 @@ export type DocsTarget =
 const RESOURCE_PREFIX = 'bioc://docs/';
 const SHOWN_LENGTH = 200;
 const CLOSE_MATCHES = 5;
+const MAX_CLOSE_MATCH_TERMS = 8; // MiniSearch runs one prefix+fuzzy sub-query per term
+const MAX_CLOSE_MATCH_TERM_LENGTH = 32;
 const URL_NOISE = new Set([
   'https', 'http', 'www', 'com', 'org', 'github', 'githubusercontent', 'raw', 'blob', 'tree', 'main',
   'seandavi', 'html', 'htm', 'bioc', 'infrastructure', 'docs', 'site', 'repo',
@@ -77,6 +82,20 @@ export function resolveDocsTarget(pages: DocsPages, input: string): DocsTarget {
   return record ? { kind: 'section', page, record } : { kind: 'missing', page, fragment };
 }
 
+/**
+ * The words of `text` worth searching for: lower-case, at least 3 characters, not in `ignore`, distinct, at most
+ * MAX_CLOSE_MATCH_TERMS of them, each cut to MAX_CLOSE_MATCH_TERM_LENGTH. Caller text of any length costs one bounded search.
+ */
+function closeMatchTerms(text: string, ignore: ReadonlySet<string> = new Set()): string[] {
+  const terms = new Set<string>();
+  for (const word of text.toLowerCase().split(/[^a-z0-9]+/)) {
+    if (word.length < 3 || ignore.has(word)) continue;
+    terms.add(word.slice(0, MAX_CLOSE_MATCH_TERM_LENGTH));
+    if (terms.size === MAX_CLOSE_MATCH_TERMS) break;
+  }
+  return [...terms];
+}
+
 /** The not_found error for a missing target, with up to 5 close matches from the index. */
 export function docsNotFound(
   index: DocsIndex,
@@ -86,11 +105,13 @@ export function docsNotFound(
 ): CapabilityError {
   const { page, fragment } = target;
   if (page && fragment !== null) {
-    const words = fragment.split(/[^A-Za-z0-9]+/).filter(Boolean).join(' ');
+    const terms = closeMatchTerms(fragment);
     const found =
-      words === ''
+      terms.length === 0
         ? []
-        : index.search(words, CLOSE_MATCHES, (r) => r.id !== page.id && page.records.includes(r)).map((hit) => hit.record);
+        : index
+            .search(terms.join(' '), CLOSE_MATCHES, (r) => r.id !== page.id && page.records.includes(r))
+            .map((hit) => hit.record);
     const sections = found.length > 0 ? found : page.records.filter((r) => r.id !== page.id).slice(0, CLOSE_MATCHES);
     return new CapabilityError(
       'not_found',
@@ -99,10 +120,7 @@ export function docsNotFound(
   }
 
   const shown = input.length > SHOWN_LENGTH ? input.slice(0, SHOWN_LENGTH) + '…' : input;
-  const words = input
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((word) => word.length >= 3 && !URL_NOISE.has(word));
+  const words = closeMatchTerms(input, URL_NOISE);
   const matches =
     words.length === 0
       ? []

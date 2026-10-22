@@ -35,9 +35,12 @@ src/
   upstreams/<name>.ts one adapter per upstream (fetch + cache + shape)
   docs-index/         docs index schemas and loader; bundled.ts imports generated/docs-index
   envelope.ts         result envelope: data + text summary + provenance
+  usage.ts            usage events → Analytics Engine (the usage metric)
+  rate-limit.ts       per-address rate limit on /mcp and /api
 scripts/              build-time Node code (never bundled); build-docs-index.ts builds the index
 generated/            build output, gitignored: docs-index.js + docs-index.d.ts
 docs-sources.yaml     the docs corpus: site URL, repos and files, size limit
+docs/deploy.md        deploy runbook: secrets, first deploy, dispatch, usage queries
 test/
   fixtures/<upstream>/  recorded upstream responses
   fixtures/docs/<host>/<path>  recorded docs inputs, one file per URL
@@ -66,11 +69,16 @@ test/
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
   fixtures and the updated snapshot (`npx vitest run -u test/docs-index`).
 - No tool returns more than ~8 KB of text.
+- Usage events carry no argument values and no client addresses; the Analytics Engine layout in
+  src/usage.ts is append-only, and a layout change needs a new dataset name.
 - Tests never hit the network: upstream calls go through an injectable `fetch`, fed from
   `test/fixtures/`.
 - No secrets in code, fixtures or CI logs. The Worker's only secret is a GitHub token with no
   repository permissions.
-- CI on `pull_request` runs tests only and never sees secrets; deploy runs only on push to `main`.
+- CI on `pull_request` runs tests only and never sees secrets. The Deploy workflow runs only from
+  main (push, the daily docs rebuild, the docs-updated dispatch, by hand) in the production
+  environment. Secrets live in GCP Secret Manager (cdsci-infra); GitHub and Cloudflare hold
+  copies (docs/deploy.md).
 
 ## Commands
 
@@ -92,6 +100,7 @@ Node ≥ 22.12 (CI uses 24).
 - `npm run docs:build`: build it from the live docs (network). `npm run docs:record` does the same
   and re-records `test/fixtures/docs/`.
 - `npm run cf-typegen`: regenerate `worker-configuration.d.ts` after editing `wrangler.jsonc`.
+- Deploying: see docs/deploy.md. Never run wrangler deploy from a branch.
 
 Adding a capability: define it with `defineCapability` in `src/core/<module>/`, add it to the
 module's `capabilities`, add the module to `modules` in `src/core/registry.ts`. MCP and REST pick

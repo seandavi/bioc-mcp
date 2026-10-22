@@ -20,8 +20,11 @@ export interface DocsIndex {
   get(id: string): DocsRecord | undefined;
   /** The input (search.json or raw file) a record was built from, for provenance. */
   inputFor(id: string): DocsInput | undefined;
-  /** Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. */
-  search(query: string, limit?: number): DocsSearchHit[];
+  /**
+   * Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits; RangeError unless `limit` is a
+   * positive integer. `filter` keeps only hits whose record it accepts; applied inside the ranked search, before `limit`.
+   */
+  search(query: string, limit?: number, filter?: (record: DocsRecord) => boolean): DocsSearchHit[];
 }
 
 export interface DocsIndexJson {
@@ -73,10 +76,18 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
     records,
     get: (id) => byId.get(id),
     inputFor: (id) => inputById.get(id),
-    search(query, limit = DEFAULT_LIMIT) {
+    search(query, limit = DEFAULT_LIMIT, filter) {
       if (!Number.isInteger(limit) || limit < 1) throw new RangeError(`limit must be a positive integer, got ${limit}`);
       const hits: DocsSearchHit[] = [];
-      for (const result of miniSearch.search(query)) {
+      const results = filter
+        ? miniSearch.search(query, {
+            filter: (result) => {
+              const record = byId.get(result.id as string);
+              return record !== undefined && filter(record);
+            },
+          })
+        : miniSearch.search(query);
+      for (const result of results) {
         const record = byId.get(result.id as string);
         if (record) hits.push({ record, score: result.score });
       }

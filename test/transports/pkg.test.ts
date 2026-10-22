@@ -195,7 +195,7 @@ describe('GET /api/v1/pkg/check_output', () => {
     expect(response.status).toBe(404);
     expect(body.error.code).toBe('not_found');
     expect(body.error.message).toContain('has no captured check output');
-    expect(body.error.message).toContain('stays unavailable');
+    expect(body.error.message).toContain('may not be captured yet or may never be');
     expect(body.error.message).toContain('https://github.com/r-universe/bioc/runs/112702240220');
   });
 });

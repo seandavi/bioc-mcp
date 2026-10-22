@@ -1,7 +1,6 @@
 import * as z from 'zod';
 import { CapabilityError } from '../errors';
 import type { Deps } from '../core/deps';
-import { jobUrl } from '../core/pkg/job';
 import type { UpstreamCache } from './cache';
 import {
   DEFAULT_TIMEOUT_MS,
@@ -13,6 +12,11 @@ import {
 
 export const UNIVERSES = ['bioc', 'bioc-release'] as const;
 export type Universe = (typeof UNIVERSES)[number];
+
+/** The job's GitHub page. GitHub resolves /runs/{job} without the run id. Built, never fetched. */
+export function jobUrl(universe: Universe, job: string): string {
+  return `https://github.com/r-universe/${universe}/runs/${job}`;
+}
 
 export const REGISTRY_BASE_URL = 'https://bioc-registry.seandavi.workers.dev/';
 
@@ -196,10 +200,11 @@ export async function getCheckFiles(deps: Deps, universe: Universe, job: string)
     if (error instanceof CapabilityError && error.code === 'not_found') {
       throw new CapabilityError(
         'not_found',
-        `The registry has no captured check output for ${universe} job ${job}. It captures each job's check ` +
-          'artifact once, walking forward from when capture was switched on, and r-universe deletes artifacts ' +
-          'after about 100 days, so a job that capture missed stays unavailable. Check that the universe is the ' +
-          `one the job id came from in pkg_status. The job's GitHub Actions page is ${jobUrl(universe, job)}.`,
+        `The registry has no captured check output for ${universe} job ${job}. It captures check artifacts ` +
+          'walking forward in job order and r-universe deletes them after about 100 days, so this job may not ' +
+          'be captured yet or may never be. Jobs whose check is FAIL or FAILURE produce no check output. Check ' +
+          'that the universe is the one the job id came from in pkg_status. ' +
+          `The job's GitHub Actions page is ${jobUrl(universe, job)}.`,
         error.details,
       );
     }
@@ -244,9 +249,9 @@ export async function getBuildManifest(
       throw new CapabilityError(
         'not_found',
         `The registry has no build manifest for ${universe} job ${job}. Manifests are parsed from the job log, ` +
-          'which the registry captures once, walking forward from when capture was switched on; a job that ' +
-          'capture missed never gets one. Check that the universe is the one the job id came from in ' +
-          `pkg_status. The job's GitHub Actions page is ${jobUrl(universe, job)}.`,
+          'which the registry captures walking forward in job order, so this job may not be captured yet or may ' +
+          'never be. Check that the universe is the one the job id came from in pkg_status. ' +
+          `The job's GitHub Actions page is ${jobUrl(universe, job)}.`,
         error.details,
       );
     }

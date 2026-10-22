@@ -186,7 +186,7 @@ describe('errors', () => {
     const { error } = await failure({ universe: 'bioc', job: '112702240220' });
     expect(error.code).toBe('not_found');
     expect(error.message).toContain('has no captured check output');
-    expect(error.message).toContain('stays unavailable');
+    expect(error.message).toContain('may not be captured yet or may never be');
     expect(error.message).toContain('https://github.com/r-universe/bioc/runs/112702240220');
     expect(error.details.status).toBe(404);
   });

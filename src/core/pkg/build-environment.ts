@@ -1,10 +1,9 @@
 import * as z from 'zod';
 import { sourceFor } from '../../upstreams/http';
-import { getBuildManifest, UNIVERSES } from '../../upstreams/registry';
+import { getBuildManifest, jobUrl, UNIVERSES } from '../../upstreams/registry';
 import { defineCapability } from '../capability';
-import { JobIdSchema, jobUrl } from './job';
+import { JobIdSchema, UniverseOfJobSchema } from './job';
 import { PackageNameSchema } from './package-name';
-import { UniverseOfJobSchema } from './universe';
 
 export const PkgBuildEnvironmentDataSchema = z.object({
   universe: z.enum(UNIVERSES),

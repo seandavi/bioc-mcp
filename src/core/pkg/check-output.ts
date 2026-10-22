@@ -2,7 +2,7 @@ import * as z from 'zod';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../envelope';
 import { CapabilityError } from '../../errors';
 import { sourceFor } from '../../upstreams/http';
-import { getCheckFiles, UNIVERSES } from '../../upstreams/registry';
+import { getCheckFiles, jobUrl, UNIVERSES } from '../../upstreams/registry';
 import { defineCapability } from '../capability';
 import {
   MAX_SECTIONS,
@@ -18,8 +18,7 @@ import {
   type ParsedCheckLog,
   type TextPage,
 } from './check-log';
-import { JobIdSchema, jobUrl } from './job';
-import { UniverseOfJobSchema } from './universe';
+import { JobIdSchema, UniverseOfJobSchema } from './job';
 
 const MAX_LISTED_FILES = 40;
 const CHECK_LOG = '00check.log';
@@ -117,7 +116,7 @@ export const pkgCheckOutput = defineCapability({
     '(00install.out, <pkg>-Ex.Rout, testthat.Rout.fail, 00BiocCheck.log, output.log, …). Get the job id ' +
     'and universe from pkg_status (upstream.jobs[].job). Other files return their last ~5 KB; full=true ' +
     'returns any file one page at a time (offset). Only jobs the registry captured are available; ' +
-    'others are not_found permanently. For the image and dependency versions the job ran with, use ' +
+    'others are not_found. For the image and dependency versions the job ran with, use ' +
     'pkg_build_environment.',
   input: z.object({
     universe: UniverseOfJobSchema,

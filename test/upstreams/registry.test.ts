@@ -200,7 +200,7 @@ describe('getCheckFiles', () => {
     const error = await errorOf(getCheckFiles(deps, 'bioc', '112702240220'));
     expect(error.code).toBe('not_found');
     expect(error.message).toContain('has no captured check output for bioc job 112702240220');
-    expect(error.message).toContain('stays unavailable');
+    expect(error.message).toContain('may not be captured yet or may never be');
     expect(error.message).toContain('https://github.com/r-universe/bioc/runs/112702240220');
     expect(error.details).toEqual({ upstream: 'registry', url: checksUrl('bioc', '112702240220'), status: 404 });
   });

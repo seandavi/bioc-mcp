@@ -26,8 +26,9 @@ from `pkg_status` (`data.upstream.jobs[].job`):
   digest for containers), the package repositories, the number of installed dependencies and,
   on request, the exact versions of named dependencies.
 
-A job the registry never captured gives `not_found`, and the message says that such jobs stay
-404 permanently.
+A job the registry has not captured gives `not_found`. The message does not promise the job is
+gone for good: capture walks forward in job order and may not have reached it yet, and jobs whose
+check is `FAIL`/`FAILURE` have no check output at all.
 
 ## Non-goals
 
@@ -70,8 +71,8 @@ The issue does not settle these. Each is decided here, and the reviewer can stri
 
 ```
 src/upstreams/registry.ts            getCheckFiles(), getBuildManifest(), BuildManifestSchema,
-                                     BuildManifest; registryUpstream.description updated
-src/core/pkg/job.ts                  NEW  JobIdSchema, jobUrl()
+                                     BuildManifest, jobUrl(); registryUpstream.description updated
+src/core/pkg/job.ts                  NEW  JobIdSchema, UniverseOfJobSchema
 src/core/pkg/check-log.ts            NEW  pure text helpers: normalizeText, jsonTextBytes,
                                      parseCheckLog, fitSectionText, selectSections, textPage,
                                      tailPage, parseJobInfo, and their types/constants
@@ -122,13 +123,14 @@ Behaviour:
 
 1. `path = \`checks/${pathSegment(universe)}/${pathSegment(job)}\``, then `fetchUpstreamJson(deps, registryUpstream, path)`.
 2. A `CapabilityError` with code `not_found` is rethrown as `not_found` with the same `details`
-   and this message (`jobUrl` from `src/core/pkg/job.ts`):
+   and this message (`jobUrl` from the same file):
 
    ```
-   The registry has no captured check output for ${universe} job ${job}. It captures each job's
-   check artifact once, walking forward from when capture was switched on, and r-universe deletes
-   artifacts after about 100 days, so a job that capture missed stays unavailable. Check that the
-   universe is the one the job id came from in pkg_status. The job's GitHub Actions page is ${jobUrl(universe, job)}.
+   The registry has no captured check output for ${universe} job ${job}. It captures check
+   artifacts walking forward in job order and r-universe deletes them after about 100 days, so this
+   job may not be captured yet or may never be. Jobs whose check is FAIL or FAILURE produce no
+   check output. Check that the universe is the one the job id came from in pkg_status. The job's
+   GitHub Actions page is ${jobUrl(universe, job)}.
    ```
 
    (One line in code; wrapped here.) Other errors propagate unchanged.
@@ -181,9 +183,9 @@ Behaviour:
 
    ```
    The registry has no build manifest for ${universe} job ${job}. Manifests are parsed from the job
-   log, which the registry captures once, walking forward from when capture was switched on; a job
-   that capture missed never gets one. Check that the universe is the one the job id came from in
-   pkg_status. The job's GitHub Actions page is ${jobUrl(universe, job)}.
+   log, which the registry captures walking forward in job order, so this job may not be captured
+   yet or may never be. Check that the universe is the one the job id came from in pkg_status. The
+   job's GitHub Actions page is ${jobUrl(universe, job)}.
    ```
 3. `BuildManifestSchema.safeParse(json)` fails →
    `CapabilityError('upstream_error', \`${registryUpstream.name} returned a build manifest for job ${job} with an unexpected shape\`, { upstream: 'registry', url: response.url })`.
@@ -202,15 +204,26 @@ version. The 404 body is JSON
 (`{"error":"not captured","detail":"derived from the job log, so it exists only where /logs does","log":"/logs/bioc/<job>"}`),
 and no `Last-Modified` is sent on 200.
 
-### `src/core/pkg/job.ts`
+### `src/core/pkg/job.ts` and `jobUrl()`
+
+`jobUrl()` lives in `src/upstreams/registry.ts`, next to the 404 messages that use it, so that
+`upstreams/` never imports from `core/` for a value and `job.ts` can import `UNIVERSES` without a
+load-order cycle.
 
 ```ts
+// src/core/pkg/job.ts
 /** GitHub Actions job id: digits, no leading zero. */
 export const JobIdSchema = z
   .string()
   .regex(/^[1-9][0-9]{0,19}$/, 'Job ids are digits, e.g. "96299707840"')
   .describe('GitHub Actions job id from pkg_status (upstream.jobs[].job), as a string of digits, e.g. "96299707840"');
 
+/** The universe a job id belongs to; required, because a job id exists in exactly one universe. */
+export const UniverseOfJobSchema = z
+  .enum(UNIVERSES)
+  .describe("Universe the job id came from: 'bioc' (devel) or 'bioc-release'");
+
+// src/upstreams/registry.ts
 /** The job's GitHub page. GitHub resolves /runs/{job} without the run id. Built, never fetched. */
 export function jobUrl(universe: Universe, job: string): string {
   return `https://github.com/r-universe/${universe}/runs/${job}`;
@@ -394,10 +407,6 @@ on `source` and `wasm` jobs.
 #### Input
 
 ```ts
-const UniverseOfJobSchema = z
-  .enum(UNIVERSES)
-  .describe("Universe the job id came from: 'bioc' (devel) or 'bioc-release'");
-
 input: z.object({
   universe: UniverseOfJobSchema,
   job: JobIdSchema,
@@ -420,7 +429,7 @@ input: z.object({
 }),
 ```
 
-`UniverseOfJobSchema` is exported from `job.ts` and shared with `pkg_build_environment`.
+`UniverseOfJobSchema` is exported from `job.ts` (with `JobIdSchema`) and shared with `pkg_build_environment`.
 **Verified:** `validateRegistry` accepts this schema and the `pkg_build_environment` one, and
 `queryToInput` turns `?universe=bioc&job=96299707840&full=true&offset=10&dependencies=biomaRt&dependencies=httr2`
 into the typed input. `job: 96299707840` (a number) and `'0123'` are rejected. I checked this with
@@ -539,7 +548,7 @@ export const pkgCheckOutput = defineCapability({
     '(00install.out, <pkg>-Ex.Rout, testthat.Rout.fail, 00BiocCheck.log, output.log, …). Get the job id ' +
     'and universe from pkg_status (upstream.jobs[].job). Other files return their last ~5 KB; full=true ' +
     'returns any file one page at a time (offset). Only jobs the registry captured are available; ' +
-    'others are not_found permanently. For the image and dependency versions the job ran with, use ' +
+    'others are not_found. For the image and dependency versions the job ran with, use ' +
     'pkg_build_environment.',
   input,
   data: PkgCheckOutputDataSchema,
@@ -734,7 +743,7 @@ because `fixtureFetch` only matches exact URLs.
       the ERROR text starts with its first 2 lines, contains `lines omitted; read them with full=true`,
       ends with `Execution halted`, and is ≤ 2,000 JSON bytes.
 - [ ] **404 job:** `112702240220` gives REST 404 `not_found` whose message contains
-      `has no captured check output`, `stays unavailable` and
+      `has no captured check output`, `may not be captured yet or may never be` and
       `https://github.com/r-universe/bioc/runs/112702240220`. MCP returns `isError` with text
       starting `not_found:`. `pkg_build_environment` on the same job gives `not_found` mentioning
       `build manifest`.
@@ -805,7 +814,9 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. No network.
   (`captureChecks`/`captureLogs`, or its `GITHUB_TOKEN`) is fixed, they answer `not_found` for
   every job that `pkg_status` returns today. This needs an issue on seandavi/bioc-registry. I
   did not file one (outside this spec's scope). Fixtures use older captured jobs. The 404
-  message says "stays unavailable" rather than promising a later capture.
+  message says the job "may not be captured yet or may never be": the stall means current jobs
+  are not captured yet, while `FAIL`/`FAILURE` jobs and jobs past the ~100-day expiry never
+  will be. A follow-up could read the registry's `checkcursor` on 404 and say which.
 - **`job` as a string vs `pkg_status`'s numeric job.** An MCP client that copies the number
   unquoted is rejected once. The description and error message show the quoted form.
 - **Text-only MCP clients.** The scaffold sends `summary` as the text content and the excerpt

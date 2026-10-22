@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use bioc-mcp, please cite it as below."
+type: software
+title: "bioc-mcp: a read-only MCP server and REST API for Bioconductor"
+authors:
+  - family-names: "Davis"
+    given-names: "Sean"
+    affiliation: "University of Colorado Anschutz School of Medicine"
+    orcid: "https://orcid.org/0000-0002-8991-6458"
+abstract: >-
+  A public, read-only Model Context Protocol server, and the equivalent REST API, over public
+  Bioconductor infrastructure data: package build, check and propagation state, release
+  information, downloads and activity across the bioc-* repositories. Every result carries the
+  upstream URL and its freshness.
+keywords:
+  - Bioconductor
+  - Model Context Protocol
+  - MCP
+  - REST API
+  - bioinformatics
+license: Apache-2.0
+repository-code: "https://github.com/seandavi/bioc-mcp"

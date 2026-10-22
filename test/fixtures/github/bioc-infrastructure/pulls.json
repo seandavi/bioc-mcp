@@ -1,0 +1,32 @@
+[
+  {
+    "number": 122,
+    "title": "Proposal: a Bioconductor MCP server, one public surface with ops first",
+    "html_url": "https://github.com/seandavi/bioc-infrastructure/pull/122",
+    "created_at": "2026-10-22T11:51:48Z",
+    "updated_at": "2026-10-22T11:51:48Z",
+    "draft": false,
+    "user": {
+      "login": "seandavi"
+    },
+    "head": {
+      "sha": "4eb3a09bc85001fe73b6765cde7ab3b63a2a0875",
+      "ref": "spec/mcp"
+    }
+  },
+  {
+    "number": 120,
+    "title": "ADR 0014 (proposed): one issue tracker; one repo for the operated stack",
+    "html_url": "https://github.com/seandavi/bioc-infrastructure/pull/120",
+    "created_at": "2026-10-16T21:42:33Z",
+    "updated_at": "2026-10-16T21:42:33Z",
+    "draft": false,
+    "user": {
+      "login": "seandavi"
+    },
+    "head": {
+      "sha": "e6ad2f8bb5ffeaf15c0591667cdccc57cd756ed6",
+      "ref": "adr-0014-repo-layout"
+    }
+  }
+]

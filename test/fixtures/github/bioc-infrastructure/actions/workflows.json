@@ -1,0 +1,26 @@
+{
+  "total_count": 3,
+  "workflows": [
+    {
+      "id": 371462461,
+      "name": "docs-check",
+      "path": ".github/workflows/docs-check.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/blob/main/.github/workflows/docs-check.yml"
+    },
+    {
+      "id": 339684928,
+      "name": "docs",
+      "path": ".github/workflows/docs.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/blob/main/.github/workflows/docs.yml"
+    },
+    {
+      "id": 370337857,
+      "name": "test",
+      "path": ".github/workflows/test.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/blob/main/.github/workflows/test.yml"
+    }
+  ]
+}

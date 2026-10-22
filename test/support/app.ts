@@ -1,6 +1,7 @@
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import type { Hono } from 'hono';
 import { createApp } from '../../src/index';
+import type { CapabilityEnv } from '../../src/core/deps';
 import type { Module } from '../../src/core/registry';
 import { metaModule } from '../../src/core/meta';
 import type { RateLimiter } from '../../src/rate-limit';
@@ -19,6 +20,7 @@ export function makeTestApp(
     routes?: Record<string, FixtureRoute>;
     now?: () => Date;
     extraModules?: Module[];
+    env?: CapabilityEnv;
     rateLimiter?: RateLimiter;
   } = {},
 ) {
@@ -29,7 +31,7 @@ export function makeTestApp(
   const app = createApp({
     config: { allowedHosts: ['test.local'], allowedOrigins: ['test.local'] },
     modules: [metaModule, exampleModule, ...(options.extraModules ?? [])],
-    deps: { fetch, cache, now, env: {} },
+    deps: { fetch, cache, now, env: options.env ?? {} },
     usage,
     rateLimiter: options.rateLimiter ?? allowAll,
   });

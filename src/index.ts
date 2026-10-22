@@ -4,6 +4,7 @@ import type { Deps } from './core/deps';
 import { createMcpApp } from './transports/mcp';
 import { createRestApp } from './transports/rest';
 import { createCloudflareCache } from './upstreams/cache';
+import { githubTokenWarning } from './upstreams/github';
 import { parseConfig, type AppConfig } from './config';
 import { rateLimitMiddleware, type RateLimiter } from './rate-limit';
 import { createAnalyticsEngineSink, type UsageSink } from './usage';
@@ -45,17 +46,21 @@ let app: Hono | undefined;
 export default {
   fetch(request, env, ctx) {
     // Built on the first request because bindings arrive with the request.
-    app ??= createApp({
-      config: parseConfig(env),
-      deps: {
-        fetch: (r) => fetch(r), // wrapper: never store the bare global fetch on an object
-        cache: createCloudflareCache(caches.default),
-        now: () => new Date(),
-        env: { GITHUB_TOKEN: env.GITHUB_TOKEN },
-      },
-      usage: createAnalyticsEngineSink(env.USAGE),
-      rateLimiter: env.RATE_LIMITER,
-    });
+    if (!app) {
+      const warning = githubTokenWarning(env);
+      if (warning) console.warn(warning);
+      app = createApp({
+        config: parseConfig(env),
+        deps: {
+          fetch: (r) => fetch(r), // wrapper: never store the bare global fetch on an object
+          cache: createCloudflareCache(caches.default),
+          now: () => new Date(),
+          env: { GITHUB_TOKEN: env.GITHUB_TOKEN },
+        },
+        usage: createAnalyticsEngineSink(env.USAGE),
+        rateLimiter: env.RATE_LIMITER,
+      });
+    }
     return app.fetch(request, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

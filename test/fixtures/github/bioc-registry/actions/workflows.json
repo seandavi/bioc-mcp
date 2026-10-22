@@ -1,0 +1,33 @@
+{
+  "total_count": 4,
+  "workflows": [
+    {
+      "id": 339790865,
+      "name": "freshness",
+      "path": ".github/workflows/freshness.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-registry/blob/main/.github/workflows/freshness.yml"
+    },
+    {
+      "id": 340044135,
+      "name": "install",
+      "path": ".github/workflows/install.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-registry/blob/main/.github/workflows/install.yml"
+    },
+    {
+      "id": 349527520,
+      "name": "publish",
+      "path": ".github/workflows/publish.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-registry/blob/main/.github/workflows/publish.yml"
+    },
+    {
+      "id": 333997009,
+      "name": "test",
+      "path": ".github/workflows/test.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-registry/blob/main/.github/workflows/test.yml"
+    }
+  ]
+}

@@ -2,12 +2,13 @@ import * as z from 'zod';
 import { assertUpstream, type Upstream } from '../upstreams/http';
 import type { Capability, Module } from './capability';
 import { metaModule } from './meta';
+import { opsModule } from './ops';
 import { pkgModule } from './pkg';
 
 export { defineCapability, type Capability, type Module } from './capability';
 
 /** Production registry. Later issues append their modules here. */
-export const modules: readonly Module[] = [metaModule, pkgModule];
+export const modules: readonly Module[] = [metaModule, pkgModule, opsModule];
 
 const MODULE_NAME = /^[a-z]+$/;
 const CAPABILITY_NAME = /^[a-z]+_[a-z][a-z0-9_]*$/;

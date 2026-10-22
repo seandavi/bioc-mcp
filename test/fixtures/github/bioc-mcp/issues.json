@@ -1,0 +1,244 @@
+[
+  {
+    "number": 22,
+    "title": "Follow-ups from the #3 review",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/22",
+    "created_at": "2026-10-22T17:47:56Z",
+    "updated_at": "2026-10-22T17:47:56Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 20,
+    "title": "Follow-ups from the #6 review",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/20",
+    "created_at": "2026-10-22T17:45:33Z",
+    "updated_at": "2026-10-22T17:45:33Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 18,
+    "title": "Follow-ups from the #15 review",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/18",
+    "created_at": "2026-10-22T14:33:49Z",
+    "updated_at": "2026-10-22T14:33:49Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 13,
+    "title": "File upstream API gap issues",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/13",
+    "created_at": "2026-10-22T11:55:37Z",
+    "updated_at": "2026-10-22T14:05:03Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "no-factory"
+      },
+      {
+        "name": "needs:human"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 12,
+    "title": "Client compatibility and connection docs",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/12",
+    "created_at": "2026-10-22T11:55:36Z",
+    "updated_at": "2026-10-22T11:55:36Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "infra"
+      },
+      {
+        "name": "review:ux"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 11,
+    "title": "Deploy to workers.dev: rate limiting, usage metrics, deploy-on-main",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/11",
+    "created_at": "2026-10-22T11:55:34Z",
+    "updated_at": "2026-10-22T12:08:30Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "infra"
+      },
+      {
+        "name": "review:security"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 10,
+    "title": "triage-failing-package prompt",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/10",
+    "created_at": "2026-10-22T11:55:33Z",
+    "updated_at": "2026-10-22T11:55:33Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "module:pkg"
+      },
+      {
+        "name": "review:ux"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 9,
+    "title": "ops module: ops_activity across the bioc-* repos",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/9",
+    "created_at": "2026-10-22T11:55:31Z",
+    "updated_at": "2026-10-22T11:55:31Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "module:ops"
+      },
+      {
+        "name": "review:ux"
+      },
+      {
+        "name": "review:security"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 8,
+    "title": "pkg_release_info and pkg_downloads",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/8",
+    "created_at": "2026-10-22T11:55:30Z",
+    "updated_at": "2026-10-22T11:55:30Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "module:pkg"
+      },
+      {
+        "name": "review:ux"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 7,
+    "title": "pkg_check_output and pkg_build_environment",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/7",
+    "created_at": "2026-10-22T11:55:29Z",
+    "updated_at": "2026-10-22T11:55:29Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "module:pkg"
+      },
+      {
+        "name": "review:ux"
+      },
+      {
+        "name": "review:security"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 5,
+    "title": "Docs search evaluation set and recall@5 baseline",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/5",
+    "created_at": "2026-10-22T11:55:26Z",
+    "updated_at": "2026-10-22T11:55:26Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "module:docs"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 4,
+    "title": "docs module: docs_search, docs_read, resources, explain-decision prompt",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/4",
+    "created_at": "2026-10-22T11:55:25Z",
+    "updated_at": "2026-10-22T11:55:25Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "module:docs"
+      },
+      {
+        "name": "review:ux"
+      },
+      {
+        "name": "review:security"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 1,
+    "title": "v0: Bioconductor MCP server + REST API (tracking)",
+    "html_url": "https://github.com/seandavi/bioc-mcp/issues/1",
+    "created_at": "2026-10-22T11:55:21Z",
+    "updated_at": "2026-10-22T11:55:21Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "tracking"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  }
+]

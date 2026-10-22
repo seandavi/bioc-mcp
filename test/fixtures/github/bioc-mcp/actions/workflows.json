@@ -1,0 +1,19 @@
+{
+  "total_count": 2,
+  "workflows": [
+    {
+      "id": 392861793,
+      "name": "CI",
+      "path": ".github/workflows/ci.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-mcp/blob/main/.github/workflows/ci.yml"
+    },
+    {
+      "id": 393195405,
+      "name": "Docs index",
+      "path": ".github/workflows/docs-index.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-mcp/blob/main/.github/workflows/docs-index.yml"
+    }
+  ]
+}

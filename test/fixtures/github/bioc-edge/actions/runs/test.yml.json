@@ -1,0 +1,185 @@
+{
+  "total_count": 27,
+  "workflow_runs": [
+    {
+      "id": 38980410856,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-16T23:15:07Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38980410856",
+      "display_title": "Stats: answer /packages/stats/ from R2 alone; drop the passthrough to…"
+    },
+    {
+      "id": 38979785390,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-16T23:08:22Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38979785390",
+      "display_title": "Serve /packages/stats/ HTML pages and static assets from R2, master a…"
+    },
+    {
+      "id": 38958833861,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-16T19:58:34Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38958833861",
+      "display_title": "Serve /packages/stats/*.tab from R2; master keeps the HTML (bioc-infr…"
+    },
+    {
+      "id": 37776885310,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-08T12:26:38Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37776885310",
+      "display_title": "Merge pull request #60 from seandavi/fix/short-url-devel-fallback"
+    },
+    {
+      "id": 36802576348,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-10-01T01:45:05Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36802576348",
+      "display_title": "Merge pull request #54 from seandavi/preview-dev-host-only"
+    },
+    {
+      "id": 36610297160,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-29T18:11:37Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36610297160",
+      "display_title": "Merge pull request #53 from seandavi/fix-404-body"
+    },
+    {
+      "id": 36596798145,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-29T16:18:54Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36596798145",
+      "display_title": "Merge pull request #51 from seandavi/manifest-build-overlay"
+    },
+    {
+      "id": 36579377117,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-29T14:00:29Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36579377117",
+      "display_title": "Merge pull request #49 from seandavi/parity-vs-master"
+    },
+    {
+      "id": 36490610779,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T22:08:43Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36490610779",
+      "display_title": "Merge pull request #42 from seandavi/fix/books-short-urls"
+    },
+    {
+      "id": 36490080685,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T22:03:36Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36490080685",
+      "display_title": "Merge pull request #40 from seandavi/fix/dir-slash-redirect"
+    },
+    {
+      "id": 36489220085,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T21:55:10Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36489220085",
+      "display_title": "Merge pull request #39 from seandavi/cache-404s"
+    },
+    {
+      "id": 36486770372,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T21:32:25Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36486770372",
+      "display_title": "Merge pull request #37 from seandavi/cache-archive-keys"
+    },
+    {
+      "id": 36485783344,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T21:23:37Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36485783344",
+      "display_title": "Merge pull request #36 from seandavi/cache-mirror-only"
+    },
+    {
+      "id": 36483067892,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T20:59:39Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36483067892",
+      "display_title": "Merge pull request #34 from seandavi/drop-talks-redirect"
+    },
+    {
+      "id": 36481887791,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T20:49:18Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36481887791",
+      "display_title": "Merge pull request #31 from seandavi/trim-cf-log"
+    },
+    {
+      "id": 36479929595,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T20:32:30Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36479929595",
+      "display_title": "Merge pull request #29 from seandavi/edge-404-500-fixes"
+    },
+    {
+      "id": 36472273827,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T19:26:39Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36472273827",
+      "display_title": "AGENTS.md: drop jj; the repo is plain git"
+    },
+    {
+      "id": 36469418107,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T19:02:17Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36469418107",
+      "display_title": "Merge pull request #20 from seandavi/purge-all-hosts"
+    },
+    {
+      "id": 36468842176,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T18:57:25Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36468842176",
+      "display_title": "Merge pull request #19 from seandavi/stats-passthrough"
+    },
+    {
+      "id": 36465877771,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "created_at": "2026-09-28T18:32:16Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/36465877771",
+      "display_title": "Merge pull request #14 from seandavi/cutover-preflight"
+    }
+  ]
+}

@@ -223,3 +223,8 @@ describe('pkg_status', () => {
     if (!result.ok) expect(result.error.code).toBe('upstream_error');
   });
 });
+
+test('the description names pkg_check_output and pkg_build_environment', () => {
+  expect(pkgStatus.description).toContain('pkg_check_output');
+  expect(pkgStatus.description).toContain('pkg_build_environment');
+});

@@ -13,6 +13,11 @@ import {
 export const UNIVERSES = ['bioc', 'bioc-release'] as const;
 export type Universe = (typeof UNIVERSES)[number];
 
+/** The job's GitHub page. GitHub resolves /runs/{job} without the run id. Built, never fetched. */
+export function jobUrl(universe: Universe, job: string): string {
+  return `https://github.com/r-universe/${universe}/runs/${job}`;
+}
+
 export const REGISTRY_BASE_URL = 'https://bioc-registry.seandavi.workers.dev/';
 
 export const registryUpstream: Upstream = {
@@ -22,8 +27,9 @@ export const registryUpstream: Upstream = {
   ttlSeconds: 300,
   timeoutMs: 15_000, // the index is ~8 MB
   description:
-    'bioc-registry: the propagation index (which package versions passed the gate or were seeded) ' +
-    'and build observations, for the bioc (devel) and bioc-release universes.',
+    'bioc-registry: the propagation index (which package versions passed the gate or were seeded), ' +
+    'build observations, and captured per-job R CMD check output and build manifests, for the bioc ' +
+    '(devel) and bioc-release universes.',
 };
 
 const ArtifactSchema = z.object({
@@ -177,4 +183,88 @@ export function registryEntry(index: PropagationIndex, name: string): RegistryEn
     );
   }
   return parsed.data;
+}
+
+export interface CheckFiles {
+  response: UpstreamResponse; // for sourceFor()
+  files: Record<string, string>; // basename → file text, exactly as JSON.parse returned it
+}
+
+/** GET checks/{universe}/{job}. 404 → not_found explaining capture. */
+export async function getCheckFiles(deps: Deps, universe: Universe, job: string): Promise<CheckFiles> {
+  const path = `checks/${pathSegment(universe)}/${pathSegment(job)}`;
+  let fetched: Awaited<ReturnType<typeof fetchUpstreamJson>>;
+  try {
+    fetched = await fetchUpstreamJson(deps, registryUpstream, path);
+  } catch (error) {
+    if (error instanceof CapabilityError && error.code === 'not_found') {
+      throw new CapabilityError(
+        'not_found',
+        `The registry has no captured check output for ${universe} job ${job}. It captures check artifacts ` +
+          'walking forward in job order and r-universe deletes them after about 100 days, so this job may not ' +
+          'be captured yet or may never be. Jobs whose check is FAIL or FAILURE produce no check output. Check ' +
+          'that the universe is the one the job id came from in pkg_status. ' +
+          `The job's GitHub Actions page is ${jobUrl(universe, job)}.`,
+        error.details,
+      );
+    }
+    throw error;
+  }
+  const { response, json } = fetched;
+  // No zod here: a "__proto__" key must stay an own data property.
+  if (
+    typeof json !== 'object' ||
+    json === null ||
+    Array.isArray(json) ||
+    !Object.values(json).every((value) => typeof value === 'string')
+  ) {
+    throw new CapabilityError(
+      'upstream_error',
+      `${registryUpstream.name} returned check output for job ${job} that is not an object of file texts`,
+      { upstream: registryUpstream.id, url: response.url },
+    );
+  }
+  return { response, files: json as Record<string, string> };
+}
+
+export const BuildManifestSchema = z.object({
+  image: z.string().nullish(),
+  repos: z.array(z.string()).nullish(),
+  deps: z.record(z.string(), z.string()).nullish(), // package → resolved version
+});
+export type BuildManifest = z.infer<typeof BuildManifestSchema>;
+
+/** GET builds/{universe}/{job}. 404 → not_found explaining capture. */
+export async function getBuildManifest(
+  deps: Deps,
+  universe: Universe,
+  job: string,
+): Promise<{ response: UpstreamResponse; manifest: BuildManifest }> {
+  const path = `builds/${pathSegment(universe)}/${pathSegment(job)}`;
+  let fetched: Awaited<ReturnType<typeof fetchUpstreamJson>>;
+  try {
+    fetched = await fetchUpstreamJson(deps, registryUpstream, path);
+  } catch (error) {
+    if (error instanceof CapabilityError && error.code === 'not_found') {
+      throw new CapabilityError(
+        'not_found',
+        `The registry has no build manifest for ${universe} job ${job}. Manifests are parsed from the job log, ` +
+          'which the registry captures walking forward in job order, so this job may not be captured yet or may ' +
+          'never be. Check that the universe is the one the job id came from in pkg_status. ' +
+          `The job's GitHub Actions page is ${jobUrl(universe, job)}.`,
+        error.details,
+      );
+    }
+    throw error;
+  }
+  const { response, json } = fetched;
+  const parsed = BuildManifestSchema.safeParse(json);
+  if (!parsed.success) {
+    throw new CapabilityError(
+      'upstream_error',
+      `${registryUpstream.name} returned a build manifest for job ${job} with an unexpected shape`,
+      { upstream: registryUpstream.id, url: response.url },
+    );
+  }
+  return { response, manifest: parsed.data };
 }

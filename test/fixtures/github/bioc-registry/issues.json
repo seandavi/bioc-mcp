@@ -1,0 +1,292 @@
+[
+  {
+    "number": 68,
+    "title": "Package Page says not building in R-universe but it is?",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/68",
+    "created_at": "2026-10-22T17:59:37Z",
+    "updated_at": "2026-10-22T18:03:14Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "lshep"
+    },
+    "draft": null
+  },
+  {
+    "number": 63,
+    "title": "Keep Authors@R in the propagation index",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/63",
+    "created_at": "2026-10-02T13:03:56Z",
+    "updated_at": "2026-10-02T13:03:56Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 62,
+    "title": "Package API: GET /api/pkg/{package}, one document per package, and /pkg rendered from it",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/62",
+    "created_at": "2026-09-29T03:21:26Z",
+    "updated_at": "2026-09-29T03:21:26Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 61,
+    "title": "Install canary on Windows and macOS (binaries), not only Linux",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/61",
+    "created_at": "2026-09-29T02:34:59Z",
+    "updated_at": "2026-09-29T02:34:59Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 60,
+    "title": "Cache /repo indexes: no-store and 250-550 ms per request today",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/60",
+    "created_at": "2026-09-29T02:34:58Z",
+    "updated_at": "2026-09-29T02:34:58Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 59,
+    "title": "Serve src/contrib/Archive/ from superseded versions",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/59",
+    "created_at": "2026-09-29T02:34:56Z",
+    "updated_at": "2026-09-29T02:34:56Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 58,
+    "title": "Repository parity with bioconductor.org: PACKAGES.rds, MD5sum, and missing index fields",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/58",
+    "created_at": "2026-09-29T02:34:55Z",
+    "updated_at": "2026-09-29T02:34:55Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 57,
+    "title": "Keep bioc-build's data and workflow packages out of the software repositories",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/57",
+    "created_at": "2026-09-29T02:34:53Z",
+    "updated_at": "2026-09-29T02:34:53Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 56,
+    "title": "deps rule treats unknown dependencies as satisfied, publishing uninstallable packages",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/56",
+    "created_at": "2026-09-29T02:34:52Z",
+    "updated_at": "2026-09-29T02:34:52Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 55,
+    "title": "Record every gate decision, including withheld families, and say why on /pkg",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/55",
+    "created_at": "2026-09-29T02:34:51Z",
+    "updated_at": "2026-09-29T02:34:51Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 54,
+    "title": "Parquet tables for package-level state and binaries (rebuild history)",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/54",
+    "created_at": "2026-09-29T02:34:50Z",
+    "updated_at": "2026-09-29T02:34:50Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 53,
+    "title": "Capture Bioconductor's official repository state as a time series",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/53",
+    "created_at": "2026-09-29T02:34:49Z",
+    "updated_at": "2026-09-29T02:34:49Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 52,
+    "title": "Seed drift count reads a snapshot frozen at seed time",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/52",
+    "created_at": "2026-09-29T02:34:48Z",
+    "updated_at": "2026-09-29T02:35:07Z",
+    "comments": 1,
+    "labels": [
+      {
+        "name": "bug"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 26,
+    "title": "Generate download statistics from the de-identified access log",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/26",
+    "created_at": "2026-08-18T09:48:45Z",
+    "updated_at": "2026-10-17T12:27:56Z",
+    "comments": 2,
+    "labels": [
+      {
+        "name": "enhancement"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 10,
+    "title": "Discussion: classifying build/check failures — what can be deterministic, and what needs sign-off",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/10",
+    "created_at": "2026-08-14T20:38:09Z",
+    "updated_at": "2026-08-14T20:38:09Z",
+    "comments": 0,
+    "labels": [
+      {
+        "name": "question"
+      }
+    ],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 8,
+    "title": "Reference: how r-universe hosts the Bioconductor universes (and why there is no PR target)",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/8",
+    "created_at": "2026-08-14T20:11:27Z",
+    "updated_at": "2026-08-14T20:11:27Z",
+    "comments": 0,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 7,
+    "title": "Design a diagnosis path: answer \"why isn't my package available?\" in one call",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/7",
+    "created_at": "2026-08-14T20:00:20Z",
+    "updated_at": "2026-09-29T02:35:08Z",
+    "comments": 4,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  },
+  {
+    "number": 6,
+    "title": "Propagated packages can be invisible to R when upstream loses their metadata",
+    "html_url": "https://github.com/seandavi/bioc-registry/issues/6",
+    "created_at": "2026-08-14T19:56:08Z",
+    "updated_at": "2026-08-14T19:56:51Z",
+    "comments": 1,
+    "labels": [],
+    "user": {
+      "login": "seandavi"
+    },
+    "draft": null
+  }
+]

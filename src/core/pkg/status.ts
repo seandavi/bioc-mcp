@@ -303,7 +303,8 @@ export const pkgStatus = defineCapability({
     'job ids, BiocCheck counts, and whether a newer commit failed. Says whether r-universe is ahead of the ' +
     "propagated version and why, and returns a SQL query for the package's check history to run in the " +
     "registry's /sql console (not executed). universe 'bioc' is devel (default), 'bioc-release' is release. " +
-    'Package names are case-sensitive. Does not read check logs, download counts or release schedules.',
+    'Package names are case-sensitive. Does not read check logs. For download counts use pkg_downloads; ' +
+    'for release and devel versions use pkg_release_info.',
   input: z.object({
     package: PackageNameSchema,
     universe: z

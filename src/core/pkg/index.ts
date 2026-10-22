@@ -1,11 +1,16 @@
+import { bioconductorUpstream } from '../../upstreams/bioconductor';
 import { rUniverseUpstreams } from '../../upstreams/r-universe';
 import { registryUpstream } from '../../upstreams/registry';
 import type { Module } from '../capability';
+import { pkgDownloads } from './downloads';
+import { pkgReleaseInfo } from './release-info';
 import { pkgStatus } from './status';
 
 export const pkgModule: Module = {
   name: 'pkg',
-  description: 'Package build and propagation state from the Bioconductor registry and r-universe.',
-  upstreams: [registryUpstream, rUniverseUpstreams.bioc, rUniverseUpstreams['bioc-release']],
-  capabilities: [pkgStatus],
+  description:
+    'Package build and propagation state (Bioconductor registry, r-universe), release versions and ' +
+    'download stats (bioconductor.org).',
+  upstreams: [registryUpstream, rUniverseUpstreams.bioc, rUniverseUpstreams['bioc-release'], bioconductorUpstream],
+  capabilities: [pkgStatus, pkgReleaseInfo, pkgDownloads],
 };

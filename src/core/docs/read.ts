@@ -1,10 +1,11 @@
 import * as z from 'zod';
+import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../envelope';
 import { CapabilityError } from '../../errors';
 import type { DocsIndex } from '../../docs-index/load';
 import { DocsSourceKindSchema, type DocsRecord } from '../../docs-index/schema';
 import { defineCapability, type Capability } from '../capability';
-import { chunkText } from './chunk';
-import { docsPages, docsSource, renderPage, renderSection, sectionLabel, type DocsPage, type DocsPages } from './pages';
+import { chunkText, DOCS_READ_TEXT_BUDGET } from './chunk';
+import { docsPages, docsPageSource, renderPage, renderSection, sectionLabel, type DocsPage, type DocsPages } from './pages';
 
 /** Longest id_or_url that docs_read and the docs-page resource accept. */
 export const MAX_DOCS_REFERENCE_LENGTH = 2048;
@@ -16,7 +17,7 @@ export const DocsReadInputSchema = z.object({
     .max(MAX_DOCS_REFERENCE_LENGTH)
     .describe(
       'A url from docs_search (with #anchor for one section, without for the whole page), a record id ' +
-        "('site:propagation-gate.html#why-the-registry-polls'), or a bioc://docs/ resource URI",
+        "('site:propagation-gate.html#why-the-registry-polls'), or a bioc://docs/ resource URI; over REST, send '#' as %23",
     ),
   cursor: z
     .string()
@@ -39,6 +40,8 @@ export const DocsReadDataSchema = z.object({
   total_chars: z.number().int().nonnegative().describe('Length of the full text, in UTF-16 code units'),
   next_cursor: z.string().nullable().describe('Pass as cursor to read the next part; null on the last part'),
 });
+
+type DocsReadData = z.output<typeof DocsReadDataSchema>;
 
 export type DocsTarget =
   | { kind: 'page'; page: DocsPage }
@@ -96,12 +99,18 @@ function closeMatchTerms(text: string, ignore: ReadonlySet<string> = new Set()):
   return [...terms];
 }
 
-/** The not_found error for a missing target, with up to 5 close matches from the index. */
+/** Caller text as echoed in an error: at most SHOWN_LENGTH characters, then '…'. */
+function truncateEcho(text: string): string {
+  return text.length > SHOWN_LENGTH ? text.slice(0, SHOWN_LENGTH) + '…' : text;
+}
+
+/** The not_found error for a missing target, with up to 5 close matches from the index, worded for a docs_read call or a bioc://docs/ resource read. */
 export function docsNotFound(
   index: DocsIndex,
   pages: DocsPages,
   input: string,
   target: Extract<DocsTarget, { kind: 'missing' }>,
+  via: 'tool' | 'resource',
 ): CapabilityError {
   const { page, fragment } = target;
   if (page && fragment !== null) {
@@ -113,23 +122,46 @@ export function docsNotFound(
             .search(terms.join(' '), CLOSE_MATCHES, (r) => r.id !== page.id && page.records.includes(r))
             .map((hit) => hit.record);
     const sections = found.length > 0 ? found : page.records.filter((r) => r.id !== page.id).slice(0, CLOSE_MATCHES);
+    const frag = truncateEcho(fragment);
     return new CapabilityError(
       'not_found',
-      `No section "#${fragment}" on ${page.url}. Sections on that page include: ${sections.map((r) => r.url).join(', ')}. docs_read reads only the docs index and never fetches URLs.`,
+      via === 'tool'
+        ? `No section "#${frag}" on ${page.url}. Sections on that page include: ${sections.map((r) => r.url).join(', ')}. docs_read reads only the docs index and never fetches URLs.`
+        : `No section "#${frag}" in ${page.uri}. Sections in that page include: ${sections.map((r) => page.uri + new URL(r.url).hash).join(', ')}.`,
     );
   }
 
-  const shown = input.length > SHOWN_LENGTH ? input.slice(0, SHOWN_LENGTH) + '…' : input;
+  const shown = truncateEcho(input);
   const words = closeMatchTerms(input, URL_NOISE);
-  const matches =
-    words.length === 0
-      ? []
-      : [...new Set(index.search(words.join(' '), CLOSE_MATCHES).map((hit) => hit.record.url))];
+  const hits = words.length === 0 ? [] : index.search(words.join(' '), CLOSE_MATCHES);
+  if (via === 'resource') {
+    const uris = [...new Set(hits.map((hit) => pages.pageOf(hit.record)!.uri))];
+    return new CapabilityError(
+      'not_found',
+      `No docs page at ${shown}.` +
+        (uris.length > 0 ? ` Close matches: ${uris.join(', ')}; or use docs_search to find one.` : ' Use docs_search to find one.'),
+    );
+  }
+  const matches = [...new Set(hits.map((hit) => hit.record.url))];
   return new CapabilityError(
     'not_found',
     `No docs page or section matches "${shown}". docs_read reads only the docs index and never fetches URLs; pass a url from docs_search, a record id or a bioc://docs/ URI.` +
       (matches.length > 0 ? ` Close matches: ${matches.join(', ')}.` : ' Use docs_search to find one.'),
   );
+}
+
+function readSummary(
+  label: string,
+  url: string,
+  offset: number,
+  end: number,
+  total: number,
+  nextCursor: string | null,
+): string {
+  return offset === 0 && nextCursor === null
+    ? `${label} (${url}), full text, ${total} characters.`
+    : `${label} (${url}), characters ${offset + 1}–${end} of ${total}.` +
+        (nextCursor === null ? '' : ` Call docs_read again with cursor "${nextCursor}" for the rest.`);
 }
 
 export function docsReadCapability(
@@ -153,7 +185,7 @@ export function docsReadCapability(
       const index = getIndex();
       const pages = docsPages(index);
       const target = resolveDocsTarget(pages, id_or_url);
-      if (target.kind === 'missing') throw docsNotFound(index, pages, id_or_url, target);
+      if (target.kind === 'missing') throw docsNotFound(index, pages, id_or_url, target, 'tool');
 
       const { page } = target;
       const full = target.kind === 'page' ? renderPage(page) : renderSection(target.record);
@@ -164,20 +196,13 @@ export function docsReadCapability(
           `cursor ${cursor} is past the end of the text (${full.length} characters); start again without cursor`,
         );
       }
-      const { text, end } = chunkText(full, offset);
-      const nextCursor = end < full.length ? String(end) : null;
 
       const source = target.kind === 'page' ? page : target.record;
       const url = target.kind === 'page' ? page.url : target.record.url;
       const section = target.kind === 'page' ? '' : sectionLabel(target.record);
       const label = target.kind === 'page' ? `"${page.title}"` : `"${page.title}" › ${section}`;
-      const summary =
-        offset === 0 && nextCursor === null
-          ? `${label} (${url}), full text, ${full.length} characters.`
-          : `${label} (${url}), characters ${offset + 1}–${end} of ${full.length}.` +
-            (nextCursor === null ? '' : ` Call docs_read again with cursor "${nextCursor}" for the rest.`);
-
-      return {
+      const sources = [docsPageSource(page)];
+      const envelopeOf = (text: string, start: number, end: number, nextCursor: string | null): Envelope<DocsReadData> => ({
         data: {
           kind: target.kind,
           url,
@@ -188,13 +213,19 @@ export function docsReadCapability(
           source: source.source,
           repo: source.repo ?? null,
           text,
-          offset,
+          offset: start,
           total_chars: full.length,
           next_cursor: nextCursor,
         },
-        summary,
-        sources: [docsSource(page.input)],
-      };
+        summary: readSummary(label, url, start, end, full.length, nextCursor),
+        sources,
+      });
+
+      // An upper bound on the envelope apart from `text`: no real offset, end or cursor has more digits than full.length.
+      const skeleton = envelopeOf('', full.length, full.length, String(full.length));
+      const budget = Math.min(DOCS_READ_TEXT_BUDGET, MAX_RESULT_BYTES - envelopeBytes(skeleton));
+      const { text, end } = chunkText(full, offset, budget);
+      return envelopeOf(text, offset, end, end < full.length ? String(end) : null);
     },
   });
 }

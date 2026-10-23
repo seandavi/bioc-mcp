@@ -51,7 +51,7 @@ describe('MCP', () => {
     expect(names).toContain('pkg_build_environment');
   });
 
-  test('pkg_check_output on a job the registry never captured is isError not_found:', async () => {
+  test('pkg_check_output on a job the registry has not captured is isError not_found:', async () => {
     client = await connectClient(testApp().app, '/mcp/pkg');
     const result = await client.callTool({
       name: 'pkg_check_output',
@@ -204,7 +204,7 @@ describe('GET /api/v1/pkg/check_output', () => {
     },
   );
 
-  test('a job the registry never captured is 404 not_found', async () => {
+  test('a job the registry has not captured is 404 not_found', async () => {
     const { response, body } = await get('/api/v1/pkg/check_output?universe=bioc&job=112702240220');
     expect(response.status).toBe(404);
     expect(body.error.code).toBe('not_found');
@@ -222,8 +222,8 @@ describe('GET /api/v1/pkg/build_environment', () => {
     const { response, body, fetch } = await get(url);
     expect(response.status).toBe(200);
     expect(body.data.deps).toEqual([
-      { package: 'biomaRt', version: '2.69.0' },
-      { package: 'httr2', version: '1.3.0' },
+      { package: 'biomaRt', version: '2.69.0', did_you_mean: [] },
+      { package: 'httr2', version: '1.3.0', did_you_mean: [] },
     ]);
     expect(fetch.calls).toEqual([buildsUrl('bioc', '96299707840')]);
     client = await connectClient(testApp().app, '/mcp/pkg');
@@ -237,7 +237,7 @@ describe('GET /api/v1/pkg/build_environment', () => {
 
   test('a single dependencies parameter is a one-element list', async () => {
     const { body } = await get('/api/v1/pkg/build_environment?universe=bioc&job=96299707840&dependencies=httr2');
-    expect(body.data.deps).toEqual([{ package: 'httr2', version: '1.3.0' }]);
+    expect(body.data.deps).toEqual([{ package: 'httr2', version: '1.3.0', did_you_mean: [] }]);
   });
 
   test('a bad job is 400 and a bad dependency name is 400, with no fetch', async () => {

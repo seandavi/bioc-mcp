@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { docsPages, docsSource, renderPage, renderSection, sectionLabel, type DocsPages } from '../../../src/core/docs/pages';
+import { docsPages, docsPageSource, docsSource, renderPage, renderSection, sectionLabel, type DocsPages } from '../../../src/core/docs/pages';
 import type { DocsIndex } from '../../../src/docs-index/load';
 import type { DocsRecord } from '../../../src/docs-index/schema';
 import { fixtureDocsIndex, syntheticDocsIndex } from '../../support/docs';
@@ -148,6 +148,18 @@ describe('rendering', () => {
     expect(renderPage(page)).toBe('# T\n\nhttps://docs.test/z.html\n\nintro\n\n## A\n\nhttps://docs.test/z.html#a\n\nbody');
   });
 
+  it("keeps an intro that repeats the first section's body", () => {
+    const page = docsPages(
+      syntheticDocsIndex([
+        record({ id: 'site:z.html', url: 'https://docs.test/z.html', text: 'Status: Accepted\n\nTBD for now.\n\nTBD' }),
+        record({ id: 'site:z.html#a', url: 'https://docs.test/z.html#a', section: 'A', text: 'A\nTBD' }),
+      ]),
+    ).list[0]!;
+    expect(renderPage(page)).toBe(
+      '# T\n\nhttps://docs.test/z.html\n\nStatus: Accepted\n\nTBD for now.\n\n## A\n\nhttps://docs.test/z.html#a\n\nTBD',
+    );
+  });
+
   it('puts sections directly after the header when a page has no page-level record', () => {
     const only = docsPages(
       syntheticDocsIndex([record({ id: 'site:y.html#a', url: 'https://docs.test/y.html#a', section: 'A', text: 'A\nbody' })]),
@@ -161,5 +173,19 @@ describe('docsSource', () => {
     const input = { url: 'https://docs.test/s.json', record_count: 1, last_modified: null, fetched_at: '2026-10-22T00:00:00Z', sha256: '0'.repeat(64) };
     expect(docsSource(input)).toEqual({ url: input.url, as_of: '2026-10-22T00:00:00Z' });
     expect(docsSource({ ...input, last_modified: '2026-10-01T00:00:00Z' }).as_of).toBe('2026-10-01T00:00:00Z');
+  });
+});
+
+describe('pageOf and docsPageSource', () => {
+  const GATE = 'https://seandavi.github.io/bioc-infrastructure/propagation-gate.html';
+
+  it("pageOf finds a record's page", () => {
+    const section = index.get('site:propagation-gate.html#why-the-registry-polls')!;
+    expect(pages.pageOf(section)).toBe(pages.byPath.get('propagation-gate.html'));
+  });
+
+  it("docsPageSource cites the page url, dated by the page's input", () => {
+    const page = pages.byPath.get('propagation-gate.html')!;
+    expect(docsPageSource(page)).toEqual({ url: GATE, as_of: index.meta.inputs[0]!.fetched_at });
   });
 });

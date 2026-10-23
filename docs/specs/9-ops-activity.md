@@ -291,11 +291,11 @@ Error mapping, in a private `githubJson(deps, repo, path, schema, what)` that ev
 - `CapabilityError` with `details.status` 403 or 429 → rethrow as
   `CapabilityError('upstream_error', \`GitHub refused the request (HTTP ${status}), most likely its rate limit${tokenless ? '; this server has no GITHUB_TOKEN, so the limit is 60 requests per hour' : ''}. Try again later.\`, details)`.
 - `CapabilityError` with `code === 'not_found'` → rethrow as
-  `CapabilityError('upstream_error', \`GitHub has nothing at ${details.url}; the repository may have been renamed or made private\`, details)`.
+  `CapabilityError('upstream_error', \`GitHub has nothing at ${details.url}; the repository, PR or workflow may have been removed, renamed or made private.\`, details)`.
   Every repo is validated against `OPS_REPOS`, so a 404 is a stale config or a vanished PR or
   commit, never the caller's mistake.
 - Any other `CapabilityError` propagates unchanged.
-- `safeParse` fails → `CapabilityError('upstream_error', \`GitHub returned an unexpected ${what} for seandavi/${repo}\`, { upstream: 'github', url: response.url })`,
+- `safeParse` fails → `CapabilityError('upstream_error', \`GitHub returned an unexpected ${what} for seandavi/${repo}.\`, { upstream: 'github', url: response.url })`,
   with `what` one of `repository`, `issue list`, `pull request list`, `pull request`, `check run list`,
   `commit status`, `workflow list`, `workflow run list`.
 

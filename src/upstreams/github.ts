@@ -152,7 +152,7 @@ async function githubJson<S extends z.ZodType>(
     if (error.code === 'not_found') {
       throw new CapabilityError(
         'upstream_error',
-        `GitHub has nothing at ${error.details.url}; the repository may have been renamed or made private`,
+        `GitHub has nothing at ${error.details.url}; the repository, PR or workflow may have been removed, renamed or made private.`,
         error.details,
       );
     }
@@ -161,7 +161,7 @@ async function githubJson<S extends z.ZodType>(
   const { response, json } = fetched;
   const parsed = schema.safeParse(json);
   if (!parsed.success) {
-    throw new CapabilityError('upstream_error', `GitHub returned an unexpected ${what} for seandavi/${repo}`, {
+    throw new CapabilityError('upstream_error', `GitHub returned an unexpected ${what} for seandavi/${repo}.`, {
       upstream: githubUpstream.id,
       url: response.url,
     });

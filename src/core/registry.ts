@@ -32,6 +32,7 @@ const UPSTREAM_FIELDS: Record<keyof Upstream, true> = {
   baseUrl: true,
   ttlSeconds: true,
   timeoutMs: true,
+  maxBytes: true,
   description: true,
 };
 

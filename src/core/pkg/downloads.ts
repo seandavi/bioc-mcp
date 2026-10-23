@@ -53,6 +53,18 @@ export const STATS_DEFINITION =
   'and documents where they differ: https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md';
 
 /** The year to show and, when it was defaulted to an earlier one, why. Throws not_found if there is none. */
+/** Ascending years as runs: [2009, 2011, 2012, 2013] → '2009, 2011–2013'. */
+function yearRanges(years: number[]): string {
+  const runs: string[] = [];
+  for (let i = 0; i < years.length; ) {
+    let j = i;
+    while (j + 1 < years.length && years[j + 1] === years[j]! + 1) j++;
+    runs.push(j > i ? `${years[i]}–${years[j]}` : String(years[i]));
+    i = j + 1;
+  }
+  return runs.join(', ');
+}
+
 function chooseYear(
   name: string,
   page: StatsPage,
@@ -67,7 +79,7 @@ function chooseYear(
     if (!years.includes(requested)) {
       throw new CapabilityError(
         'not_found',
-        `${name} (${page.category}) has no download stats for ${requested}; years with stats: ${years[0]}–${years.at(-1)}.`,
+        `${name} (${page.category}) has no download stats for ${requested}; years with stats: ${yearRanges(years)}.`,
       );
     }
     return { year: requested, note: null };
@@ -103,7 +115,8 @@ export const pkgDownloads = defineCapability({
     'workflow packages. year defaults to the current year, or the latest year with stats when the current ' +
     'year has none yet (early January). Package names are case-sensitive. Does not separate people from ' +
     'automated clients or give per-version or per-country counts. For build or propagation state use ' +
-    'pkg_status; for release versions use pkg_release_info.',
+    'pkg_status; for release versions use pkg_release_info. ' +
+    'For why or how the infrastructure works this way (design, ADRs, runbooks) use docs_search.',
   input: z.object({
     package: PackageNameSchema,
     year: z

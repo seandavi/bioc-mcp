@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { docsSearchCapability, DocsSearchHitSchema, snippet } from '../../../src/core/docs/search';
+import * as z from 'zod';
+import { docsSearchCapability, DocsSearchHitSchema, DocsSearchInputSchema, snippet } from '../../../src/core/docs/search';
 import type { Deps } from '../../../src/core/deps';
 import { invokeCapability } from '../../../src/core/invoke';
 import type { Capability } from '../../../src/core/capability';
@@ -91,10 +92,23 @@ describe('input validation', () => {
     ['257-character query', { query: 'a'.repeat(257) }],
     ['empty repo name', { query: 'registry', source: 'repo:' }],
     ['unknown source kind', { query: 'registry', source: 'wiki' }],
+    ['205-character source', { query: 'registry', source: 'repo:' + 'a'.repeat(200) }],
   ])('rejects %s', async (_label, input) => {
     const result = await run(search, input);
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.code).toBe('invalid_input');
+  });
+
+  it('does not echo an over-long source in the message', async () => {
+    const result = await run(search, { query: 'registry', source: 'repo:' + 'a'.repeat(200) });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.message).not.toContain('a'.repeat(200));
+  });
+
+  it('accepts a real repo source and says site excludes ADRs', async () => {
+    expect((await ok({ query: 'registry', source: 'repo:bioc-registry' })).data.hits.length).toBeGreaterThan(0);
+    const properties = (z.toJSONSchema(DocsSearchInputSchema) as any).properties;
+    expect(properties.source.description).toContain('pages other than ADRs');
   });
 });
 
@@ -121,17 +135,14 @@ describe('results', () => {
     expect(sections.every((s: string) => typeof s === 'string')).toBe(true);
   });
 
-  it('lists distinct sources with as_of from the input', async () => {
+  it('lists the distinct page urls of the hits', async () => {
     const { data, sources } = await ok({ query: 'registry' });
-    const urls = sources.map((s) => s.url);
-    expect(new Set(urls).size).toBe(urls.length);
-    const expected = new Set(
-      data.hits.map((h: any) => index.inputFor(index.records.find((r) => r.url === h.url)!.id)!.url),
-    );
-    expect(new Set(urls)).toEqual(expected);
+    const pageUrls = [...new Set<string>(data.hits.map((h: any) => h.url.split('#')[0]))];
+    expect(sources.map((s) => s.url)).toEqual(pageUrls);
     for (const source of sources) {
-      const input = index.meta.inputs.find((i) => i.url === source.url)!;
-      expect(source.as_of).toBe(input.fetched_at);
+      const record = index.records.find((r) => r.url.split('#')[0] === source.url)!;
+      expect(source.as_of).toBe(index.inputFor(record.id)!.fetched_at);
+      expect(source.url.endsWith('search.json')).toBe(false);
     }
   });
 
@@ -169,6 +180,8 @@ describe('size guard', () => {
     expect(envelope.data.omitted_for_size).toBeGreaterThan(0);
     expect(envelope.data.hits.length + envelope.data.omitted_for_size).toBe(10);
     expect(envelope.summary).toMatch(/\d+ more hits? (was|were) dropped to stay under 8 KB/);
+    expect(envelope.summary).toContain('they rank below these. Narrow with source or more specific words to see others.');
+    expect(envelope.summary).not.toContain('lower limit');
   });
 });
 

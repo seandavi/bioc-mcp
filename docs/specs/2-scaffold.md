@@ -76,8 +76,9 @@ src/
   envelope.ts                 SourceSchema, envelopeSchema(), Envelope, size guard
   errors.ts                   ErrorCode, CapabilityError, httpStatusFor(), ErrorBodySchema
   core/deps.ts                Deps, FetchFn, CapabilityEnv
-  core/registry.ts            Capability, Module, defineCapability(), validateRegistry(),
-                              restPath(), the production `modules` list
+  core/capability.ts          Capability, Module, defineCapability()
+  core/registry.ts            validateRegistry(), restPath(), the production `modules` list;
+                              re-exports capability.ts
   core/invoke.ts              invokeCapability(): the one place a capability runs
   core/about.ts               AboutSchema, buildAbout()
   core/meta/ping.ts           meta_ping capability
@@ -85,7 +86,7 @@ src/
   transports/mcp.ts           createMcpApp(), buildMcpServer(), parseToolset()
   transports/rest.ts          createRestApp(), queryToInput()
   upstreams/http.ts           Upstream, pathSegment(), assertUpstream(), fetchUpstream(),
-                              fetchUpstreamJson(), sourceFor()
+                              fetchUpstreamJson(), sourceFor(), UpstreamResponseMeta
   upstreams/cache.ts          UpstreamCache, CachedUpstream, createMemoryCache(),
                               createCloudflareCache()
 test/
@@ -298,13 +299,21 @@ export interface Upstream {
   name: string;          // human name used in messages, e.g. 'Bioconductor registry'
   baseUrl: string;       // https:, no credentials, ends with '/', no query/fragment
   ttlSeconds: number;    // positive integer; cache TTL for 200 responses
-  timeoutMs?: number;    // positive; default DEFAULT_TIMEOUT_MS
+  timeoutMs?: number;    // positive integer <= MAX_TIMEOUT_MS; default DEFAULT_TIMEOUT_MS
+  maxBytes?: number;     // positive integer; decoded body bytes read before failing; default DEFAULT_MAX_BYTES
   description: string;   // one line for bioc://about
 }
 export const DEFAULT_TIMEOUT_MS = 10_000;
+/** AbortSignal.timeout needs an integer delay; a minute is far above any upstream we call. */
+export const MAX_TIMEOUT_MS = 60_000;
+/** 2 MiB: more than 10x the largest github, r-universe or bioconductor.org response seen. */
+export const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
 export const USER_AGENT = `bioc-mcp/${VERSION} (+https://github.com/seandavi/bioc-mcp)`;
 
 export interface UpstreamResponse extends CachedUpstream { fromCache: boolean }
+
+/** An UpstreamResponse without its body: what a caller keeps for provenance after parsing. */
+export type UpstreamResponseMeta = Omit<UpstreamResponse, 'body'>;
 
 /**
  * Encode one caller-supplied value as a single URL path segment.
@@ -317,11 +326,13 @@ export function pathSegment(value: string): string;
 
 /**
  * The SSRF guard below is only sound for an https: baseUrl that ends with '/' and has no query or
- * fragment. The baseUrl must not carry credentials. No message ever includes the baseUrl itself, so a
- * password in a malformed or non-https: URL never reaches a client. ttlSeconds must be a positive integer (about and cache-control take
- * integers) and timeoutMs, when set, positive and finite. Checked at registration
- * (validateRegistry) and again on every fetch, so an adapter cannot bypass it by passing an
- * upstream it never registered.
+ * fragment. The baseUrl must not carry credentials. No message ever includes the baseUrl itself,
+ * so a password in a malformed or non-https: URL never reaches a client. ttlSeconds must be a
+ * positive integer (about and cache-control take integers). timeoutMs, when set, must be a
+ * positive integer no greater than MAX_TIMEOUT_MS (AbortSignal.timeout throws on fractions and
+ * on values above 2^32 - 1). maxBytes, when set, must be a positive integer. Checked at
+ * registration (validateRegistry) and again on every fetch, so an adapter cannot bypass it by
+ * passing an upstream it never registered.
  */
 export function assertUpstream(upstream: Upstream): void;
 
@@ -331,7 +342,7 @@ export function fetchUpstream(deps: Deps, upstream: Upstream, path: string): Pro
 export function fetchUpstreamJson(deps: Deps, upstream: Upstream, path: string):
   Promise<{ response: UpstreamResponse; json: unknown }>;
 /** Provenance for one response: as_of = asOf ?? response.lastModified ?? response.fetchedAt. */
-export function sourceFor(response: UpstreamResponse, asOf?: string): Source;
+export function sourceFor(response: UpstreamResponseMeta, asOf?: string): Source;
 ```
 
 `fetchUpstream` behaviour, in order:
@@ -340,8 +351,8 @@ export function sourceFor(response: UpstreamResponse, asOf?: string): Source;
    under `validateRegistry`; no message includes the baseUrl, so a password never reaches a client). Then
    `const url = new URL(path, upstream.baseUrl)`. If `url.origin` differs from the base's origin
    or `url.pathname` does not start with the base's pathname, throw
-   `CapabilityError('internal', …)`. This is the SSRF guard: no capability can fetch outside a
-   registered upstream. Adapters build every path through `pathSegment()` for each
+   `CapabilityError('internal', "Refusing to fetch outside <name>.")`. This is the SSRF guard: no
+   capability can fetch outside a registered upstream. Adapters build every path through `pathSegment()` for each
    caller-supplied value; it rejects `''`, `.`, `..`, `/`, `\`, `%2e` and `%2f`, and
    percent-encodes the rest.
 2. `deps.cache.get(url.href)`; a hit returns `{ ...hit, fromCache: true }`.
@@ -349,8 +360,8 @@ export function sourceFor(response: UpstreamResponse, asOf?: string): Source;
    with `signal = AbortSignal.timeout(upstream.timeoutMs ?? DEFAULT_TIMEOUT_MS)`. A
    301/302/303/307/308 with a `Location` is resolved against the current target, released
    (`response.body?.cancel()`) and re-checked against the base origin and path (outside →
-   `upstream_error` "…redirected outside its base URL"). At most 3 redirects are followed; a 4th
-   → `upstream_error` "…redirected more than 3 times". A 3xx without `Location` is an ordinary
+   `upstream_error` "…redirected outside its base URL."). At most 3 redirects are followed; a 4th
+   → `upstream_error` "…redirected more than 3 times.". A 3xx without `Location` is an ordinary
    non-2xx.
 4. Errors, with `<url>` the requested URL (`url.href`, also `details.url`) and `RETRY` the literal
    `Try again shortly.`:
@@ -359,18 +370,20 @@ export function sourceFor(response: UpstreamResponse, asOf?: string): Source;
    |---|---|---|
    | fetch rejects, `name` is `TimeoutError` or `AbortError` | `upstream_timeout` | `<name> did not answer within <ms> ms (<url>). Try again shortly.` |
    | fetch rejects, other | `upstream_error` | `Could not reach <name> (<url>). Try again shortly.` |
-   | status 404 | `not_found` | `<name> has nothing at <url>` |
+   | status 404 | `not_found` | `<name> has nothing at <url>.` |
    | status ≥ 500 | `upstream_error` | `<name> returned HTTP <status> (<url>). Try again shortly.` |
-   | other non-2xx | `upstream_error` | `<name> returned HTTP <status>` |
-   | `response.text()` rejects, timeout | `upstream_timeout` | same as the fetch timeout row |
-   | `response.text()` rejects, other | `upstream_error` | `Could not read the response from <name> (<url>). Try again shortly.` |
+   | other non-2xx | `upstream_error` | `<name> returned HTTP <status>.` |
+   | body over `maxBytes` | `upstream_error` | `<name> sent more than <maxBytes> bytes (<url>); this server does not read responses that large.` |
+   | body read rejects, timeout | `upstream_timeout` | same as the fetch timeout row |
+   | body read rejects, other | `upstream_error` | `Could not read the response from <name> (<url>). Try again shortly.` |
 
    Capabilities may catch the 404 and rephrase it. `details.status` is set for the status rows.
-5. Read the body as text; build the `CachedUpstream`; `deps.cache.put(…, upstream.ttlSeconds)`
+5. Read the body with `readCapped(response.body, upstream.maxBytes ?? DEFAULT_MAX_BYTES)`
+   (decoded bytes; the stream is cancelled past the cap); build the `CachedUpstream`; `deps.cache.put(…, upstream.ttlSeconds)`
    only for status 200; return with `fromCache: false`. The cache key and `url` stay the
    requested URL, not a redirect target.
 
-### `src/core/registry.ts`
+### `src/core/capability.ts`
 
 ```ts
 export interface Capability<I extends z.ZodObject = z.ZodObject, D extends z.ZodType = z.ZodType> {
@@ -394,7 +407,16 @@ export interface Module {
   upstreams: Upstream[];        // every upstream its capabilities call; listed by bioc://about
   capabilities: Capability[];
 }
+```
 
+Capability modules import these from `'../capability'`, never from `'../registry'`, which imports
+them through the production `modules` list and would form a cycle.
+
+### `src/core/registry.ts`
+
+registry.ts re-exports the capability.ts types for callers outside `core/<module>/`.
+
+```ts
 /** Production registry. Later issues append their modules here. */
 export const modules: readonly Module[] = [metaModule];
 
@@ -410,9 +432,9 @@ capability whose `module` differs from its containing module, whose name does no
 pattern or start with `<module>_`, or whose `description` is empty; duplicate capability names;
 two upstreams with the same `id` but different fields (compared field by field with
 `sameUpstream`, so key order does not matter); an upstream that fails `assertUpstream` (`https:`,
-no credentials, trailing `/`, no query or fragment, positive-integer `ttlSeconds`, positive
-finite `timeoutMs`); any input field that the REST transport cannot carry; and any input field
-whose schema does not accept its own output. For the REST check, compute
+no credentials, trailing `/`, no query or fragment, positive-integer `ttlSeconds`, `timeoutMs` a
+positive integer no greater than 60000, `maxBytes` a positive integer); any input field that the
+REST transport cannot carry; and any input field whose schema does not accept its own output. For the REST check, compute
 `z.toJSONSchema(capability.input, { io: 'input' })`; every property must have `type` in
 `string | number | integer | boolean`, or `type: 'array'` whose `items.type` is one of those.
 (Enums are `type: 'string'` and pass; nullable fields and unions produce `anyOf` and fail.)
@@ -443,9 +465,10 @@ export async function invokeCapability(
 Steps: `capability.input.safeParse(rawInput)`; failure → `invalid_input` with
 `z.prettifyError(result.error)`. Run the handler; a thrown `CapabilityError` passes through; any
 other throw is logged with `console.error(capability.name, error)` and becomes
-`internal` (`"<name> failed unexpectedly"`). Then `assertEnvelopeSize`. Then
-`capability.output.safeParse(envelope)`; failure is logged and becomes `internal`
-(`"<name> produced output that does not match its schema"`). Both transports call only this
+`internal` (`"<name> failed unexpectedly"`). Then `capability.output.safeParse(envelope)`; failure
+is logged and becomes `internal` (`"<name> produced output that does not match its schema"`). Then
+`assertEnvelopeSize` on the parsed envelope, the value the transports send, so an output schema
+that adds bytes cannot pass the limit. Both transports call only this
 function to run a capability; neither contains capability logic.
 
 ### `src/core/about.ts`

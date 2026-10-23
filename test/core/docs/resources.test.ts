@@ -46,14 +46,38 @@ describe('docsPageResource', () => {
   });
 
   it('throws not_found for an unknown URI, pointing at docs_search', () => {
-    expect.assertions(3);
+    expect.assertions(5);
     try {
       resource.read('bioc://docs/nope.html');
     } catch (error) {
       expect(error).toBeInstanceOf(CapabilityError);
       expect((error as CapabilityError).code).toBe('not_found');
+      expect((error as CapabilityError).message).toMatch(/^No docs page at bioc:\/\/docs\/nope\.html\./);
       expect((error as CapabilityError).message).toContain('docs_search');
+      expect((error as CapabilityError).message).not.toContain('docs_read reads only');
     }
+  });
+
+  function notFound(uri: string): CapabilityError {
+    try {
+      resource.read(uri);
+    } catch (error) {
+      expect(error).toBeInstanceOf(CapabilityError);
+      return error as CapabilityError;
+    }
+    throw new Error(`expected ${uri} to throw`);
+  }
+
+  it('lists close-matching resource URIs for a mistyped page', () => {
+    expect(notFound('bioc://docs/propagation-gates.html').message).toContain('bioc://docs/propagation-gate.html');
+  });
+
+  it('lists readable section URIs for an unknown section', () => {
+    const message = notFound('bioc://docs/propagation-gate.html#nope').message;
+    expect(message).toMatch(/^No section "#nope" in bioc:\/\/docs\/propagation-gate\.html\./);
+    const listed = message.match(/bioc:\/\/docs\/[^\s,]+#[^\s,.]+/g) ?? [];
+    expect(listed.length).toBeGreaterThan(0);
+    for (const uri of listed) expect(() => resource.read(uri)).not.toThrow();
   });
 
   it('searches the index with at most 8 terms for a long fragment, and not at all for a URI over 2,048 characters', async () => {

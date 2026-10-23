@@ -152,15 +152,16 @@ describe('errors', () => {
     const { deps } = makeDeps({ [url]: { status: 404, body: '{}' } });
     const error = await errorOf(getRepo(deps, 'bioc-website'));
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toContain(url);
-    expect(error.message).toContain('renamed or made private');
+    expect(error.message).toBe(
+      `GitHub has nothing at ${url}; the repository, PR or workflow may have been removed, renamed or made private.`,
+    );
   });
 
   test('an unexpected shape names what was read', async () => {
     const { deps } = makeDeps({ [url]: { status: 200, body: '{"nope":1}' } });
     const error = await errorOf(getRepo(deps, 'bioc-website'));
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toBe('GitHub returned an unexpected repository for seandavi/bioc-website');
+    expect(error.message).toBe('GitHub returned an unexpected repository for seandavi/bioc-website.');
   });
 
   test.each([
@@ -169,7 +170,7 @@ describe('errors', () => {
     ['pull request', (d: Deps) => getPull(d, 'bioc-website', 74), '/pulls/74'],
   ])('names the %s', async (what, call, suffix) => {
     const { deps } = makeDeps({ [githubUrl('bioc-website', suffix)]: { status: 200, body: '{"nope":1}' } });
-    expect((await errorOf(call(deps))).message).toBe(`GitHub returned an unexpected ${what} for seandavi/bioc-website`);
+    expect((await errorOf(call(deps))).message).toBe(`GitHub returned an unexpected ${what} for seandavi/bioc-website.`);
   });
 
   test('500 and timeout pass through with their own codes', async () => {

@@ -1,19 +1,23 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import { invokeCapability } from '../../../src/core/invoke';
 import { compareRVersions, historySql, pkgStatus, PkgStatusDataSchema } from '../../../src/core/pkg/status';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { createMemoryUsageSink } from '../../../src/usage';
-import { fixtureFetch } from '../../support/fixture-fetch';
+import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import { BIOC_INDEX_URL, pkgRoutes, RELEASE_INDEX_URL, ruUrl } from '../../support/pkg-routes';
 import type * as z from 'zod';
 
 type Data = z.output<typeof PkgStatusDataSchema>;
 
 const NOW = '2026-10-22T12:00:00.000Z';
+const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'fixtures');
 
-function run(input: { package: string; universe?: 'bioc' | 'bioc-release' }) {
-  const fetch = fixtureFetch(pkgRoutes);
+function run(input: { package: string; universe?: 'bioc' | 'bioc-release' }, extraRoutes: Record<string, FixtureRoute> = {}) {
+  const fetch = fixtureFetch({ ...pkgRoutes, ...extraRoutes });
   const now = () => new Date(NOW);
   const usage = createMemoryUsageSink();
   return invokeCapability(
@@ -24,11 +28,19 @@ function run(input: { package: string; universe?: 'bioc' | 'bioc-release' }) {
   ).then((result) => ({ result, fetch, usage }));
 }
 
-async function status(input: { package: string; universe?: 'bioc' | 'bioc-release' }) {
-  const { result, fetch } = await run(input);
+async function status(
+  input: { package: string; universe?: 'bioc' | 'bioc-release' },
+  extraRoutes: Record<string, FixtureRoute> = {},
+) {
+  const { result, fetch } = await run(input, extraRoutes);
   if (!result.ok) throw result.error;
   return { envelope: result.envelope as Envelope<Data>, data: (result.envelope as Envelope<Data>).data, fetch };
 }
+
+const indexAndUniverse = (universe: 'bioc' | 'bioc-release', name: string) => [
+  { url: universe === 'bioc' ? BIOC_INDEX_URL : RELEASE_INDEX_URL, as_of: NOW },
+  { url: ruUrl(universe, name), as_of: NOW },
+];
 
 describe('compareRVersions', () => {
   test.each([
@@ -45,6 +57,10 @@ describe('compareRVersions', () => {
 });
 
 describe('historySql', () => {
+  test("rejects a name that is not a package name", () => {
+    expect(() => historySql('bioc', "a'b")).toThrow();
+  });
+
   test('is the exact query', () => {
     expect(historySql('bioc', 'edgeR')).toBe(
       [
@@ -78,8 +94,10 @@ describe('pkg_status', () => {
     expect(data.upstream).toMatchObject({ version: '1.49.3', status: 'success', newer_commit_failed: null });
     expect(data.upstream?.jobs).toHaveLength(10);
     for (const job of data.upstream?.jobs ?? []) {
+      expect(job.job).toMatch(/^[1-9][0-9]*$/);
       expect(job.url).toBe(`${data.upstream?.build_url}/job/${job.job}`);
     }
+    expect(data.upstream?.jobs[0]?.job).toBe('109690330754');
     expect(data.upstream?.jobs.filter((j) => j.check !== 'OK').map((j) => [j.config, j.check])).toEqual([
       ['bioc-checks', 'WARNING'],
     ]);
@@ -107,6 +125,8 @@ describe('pkg_status', () => {
     ]);
     expect(envelope.summary).toContain('failing source (ERROR)');
     expect(envelope.summary).toContain('Upstream 1.3.4 is newer than propagated 1.3.3.');
+    expect(envelope.summary).not.toContain('shows no failure');
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc', 'Chromatograms'));
     // r-universe has no Last-Modified in the fixture, so as_of is the test clock
     expect(envelope.sources[1]).toEqual({ url: ruUrl('bioc', 'Chromatograms'), as_of: NOW });
   });
@@ -122,6 +142,8 @@ describe('pkg_status', () => {
     );
     expect(data.behind).toBe(false);
     expect(data.behind_reasons).toEqual([]);
+    expect(typeof data.upstream?.newer_commit_failed?.job?.job).toBe('string');
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc', 'RMassBank'));
     expect(envelope.summary).toContain('A newer commit (3.23.1) failed on source (ERROR).');
   });
 
@@ -140,16 +162,19 @@ describe('pkg_status', () => {
     expect(data.behind_reasons[1]).toBe(`r-universe's build of 2.69.5 has status "failure".`);
     expect(data.behind_reasons[2]).toMatch(/^R CMD check fails on /);
     expect(envelope.summary).toContain('seeded from Bioconductor, never gated');
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc', 'biomaRt'));
   });
 
   test('seeded, upstream success but checks failing: ClustIRR caps the config list at five', async () => {
-    const { data } = await status({ package: 'ClustIRR' });
+    const { envelope, data } = await status({ package: 'ClustIRR' });
     expect(data.propagated?.origin).toBe('bioconductor');
     expect(data.upstream?.status).toBe('success');
     expect(data.behind).toBe(true);
     expect(data.behind_reasons).toHaveLength(2);
     expect(data.behind_reasons[0]).toContain('seeded from Bioconductor');
     expect(data.behind_reasons[1]).toMatch(/^R CMD check fails on (\S+ \(ERROR\), ){4}\S+ \(ERROR\) and 8 more\.$/);
+    expect(envelope.summary).toContain('ClustIRR (bioc) is propagated at 1.11.0 (seeded from Bioconductor, never gated');
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc', 'ClustIRR'));
   });
 
   test('never propagated: BiocSet', async () => {
@@ -160,6 +185,7 @@ describe('pkg_status', () => {
     expect(data.behind_reasons[0]).toBe('No entry in the bioc propagation index.');
     expect(data.behind_reasons[1]).toContain('has status "failure"');
     expect(envelope.summary).toContain('BiocSet is not in the bioc propagation index.');
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc', 'BiocSet'));
   });
 
   test('propagated, no upstream record: Fletcher2013a', async () => {
@@ -177,6 +203,8 @@ describe('pkg_status', () => {
     expect(data.propagated?.artifacts).toHaveLength(27);
     expect(data.upstream?.jobs).toHaveLength(16);
     expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+    expect(envelope.summary).toContain('r-universe builds 1.1.2: status success.');
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc', 'SEMPLR'));
   });
 
   test('release universe: edgeR fetches only the bioc-release URLs', async () => {
@@ -187,11 +215,11 @@ describe('pkg_status', () => {
     expect(data.behind).toBe(false);
     expect(data.history_sql.query).toContain("universe = 'bioc-release'");
     expect([...fetch.calls].sort()).toEqual([RELEASE_INDEX_URL, ruUrl('bioc-release', 'edgeR')].sort());
-    expect(envelope.sources[0]?.url).toBe(RELEASE_INDEX_URL);
+    expect(envelope.sources).toEqual(indexAndUniverse('bioc-release', 'edgeR'));
   });
 
   test.each([
-    ['edgr', 'Did you mean: edge, edgeR?'],
+    ['edgr', "Did you mean: edge, edgeR? To check release, call again with universe 'bioc-release'."],
     ['biomart', 'Did you mean: biomaRt?'],
   ])('unknown package %s is not_found with suggestions', async (name, hint) => {
     const { result, fetch } = await run({ package: name });
@@ -203,11 +231,48 @@ describe('pkg_status', () => {
     expect(fetch.calls).toContain(ruUrl('bioc', name));
   });
 
+  test('a release not_found names the devel universe', async () => {
+    const { result } = await run(
+      { package: 'edgr', universe: 'bioc-release' },
+      { [ruUrl('bioc-release', 'edgr')]: { status: 404, body: 'Error: Package edgr not found in bioc-release' } },
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe('not_found');
+    expect(result.error.message).toContain("To check devel, call again with universe 'bioc'.");
+  });
+
   test.each(["a'b", '1abc', 'x', 'edgeR.'])('invalid name %j is invalid_input and fetches nothing', async (name) => {
     const { result, fetch } = await run({ package: name });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.code).toBe('invalid_input');
     expect(fetch.calls).toEqual([]);
+  });
+
+  test.each(["a'b", '1abc', 'edgeR.'])('invalid name %j gets the naming rule in the message', async (name) => {
+    const { result } = await run({ package: name });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.message).toContain(
+        "must start with a letter, contain only letters, digits and '.', and not end with '.'",
+      );
+    }
+  });
+
+  test('behind with nothing failing upstream: the reason points at POST /gate and the summary says so', async () => {
+    const record = JSON.parse(readFileSync(join(FIXTURES, 'r-universe/bioc/trackViewer.json'), 'utf8')) as Record<string, unknown>;
+    record.Version = '1.49.4';
+    const { envelope, data } = await status(
+      { package: 'trackViewer' },
+      { [ruUrl('bioc', 'trackViewer')]: { status: 200, body: JSON.stringify(record) } },
+    );
+    expect(data.behind).toBe(true);
+    expect(data.behind_reasons).toHaveLength(1);
+    expect(data.behind_reasons[0]).toContain('POST https://bioc-registry.seandavi.workers.dev/gate');
+    expect(data.behind_reasons[0]).toContain('https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#post-gate');
+    expect(envelope.summary).toContain(
+      "Upstream 1.49.4 is newer than propagated 1.49.3. r-universe shows no failure for 1.49.4, so the gate's reason is not visible here; see behind_reasons.",
+    );
   });
 
   test('an r-universe outage fails the whole call', async () => {

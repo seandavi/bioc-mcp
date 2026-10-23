@@ -4,13 +4,14 @@ import { CapabilityError } from '../../errors';
 import type { DocsIndex } from '../../docs-index/load';
 import { DocsSourceKindSchema, type DocsRecord } from '../../docs-index/schema';
 import { defineCapability, type Capability } from '../capability';
-import { docsSource, sectionLabel } from './pages';
+import { docsPages, docsPageSource, sectionLabel } from './pages';
 
 const SourceFilterSchema = z
   .string()
+  .max(128)
   .regex(/^(site|adr|repo:[A-Za-z0-9._-]+)$/, "source must be 'site', 'adr' or 'repo:<name>'")
   .describe(
-    "Narrow to 'site' (the infrastructure site's pages), 'adr' (architecture decision records) or 'repo:<name>' (one bioc-* repo's docs, e.g. 'repo:bioc-registry')",
+    "Narrow to 'site' (the infrastructure site's pages other than ADRs), 'adr' (architecture decision records) or 'repo:<name>' (one bioc-* repo's docs, e.g. 'repo:bioc-registry')",
   );
 
 export const DocsSearchInputSchema = z.object({
@@ -98,7 +99,7 @@ function describeHits(query: string, source: string | undefined, hits: DocsSearc
   const lines = hits.map((hit, i) => `\n${i + 1}. ${hit.title}${hit.section ? ` › ${hit.section}` : ''} ${hit.url}`);
   const dropped =
     omitted > 0
-      ? `\n${omitted} more hit${omitted === 1 ? ' was' : 's were'} dropped to stay under 8 KB; lower limit for fewer, longer results.`
+      ? `\n${omitted} more hit${omitted === 1 ? ' was' : 's were'} dropped to stay under 8 KB; they rank below these. Narrow with source or more specific words to see others.`
       : '';
   return `${n} docs section${n === 1 ? '' : 's'} for "${query}"${where}:${lines.join('')}${dropped}`;
 }
@@ -135,12 +136,13 @@ export function docsSearchCapability(
         snippet: snippet(record.text, q),
         score: Math.round(score * 100) / 100,
       }));
-      const inputs = found.map(({ record }) => docsSource(index.inputFor(record.id)!));
+      const pages = docsPages(index);
+      const pageSources = found.map(({ record }) => docsPageSource(pages.pageOf(record)!));
 
       const build = (kept: number): Envelope<DocsSearchData> => {
         const sources: Source[] = [];
-        for (const input of inputs.slice(0, kept)) {
-          if (!sources.some((s) => s.url === input.url)) sources.push(input);
+        for (const pageSource of pageSources.slice(0, kept)) {
+          if (!sources.some((s) => s.url === pageSource.url)) sources.push(pageSource);
         }
         const omitted = hits.length - kept;
         return {

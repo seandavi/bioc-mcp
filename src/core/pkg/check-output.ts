@@ -34,21 +34,32 @@ const JobInfoSchema = z.object({
 const CheckSectionSchema = z.object({
   check: z.string().describe("The R CMD check step, e.g. 'checking examples'"),
   verdict: z.enum(SECTION_VERDICTS),
+  offset: z
+    .number()
+    .int()
+    .describe(
+      "Character offset in the normalized 00check.log where this step's output starts; pass it as offset with full=true to read the step whole",
+    ),
   text: z.string().describe('What R CMD check printed under this step'),
-  truncated: z.boolean().describe('true if lines were cut to fit the size limit; full=true reads them'),
+  truncated: z
+    .boolean()
+    .describe('true if lines were cut to fit the size limit; the marker in text gives the offset to read them with full=true'),
 });
 
 const TextPageSchema = z.object({
   offset: z.number().int().describe('Character offset of this page in the file (CRLF → LF, ANSI colour codes removed)'),
   next_offset: z.number().int().nullable().describe('Pass as offset with full=true for the next page; null at end of file'),
-  total_chars: z.number().int(),
+  total_chars: z
+    .number()
+    .int()
+    .describe('Length of the normalized file (CRLF → LF, ANSI removed), in the same units as offset'),
   text: z.string(),
 });
 
 export const PkgCheckOutputDataSchema = z.object({
   universe: z.enum(UNIVERSES),
   job: z.string(),
-  job_url: z.string().describe('GitHub Actions job page'),
+  job_url: z.string().describe("GitHub Actions job page; the same page as pkg_status's jobs[].url, in its short form"),
   job_info: JobInfoSchema.nullable().describe("From the job's pkgdata.txt; null on bioc-checks jobs, which have none"),
   file: z.string(),
   view: z
@@ -70,7 +81,7 @@ export const PkgCheckOutputDataSchema = z.object({
     .describe("Set when view is 'sections'"),
   text: TextPageSchema.nullable().describe("Set when view is 'tail' or 'page'"),
   files: z.array(z.string()).describe(`The job's captured files, sorted, at most ${MAX_LISTED_FILES}`),
-  files_total: z.number().int(),
+  files_total: z.number().int().describe(`Number of captured files; files lists at most ${MAX_LISTED_FILES}`),
 });
 type PkgCheckOutputData = z.infer<typeof PkgCheckOutputDataSchema>;
 
@@ -88,7 +99,7 @@ function summarize(data: PkgCheckOutputData): string {
       sentences.push(`Sections: ${names.join('; ')}${more}.`);
     }
     if (check.sections.some((s) => s.truncated) || check.sections_omitted > 0) {
-      sentences.push('Some output was cut to fit; read the whole log with full=true.');
+      sentences.push("Some output was cut to fit; each cut section's marker gives the offset to read it with full=true.");
     }
   } else if (view === 'tail' && text) {
     sentences.push(
@@ -106,6 +117,11 @@ function summarize(data: PkgCheckOutputData): string {
   return sentences.join(' ');
 }
 
+function listFiles(names: string[]): string {
+  const shown = names.slice(0, MAX_LISTED_FILES);
+  return shown.join(', ') + (names.length > shown.length ? ` and ${names.length - shown.length} more` : '');
+}
+
 export const pkgCheckOutput = defineCapability({
   module: 'pkg',
   name: 'pkg_check_output',
@@ -113,7 +129,8 @@ export const pkgCheckOutput = defineCapability({
   description:
     "Why an r-universe check failed: the ERROR, WARNING and NOTE sections of R CMD check's 00check.log " +
     "for one GitHub Actions job, the check's Status line, and the job's other captured files " +
-    '(00install.out, <pkg>-Ex.Rout, testthat.Rout.fail, 00BiocCheck.log, output.log, …). Get the job id ' +
+    '(00install.out, <pkg>-Ex.Rout, testthat.Rout.fail, 00BiocCheck.log, output.log, …). ' +
+    "bioc-checks jobs have no 00check.log; pass file='output.log' for BiocCheck's results. Get the job id " +
     'and universe from pkg_status (upstream.jobs[].job). Other files return their last ~5 KB; full=true ' +
     'returns any file one page at a time (offset). Only jobs the registry captured are available; ' +
     'others are not_found. For the image and dependency versions the job ran with, use ' +
@@ -126,7 +143,10 @@ export const pkgCheckOutput = defineCapability({
       .min(1)
       .max(255)
       .default(CHECK_LOG)
-      .describe("Captured file to read, by basename (default '00check.log'); the result lists the job's files"),
+      .describe(
+        "Captured file to read, by basename (default '00check.log'); the result lists the job's files. " +
+          "bioc-checks jobs have no 00check.log: use file='output.log' (BiocCheck's results). source jobs hold only pkgdata.txt",
+      ),
     full: z
       .boolean()
       .default(false)
@@ -144,7 +164,10 @@ export const pkgCheckOutput = defineCapability({
     const { response, files } = await getCheckFiles(deps, universe, job);
     const names = Object.keys(files).sort(); // code-unit order
     if (!Object.hasOwn(files, file)) {
-      throw new CapabilityError('not_found', `${universe} job ${job} has no file "${file}". Its files: ${names.join(', ')}.`);
+      throw new CapabilityError(
+        'not_found',
+        `${universe} job ${job} has no file "${file}". Its files: ${listFiles(names)}. Pass one of them as file.`,
+      );
     }
     const text = normalizeText(files[file]!);
     if (full && offset > 0 && offset >= text.length) {

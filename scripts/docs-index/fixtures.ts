@@ -3,12 +3,19 @@ import { dirname, join } from 'node:path';
 import type { FetchFn } from '../../src/core/deps';
 
 function fixturePath(root: string, url: URL): string {
-  return join(root, url.hostname, ...url.pathname.split('/').filter(Boolean).map(decodeURIComponent));
+  const segments = [url.hostname, ...url.pathname.split('/').filter(Boolean).map(decodeURIComponent)];
+  for (const segment of segments) {
+    if (segment === '.' || segment === '..' || segment.includes('/') || segment.includes('\\')) {
+      throw new Error(`Refusing unsafe fixture path for ${url.href}: segment ${JSON.stringify(segment)}`);
+    }
+  }
+  return join(root, ...segments);
 }
 
 /**
  * Answers from files under `root`, at `<root>/<hostname>/<decoded path segments>`; a missing file
  * is a 404 Response. Content-Type is application/json for .json, text/plain otherwise; no other headers.
+ * Throws on a URL whose hostname or decoded path segment is '.', '..' or contains '/' or '\\'.
  */
 export function fixtureDocsFetch(root: string): FetchFn {
   return async (request) => {
@@ -25,12 +32,15 @@ export function fixtureDocsFetch(root: string): FetchFn {
   };
 }
 
-/** Passes requests to `inner`; writes each 200 body to the fixture path for its URL (mkdir -p). */
+/**
+ * Passes requests to `inner`; writes each 200 body to the fixture path for its URL (mkdir -p).
+ * Refuses an unsafe URL (see fixtureDocsFetch) before calling inner.
+ */
 export function recordingFetch(inner: FetchFn, root: string): FetchFn {
   return async (request) => {
+    const path = fixturePath(root, new URL(request.url));
     const response = await inner(request);
     if (response.status === 200) {
-      const path = fixturePath(root, new URL(request.url));
       await mkdir(dirname(path), { recursive: true });
       await writeFile(path, await response.clone().text());
     }

@@ -99,6 +99,37 @@ describe('invokeCapability', () => {
   });
 });
 
+describe('the size guard', () => {
+  test('sizes the parsed output: a transform that pads the data is result_too_large', async () => {
+    const padding = defineCapability({
+      module: 'demo',
+      name: 'demo_thing',
+      title: 'Thing',
+      description: 'Answers things.',
+      input: z.object({ n: z.number() }),
+      data: z.object({ pad: z.string().transform((s) => s.padEnd(9000, 'x')) }),
+      handler: async () => ({ data: { pad: 'x' }, summary: '', sources: [] }),
+    });
+    const result = await invokeCapability(padding, { n: 1 }, deps, context());
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe('result_too_large');
+  });
+
+  test('an envelope that is oversized and off-schema is internal', async () => {
+    const result = await invokeCapability(
+      demoThing(async () => ({ data: { n: 'x'.repeat(9000) }, summary: '', sources: [] })),
+      { n: 1 },
+      deps,
+      context(),
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe('internal');
+    expect(result.error.message).toBe('demo_thing produced output that does not match its schema');
+  });
+});
+
 describe('invokeCapability usage events', () => {
   const EVENT_KEYS = ['capability', 'error_code', 'latency_ms', 'ok', 'transport', 'upstream_status'];
 

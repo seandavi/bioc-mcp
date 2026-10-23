@@ -1,0 +1,7 @@
+Package: GO.db
+Version: 3.23.1
+Depends: R (>= 2.7.0), methods, AnnotationDbi (>= 1.73.0)
+Suggests: DBI
+License: Artistic-2.0
+MD5sum: b9848764614f05b19038754dc6baa78d
+NeedsCompilation: no

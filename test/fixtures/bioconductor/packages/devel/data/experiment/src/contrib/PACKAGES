@@ -1,0 +1,14 @@
+Package: ALL
+Version: 1.55.0
+Depends: R (>= 2.10), Biobase (>= 2.5.5)
+Suggests: rpart
+License: Artistic-2.0
+MD5sum: 84d034264d8a17c6ac88ebdd1c26c08e
+NeedsCompilation: no
+
+Package: ChIPXpressData
+Version: 1.51.2
+Depends: bigmemory
+License: GPL (>= 2)
+MD5sum: 67aef8719df965700d822668190e362b
+NeedsCompilation: no

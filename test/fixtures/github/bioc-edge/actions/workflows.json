@@ -1,0 +1,26 @@
+{
+  "total_count": 3,
+  "workflows": [
+    {
+      "id": 339790296,
+      "name": "health",
+      "path": ".github/workflows/health.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-edge/blob/main/.github/workflows/health.yml"
+    },
+    {
+      "id": 340044160,
+      "name": "parity",
+      "path": ".github/workflows/parity.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-edge/blob/main/.github/workflows/parity.yml"
+    },
+    {
+      "id": 339684876,
+      "name": "test",
+      "path": ".github/workflows/test.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-edge/blob/main/.github/workflows/test.yml"
+    }
+  ]
+}

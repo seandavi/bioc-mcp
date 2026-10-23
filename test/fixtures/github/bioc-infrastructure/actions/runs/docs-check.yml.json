@@ -1,0 +1,41 @@
+{
+  "total_count": 4,
+  "workflow_runs": [
+    {
+      "id": 39273276198,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-19T14:55:05Z",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/actions/runs/39273276198",
+      "display_title": "docs-check"
+    },
+    {
+      "id": 38280802230,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-12T16:55:51Z",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/actions/runs/38280802230",
+      "display_title": "docs-check"
+    },
+    {
+      "id": 37339943083,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-05T16:19:29Z",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/actions/runs/37339943083",
+      "display_title": "docs-check"
+    },
+    {
+      "id": 36759002436,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "workflow_dispatch",
+      "created_at": "2026-09-30T18:29:58Z",
+      "html_url": "https://github.com/seandavi/bioc-infrastructure/actions/runs/36759002436",
+      "display_title": "docs-check"
+    }
+  ]
+}

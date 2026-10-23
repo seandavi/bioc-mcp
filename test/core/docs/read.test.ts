@@ -9,6 +9,7 @@ import type { DocsIndex } from '../../../src/docs-index/load';
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { fixtureDocsIndex } from '../../support/docs';
 import { fixtureFetch } from '../../support/fixture-fetch';
+import { testContext } from '../../support/invoke-context';
 
 const BASE = 'https://seandavi.github.io/bioc-infrastructure/';
 const GATE = `${BASE}propagation-gate.html`;
@@ -31,7 +32,7 @@ function deps() {
 
 async function run(input: unknown) {
   const d = deps();
-  const result = await invokeCapability(read, input, d.deps);
+  const result = await invokeCapability(read, input, d.deps, testContext());
   expect(d.fetch.calls).toEqual([]);
   return result;
 }
@@ -220,7 +221,7 @@ describe('close-match search bound', () => {
   /** The search calls made while docs_read fails on `input`, as arrays of query terms. */
   async function termsSearched(input: string): Promise<string[][]> {
     const spied = spiedIndex();
-    const result = await invokeCapability(docsReadCapability(() => spied.index), { id_or_url: input }, deps().deps);
+    const result = await invokeCapability(docsReadCapability(() => spied.index), { id_or_url: input }, deps().deps, testContext());
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.code).toBe('not_found');
     return spied.search.mock.calls.map(([query]) => query.split(' '));

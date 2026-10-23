@@ -808,11 +808,8 @@ export function docsTestModule(): Promise<Module>;
 - [ ] No change under `scripts/`, `src/upstreams/`, `src/envelope.ts`, `src/core/invoke.ts` or
       `src/transports/rest.ts`.
 - [ ] AGENTS.md has the resources/prompts paragraph.
-- [ ] Manual, pasted in the PR: call `docs_read` from Claude Code (or Claude Desktop) and note whether
-      the model sees `data.text`, given that the MCP text content is only the summary (see Risks). If
-      it does not, put each part's text in `docs_read`'s summary (header line + `\n\n` + text) and
-      lower `DOCS_READ_TEXT_BUDGET` to about 2,600 so the envelope stays under 8,192 bytes; otherwise
-      record the result in #12.
+- [x] ~~Manual client check for `data.text`~~: superseded by #35, which made the MCP text content
+      carry the serialized data for every tool; `docs_read` needs no special case.
 - [ ] Manual, pasted in the PR: `npm run dev`, then `curl` of
       `/api/v1/docs/search?query=propagation+gate&source=adr` and of `/api/v1/docs/read` for the top
       hit, and an MCP `prompts/list` on `/mcp/docs`.

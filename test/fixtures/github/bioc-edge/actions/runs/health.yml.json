@@ -1,0 +1,185 @@
+{
+  "total_count": 65,
+  "workflow_runs": [
+    {
+      "id": 39773099259,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-22T11:46:20Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/39773099259",
+      "display_title": "health"
+    },
+    {
+      "id": 39594050793,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-21T11:43:21Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/39594050793",
+      "display_title": "health"
+    },
+    {
+      "id": 39415491392,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-20T11:30:54Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/39415491392",
+      "display_title": "health"
+    },
+    {
+      "id": 39257327881,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-19T13:06:21Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/39257327881",
+      "display_title": "health"
+    },
+    {
+      "id": 39121409715,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-18T10:59:25Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/39121409715",
+      "display_title": "health"
+    },
+    {
+      "id": 39025651168,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-17T10:38:12Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/39025651168",
+      "display_title": "health"
+    },
+    {
+      "id": 38892861453,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-16T11:18:06Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38892861453",
+      "display_title": "health"
+    },
+    {
+      "id": 38726977496,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-15T11:23:22Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38726977496",
+      "display_title": "health"
+    },
+    {
+      "id": 38558995145,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-14T11:46:54Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38558995145",
+      "display_title": "health"
+    },
+    {
+      "id": 38410553236,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-13T14:06:44Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38410553236",
+      "display_title": "health"
+    },
+    {
+      "id": 38269036541,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-12T15:16:34Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38269036541",
+      "display_title": "health"
+    },
+    {
+      "id": 38140416203,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-11T12:44:28Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38140416203",
+      "display_title": "health"
+    },
+    {
+      "id": 38051984268,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-10T12:26:54Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/38051984268",
+      "display_title": "health"
+    },
+    {
+      "id": 37935134768,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-09T13:11:54Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37935134768",
+      "display_title": "health"
+    },
+    {
+      "id": 37784012323,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-08T13:23:53Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37784012323",
+      "display_title": "health"
+    },
+    {
+      "id": 37627310272,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-07T13:17:18Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37627310272",
+      "display_title": "health"
+    },
+    {
+      "id": 37469363286,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-06T13:15:23Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37469363286",
+      "display_title": "health"
+    },
+    {
+      "id": 37325326948,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-05T14:31:00Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37325326948",
+      "display_title": "health"
+    },
+    {
+      "id": 37201596635,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-04T12:17:31Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37201596635",
+      "display_title": "health"
+    },
+    {
+      "id": 37120172069,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-03T11:36:03Z",
+      "html_url": "https://github.com/seandavi/bioc-edge/actions/runs/37120172069",
+      "display_title": "health"
+    }
+  ]
+}

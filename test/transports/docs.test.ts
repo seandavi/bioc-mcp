@@ -36,7 +36,7 @@ async function connect(path: string) {
 describe('registry', () => {
   test('the production registry contains docs and validates', () => {
     expect(() => validateRegistry(modules)).not.toThrow();
-    expect(modules.map((m) => m.name)).toEqual(['meta', 'pkg', 'docs']);
+    expect(modules.map((m) => m.name)).toEqual(['meta', 'pkg', 'ops', 'docs']);
   });
 
   test('descriptions name only registered tools', async () => {

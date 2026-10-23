@@ -3,6 +3,7 @@ import { assertUpstream, type Upstream } from '../upstreams/http';
 import type { Capability, Module, PromptDef } from './capability';
 import { metaModule } from './meta';
 import { docsModule } from './docs';
+import { opsModule } from './ops';
 import { pkgModule } from './pkg';
 
 export {
@@ -17,7 +18,7 @@ export {
 } from './capability';
 
 /** Production registry. Later issues append their modules here. */
-export const modules: readonly Module[] = [metaModule, pkgModule, docsModule];
+export const modules: readonly Module[] = [metaModule, pkgModule, opsModule, docsModule];
 
 const MODULE_NAME = /^[a-z]+$/;
 const KEBAB_NAME = /^[a-z]+(-[a-z]+)*$/;

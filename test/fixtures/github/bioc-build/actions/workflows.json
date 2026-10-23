@@ -1,0 +1,26 @@
+{
+  "total_count": 3,
+  "workflows": [
+    {
+      "id": 350034987,
+      "name": "build-package",
+      "path": ".github/workflows/build-package.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-build/blob/main/.github/workflows/build-package.yml"
+    },
+    {
+      "id": 349533013,
+      "name": ".github/workflows/build.yml",
+      "path": ".github/workflows/build.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-build/blob/main/.github/workflows/build.yml"
+    },
+    {
+      "id": 349533015,
+      "name": "dispatch",
+      "path": ".github/workflows/dispatch.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-build/blob/main/.github/workflows/dispatch.yml"
+    }
+  ]
+}

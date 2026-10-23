@@ -3,6 +3,26 @@
   "name": "bioc-mcp",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
+  // bioc-registry is another Worker on seandavi.workers.dev. Without this flag, fetch() to our own zone
+  // skips the Workers routed there and the registry answers 404 (pkg_status, pkg_check_output and
+  // pkg_build_environment all failed after the first deploy). With it, fetch() goes out through the
+  // public front door like any client.
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  // Deployed only at https://bioc-mcp.seandavi.workers.dev; no zone routes, no per-version preview URLs.
+  "workers_dev": true,
+  "preview_urls": false,
+  // Our console.error lines are kept; per-request invocation logs (URL, headers) are not.
+  "observability": { "enabled": true, "logs": { "invocation_logs": false } },
+  // Set from GCP Secret Manager (cdsci-bioc-mcp-github-token); see docs/deploy.md. Deploys fail without it.
+  "secrets": { "required": ["GITHUB_TOKEN"] },
+  "ratelimits": [
+    // Per client address, per Cloudflare location, approximate. period must equal
+    // RATE_LIMIT_PERIOD_SECONDS in src/rate-limit.ts. namespace_id is account-wide: do not reuse.
+    { "name": "RATE_LIMITER", "namespace_id": "1101", "simple": { "limit": 120, "period": 60 } }
+  ],
+  // A dataset's schema is fixed at creation: changing the data point layout in src/usage.ts
+  // means a new dataset name (_v2), never an edit to this one.
+  "analytics_engine_datasets": [{ "binding": "USAGE", "dataset": "bioc_mcp_usage_v1" }],
   "vars": {
     // Comma-separated hostnames, port-agnostic. localhost/127.0.0.1 make `npm run dev` work;
     // they are harmless on the deployed Worker, whose Host is always the workers.dev name.

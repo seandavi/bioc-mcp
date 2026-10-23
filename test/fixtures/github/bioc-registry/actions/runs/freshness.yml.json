@@ -1,0 +1,185 @@
+{
+  "total_count": 64,
+  "workflow_runs": [
+    {
+      "id": 39777675017,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-22T12:21:31Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/39777675017",
+      "display_title": "freshness"
+    },
+    {
+      "id": 39598745694,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-21T12:19:59Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/39598745694",
+      "display_title": "freshness"
+    },
+    {
+      "id": 39419705609,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-20T12:05:53Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/39419705609",
+      "display_title": "freshness"
+    },
+    {
+      "id": 39264145840,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-19T13:54:12Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/39264145840",
+      "display_title": "freshness"
+    },
+    {
+      "id": 39124140859,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-18T11:39:47Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/39124140859",
+      "display_title": "freshness"
+    },
+    {
+      "id": 39027553520,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-17T11:08:25Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/39027553520",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38896628302,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-16T11:52:09Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38896628302",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38731830518,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-15T12:03:49Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38731830518",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38562929856,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-14T12:19:26Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38562929856",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38414239533,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-13T14:32:30Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38414239533",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38274694165,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-12T16:03:17Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38274694165",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38143307612,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-11T13:28:28Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38143307612",
+      "display_title": "freshness"
+    },
+    {
+      "id": 38054073138,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-10T13:00:35Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/38054073138",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37938777965,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-09T13:42:35Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37938777965",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37788659995,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-08T13:58:35Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37788659995",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37631951792,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-07T13:52:11Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37631951792",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37471938777,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-06T13:34:57Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37471938777",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37331155679,
+      "status": "completed",
+      "conclusion": "failure",
+      "event": "schedule",
+      "created_at": "2026-10-05T15:14:09Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37331155679",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37203449761,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-04T12:49:41Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37203449761",
+      "display_title": "freshness"
+    },
+    {
+      "id": 37121376827,
+      "status": "completed",
+      "conclusion": "success",
+      "event": "schedule",
+      "created_at": "2026-10-03T11:58:57Z",
+      "html_url": "https://github.com/seandavi/bioc-registry/actions/runs/37121376827",
+      "display_title": "freshness"
+    }
+  ]
+}

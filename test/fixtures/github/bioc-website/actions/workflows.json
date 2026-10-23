@@ -1,0 +1,26 @@
+{
+  "total_count": 3,
+  "workflows": [
+    {
+      "id": 340045442,
+      "name": "links",
+      "path": ".github/workflows/links.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-website/blob/main/.github/workflows/links.yml"
+    },
+    {
+      "id": 334228021,
+      "name": "preview-cleanup",
+      "path": ".github/workflows/preview-cleanup.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-website/blob/main/.github/workflows/preview-cleanup.yml"
+    },
+    {
+      "id": 333939306,
+      "name": "site",
+      "path": ".github/workflows/site.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-website/blob/main/.github/workflows/site.yml"
+    }
+  ]
+}

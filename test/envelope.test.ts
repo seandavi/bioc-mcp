@@ -1,6 +1,13 @@
 import * as z from 'zod';
 import { describe, expect, test } from 'vitest';
-import { assertEnvelopeSize, envelopeBytes, envelopeSchema, MAX_RESULT_BYTES, type Envelope } from '../src/envelope';
+import {
+  assertEnvelopeSize,
+  envelopeBytes,
+  envelopeSchema,
+  envelopeTextBlocks,
+  MAX_RESULT_BYTES,
+  type Envelope,
+} from '../src/envelope';
 import { CapabilityError } from '../src/errors';
 
 /** An envelope whose JSON is exactly `bytes` long, padded with ASCII. */
@@ -53,5 +60,36 @@ describe('assertEnvelopeSize', () => {
     const envelope: Envelope<unknown> = { data: 'é'.repeat(4096), summary: '', sources: [] };
     expect(JSON.stringify(envelope).length).toBeLessThan(MAX_RESULT_BYTES);
     expect(() => assertEnvelopeSize(envelope, 'x_tool')).toThrow(CapabilityError);
+  });
+});
+
+describe('envelopeTextBlocks', () => {
+  const textBytes = (envelope: Envelope<unknown>) =>
+    envelopeTextBlocks(envelope).reduce((sum, text) => sum + new TextEncoder().encode(text).length, 0);
+
+  test('returns the summary, then JSON of data and sources', () => {
+    const envelope = {
+      data: { a: 1 },
+      summary: 'S.',
+      sources: [{ url: 'https://x.test/', as_of: '2026-10-22' }],
+    };
+    expect(envelopeTextBlocks(envelope)).toEqual([
+      'S.',
+      '{"data":{"a":1},"sources":[{"url":"https://x.test/","as_of":"2026-10-22"}]}',
+    ]);
+  });
+
+  test('is 13 bytes smaller than the envelope when the summary needs no escaping', () => {
+    const envelope: Envelope<unknown> = { data: { a: [1, 2] }, summary: 'Plain ASCII summary.', sources: [] };
+    expect(textBytes(envelope)).toBe(envelopeBytes(envelope) - 13);
+  });
+
+  test('escapes in the summary widen the gap', () => {
+    const envelope: Envelope<unknown> = { data: { a: 1 }, summary: 'say "hi"\nthere', sources: [] };
+    expect(textBytes(envelope)).toBeLessThan(envelopeBytes(envelope) - 13);
+  });
+
+  test('an envelope at the limit gives text under the limit', () => {
+    expect(textBytes(envelopeOfSize(MAX_RESULT_BYTES))).toBe(MAX_RESULT_BYTES - 13);
   });
 });

@@ -3,6 +3,7 @@ import { invokeCapability } from '../../../src/core/invoke';
 import { compareRVersions, historySql, pkgStatus, PkgStatusDataSchema } from '../../../src/core/pkg/status';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
 import { createMemoryCache } from '../../../src/upstreams/cache';
+import { createMemoryUsageSink } from '../../../src/usage';
 import { fixtureFetch } from '../../support/fixture-fetch';
 import { BIOC_INDEX_URL, pkgRoutes, RELEASE_INDEX_URL, ruUrl } from '../../support/pkg-routes';
 import type * as z from 'zod';
@@ -14,10 +15,13 @@ const NOW = '2026-10-22T12:00:00.000Z';
 function run(input: { package: string; universe?: 'bioc' | 'bioc-release' }) {
   const fetch = fixtureFetch(pkgRoutes);
   const now = () => new Date(NOW);
-  return invokeCapability(pkgStatus, input, { fetch, cache: createMemoryCache(now), now, env: {} }).then((result) => ({
-    result,
-    fetch,
-  }));
+  const usage = createMemoryUsageSink();
+  return invokeCapability(
+    pkgStatus,
+    input,
+    { fetch, cache: createMemoryCache(now), now, env: {} },
+    { transport: 'rest', usage },
+  ).then((result) => ({ result, fetch, usage }));
 }
 
 async function status(input: { package: string; universe?: 'bioc' | 'bioc-release' }) {
@@ -55,6 +59,14 @@ describe('historySql', () => {
 });
 
 describe('pkg_status', () => {
+  test('records one usage event with upstream_status 200 and no input values', async () => {
+    const { result, usage } = await run({ package: 'trackViewer' });
+    expect(result.ok).toBe(true);
+    expect(usage.events).toHaveLength(1);
+    expect(usage.events[0]).toMatchObject({ capability: 'pkg_status', upstream_status: 200, ok: true, error_code: null });
+    expect(JSON.stringify(usage.events)).not.toContain('trackViewer');
+  });
+
   test('propagated and passing: trackViewer', async () => {
     const { envelope, data } = await status({ package: 'trackViewer' });
     expect(data.universe).toBe('bioc');
@@ -201,13 +213,18 @@ describe('pkg_status', () => {
   test('an r-universe outage fails the whole call', async () => {
     const fetch = fixtureFetch({ ...pkgRoutes, [ruUrl('bioc', 'trackViewer')]: { status: 500 } });
     const now = () => new Date(NOW);
-    const result = await invokeCapability(pkgStatus, { package: 'trackViewer' }, {
-      fetch,
-      cache: createMemoryCache(now),
-      now,
-      env: {},
-    });
+    const result = await invokeCapability(
+      pkgStatus,
+      { package: 'trackViewer' },
+      { fetch, cache: createMemoryCache(now), now, env: {} },
+      { transport: 'rest', usage: createMemoryUsageSink() },
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.code).toBe('upstream_error');
   });
+});
+
+test('the description names pkg_check_output and pkg_build_environment', () => {
+  expect(pkgStatus.description).toContain('pkg_check_output');
+  expect(pkgStatus.description).toContain('pkg_build_environment');
 });

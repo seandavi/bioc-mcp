@@ -9,6 +9,7 @@ import type { DocsRecord } from '../../../src/docs-index/schema';
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { fixtureDocsIndex, syntheticDocsIndex } from '../../support/docs';
 import { fixtureFetch } from '../../support/fixture-fetch';
+import { testContext } from '../../support/invoke-context';
 
 const BASE = 'https://seandavi.github.io/bioc-infrastructure/';
 
@@ -27,7 +28,7 @@ function deps() {
 
 async function run(capability: Capability, input: unknown) {
   const d = deps();
-  const result = await invokeCapability(capability, input, d.deps);
+  const result = await invokeCapability(capability, input, d.deps, testContext());
   expect(d.fetch.calls).toEqual([]);
   return result;
 }

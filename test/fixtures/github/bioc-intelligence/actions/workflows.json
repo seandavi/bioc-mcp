@@ -1,0 +1,33 @@
+{
+  "total_count": 4,
+  "workflows": [
+    {
+      "id": 302843902,
+      "name": "CI",
+      "path": ".github/workflows/ci.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/blob/main/.github/workflows/ci.yml"
+    },
+    {
+      "id": 302870794,
+      "name": "Deploy Pages",
+      "path": ".github/workflows/deploy-pages.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/blob/main/.github/workflows/deploy-pages.yml"
+    },
+    {
+      "id": 302870372,
+      "name": "Frontend CI",
+      "path": ".github/workflows/frontend-ci.yml",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/blob/main/.github/workflows/frontend-ci.yml"
+    },
+    {
+      "id": 309420067,
+      "name": "Copilot cloud agent",
+      "path": "dynamic/copilot-swe-agent/copilot",
+      "state": "active",
+      "html_url": "https://github.com/seandavi/bioc-intelligence/actions/workflows/copilot-swe-agent/copilot"
+    }
+  ]
+}

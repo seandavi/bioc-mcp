@@ -85,26 +85,27 @@ describe('parseCheckLog', () => {
   });
 
   test('a log without a Status line has null counts', () => {
-    const parsed = parseCheckLog('* using R\n* checking examples ... ERROR\nboom');
+    const log = '* using R\n* checking examples ... ERROR\nboom';
+    const parsed = parseCheckLog(log);
     expect(parsed).toEqual({
       status: null,
       errors: null,
       warnings: null,
       notes: null,
-      sections: [{ check: 'checking examples', verdict: 'ERROR', text: 'boom' }],
+      sections: [{ check: 'checking examples', verdict: 'ERROR', offset: log.indexOf('boom'), text: 'boom' }],
     });
   });
 
   test('a verdict-less * line closes an open section', () => {
-    const parsed = parseCheckLog(
-      ['* checking foo ... NOTE', 'one', '', '* checking extension type ... Package', 'not part of the note', 'Status: 1 NOTE'].join('\n'),
-    );
-    expect(parsed.sections).toEqual([{ check: 'checking foo', verdict: 'NOTE', text: 'one' }]);
+    const log = ['* checking foo ... NOTE', 'one', '', '* checking extension type ... Package', 'not part of the note', 'Status: 1 NOTE'].join('\n');
+    const parsed = parseCheckLog(log);
+    expect(parsed.sections).toEqual([{ check: 'checking foo', verdict: 'NOTE', offset: log.indexOf('one'), text: 'one' }]);
   });
 
   test('timing brackets are parsed', () => {
-    const parsed = parseCheckLog('* checking examples ... [12s/16s] ERROR\nfailed\nStatus: 1 ERROR');
-    expect(parsed.sections).toEqual([{ check: 'checking examples', verdict: 'ERROR', text: 'failed' }]);
+    const log = '* checking examples ... [12s/16s] ERROR\nfailed\nStatus: 1 ERROR';
+    const parsed = parseCheckLog(log);
+    expect(parsed.sections).toEqual([{ check: 'checking examples', verdict: 'ERROR', offset: log.indexOf('failed'), text: 'failed' }]);
   });
 
   test('OK, SKIPPED and INFO steps are not sections', () => {
@@ -120,45 +121,74 @@ describe('parseCheckLog', () => {
   test('the last Status line wins', () => {
     expect(parseCheckLog('Status: 1 NOTE\nStatus: OK').status).toBe('Status: OK');
   });
+
+  test.each([['96299707840'], ['91651624908']])('job %s: text.slice(offset) starts with the section body', (job) => {
+    const log = checkLog(job);
+    for (const section of parseCheckLog(log).sections) {
+      expect(log.slice(section.offset).startsWith(section.text.split('\n')[0]!)).toBe(true);
+      expect(log.slice(section.offset - 1, section.offset)).toBe('\n');
+    }
+  });
+
+  test('synthetic logs: offsets for several sections, CRLF-normalized input', () => {
+    const log = normalizeText('* checking a ... NOTE\r\nfirst\r\nmore\r\n* checking b ... ERROR\r\nsecond\r\nStatus: 1 ERROR, 1 NOTE\r\n');
+    const { sections } = parseCheckLog(log);
+    expect(sections.map((s) => log.slice(s.offset, s.offset + s.text.length))).toEqual(sections.map((s) => s.text));
+    expect(sections.map((s) => s.offset)).toEqual([log.indexOf('first'), log.indexOf('second')]);
+  });
+
+  test('a header on the last line with no trailing newline has offset text.length and empty text', () => {
+    const log = '* checking foo ... NOTE';
+    expect(parseCheckLog(log).sections).toEqual([{ check: 'checking foo', verdict: 'NOTE', offset: log.length, text: '' }]);
+  });
+
+  test('a very long "* " line is never matched as a header, and parses fast', { timeout: 1000 }, () => {
+    const log = '* checking examples ... ERROR\nbody\n* ' + ' ... ['.repeat(40_000) + '\nStatus: 1 ERROR\n';
+    const parsed = parseCheckLog(log);
+    expect(parsed.status).toBe('Status: 1 ERROR');
+    expect(parsed.sections).toHaveLength(1);
+    expect(parsed.sections[0]).toMatchObject({ check: 'checking examples', text: 'body' });
+  });
 });
 
 describe('fitSectionText', () => {
   const body = Array.from({ length: 10 }, (_, i) => `line${i} ${'x'.repeat(40)}`);
+  const restOffset = 100 + body[0]!.length + 1 + body[1]!.length + 1;
 
   test('text that fits is unchanged', () => {
-    expect(fitSectionText('a\nb', 10)).toEqual({ text: 'a\nb', truncated: false });
+    expect(fitSectionText('a\nb', 10, 100)).toEqual({ text: 'a\nb', truncated: false });
   });
 
   test('keeps 2 head lines, a marker and as many tail lines as fit', () => {
     const text = body.join('\n');
-    const marker = (n: number) => `[… ${n} lines omitted; read them with full=true …]`;
+    const marker = (n: number) => `[… ${n} lines omitted; read them with full=true and offset=${restOffset} …]`;
     const keep5 = [body[0], body[1], marker(3), ...body.slice(5)].join('\n');
     const keep4 = [body[0], body[1], marker(4), ...body.slice(6)].join('\n');
-    expect(fitSectionText(text, jsonTextBytes(keep5))).toEqual({ text: keep5, truncated: true });
-    expect(fitSectionText(text, jsonTextBytes(keep5) - 1)).toEqual({ text: keep4, truncated: true });
+    expect(fitSectionText(text, jsonTextBytes(keep5), 100)).toEqual({ text: keep5, truncated: true });
+    expect(fitSectionText(text, jsonTextBytes(keep5) - 1, 100)).toEqual({ text: keep4, truncated: true });
   });
 
   test('head and marker only when no tail line fits', () => {
     const text = body.join('\n');
-    const marker = '[… 8 lines omitted; read them with full=true …]';
+    const marker = `[… 8 lines omitted; read them with full=true and offset=${restOffset} …]`;
     const headAndMarker = `${body[0]}\n${body[1]}\n${marker}`;
-    expect(fitSectionText(text, jsonTextBytes(headAndMarker)).text).toBe(headAndMarker);
+    expect(fitSectionText(text, jsonTextBytes(headAndMarker), 100).text).toBe(headAndMarker);
   });
 
   test('the marker alone when the head does not fit', () => {
     const text = `${'x'.repeat(200)}\n${'y'.repeat(200)}\nz\nz`;
-    const marker = '[… 4 lines omitted; read them with full=true …]';
-    expect(fitSectionText(text, jsonTextBytes(marker))).toEqual({ text: marker, truncated: true });
+    const marker = '[… 4 lines omitted; read them with full=true and offset=100 …]';
+    expect(fitSectionText(text, jsonTextBytes(marker), 100)).toEqual({ text: marker, truncated: true });
   });
 
   test('empty string when even the marker does not fit', () => {
-    expect(fitSectionText('a\nb\nc\nd', 5)).toEqual({ text: '', truncated: true });
+    expect(fitSectionText('a\nb\nc\nd', 5, 100)).toEqual({ text: '', truncated: true });
   });
 
   test('a section of two long lines becomes the marker', () => {
     const text = `${'x'.repeat(100)}\n${'y'.repeat(100)}`;
-    const result = fitSectionText(text, 60);
-    expect(result.text).toBe('[… 2 lines omitted; read them with full=true …]');
+    const result = fitSectionText(text, 70, 100);
+    expect(result.text).toBe('[… 2 lines omitted; read them with full=true and offset=100 …]');
     expect(result.truncated).toBe(true);
   });
 });
@@ -177,7 +207,7 @@ describe('selectSections', () => {
   });
 
   const synthetic = (verdicts: ('ERROR' | 'WARNING' | 'NOTE')[]): CheckSection[] =>
-    verdicts.map((verdict, i) => ({ check: `step ${i}`, verdict, text: `${verdict} ${i}` }));
+    verdicts.map((verdict, i) => ({ check: `step ${i}`, verdict, offset: i * 100, text: `${verdict} ${i}` }));
 
   test('at most 12 sections; ERRORs are kept before NOTEs', () => {
     const verdicts = [...Array(10).fill('NOTE'), 'ERROR', 'WARNING', 'ERROR', 'NOTE', 'NOTE'] as const;

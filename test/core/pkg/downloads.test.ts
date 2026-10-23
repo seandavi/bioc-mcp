@@ -113,9 +113,9 @@ describe('pkg_downloads', () => {
       statsTabUrl('workflows', 'rnaseqGene', 2026),
     ]);
     // The 404 category pages supplied no data and are not listed.
-    expect(envelope.sources.map((s) => s.url)).toEqual([
-      statsPageUrl('workflows', 'rnaseqGene'),
-      statsTabUrl('workflows', 'rnaseqGene', 2026),
+    expect(envelope.sources).toEqual([
+      { url: statsPageUrl('workflows', 'rnaseqGene'), as_of: AS_OF },
+      { url: statsTabUrl('workflows', 'rnaseqGene', 2026), as_of: AS_OF },
     ]);
   });
 

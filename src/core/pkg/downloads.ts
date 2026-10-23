@@ -52,7 +52,6 @@ export const STATS_DEFINITION =
   'people from automated clients. bioc-traffic recomputes them from the access logs on the same definition ' +
   'and documents where they differ: https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md';
 
-/** The year to show and, when it was defaulted to an earlier one, why. Throws not_found if there is none. */
 /** Ascending years as runs: [2009, 2011, 2012, 2013] → '2009, 2011–2013'. */
 function yearRanges(years: number[]): string {
   const runs: string[] = [];
@@ -65,6 +64,7 @@ function yearRanges(years: number[]): string {
   return runs.join(', ');
 }
 
+/** The year to show and, when it was defaulted to an earlier one, why. Throws not_found if there is none. */
 function chooseYear(
   name: string,
   page: StatsPage,

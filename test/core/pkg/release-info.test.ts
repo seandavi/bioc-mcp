@@ -77,6 +77,7 @@ describe('pkg_release_info', () => {
 
   test('agree and manifest.build are described', () => {
     expect(PkgReleaseInfoDataSchema.shape.agree.description).toContain('packages/release and packages/devel symlinks');
+    expect(PkgReleaseInfoDataSchema.shape.agree.description).toContain('a symlink missing from the index is not checked');
     const json = z.toJSONSchema(PkgReleaseInfoDataSchema) as unknown as {
       properties: { manifest: { properties: { build: { description?: string } } } };
     };

@@ -45,7 +45,7 @@ export const PkgReleaseInfoDataSchema = z.object({
   agree: z
     .boolean()
     .describe(
-      'true when config.yaml, the manifest index versions and its packages/release and packages/devel symlinks all name the same release and devel versions (see disagreements)',
+      'true when config.yaml, the manifest index versions and its packages/release and packages/devel symlinks all name the same release and devel versions (see disagreements; a symlink missing from the index is not checked)',
     ),
   disagreements: z.array(z.string()).describe('Each mismatch found, in plain words; empty when agree is true'),
 });

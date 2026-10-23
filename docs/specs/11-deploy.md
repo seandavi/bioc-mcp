@@ -46,7 +46,7 @@ runs showed:
   dataset's schema is fixed at creation (a 6th blob added later was silently dropped), that
   queries must weight by `sum(_sample_interval)`, and that Logpush is Enterprise-only.
   `taxsea-online` already uses rate-limit `namespace_id` `"1001"`, the Cloudflare docs example.
-- **Docs, not verified on a live deploy:** the Cache API page (updated 2026-08-14) no longer lists
+- **Docs, since verified live (see Risks):** the Cache API page (updated 2026-08-14) no longer lists
   `*.workers.dev` among the places where Cache API calls have no effect, and describes
   workers.dev cache-key behaviour, so `caches.default` should work there. See [Risks](#risks).
 
@@ -101,7 +101,7 @@ Ship the Worker to `https://bioc-mcp.seandavi.workers.dev`, safely and observabl
 | Deploy triggers | One `deploy.yml`: push to `main`, the daily schedule and `repository_dispatch: docs-updated` (moved from `docs-index.yml`, which is removed), and `workflow_dispatch` | Spec #3 deferred "the deploy step" to #11. The docs index is built in CI and bundled, so a rebuild that is not deployed never reaches users. Schedule and dispatch runs always use `main`, so "deploy from main only" holds |
 | Environment protection | `production` environment, deployment branches: `main` only, no required reviewers | Restricts the token to `main` runs; reviewers would block merge-on-green and the daily rebuild |
 | Action pinning | `deploy.yml` pins actions to the verified SHAs above; `ci.yml` keeps `@v7` | Spec #15 deferred this to #11. Only the deploy job sees a credential. No third-party action: `npx wrangler deploy` uses the lock-pinned wrangler |
-| Rate-limit key | `cf-connecting-ip`, else `'unknown'`; one key per address shared by MCP and REST | The server is anonymous; the address is the only identity. Sharing stops doubling the budget by switching transport |
+| Rate-limit key | `rateLimitKey(cf-connecting-ip)`: the address, an IPv6 address by its /64, else `'unknown'`; one key per address shared by MCP and REST | The server is anonymous; the address is the only identity. Sharing stops doubling the budget by switching transport |
 | Rate-limit value | 120 requests / 60 s per address per Cloudflare location, `namespace_id` `"1101"` | Generous for an agent session (tens of calls a minute) and for NATed institutions; `"1101"` avoids the docs example `"1001"` that `taxsea-online` uses (namespaces share counters account-wide) |
 | Limiter failure | Fail open (log and serve) | Read-only public data; availability beats strictness |
 | Usage sink | Workers Analytics Engine dataset `bioc_mcp_usage_v1` | Logpush is Enterprise-only. `_v1` because a dataset's schema is fixed at creation |
@@ -235,13 +235,21 @@ export interface RateLimiter {
 /** Must equal simple.period of RATE_LIMITER in wrangler.jsonc. */
 export const RATE_LIMIT_PERIOD_SECONDS = 60;
 
-/** One limiter key per client address (cf-connecting-ip, else 'unknown'). Fails open. */
+/**
+ * The limiter key for a client address. An IPv6 client usually holds a whole /64, so an IPv6
+ * address counts by its /64 prefix ("2001:db8:1:2::/64"); an IPv4-embedded IPv6 address
+ * ("::ffff:203.0.113.9") by its IPv4 part; anything else, including text that does not parse,
+ * as is. No address: 'unknown'.
+ */
+export function rateLimitKey(address: string | undefined): string;
+
+/** One limiter key per client address (an IPv6 /64 counts as one; rateLimitKey), else 'unknown'. Fails open. */
 export function rateLimitMiddleware(limiter: RateLimiter, usage: UsageSink, transport: Transport): MiddlewareHandler;
 ```
 
 Behaviour, in order:
 
-1. `key = c.req.header('cf-connecting-ip') ?? 'unknown'`.
+1. `key = rateLimitKey(c.req.header('cf-connecting-ip'))`.
 2. `({ success } = await limiter.limit({ key }))` in `try`. If `limit` throws or rejects:
    `console.error('rate-limit', error)` and treat as `success = true`.
 3. Allowed: `await next()` and return.
@@ -411,7 +419,7 @@ and keeps only the newest pending run.
 
 Sections and their required content (prose is the implementer's; commands exactly as here):
 
-1. **What runs where.** Table: `ci.yml` (PRs and pushes; tests; no secrets); `deploy.yml`
+1. **What runs where.** Table: `ci.yml` (pull requests and pushes to `main`; tests; no secrets); `deploy.yml`
    (triggers as above; environment `production`). Live URLs: `/mcp`, `/api/v1`,
    `/api/openapi.json` on `https://bioc-mcp.seandavi.workers.dev`.
 2. **Secrets.** GSM project `cdsci-infra` is the source of truth; the copies are derived from it,
@@ -419,8 +427,13 @@ Sections and their required content (prose is the implementer's; commands exactl
 
    | GSM secret | What | Copy lives in |
    |---|---|---|
-   | `cdsci-bioc-mcp-cloudflare-deploy-token` | Cloudflare **Account** API token, "Edit Cloudflare Workers" template, scoped to the one account that owns `seandavi.workers.dev`; drop zone permissions if the dashboard allows (no routes are used) | GitHub environment `production`, secret `CLOUDFLARE_API_TOKEN` |
+   | `cdsci-bioc-mcp-cloudflare-deploy-token` | Cloudflare **Account** API token for the one account that owns `seandavi.workers.dev`, with exactly **Account › Workers Scripts: Edit** and **Account › Account Settings: Read**. Do not start from the "Edit Cloudflare Workers" template, or remove everything else it adds: Workers KV Storage, Workers R2 Storage, Workers Tail, and the zone-level Workers Routes (no routes are used), plus User Details and Memberships if offered | GitHub environment `production`, secret `CLOUDFLARE_API_TOKEN` |
    | `cdsci-bioc-mcp-github-token` | GitHub fine-grained token, "Public repositories (read-only)", no permissions; rate limit only | Worker secret `GITHUB_TOKEN` |
+   | `cdsci-bioc-mcp-analytics-token` | Cloudflare Account API token with only **Account › Account Analytics: Read**, for the usage query (item 8). The deploy token does not have this permission and must not be given it | nowhere: exported in a local shell when querying; never in GitHub or the Worker |
+
+   Every endpoint `wrangler deploy` uses here (script upload, versions, deployments, the
+   workers.dev subdomain, the required-secrets check) accepts Workers Scripts: Edit; Account
+   Settings: Read is kept from the template.
 
    Each GSM secret gets labels `repo=bioc-mcp`, `managed-by=manual` and annotations
    `consumed-by`, `scopes` and `rotated` (the convention already used in `cdsci-infra`). The
@@ -438,8 +451,9 @@ Sections and their required content (prose is the implementer's; commands exactl
    ```
 
 4. **First deploy** (by hand, because the Worker does not exist yet and `GITHUB_TOKEN` is
-   required). From a clean checkout of `main`, with `CLOUDFLARE_API_TOKEN` and
-   `CLOUDFLARE_ACCOUNT_ID` exported from GSM:
+   required). From a clean checkout of `main`, with `CLOUDFLARE_API_TOKEN` exported from GSM
+   (`cdsci-bioc-mcp-cloudflare-deploy-token`) and `CLOUDFLARE_ACCOUNT_ID` (from
+   `npx wrangler whoami`):
 
    ```sh
    npm ci && npm run docs:build && npm test
@@ -463,16 +477,19 @@ Sections and their required content (prose is the implementer's; commands exactl
    The token lives in GSM as `cdsci-bioc-mcp-dispatch-token` and is copied into
    bioc-infrastructure's Actions secrets. The daily schedule covers any missed dispatch.
 7. **Rate limits.** 120 requests per 60 s per client address per Cloudflare location,
-   approximate (Workers rate-limit binding). The response: 429, `Retry-After: 60`, `rate_limited`
+   approximate (Workers rate-limit binding). An IPv6 address counts by its /64 prefix, since one
+   client usually holds the whole /64. The response: 429, `Retry-After: 60`, `rate_limited`
    body. Change the limit in `wrangler.jsonc`, the period in both `wrangler.jsonc` and
    `RATE_LIMIT_PERIOD_SECONDS`.
 8. **Usage metric.** Dataset `bioc_mcp_usage_v1`; the column layout from `src/usage.ts`; no
    argument values, no addresses; 3-month retention; ingestion lags about a minute; always weight
-   by `_sample_interval`. Query (token needs Account Analytics: Read):
+   by `_sample_interval`. The query uses its own token, `cdsci-bioc-mcp-analytics-token` (item 2),
+   not the deploy token:
 
    ```sh
+   export CLOUDFLARE_ANALYTICS_TOKEN=$(gcloud secrets versions access latest --secret=cdsci-bioc-mcp-analytics-token --project=cdsci-infra)
    curl -sS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/analytics_engine/sql" \
-     -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+     -H "Authorization: Bearer $CLOUDFLARE_ANALYTICS_TOKEN" \
      --data "SELECT blob2 AS capability, blob1 AS transport, sum(_sample_interval) AS calls, sum(_sample_interval * double3) AS ok_calls, sum(_sample_interval * double1) / sum(_sample_interval) AS mean_latency_ms FROM bioc_mcp_usage_v1 WHERE timestamp > now() - INTERVAL '7' DAY GROUP BY capability, transport ORDER BY calls DESC"
    ```
 
@@ -521,7 +538,7 @@ Automated (in the PR):
       `GET /api/v1/meta/ping` and `GET /api/openapi.json` return 429, `retry-after: 60` and exactly
       `{ error: { code: 'rate_limited', message: 'Too many requests from this address. Wait 60 seconds and try again.' } }`;
       `GET /` and `GET /mcpx` stay 404 and never call the limiter.
-- [ ] The limiter key is the `cf-connecting-ip` value, else `'unknown'`; the same key is used on
+- [ ] The limiter key is the `cf-connecting-ip` value (an IPv6 address by its /64), else `'unknown'`; the same key is used on
       MCP and REST; a limiter that rejects lets the request through and logs `rate-limit`.
 - [ ] A 429 records one event `{ transport, capability: '', latency_ms: 0, upstream_status: 0, ok: false, error_code: 'rate_limited' }`
       with `transport` `'mcp'` or `'rest'` by path.
@@ -583,12 +600,13 @@ shows `120 200` and `5 429`), and the AGENTS.md MCP `curl`. Paste the output in 
 
 ## Risks
 
-- **Cache API on workers.dev is inferred from docs, not observed.** If `caches.default` turns out
-  to be a no-op there, every call hits upstreams (results stay correct; only latency and upstream
-  load suffer). The manual check above catches it; the fix would be an in-isolate memory layer
-  behind `UpstreamCache` (the seam spec #2 left for this) or a custom domain.
+- **Cache API on workers.dev: verified 2026-10-23.** Two identical `ops_activity?kind=failures`
+  calls 3 s apart returned the same `as_of`; production has no in-memory layer, so `caches.default`
+  served the second. The cache is per data centre, so many locations still multiply upstream load.
 - **Rate limits are approximate and per location**, keyed by address: NATed users share a budget,
-  a distributed client is barely limited. Acceptable for a public read-only server; the 429 rows
+  a distributed client is barely limited. IPv6 clients are keyed by /64 (#26 security-r0-1), so
+  rotating addresses inside one /64 does not reset the budget; a client with many /64s or many
+  IPv4 addresses still can. Acceptable for a public read-only server; the 429 rows
   in the usage data show whether 120/min is wrong.
 - **The first deploy is manual** because `secrets.required` blocks a CI deploy until the Worker
   and its secret exist. That is the intended fail-closed behaviour; docs/deploy.md §4 covers it.
@@ -604,8 +622,9 @@ shows `120 200` and `5 429`), and the AGENTS.md MCP `curl`. Paste the output in 
 - **Pinned action SHAs go stale** without Dependabot. Only `deploy.yml` is pinned; bump by hand
   with the verified-SHA method above when upgrading.
 - **`npm ci` runs in the job that holds the deploy token.** A compromised dependency could reach
-  it during the deploy step. The lockfile and least-privilege token (Workers edit on one account)
-  bound the damage; rotate via GSM if in doubt.
+  it during the deploy step. The lockfile and least-privilege token (Workers Scripts: Edit and
+  Account Settings: Read on one account; no KV, R2, Pages or zone permissions) bound the damage;
+  rotate via GSM if in doubt.
 - **The dispatch token** in bioc-infrastructure: if the sender uses `repository_dispatch` it needs
   Contents: write on this repo, i.e. push access. docs/deploy.md recommends `workflow_dispatch`
   (Actions: write) instead; the receiver accepts both.

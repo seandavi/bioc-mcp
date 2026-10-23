@@ -62,7 +62,9 @@ export function siteSubsections(html: string): Map<string, SiteSubsection[]> {
   const byParent = new Map<string, SiteSubsection[]>();
   let parent: string | undefined;
   for (const match of html.matchAll(SECTION_HEADING)) {
-    const [, id, level, inner] = match as unknown as [string, string, string, string];
+    const id = match[1]!;
+    const level = match[2]!;
+    const inner = match[3]!;
     if (level === '2') {
       parent = id;
       continue;
@@ -83,7 +85,7 @@ const squash = (line: string) => line.replace(/\s+/g, ' ').trim();
  * that h2 section. subsectionsByPage is keyed by page href (the part before '#'). Records without
  * subsections pass through unchanged. Output order: each parent, then its subsections in document order.
  * Throws Error naming the record id, the subsection id and the heading when no line of the
- * parent's text (after the previous cut) equals the heading.
+ * parent's text after its first line (and after the previous cut) equals the heading.
  */
 export function splitSiteRecords(
   records: DocsRecord[],
@@ -99,11 +101,15 @@ export function splitSiteRecords(
 
     const lines = record.text.split('\n');
     const cuts: number[] = [];
-    let from = 0;
+    // line 0 is the h2's own heading (search.json section text starts with it)
+    let from = 1;
     for (const sub of subsections) {
       const at = lines.findIndex((line, i) => i >= from && squash(line) === sub.heading);
       if (at === -1) {
-        throw new Error(`${record.id}: no line "${sub.heading}" for subsection #${sub.id} in search.json text`);
+        throw new Error(
+          `${record.id}: no line "${sub.heading}" for subsection #${sub.id} in search.json text ` +
+            '(search.json and the page HTML may come from different site deploys; re-run, or re-record both with npm run docs:record)',
+        );
       }
       cuts.push(at);
       from = at + 1;

@@ -182,8 +182,16 @@ describe('splitSiteRecords', () => {
     expect(result.map((r) => r.text)).toEqual(['One\nintro', 'A\nalpha\nB\nbeta', 'A']);
   });
 
+  it("does not cut at the parent's own heading line", () => {
+    const summary: DocsRecord = { ...parent, id: 'site:p.html#summary', section: 'Summary', text: 'Summary\nintro\nSummary\ndetail' };
+    const named = new Map([['p.html', new Map([['summary', [{ id: 'summary-1', heading: 'Summary' }]]])]]);
+    const result = splitSiteRecords([summary], named, SITE);
+    expect(result.map((r) => r.text)).toEqual(['Summary\nintro', 'Summary\ndetail']);
+  });
+
   it('throws naming the record id and heading when the text has no such line', () => {
     const missing = new Map([['p.html', new Map([['one', [{ id: 'zzz', heading: 'Nowhere' }]]])]]);
     expect(() => splitSiteRecords([parent], missing, SITE)).toThrow(/site:p\.html#one: no line "Nowhere" for subsection #zzz/);
+    expect(() => splitSiteRecords([parent], missing, SITE)).toThrow(/re-record both with npm run docs:record/);
   });
 });

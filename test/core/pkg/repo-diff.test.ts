@@ -361,6 +361,16 @@ describe('pkg_repo_diff on the fixtures', () => {
     expect(third.diff).toEqual(first.diff);
   });
 
+  test('concurrent loadRepoDiff calls fetch each PACKAGES file once', async () => {
+    const { deps, fetch } = makeDeps(fixtureRoutes());
+    const [a, b] = await Promise.all([loadRepoDiff(deps, 'bioc'), loadRepoDiff(deps, 'bioc')]);
+    for (const repoPath of ['bioc', 'data/experiment', 'workflows', 'books']) {
+      const url = packagesUrl('3.24', repoPath);
+      expect(fetch.calls.filter((u) => u === url)).toHaveLength(1);
+    }
+    expect(b.diff).toEqual(a.diff);
+  });
+
   test('a PACKAGES 404 is an upstream_error naming the URL', async () => {
     const { deps } = makeDeps({
       ...fixtureRoutes(),

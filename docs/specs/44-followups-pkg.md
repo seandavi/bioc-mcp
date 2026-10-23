@@ -527,7 +527,8 @@ Each is checked by a test unless it says otherwise.
 
 - [ ] For job `96299707840` with `dependencies: ['biomart', 'HTTR2', 'biomaRt']`, `data.deps`
       equals
-      `[{ package: 'biomart', version: null, did_you_mean: ['biomaRt'] }, { package: 'HTTR2', version: null, did_you_mean: ['httr2'] }, { package: 'biomaRt', version: '2.69.0', did_you_mean: [] }]`.
+      `[{ package: 'biomart', version: null, did_you_mean: ['biomaRt'] }, { package: 'HTTR2', version: null, did_you_mean: ['httr2', 'httr'] }, { package: 'biomaRt', version: '2.69.0', did_you_mean: [] }]`.
+      `HTTR2` also suggests `httr`: matching is case-insensitive and `httr` is within distance 1.
       The summary contains `biomart not installed (did you mean biomaRt?)`.
 - [ ] The existing 'unknown names get version null…' test is updated with a `did_you_mean` on
       every entry (empty for found names; for `notAPackage`, `constructor` and `toString`,

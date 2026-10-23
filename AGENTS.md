@@ -111,6 +111,11 @@ Adding a capability: define it with `defineCapability` in `src/core/<module>/`, 
 module's `capabilities`, add the module to `modules` in `src/core/registry.ts`. MCP and REST pick
 it up; `validateRegistry` enforces naming and REST-compatible input.
 
+MCP resources and prompts belong to a module too: `resources` (a `ResourceTemplateDef` under
+`bioc://<module>/`) and `prompts` (`definePrompt`, listing every tool its text names in `tools`).
+Both are MCP only; a prompt is offered only on toolsets that include all of its tools. Bundled,
+build-time data (like the docs index) is reported to `bioc://about` through `datasets`.
+
 ## Git
 
 - Branch per issue: `issue-<n>-<slug>`. PRs say `Closes #<n>`.

@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { envelopeSchema, type Envelope } from '../envelope';
+import { envelopeSchema, type Envelope, type Source } from '../envelope';
 import type { Upstream } from '../upstreams/http';
 import type { Deps } from './deps';
 
@@ -24,9 +24,56 @@ export function defineCapability<I extends z.ZodObject, D extends z.ZodType>(
   return { ...spec, output: envelopeSchema(spec.data) };
 }
 
+/** One entry of a resource template's `resources/list`; mimeType comes from the template. */
+export interface ResourceListing {
+  uri: string; // matches the template, e.g. 'bioc://docs/adr/0009-client-addresses-are-hashed-at-the-edge.html'
+  name: string; // the template variable's value, e.g. 'adr/0009-client-addresses-are-hashed-at-the-edge.html'
+  title: string;
+  description: string;
+}
+
+/** An MCP resource template. MCP only: REST reaches the same data through a capability. */
+export interface ResourceTemplateDef {
+  name: string; // /^[a-z]+(-[a-z]+)*$/, unique across modules; MCP template name
+  uriTemplate: string; // RFC 6570, starts with `bioc://<module>/`; use {+var} for values containing '/'
+  title: string;
+  description: string;
+  mimeType: string;
+  list(): ResourceListing[];
+  /** Full text at `uri`. Throws CapabilityError('not_found', message) when nothing is there. */
+  read(uri: string): string;
+}
+
+/** An MCP prompt. MCP only: prompts have no REST form. */
+export interface PromptDef<A extends z.ZodObject = z.ZodObject> {
+  name: string; // /^[a-z]+(-[a-z]+)*$/, unique across modules
+  title: string;
+  description: string;
+  args: A; // flat object of string fields: MCP prompt arguments are strings
+  tools: readonly string[]; // every capability the prompt text tells the model to call
+  // Method syntax on purpose: bivariant parameters let PromptDef<Specific> sit in PromptDef[].
+  render(args: z.output<A>): string; // text of the single user message
+}
+
+export function definePrompt<A extends z.ZodObject>(def: PromptDef<A>): PromptDef<A> {
+  return def;
+}
+
+/** Data built ahead of time and bundled with the Worker; listed by bioc://about. */
+export interface BundledDataset {
+  id: string; // kebab-case, e.g. 'docs-index'
+  description: string;
+  built_at: string; // ISO 8601
+  build_commit: string | null;
+  inputs: Source[]; // each input URL with its as_of
+}
+
 export interface Module {
   name: string; // /^[a-z]+$/; also the toolset path segment
   description: string;
   upstreams: Upstream[]; // every upstream its capabilities call; listed by bioc://about
   capabilities: Capability[];
+  resources?: readonly ResourceTemplateDef[]; // registered when the module is in the toolset
+  prompts?: readonly PromptDef[]; // registered when the toolset has every tool in prompt.tools
+  datasets?: () => BundledDataset[]; // called by buildAbout; may load bundled data on first call
 }

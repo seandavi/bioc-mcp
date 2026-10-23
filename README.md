@@ -45,10 +45,11 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
 | `pkg` | `pkg_downloads` | How many downloads, and from how many distinct IPs, did this package get each month of a year? |
 | `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
+| `docs` | `docs_search` | Which sections of the infrastructure docs (site pages, ADRs, component docs) match these words? |
+| `docs` | `docs_read` | The full text of one docs page or section, from a `docs_search` URL. |
 
-**Coming:** the `docs` module (`docs_search`, `docs_read`: why does the infrastructure work this
-way? ADRs, runbooks, plans) is in [#31](https://github.com/seandavi/bioc-mcp/pull/31) and not
-deployed.
+The `docs` module also serves each page as an MCP resource (`bioc://docs/…`) and an
+`explain-decision` prompt.
 
 ## Connect
 
@@ -133,7 +134,7 @@ curl -s -X POST "$BIOC_MCP/mcp" \
 
 ### Load one module only
 
-Point any of the above at `$BIOC_MCP/mcp/pkg` (or `/mcp/ops`, `/mcp/pkg+ops`) instead of `/mcp`.
+Point any of the above at `$BIOC_MCP/mcp/pkg` (or `/mcp/docs`, `/mcp/ops`, `/mcp/pkg+docs`) instead of `/mcp`.
 The client loads fewer tools into its context.
 
 ### First questions to ask
@@ -145,6 +146,8 @@ The client loads fewer tools into its context.
 - "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)
 - "Which bioc-* workflows are failing right now?" (`ops_activity`)
+- "Why does the registry poll r-universe instead of receiving webhooks? Cite the page." (`docs_search`,
+  then `docs_read`)
 
 ## REST quickstart
 
@@ -152,6 +155,7 @@ The client loads fewer tools into its context.
 curl -s "$BIOC_MCP/api/v1/meta/ping"
 curl -s "$BIOC_MCP/api/v1/pkg/status?package=edgeR&universe=bioc-release"
 curl -s "$BIOC_MCP/api/v1/ops/activity?kind=failures"
+curl -s "$BIOC_MCP/api/v1/docs/search?query=propagation+gate"
 ```
 
 Every body is `{ data, summary, sources }`. `sources` is a list of `{ url, as_of }`: the upstream

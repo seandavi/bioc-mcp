@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { SourceSchema } from '../envelope';
 import type { Module } from './registry';
 import { PROTOCOL_VERSION, VERSION } from '../version';
 
@@ -28,6 +29,16 @@ export const AboutSchema = z.object({
       ttl_seconds: z.number().int(),
       description: z.string(),
       used_by: z.array(z.string()), // module names
+    }),
+  ),
+  datasets: z.array(
+    z.object({
+      id: z.string(),
+      module: z.string(), // the module that declared it
+      description: z.string(),
+      built_at: z.string(),
+      build_commit: z.string().nullable(),
+      inputs: z.array(SourceSchema),
     }),
   ),
 });
@@ -68,5 +79,15 @@ export function buildAbout(modules: readonly Module[]): About {
       tools: module.capabilities.map((capability) => capability.name),
     })),
     upstreams: [...upstreams.values()],
+    datasets: modules.flatMap((module) =>
+      (module.datasets?.() ?? []).map((dataset) => ({
+        id: dataset.id,
+        module: module.name,
+        description: dataset.description,
+        built_at: dataset.built_at,
+        build_commit: dataset.build_commit,
+        inputs: dataset.inputs,
+      })),
+    ),
   };
 }

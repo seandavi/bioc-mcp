@@ -2,7 +2,15 @@ import * as z from 'zod';
 import { describe, expect, test } from 'vitest';
 import { metaModule } from '../../src/core/meta';
 import { metaPing } from '../../src/core/meta/ping';
-import { defineCapability, modules, restPath, validateRegistry, type Module } from '../../src/core/registry';
+import {
+  defineCapability,
+  modules,
+  restPath,
+  validateRegistry,
+  type Module,
+  type PromptDef,
+  type ResourceTemplateDef,
+} from '../../src/core/registry';
 import type { Upstream } from '../../src/upstreams/http';
 import { exampleItem, exampleModule, exampleUpstream } from '../support/example-module';
 
@@ -198,6 +206,96 @@ describe('validateRegistry: idempotent input', () => {
       }),
     });
     expect(() => validateRegistry([demoModule({ capabilities: [fine] })])).not.toThrow();
+  });
+});
+
+function template(overrides: Partial<ResourceTemplateDef> = {}): ResourceTemplateDef {
+  return {
+    name: 'demo-page',
+    uriTemplate: 'bioc://demo/{+path}',
+    title: 'Page',
+    description: 'A page.',
+    mimeType: 'text/markdown',
+    list: () => [],
+    read: () => '',
+    ...overrides,
+  };
+}
+
+function prompt(overrides: Partial<PromptDef> = {}): PromptDef {
+  return {
+    name: 'explain-thing',
+    title: 'Explain',
+    description: 'Explains a thing.',
+    args: z.object({ topic: z.string() }),
+    tools: ['demo_thing'],
+    render: () => 'Explain it.',
+    ...overrides,
+  };
+}
+
+describe('validateRegistry: resources and prompts', () => {
+  test('accepts a module with a valid template and prompt', () => {
+    expect(() => validateRegistry([demoModule({ resources: [template()], prompts: [prompt()] })])).not.toThrow();
+  });
+
+  test('accepts a prompt naming a tool of another module', () => {
+    const other = demoModule({ name: 'other', capabilities: [] });
+    const withPrompt = demoModule({ prompts: [prompt()] });
+    expect(() => validateRegistry([withPrompt, other])).not.toThrow();
+    const reverse = demoModule({ name: 'first', capabilities: [], prompts: [prompt()] });
+    expect(() => validateRegistry([reverse, demoModule()])).not.toThrow();
+  });
+
+  test.each(['Demo_Page', 'demo--page', '-demo', 'demo1'])('rejects the template name %j', (name) => {
+    expect(() => validateRegistry([demoModule({ resources: [template({ name })] })])).toThrow(
+      `Resource template "${name}" must match`,
+    );
+  });
+
+  test('rejects a duplicate template name', () => {
+    const other = demoModule({ name: 'other', capabilities: [], resources: [template({ uriTemplate: 'bioc://other/{+p}' })] });
+    expect(() => validateRegistry([demoModule({ resources: [template()] }), other])).toThrow(
+      'Duplicate resource template name "demo-page"',
+    );
+  });
+
+  test('rejects a uriTemplate outside bioc://<module>/', () => {
+    expect(() => validateRegistry([demoModule({ resources: [template({ uriTemplate: 'bioc://other/{+path}' })] })])).toThrow(
+      'Resource template "demo-page" uriTemplate must start with "bioc://demo/"',
+    );
+  });
+
+  test('rejects a prompt name that does not match', () => {
+    expect(() => validateRegistry([demoModule({ prompts: [prompt({ name: 'Explain_Thing' })] })])).toThrow(
+      'Prompt "Explain_Thing" must match',
+    );
+  });
+
+  test('rejects a duplicate prompt name', () => {
+    expect(() => validateRegistry([demoModule({ prompts: [prompt(), prompt()] })])).toThrow(
+      'Duplicate prompt name "explain-thing"',
+    );
+  });
+
+  test('rejects an empty prompt description', () => {
+    expect(() => validateRegistry([demoModule({ prompts: [prompt({ description: ' ' })] })])).toThrow(
+      'Prompt "explain-thing" has an empty description',
+    );
+  });
+
+  test('rejects a prompt argument that is not a string', () => {
+    const wrong = prompt({ args: z.object({ count: z.number() }) });
+    expect(() => validateRegistry([demoModule({ prompts: [wrong] })])).toThrow(
+      'Prompt "explain-thing" argument "count" must be a string; MCP prompt arguments are strings',
+    );
+  });
+
+  test('rejects a prompt naming an unknown tool', () => {
+    const wrong = prompt({ tools: ['demo_thing', 'demo_missing'] });
+    expect(() => validateRegistry([demoModule({ prompts: [wrong] })])).toThrow(
+      'Prompt "explain-thing" names unknown tool "demo_missing"',
+    );
   });
 });
 

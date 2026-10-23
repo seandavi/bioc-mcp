@@ -30,7 +30,7 @@ const textOf = (result: { content?: unknown }) => (result.content as { text: str
 
 test('the production registry, including ops, validates', () => {
   expect(() => validateRegistry(modules)).not.toThrow();
-  expect(modules.map((m) => m.name)).toEqual(['meta', 'pkg', 'ops']);
+  expect(modules.map((m) => m.name)).toEqual(['meta', 'pkg', 'ops', 'docs']);
 });
 
 describe('MCP', () => {

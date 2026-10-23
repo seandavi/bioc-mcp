@@ -23,6 +23,30 @@ describe('buildAbout', () => {
         used_by: ['example'],
       },
     ]);
+    expect(about.datasets).toEqual([]);
+  });
+
+  test('lists the datasets modules declare, in module order, with their module name', () => {
+    const inputs = [{ url: 'https://data.test/a.json', as_of: '2026-10-22T00:00:00Z' }];
+    const first: Module = {
+      ...exampleModule,
+      name: 'first',
+      datasets: () => [
+        { id: 'one', description: 'One.', built_at: '2026-10-22T00:00:00Z', build_commit: 'abc', inputs },
+        { id: 'two', description: 'Two.', built_at: '2026-10-21T00:00:00Z', build_commit: null, inputs: [] },
+      ],
+    };
+    const second: Module = {
+      ...exampleModule,
+      name: 'second',
+      datasets: () => [{ id: 'three', description: 'Three.', built_at: '2026-10-20T00:00:00Z', build_commit: null, inputs }],
+    };
+    const about = AboutSchema.parse(buildAbout([metaModule, first, second]));
+    expect(about.datasets).toEqual([
+      { id: 'one', module: 'first', description: 'One.', built_at: '2026-10-22T00:00:00Z', build_commit: 'abc', inputs },
+      { id: 'two', module: 'first', description: 'Two.', built_at: '2026-10-21T00:00:00Z', build_commit: null, inputs: [] },
+      { id: 'three', module: 'second', description: 'Three.', built_at: '2026-10-20T00:00:00Z', build_commit: null, inputs },
+    ]);
   });
 
   test('de-duplicates upstreams by id and lists every module that uses one', () => {

@@ -1,10 +1,9 @@
 import type { Client } from '@modelcontextprotocol/client';
 import { afterEach, describe, expect, test } from 'vitest';
-import { opsModule } from '../../src/core/ops';
-import { pkgModule } from '../../src/core/pkg';
 import { modules } from '../../src/core/registry';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../src/envelope';
 import { connectClient, makeTestApp } from '../support/app';
+import { docsTestModule } from '../support/docs';
 import { bioconductorRoutes } from '../support/bioconductor-routes';
 import { GITHUB_RECORDED_AT, githubRoutes } from '../support/github-routes';
 import { pkgRoutes } from '../support/pkg-routes';
@@ -23,6 +22,8 @@ const CALLS: readonly [tool: string, args: Record<string, unknown>][] = [
   ['ops_activity', { kind: 'prs' }],
   ['ops_activity', { kind: 'workflows' }],
   ['ops_activity', { kind: 'failures' }],
+  ['docs_search', { query: 'propagation gate' }],
+  ['docs_read', { id_or_url: 'site:propagation-gate.html' }],
 ];
 
 let client: Client | undefined;
@@ -34,10 +35,14 @@ afterEach(async () => {
 async function call(tool: string, args: Record<string, unknown>) {
   const { app } = makeTestApp({
     routes: { ...pkgRoutes, ...bioconductorRoutes, ...githubRoutes() },
-    extraModules: [pkgModule, opsModule],
+    // Mount every production module so adding one needs only CALLS rows and fixture routes (#36);
+    // docs swaps in the fixture-built index.
+    extraModules: await Promise.all(
+      modules.filter((m) => m.name !== 'meta').map((m) => (m.name === 'docs' ? docsTestModule() : m)),
+    ),
     now: () => GITHUB_RECORDED_AT,
   });
-  client = await connectClient(app, '/mcp/meta+pkg+ops');
+  client = await connectClient(app, `/mcp/${modules.map((m) => m.name).join('+')}`);
   const result = await client.callTool({ name: tool, arguments: args });
   return {
     isError: result.isError,

@@ -1,4 +1,10 @@
-import { createMcpHandler, McpServer, type McpHttpHandler } from '@modelcontextprotocol/server';
+import {
+  createMcpHandler,
+  McpServer,
+  ResourceNotFoundError,
+  ResourceTemplate,
+  type McpHttpHandler,
+} from '@modelcontextprotocol/server';
 import { createMcpHonoApp } from '@modelcontextprotocol/hono';
 import type { Context, Hono } from 'hono';
 import { buildAbout } from '../core/about';
@@ -7,6 +13,7 @@ import { invokeCapability } from '../core/invoke';
 import { envelopeTextBlocks } from '../envelope';
 import type { Module } from '../core/registry';
 import type { AppConfig } from '../config';
+import { CapabilityError } from '../errors';
 import type { UsageSink } from '../usage';
 import { VERSION } from '../version';
 
@@ -74,6 +81,41 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
             };
       },
     );
+  }
+
+  const toolNames = new Set(selected.flatMap((module) => module.capabilities.map((c) => c.name)));
+  for (const module of selected) {
+    for (const def of module.resources ?? []) {
+      server.registerResource(
+        def.name,
+        new ResourceTemplate(def.uriTemplate, {
+          list: () => ({ resources: def.list().map((r) => ({ ...r, mimeType: def.mimeType })) }),
+        }),
+        { title: def.title, description: def.description, mimeType: def.mimeType },
+        (uri) => {
+          let text: string;
+          try {
+            text = def.read(uri.href);
+          } catch (error) {
+            if (error instanceof CapabilityError && error.code === 'not_found') {
+              throw new ResourceNotFoundError(uri.href, error.message);
+            }
+            throw error;
+          }
+          return { contents: [{ uri: uri.href, mimeType: def.mimeType, text }] };
+        },
+      );
+    }
+    for (const prompt of module.prompts ?? []) {
+      if (!prompt.tools.every((tool) => toolNames.has(tool))) continue;
+      server.registerPrompt(
+        prompt.name,
+        { title: prompt.title, description: prompt.description, argsSchema: prompt.args },
+        (args) => ({
+          messages: [{ role: 'user' as const, content: { type: 'text' as const, text: prompt.render(args) } }],
+        }),
+      );
+    }
   }
 
   server.registerResource(

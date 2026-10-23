@@ -30,6 +30,19 @@ describe('loadDocsIndex', () => {
     expect(index.search('registry', 3)).toHaveLength(3);
   });
 
+  it('filters inside the ranked search, before the limit', () => {
+    const hits = index.search('gate', 8, (record) => record.source === 'adr');
+    expect(hits.length).toBeGreaterThan(0);
+    expect(hits.length).toBeLessThanOrEqual(8);
+    expect(hits.every((hit) => hit.record.source === 'adr')).toBe(true);
+    expect(index.search('registry', 3, (record) => record.source === 'repo')).toHaveLength(3);
+  });
+
+  it('returns nothing when the filter rejects everything, and still checks limit', () => {
+    expect(index.search('registry', 8, () => false)).toEqual([]);
+    expect(() => index.search('registry', 0, () => true)).toThrow(RangeError);
+  });
+
   it.each([0, -1, 2.5, Number.NaN, Number.POSITIVE_INFINITY])('rejects limit %s', (limit) => {
     expect(() => index.search('registry', limit)).toThrow(RangeError);
   });

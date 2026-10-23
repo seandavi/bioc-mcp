@@ -1,0 +1,16 @@
+Package: BeadArrayUseCases
+Version: 1.51.0
+Imports: beadarray (>= 2.3.18), limma, GEOquery
+Suggests: Biostrings, GenomicRanges, illuminaHumanv1.db,
+        illuminaHumanv2.db, illuminaHumanv3.db
+License: GPL-2
+MD5sum: 44b1dd7d2d91113261ca93e6e00d3ecb
+NeedsCompilation: no
+
+Package: Fletcher2013a
+Version: 1.49.0
+Depends: R (>= 2.15), limma
+Imports: Biobase ,VennDiagram, gplots,grid
+License: GPL (>= 2)
+MD5sum: c61029005bd4c79a506947ef6678f3b5
+NeedsCompilation: no

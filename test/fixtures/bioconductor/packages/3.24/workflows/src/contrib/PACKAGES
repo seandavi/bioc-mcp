@@ -1,0 +1,20 @@
+Package: BP4RNAseq
+Version: 1.23.0
+Depends: R (>= 4.0.0)
+Imports: dplyr, fastqcr, stringr, tidyr, stats, utils, magrittr,
+        reticulate
+Suggests: knitr, rmarkdown, testthat
+License: GPL-2
+MD5sum: 14168fb4cc80747e27d96285ef4330d5
+NeedsCompilation: no
+
+Package: methylationArrayAnalysis
+Version: 1.37.0
+Depends: R (>= 3.3.0), knitr, rmarkdown, BiocStyle, limma, minfi,
+        IlluminaHumanMethylation450kanno.ilmn12.hg19,
+        IlluminaHumanMethylation450kmanifest, RColorBrewer, missMethyl,
+        matrixStats, minfiData, Gviz, DMRcate, stringr,
+        FlowSorted.Blood.450k
+License: Artistic-2.0
+MD5sum: 0521ad930bf349f2bd13006037ced387
+NeedsCompilation: no

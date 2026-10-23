@@ -1,0 +1,8 @@
+Package: csawBook
+Version: 1.20.0
+Depends: BiocFileCache, ChIPpeakAnno, chipseqDBData, csaw, edgeR, Gviz,
+        org.Mm.eg.db, rebook, rmarkdown, Rsamtools, rtracklayer,
+        TxDb.Mmusculus.UCSC.mm10.knownGene
+License: GPL-3
+MD5sum: cff3e1849ff3dfdba1dd6538a7c8b1c0
+NeedsCompilation: no

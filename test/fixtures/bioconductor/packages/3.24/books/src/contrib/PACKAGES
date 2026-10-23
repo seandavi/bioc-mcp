@@ -1,0 +1,23 @@
+Package: csawBook
+Version: 1.21.0
+Depends: BiocFileCache, ChIPpeakAnno, chipseqDBData, csaw, edgeR, Gviz,
+        org.Mm.eg.db, rebook, rmarkdown, Rsamtools, rtracklayer,
+        TxDb.Mmusculus.UCSC.mm10.knownGene
+License: GPL-3
+MD5sum: bbc5a34e1d257b759600b460a8d8a5cb
+NeedsCompilation: no
+
+Package: OMA
+Version: 1.1.8
+Depends: R (>= 4.6.0)
+Suggests: ape, BiocBook, BiocManager, BiocStyle, bluster,
+        ComplexHeatmap, curatedMetagenomicData, dendextend,
+        DirichletMultinomial, dplyr, DT, factoextra, ggdag, ggExtra,
+        ggplot2, ggpubr, ggtree, glue, gt, knitr, Maaslin2, maaslin3,
+        mediation, mia, miaTime, miaViz, microbiomeDataSets, mikropml,
+        MOFA2, NbClust, NMF, patchwork, philr, phyloseq, qgraph,
+        rebook, scales, scater, scuttle, sechm, sessioninfo,
+        shadowtext, stats, tidySingleCellExperiment, tidyverse, vegan
+License: CC BY 4.0
+MD5sum: 3cdc8165bc196b9044c5dc04d0d0d327
+NeedsCompilation: no

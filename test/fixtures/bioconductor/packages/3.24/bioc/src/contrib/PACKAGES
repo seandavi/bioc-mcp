@@ -1,0 +1,127 @@
+Package: anndataR
+Version: 1.3.2
+Depends: R (>= 4.5.0)
+Imports: cli, lifecycle, Matrix, methods, purrr, R6 (>= 2.4.0),
+        reticulate (>= 1.41.1), rlang, stats
+Suggests: BiocFileCache, BiocStyle, DelayedArray, HDF5Array, jsonlite,
+        knitr, processx, rhdf5 (>= 2.57.5), Rarr (>= 2.1.13),
+        rmarkdown, S4Vectors, Seurat, SeuratObject,
+        SingleCellExperiment, spelling, SummarizedExperiment, testthat
+        (>= 3.0.0), vctrs, withr, yaml
+License: MIT + file LICENSE
+MD5sum: bc92f50d7d7c0c65f8d51d8cfe595532
+NeedsCompilation: no
+
+Package: biomaRt
+Version: 2.69.3
+Depends: methods, R (>= 4.5.0)
+Imports: AnnotationDbi, BiocFileCache, curl, httr2, progress, stringr,
+        utils, xml2
+Suggests: BiocStyle, httptest2, knitr, mockery, rmarkdown, testthat (>=
+        3.0.0), withr
+License: Artistic-2.0
+MD5sum: 1b92b7213aa13358c082aaa67dcb24fe
+NeedsCompilation: no
+
+Package: Chromatograms
+Version: 1.3.4
+Depends: BiocParallel, ProtGenerics (>= 1.39.2), R (>= 4.5.0)
+Imports: data.table, methods, S4Vectors, MsCoreUtils (>= 1.7.5),
+        Spectra
+Suggests: MsDataHub, roxygen2, BiocStyle (>= 2.5.19), testthat, knitr
+        (>= 1.1.0), rmarkdown, mzR (>= 2.41.4), MsBackendMetaboLights
+        (>= 1.3.1), pheatmap, vdiffr, IRanges, RColorBrewer
+License: Artistic-2.0
+MD5sum: 065a884012469c65a74be67138d02c39
+NeedsCompilation: no
+
+Package: ClustIRR
+Version: 1.11.0
+Depends: R (>= 4.3.0)
+Imports: grDevices, igraph, methods, Rcpp (>= 0.12.0), RcppParallel (>=
+        5.0.1), reshape2, rstan (>= 2.18.1), rstantools (>= 2.4.0),
+        stats, stringdist, utils, posterior, visNetwork, dplyr, tidyr,
+        ggplot2, ggforce, scales, msa, Biostrings, RADanalysis,
+        ggseqlogo, rBLAST
+LinkingTo: BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0),
+        RcppParallel (>= 5.0.1), rstan (>= 2.18.1), StanHeaders (>=
+        2.18.0)
+Suggests: BiocStyle, knitr, testthat, ggrepel, patchwork, htmlwidgets
+License: GPL-3 + file LICENSE
+MD5sum: c0ce8386f59d3a200456a9fe314aa003
+NeedsCompilation: yes
+
+Package: edge
+Version: 2.45.0
+Depends: R(>= 3.1.0), Biobase
+Imports: methods, splines, sva, qvalue(>= 1.99.0), MASS
+Suggests: testthat, knitr, ggplot2, reshape2
+License: MIT + file LICENSE
+MD5sum: 53fffe209c55ec2f061d99e922c82087
+NeedsCompilation: yes
+
+Package: edgeR
+Version: 4.99.10
+Depends: R (>= 3.6.0), limma (>= 3.63.6)
+Imports: methods, graphics, stats, utils, locfit
+Suggests: jsonlite, knitr, Matrix, nanoparquet, readr, rhdf5,
+        SeuratObject, splines, AnnotationDbi, Biobase, BiocStyle,
+        org.Hs.eg.db, S4Vectors, SummarizedExperiment
+License: GPL (>= 2)
+MD5sum: c0c66d9aaa89c81b2e7398dea285c337
+NeedsCompilation: yes
+
+Package: lipidr
+Version: 2.27.0
+Depends: R (>= 3.6.0), SummarizedExperiment
+Imports: methods, stats, utils, data.table, S4Vectors, rlang, dplyr,
+        tidyr, forcats, ggplot2, limma, fgsea, ropls, imputeLCMD,
+        magrittr
+Suggests: knitr, rmarkdown, BiocStyle, ggrepel, plotly, spelling,
+        testthat
+License: MIT + file LICENSE
+MD5sum: 2d390fc76970b96eb9a606f27334f619
+NeedsCompilation: no
+
+Package: RMassBank
+Version: 3.23.0
+Depends: R (>= 4.1.0), Rcpp
+Imports: assertthat, Biobase, ChemmineR, data.table, digest, dplyr,
+        enviPat, glue, httr, httr2, logger, methods, MSnbase, mzR,
+        purrr, R.utils, rcdk, readJDX, readr, rjson, S4Vectors, tibble,
+        tidyselect, webchem, XML, yaml
+Suggests: BiocStyle, CAMERA, gplots, knitr, magick, rmarkdown,
+        RMassBankData (>= 1.33.1), RUnit, xcms (>= 1.37.1)
+License: Artistic-2.0
+MD5sum: 6c1846cb4c851083b8081c47fb49510b
+NeedsCompilation: no
+
+Package: SEMPLR
+Version: 1.1.2
+Depends: R (>= 4.1.0)
+Imports: BiocGenerics, Biostrings, GenomeInfoDb, AnnotationDbi,
+        ggplot2, ggrepel, VariantAnnotation, GenomicRanges,
+        GenomicFeatures, data.table, methods, scales, S4Vectors, stats,
+        rlang, stringi, universalmotif, Rcpp, ggtree
+LinkingTo: Rcpp
+Suggests: knitr, rmarkdown, BiocStyle, devtools, testthat (>= 3.0.0),
+        IRanges, BSgenome.Hsapiens.UCSC.hg38,
+        BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg38.knownGene,
+        org.Hs.eg.db
+License: MIT + file LICENSE
+MD5sum: 73261b0f7879a2c6284e7413896cdb7f
+NeedsCompilation: yes
+
+Package: trackViewer
+Version: 1.49.3
+Depends: R (>= 3.5.0), grDevices, methods, GenomicRanges, grid
+Imports: Seqinfo, GenomeInfoDb, GenomicAlignments, GenomicFeatures,
+        Rsamtools, S4Vectors, rtracklayer, BiocGenerics, scales, tools,
+        IRanges, AnnotationDbi, grImport, htmlwidgets, InteractionSet,
+        utils, rhdf5, strawr, txdbmaker
+Suggests: biomaRt, TxDb.Hsapiens.UCSC.hg19.knownGene, RUnit,
+        org.Hs.eg.db, BiocStyle, knitr, VariantAnnotation, httr,
+        htmltools, rmarkdown, motifStack, Gviz
+License: GPL (>= 2)
+MD5sum: cb40fb944d7d880ee9929646b3f859dc
+NeedsCompilation: no

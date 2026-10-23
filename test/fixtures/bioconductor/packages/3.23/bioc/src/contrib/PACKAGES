@@ -1,0 +1,30 @@
+Package: edgeR
+Version: 4.10.7
+Depends: R (>= 3.6.0), limma (>= 3.63.6)
+Imports: methods, graphics, stats, utils, locfit
+Suggests: jsonlite, knitr, Matrix, nanoparquet, readr, rhdf5,
+        SeuratObject, splines, AnnotationDbi, Biobase, BiocStyle,
+        org.Hs.eg.db, S4Vectors, SummarizedExperiment
+License: GPL (>= 2)
+MD5sum: 2f4ce588034c0b8dd24b23dc782d74c6
+NeedsCompilation: yes
+
+Package: motifbreakR
+Version: 2.26.1
+Depends: R (>= 4.4.0), grid, MotifDb
+Imports: methods, grDevices, stringr, parallel, BiocGenerics, S4Vectors
+        (>= 0.9.25), IRanges, GenomeInfoDb, GenomicRanges, Biostrings,
+        BSgenome, rtracklayer, VariantAnnotation, BiocParallel,
+        motifStack, Gviz, matrixStats, TFMPvalue, SummarizedExperiment,
+        pwalign, DT, bsicons, BiocFileCache, biomaRt, bslib, shiny,
+        vroom
+Suggests: BSgenome.Hsapiens.UCSC.hg19,
+        SNPlocs.Hsapiens.dbSNP155.GRCh37, knitr, rmarkdown,
+        BSgenome.Drerio.UCSC.danRer7, BiocStyle,
+        BSgenome.Hsapiens.1000genomes.hs37d5,
+        BSgenome.Hsapiens.UCSC.hg19.masked,
+        BSgenome.Hsapiens.NCBI.GRCh38,
+        BSgenome.Hsapiens.UCSC.hg38.masked, BSgenome.Hsapiens.UCSC.hg38
+License: GPL-2
+MD5sum: e874cc82ae3d1dda6b9ec6b21fe053f9
+NeedsCompilation: no

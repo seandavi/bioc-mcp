@@ -43,7 +43,9 @@ const CheckSectionSchema = z.object({
   text: z.string().describe('What R CMD check printed under this step'),
   truncated: z
     .boolean()
-    .describe('true if lines were cut to fit the size limit; the marker in text gives the offset to read them with full=true'),
+    .describe(
+      'true if lines were cut to fit the size limit; the marker in text, or offset when text is empty, gives where to read them with full=true',
+    ),
 });
 
 const TextPageSchema = z.object({
@@ -98,8 +100,16 @@ function summarize(data: PkgCheckOutputData): string {
       const more = check.sections.length > 5 ? ` and ${check.sections.length - 5} more` : '';
       sentences.push(`Sections: ${names.join('; ')}${more}.`);
     }
-    if (check.sections.some((s) => s.truncated) || check.sections_omitted > 0) {
-      sentences.push("Some output was cut to fit; each cut section's marker gives the offset to read it with full=true.");
+    if (check.sections.some((s) => s.truncated)) {
+      sentences.push(
+        "Some output was cut to fit; each cut section's marker, or its offset when its text is empty, gives where to read it with full=true.",
+      );
+    }
+    if (check.sections_omitted > 0) {
+      const n = check.sections_omitted;
+      sentences.push(
+        `${n} more ${n === 1 ? 'step was' : 'steps were'} left out (beyond the ${MAX_SECTIONS} most severe); page the whole log with full=true.`,
+      );
     }
   } else if (view === 'tail' && text) {
     sentences.push(

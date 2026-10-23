@@ -312,13 +312,19 @@ const CheckSectionSchema = z.object({
   text: z.string().describe('What R CMD check printed under this step'),
   truncated: z
     .boolean()
-    .describe('true if lines were cut to fit the size limit; the marker in text gives the offset to read them with full=true'),
+    .describe(
+      'true if lines were cut to fit the size limit; the marker in text, or offset when text is empty, gives where to read them with full=true',
+    ),
 });
 ```
 
 The handler passes `selected.sections` through unchanged, so `offset` reaches the output. In
 `summarize`, the sentence `Some output was cut to fit; read the whole log with full=true.` becomes
-`Some output was cut to fit; each cut section's marker gives the offset to read it with full=true.`
+two independent sentences, in this order. When a section is truncated:
+`Some output was cut to fit; each cut section's marker, or its offset when its text is empty, gives where to read it with full=true.`
+When `sections_omitted > 0`:
+`${n} more ${n === 1 ? 'step was' : 'steps were'} left out (beyond the ${MAX_SECTIONS} most severe); page the whole log with full=true.`
+(changed by #79: omitted steps have no marker, and a budget-0 section has empty text).
 
 **#28 ux-r0-8.** In `TextPageSchema`:
 `total_chars: z.number().int().describe('Length of the normalized file (CRLF → LF, ANSI removed), in the same units as offset')`.
@@ -436,7 +442,7 @@ For contiguous years the message does not change (`2009–2026`).
   Append `; readBiocFixture(), NOT_FOUND` to the `test/support/bioconductor-routes.ts` row. In the
   "`test/support/bioconductor-routes.ts` exports" list, add a bullet:
   `` `readBiocFixture(path)` (reads a file under test/fixtures/bioconductor/) and `NOT_FOUND` (the inline 404 route below). ``
-- Leave the rest of Spec #8 as it is.
+- Leave the rest of Spec #8 as it is, except the year `not_found` template, which #79 updated to `yearRanges(years)`.
 
 ## Acceptance criteria
 
@@ -499,7 +505,8 @@ Each is checked by a test unless it says otherwise.
       `{ universe: 'bioc', job: '95858209718', full: true, offset: o }` returns `data.text.text`
       starting with `lines[2]`.
 - [ ] ux-r0-5: the GeneGA test's summary assertion becomes
-      `Some output was cut to fit; each cut section's marker gives the offset to read it with full=true.`
+      `Some output was cut to fit; each cut section's marker, or its offset when its text is empty, gives where to read it with full=true.`
+      (changed by #79)
 - [ ] security-r0-1: a new `parseCheckLog` test, with vitest option `{ timeout: 1000 }`, parses
       `'* checking examples ... ERROR\nbody\n* ' + ' ... ['.repeat(40_000) + '\nStatus: 1 ERROR\n'`.
       It returns exactly one section (`checking examples`, text `body`) and status `Status: 1 ERROR`.

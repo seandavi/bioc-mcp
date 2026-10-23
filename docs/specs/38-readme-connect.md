@@ -157,7 +157,11 @@ Sections in this order. Keep the existing voice (short declarative sentences); k
    | `$BIOC_MCP/api/v1/about` | modules, tools, upstream sources (MCP: resource `bioc://about`) |
 
 5. **What is live today** — table with the 7 live tools (module, tool, answers), from the
-   verified list. Then **Coming**: `docs` module (`docs_search`, `docs_read`) in #31, not
+   verified list. Each Answers cell and each first question may claim only what the tool's
+   `description` and output schema deliver, and nothing its `description` disclaims (for example,
+   `pkg_downloads` gives counts and distinct IPs per month, not who downloads; `pkg_build_environment`
+   gives the image and dependency versions, not the R version, which `pkg_status` reports per job).
+   Then **Coming**: `docs` module (`docs_search`, `docs_read`) in #31, not
    deployed.
 6. **Connect** — one `###` subsection per client, in this order. Commands verbatim:
    - **Claude Code**
@@ -204,7 +208,7 @@ Sections in this order. Keep the existing voice (short declarative sentences); k
    - **First questions to ask** (bullets, each answerable by live tools):
      "Is edgeR propagated in Bioconductor release, and did its last check pass?" (`pkg_status`);
      "Why is <package> failing check on devel? Show the failing part of the log."
-     (`pkg_status` → `pkg_check_output`); "What R and OS did that check run on?"
+     (`pkg_status` → `pkg_check_output`); "What image and dependency versions did that check run with?"
      (`pkg_build_environment`); "Which Bioconductor versions are current release and devel, and which R does each use?"
      (`pkg_release_info`);
      "How many downloads did edgeR have this year?" (`pkg_downloads`);

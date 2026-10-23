@@ -41,9 +41,9 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `meta` | `meta_ping` | Is the server up? |
 | `pkg` | `pkg_status` | Is this package propagated, and did its latest build and check pass? |
 | `pkg` | `pkg_check_output` | Why did the check fail? The failing part of the log. |
-| `pkg` | `pkg_build_environment` | What R and OS did the check run on? |
+| `pkg` | `pkg_build_environment` | What image, repositories and dependency versions did a build job use? |
 | `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
-| `pkg` | `pkg_downloads` | Who downloads this package? |
+| `pkg` | `pkg_downloads` | How many downloads, and from how many distinct IPs, did this package get each month of a year? |
 | `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
 
 **Coming:** the `docs` module (`docs_search`, `docs_read`: why does the infrastructure work this
@@ -141,7 +141,7 @@ The client loads fewer tools into its context.
 - "Is edgeR propagated in Bioconductor release, and did its last check pass?" (`pkg_status`)
 - "Why is *package* failing check on devel? Show the failing part of the log." (`pkg_status`, then
   `pkg_check_output`)
-- "What R and OS did that check run on?" (`pkg_build_environment`)
+- "What image and dependency versions did that check run with?" (`pkg_build_environment`)
 - "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)
 - "Which bioc-* workflows are failing right now?" (`ops_activity`)

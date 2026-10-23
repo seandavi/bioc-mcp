@@ -48,8 +48,9 @@ which `pkg_status` already loads and memoizes.
   `cache-control: no-store`. Transitive dependents need the whole graph anyway, and the index
   `desc` field already holds that graph. **Verified:** S4Vectors' VIEWS `dependsOnMe` and
   `importsMe` match the index-derived dependents.
-- **Any change to `src/upstreams/http.ts`, `cache.ts` or `registry.ts`, `src/envelope.ts`, or the
-  transports.**
+- **Any change to `src/upstreams/http.ts` or `cache.ts`, `src/envelope.ts`, or the transports.**
+  `registry.ts` changes only by moving its in-flight memo into `shared-load.ts`; behaviour is
+  unchanged.
 - **An MCP prompt or resource.**
 
 ## Design
@@ -57,6 +58,8 @@ which `pkg_status` already loads and memoizes.
 ### Files
 
 ```
+src/upstreams/shared-load.ts          NEW  SharedLoads: per-cache memo of in-flight loads with a load deadline
+                                           (moved out of registry.ts; getPropagationIndex uses it too)
 src/upstreams/packages-file.ts        NEW  PackageList, parsePackagesFileNames(), getPackageList()
 src/upstreams/cran.ts                 NEW  cranUpstream, CRAN_BASE_URL, getCranPackageList()
 src/upstreams/bioconductor.ts         + BIOC_DATA_REPOS, BiocDataRepo, biocDataRepoPath(), getBiocDataPackageList()
@@ -76,6 +79,7 @@ test/core/pkg/dependency-graph.test.ts NEW
 test/core/pkg/paging.test.ts          NEW
 test/core/pkg/revdeps.test.ts         NEW
 test/core/pkg/missing-deps.test.ts    NEW
+test/transports/text-content.test.ts  DEPS_TOOLS + CALLS rows for the two new tools
 test/transports/pkg.test.ts           tools lists, REST/MCP equality, 400/404 bodies, about upstreams
 test/fixtures/registry/prop/bioc/index-deps.json                          NEW (trimmed, see Fixtures)
 test/fixtures/cran/src/contrib/PACKAGES                                   NEW (trimmed)
@@ -118,10 +122,14 @@ twice. **Verified:** CRAN's file has 25,528 `Package:` lines and 25,498 distinct
    keyed by `deps.cache` and then by the absolute URL (`new URL(path, upstream.baseUrl).href`).
    On a hit with `deps.now().getTime() < expiresAt`, return
    `{ names: list.names, response: { ...list.response, fromCache: true } }`. Only settled
-   successes are stored. There is no sharing of in-flight loads: two concurrent cold calls each
-   load, and the second write wins. (The registry memo shares loads because the index is 8 MB of
-   JSON, and that is why it needs a load deadline. These files are fetched at most once per TTL
-   per isolate, so the simpler memo is enough.)
+   successes are stored. The memo holds the in-flight load Promise, so concurrent callers on a
+   cold or expired entry share one fetch and one parse. CRAN's file is 7.4 MB and the cap allows
+   16 MiB, and each independent load transiently holds several copies of the body, so N concurrent
+   cold calls from one client would multiply memory use on a 128 MB isolate. A joiner waits at
+   most the load deadline (`timeoutMs` + 5 s), so a stalled or cancelled owner cannot hang it, and
+   an in-flight entry past its deadline is replaced by the next caller. Errors are not cached. The
+   memo, the deadline and the timeout error live in `SharedLoads` (`src/upstreams/shared-load.ts`),
+   which `getPropagationIndex` in `registry.ts` also uses.
 2. `response = await fetchUpstream(deps, upstream, path)`. A `CapabilityError` with code
    `not_found` becomes
    `CapabilityError('upstream_error', \`${upstream.name} has no PACKAGES file at ${url}\`, { upstream: upstream.id, url })`,
@@ -845,7 +853,7 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. There is no n
 
 - **`test/upstreams/packages-file.test.ts`**
   - `parsePackagesFileNames`:
-    - the CRAN fixture gives 200 names;
+    - the CRAN fixture has 200 `Package:` lines and 186 distinct names;
     - `\r\n` line endings parse;
     - a trailing space after the name is ignored;
     - a duplicate stanza is counted once;
@@ -853,6 +861,9 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. There is no n
     - an empty body gives an empty set.
   - `getPackageList`:
     - memo hit: no second fetch and `fromCache: true`;
+    - two concurrent cold calls make one fetch (`fetch.calls` length 1) and share one `names`;
+    - a failed load is shared by concurrent callers and not cached;
+    - a load that never settles fails owner and joiner with `upstream_timeout` and is not cached;
     - the memo is isolated between two caches;
     - the memo expires at fetchedAt + TTL;
     - a 404 gives `upstream_error` with the "has no PACKAGES file" message;
@@ -891,7 +902,7 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. There is no n
   paging walk, the past-the-end cursor, and the summary's paging sentence on a middle page.
 - **`test/core/pkg/missing-deps.test.ts`**:
   - the devel scenario;
-  - `checked_against` values from the fixtures (`registry_index` 109, `base_r` 15, `cran` 200,
+  - `checked_against` values from the fixtures (`registry_index` 109, `base_r` 15, `cran` 186,
     `bioc_data_annotation` 1, `bioc_data_experiment` 2);
   - `not_checked` equals `MISSING_DEPS_NOT_CHECKED`;
   - `sources` in order: index (`as_of` = fetch time), CRAN (`'2026-10-22T23:51:28.000Z'`),

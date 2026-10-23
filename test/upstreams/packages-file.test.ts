@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache } from '../../src/upstreams/cache';
@@ -68,6 +68,48 @@ describe('getPackageList', () => {
     expect(second.response.fromCache).toBe(true);
     expect(second.names).toBe(first.names);
     expect(fetch.calls).toEqual([CRAN_PACKAGES_URL]);
+  });
+
+  test('concurrent calls on a cold memo share one fetch and one parse', async () => {
+    const { fetch, deps } = setup();
+    const [a, b] = await Promise.all([
+      getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES'),
+      getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES'),
+    ]);
+    expect(fetch.calls).toEqual([CRAN_PACKAGES_URL]);
+    expect(b.names).toBe(a.names);
+    expect(b.response.fromCache).toBe(true);
+  });
+
+  test('a failed load is shared by concurrent callers but not cached', async () => {
+    const routes: Record<string, FixtureRoute> = { [CRAN_PACKAGES_URL]: { status: 500, body: 'oops' } };
+    const { fetch, deps } = setup(routes);
+    const results = await Promise.allSettled([
+      getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES'),
+      getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES'),
+    ]);
+    expect(results.map((r) => r.status)).toEqual(['rejected', 'rejected']);
+    expect(fetch.calls).toHaveLength(1);
+  });
+
+  test('a load that never settles fails owner and joiner with upstream_timeout, and is not cached', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      const { fetch, deps } = setup();
+      const calls: string[] = [];
+      deps.fetch = ((request: Request) => {
+        calls.push(request.url);
+        return calls.length === 1 ? new Promise<Response>(() => {}) : fetch(request);
+      }) as Deps['fetch'];
+      const owner = errorOf(getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES'));
+      const joiner = errorOf(getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES'));
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect([(await owner).code, (await joiner).code]).toEqual(['upstream_timeout', 'upstream_timeout']);
+      expect((await getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES')).names.size).toBe(186);
+      expect(calls).toHaveLength(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   test('the memo is isolated between two caches', async () => {

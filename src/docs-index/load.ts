@@ -21,8 +21,9 @@ export interface DocsIndex {
   /** The input (search.json or raw file) a record was built from, for provenance. */
   inputFor(id: string): DocsInput | undefined;
   /**
-   * Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits; RangeError unless `limit` is a
-   * positive integer. `filter` keeps only hits whose record it accepts; applied inside the ranked search, before `limit`.
+   * Ranked with DOCS_INDEX_OPTIONS.searchOptions over the first MAX_SEARCH_TERMS distinct terms of `query`;
+   * at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. `filter` keeps only hits
+   * whose record it accepts; applied inside the ranked search, before `limit`.
    */
   search(query: string, limit?: number, filter?: (record: DocsRecord) => boolean): DocsSearchHit[];
 }
@@ -33,6 +34,23 @@ export interface DocsIndexJson {
 }
 
 const DEFAULT_LIMIT = 8;
+
+/** search() uses at most this many distinct query terms: each costs one prefix and one fuzzy sub-query. */
+export const MAX_SEARCH_TERMS = 16;
+
+const tokenize: (text: string) => string[] = MiniSearch.getDefault('tokenize');
+
+/** The first MAX_SEARCH_TERMS distinct lower-cased tokens of `query`, joined by ' '. */
+function boundedQuery(query: string): string {
+  const terms = new Set<string>();
+  for (const token of tokenize(query)) {
+    const term = token.toLowerCase();
+    if (term === '') continue;
+    terms.add(term);
+    if (terms.size === MAX_SEARCH_TERMS) break;
+  }
+  return [...terms].join(' ');
+}
 
 /** Parses and checks both strings. Throws Error on any mismatch; never returns a partial index. */
 export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
@@ -70,6 +88,8 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
       `Docs index has ${miniSearch.documentCount} documents but the store has ${records.length} records`,
     );
   }
+  const missing = records.find((record) => !miniSearch.has(record.id));
+  if (missing) throw new Error(`Docs index and store disagree on record ids: ${missing.id} is not in the index`);
 
   return {
     meta,
@@ -78,15 +98,16 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
     inputFor: (id) => inputById.get(id),
     search(query, limit = DEFAULT_LIMIT, filter) {
       if (!Number.isInteger(limit) || limit < 1) throw new RangeError(`limit must be a positive integer, got ${limit}`);
+      const q = boundedQuery(query);
       const hits: DocsSearchHit[] = [];
       const results = filter
-        ? miniSearch.search(query, {
+        ? miniSearch.search(q, {
             filter: (result) => {
               const record = byId.get(result.id as string);
               return record !== undefined && filter(record);
             },
           })
-        : miniSearch.search(query);
+        : miniSearch.search(q);
       for (const result of results) {
         const record = byId.get(result.id as string);
         if (record) hits.push({ record, score: result.score });

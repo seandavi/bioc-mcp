@@ -3,6 +3,7 @@ import { afterEach, describe, expect, test } from 'vitest';
 import { modules } from '../../src/core/registry';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../src/envelope';
 import { connectClient, makeTestApp } from '../support/app';
+import { depsRoutes } from '../support/deps-routes';
 import { docsTestModule } from '../support/docs';
 import { bioconductorRoutes } from '../support/bioconductor-routes';
 import { GITHUB_RECORDED_AT, githubRoutes } from '../support/github-routes';
@@ -18,6 +19,8 @@ const CALLS: readonly [tool: string, args: Record<string, unknown>][] = [
   ['pkg_release_info', {}],
   ['pkg_downloads', { package: 'edgeR' }],
   ['pkg_repo_diff', {}],
+  ['pkg_revdeps', { package: 'flowWorkspace' }],
+  ['pkg_missing_deps', {}],
   ['ops_activity', { kind: 'summary' }],
   ['ops_activity', { kind: 'issues' }],
   ['ops_activity', { kind: 'prs' }],
@@ -33,9 +36,17 @@ afterEach(async () => {
   client = undefined;
 });
 
+// depsRoutes replaces the devel index with the trimmed one these two tools' scenarios use.
+const DEPS_TOOLS = new Set(['pkg_revdeps', 'pkg_missing_deps']);
+
 async function call(tool: string, args: Record<string, unknown>) {
   const { app } = makeTestApp({
-    routes: { ...pkgRoutes, ...bioconductorRoutes, ...githubRoutes() },
+    routes: {
+      ...pkgRoutes,
+      ...bioconductorRoutes,
+      ...githubRoutes(),
+      ...(DEPS_TOOLS.has(tool) ? depsRoutes : {}),
+    },
     // Mount every production module so adding one needs only CALLS rows and fixture routes (#36);
     // docs swaps in the fixture-built index.
     extraModules: await Promise.all(

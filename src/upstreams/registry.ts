@@ -1,15 +1,14 @@
 import * as z from 'zod';
 import { CapabilityError } from '../errors';
 import type { Deps } from '../core/deps';
-import type { UpstreamCache } from './cache';
 import {
-  DEFAULT_TIMEOUT_MS,
   fetchUpstreamJson,
   pathSegment,
   type Upstream,
   type UpstreamResponse,
   type UpstreamResponseMeta,
 } from './http';
+import { SharedLoads } from './shared-load';
 
 export const UNIVERSES = ['bioc', 'bioc-release'] as const;
 export type Universe = (typeof UNIVERSES)[number];
@@ -63,83 +62,15 @@ export interface PropagationIndex {
   packages: Record<string, unknown>; // parsed index.json; entries unvalidated
 }
 
-// Covers the cache read and the parse around the fetch, which fetchUpstream's timeout does not.
-const LOAD_ALLOWANCE_MS = 5_000;
-const LOAD_DEADLINE_MS = (registryUpstream.timeoutMs ?? DEFAULT_TIMEOUT_MS) + LOAD_ALLOWANCE_MS;
-
-interface MemoEntry {
-  load: Promise<PropagationIndex>;
-  expiresAt: number; // startedAt + LOAD_DEADLINE_MS while the load is in flight; fetchedAt + TTL once it settles
-  loadDeadline: number | undefined; // set while the load is in flight
-}
-
-// The parsed index lives exactly as long as the cache in front of it: a fresh cache (each test
-// app) gets a fresh memo, and the Worker (one cache per isolate) parses at most once per TTL.
-// The memo holds the load Promise, so concurrent callers on a cold or expired entry share one
-// cache read, fetch and parse instead of each holding their own copy of the 8 MB body.
-// Request A's I/O can be cancelled by the runtime (its client disconnected) or stall outside
-// fetchUpstream's timeout, so no caller waits on a load without a deadline of its own, and an
-// in-flight entry past its deadline is replaced by the next caller.
-const parsedIndexes = new WeakMap<UpstreamCache, Map<string, MemoEntry>>();
+const propagationIndexes = new SharedLoads<PropagationIndex>();
 
 /** GET data/prop/{universe}/index.json, parsed once per cache TTL per isolate. */
 export async function getPropagationIndex(deps: Deps, universe: Universe): Promise<PropagationIndex> {
   const path = `data/prop/${pathSegment(universe)}/index.json`;
   const url = new URL(path, REGISTRY_BASE_URL).href;
-
-  let byUrl = parsedIndexes.get(deps.cache);
-  if (!byUrl) {
-    byUrl = new Map();
-    parsedIndexes.set(deps.cache, byUrl);
-  }
-
-  const now = deps.now().getTime();
-  const memo = byUrl.get(url);
-  if (memo && now < memo.expiresAt) {
-    const shared =
-      memo.loadDeadline === undefined ? await memo.load : await withinMs(memo.load, memo.loadDeadline - now, url);
-    return { ...shared, response: { ...shared.response, fromCache: true } };
-  }
-
-  const loadDeadline = now + LOAD_DEADLINE_MS;
-  const entry: MemoEntry = {
-    load: loadPropagationIndex(deps, universe, path, url),
-    expiresAt: loadDeadline,
-    loadDeadline,
-  };
-  byUrl.set(url, entry);
-  try {
-    const index = await withinMs(entry.load, LOAD_DEADLINE_MS, url);
-    entry.expiresAt = Date.parse(index.response.fetchedAt) + registryUpstream.ttlSeconds * 1000;
-    entry.loadDeadline = undefined;
-    return index;
-  } catch (error) {
-    if (byUrl.get(url) === entry) byUrl.delete(url); // errors are not cached
-    throw error;
-  }
-}
-
-/** Rejects with upstream_timeout if `promise` has not settled within `ms`. */
-async function withinMs<T>(promise: Promise<T>, ms: number, url: string): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<never>((_resolve, reject) => {
-    timer = setTimeout(
-      () =>
-        reject(
-          new CapabilityError(
-            'upstream_timeout',
-            `${registryUpstream.name} did not deliver the propagation index in time (${url}). Retry shortly.`,
-            { upstream: registryUpstream.id, url },
-          ),
-        ),
-      Math.max(ms, 0),
-    );
-  });
-  try {
-    return await Promise.race([promise, timeout]);
-  } finally {
-    clearTimeout(timer);
-  }
+  return propagationIndexes.get(deps, registryUpstream, url, 'the propagation index', () =>
+    loadPropagationIndex(deps, universe, path, url),
+  );
 }
 
 async function loadPropagationIndex(

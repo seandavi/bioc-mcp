@@ -3,7 +3,9 @@ import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache } from '../../src/upstreams/cache';
 import {
+  biocDataRepoPath,
   findStatsPage,
+  getBiocDataPackageList,
   getBiocConfig,
   getManifestIndex,
   getPackagesFile,
@@ -24,6 +26,7 @@ import {
   statsPageUrl,
   statsTabUrl,
 } from '../support/bioconductor-routes';
+import { biocDataUrl, depsRoutes } from '../support/deps-routes';
 import { fixtureFetch, type FixtureRoute } from '../support/fixture-fetch';
 
 const EDGER_PAGE = readBiocFixture('packages/stats/bioc/edgeR/index.html');
@@ -214,6 +217,28 @@ describe('getManifestIndex', () => {
   test('an array body is upstream_error', async () => {
     const { deps } = makeDeps({ [MANIFEST_URL]: { status: 200, body: '[]' } });
     expect(await codeOf(getManifestIndex(deps))).toBe('upstream_error');
+  });
+});
+
+describe('biocDataRepoPath', () => {
+  test.each([
+    ['bioc', 'data/annotation', 'packages/devel/data/annotation/src/contrib/PACKAGES'],
+    ['bioc', 'data/experiment', 'packages/devel/data/experiment/src/contrib/PACKAGES'],
+    ['bioc-release', 'data/annotation', 'packages/release/data/annotation/src/contrib/PACKAGES'],
+    ['bioc-release', 'data/experiment', 'packages/release/data/experiment/src/contrib/PACKAGES'],
+  ] as const)('%s %s', (universe, repo, path) => {
+    expect(biocDataRepoPath(universe, repo)).toBe(path);
+  });
+});
+
+describe('getBiocDataPackageList', () => {
+  test('reads the devel annotation list: GO.db', async () => {
+    const { deps, fetch } = makeDeps(depsRoutes);
+    const list = await getBiocDataPackageList(deps, 'bioc', 'data/annotation');
+    expect([...list.names]).toEqual(['GO.db']);
+    expect(list.response.url).toBe(biocDataUrl('bioc', 'data/annotation'));
+    expect(list.response.lastModified).toBe('2026-10-21T15:23:33.000Z');
+    expect(fetch.calls).toEqual([biocDataUrl('bioc', 'data/annotation')]);
   });
 });
 

@@ -9,10 +9,36 @@ export interface RateLimiter {
 /** Must equal simple.period of RATE_LIMITER in wrangler.jsonc. */
 export const RATE_LIMIT_PERIOD_SECONDS = 60;
 
-/** One limiter key per client address (cf-connecting-ip, else 'unknown'). Fails open. */
+const HEXTET = /^[0-9a-f]{1,4}$/;
+
+/**
+ * The limiter key for a client address. An IPv6 client usually holds a whole /64, so an IPv6
+ * address counts by its /64 prefix ("2001:db8:1:2::/64"); an IPv4-embedded IPv6 address
+ * ("::ffff:203.0.113.9") by its IPv4 part; anything else, including text that does not parse,
+ * as is. No address: 'unknown'.
+ */
+export function rateLimitKey(address: string | undefined): string {
+  if (!address) return 'unknown';
+  if (!address.includes(':')) return address;
+  if (address.includes('.')) return address.slice(address.lastIndexOf(':') + 1);
+  const halves = address.toLowerCase().split('::');
+  if (halves.length > 2) return address;
+  const head = halves[0] ? halves[0].split(':') : [];
+  const tail = halves.length === 2 && halves[1] ? halves[1].split(':') : [];
+  const missing = 8 - head.length - tail.length;
+  if (halves.length === 2 ? missing < 1 : missing !== 0) return address;
+  const groups = [...head, ...Array<string>(missing).fill('0'), ...tail];
+  if (!groups.every((group) => HEXTET.test(group))) return address;
+  return `${groups
+    .slice(0, 4)
+    .map((group) => parseInt(group, 16).toString(16))
+    .join(':')}::/64`;
+}
+
+/** One limiter key per client address (an IPv6 /64 counts as one; rateLimitKey), else 'unknown'. Fails open. */
 export function rateLimitMiddleware(limiter: RateLimiter, usage: UsageSink, transport: Transport): MiddlewareHandler {
   return async (c, next) => {
-    const key = c.req.header('cf-connecting-ip') ?? 'unknown';
+    const key = rateLimitKey(c.req.header('cf-connecting-ip'));
     let success = true;
     try {
       ({ success } = await limiter.limit({ key }));

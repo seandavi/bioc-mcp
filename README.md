@@ -174,16 +174,16 @@ text). Trimmed from the edgeR call:
 }
 ```
 
-Rate limit: 120 requests per minute per client address (approximate, per Cloudflare location). Over
-it, the server answers HTTP 429 with `retry-after: 60` and error code `rate_limited`. This applies
-to `/mcp` too.
+Rate limit: 120 requests per minute per client address (an IPv6 /64 counts as one address;
+approximate, per Cloudflare location). Over it, the server answers HTTP 429 with `retry-after: 60`
+and error code `rate_limited`. This applies to `/mcp` too.
 
 ## Principles
 
 - **Public data only.** Every tool is a thin adapter over an endpoint anyone can `curl`. No
   secrets, no private logs, no writes.
 - **Provenance on every answer.** Results carry the upstream URL and its freshness.
-- **Small results.** Check logs are cut to their failing sections; lists paginate.
+- **Small results.** Check logs are cut to their failing sections; lists are capped or paginate.
 
 ## Run it locally
 
@@ -197,6 +197,12 @@ npm run dev
 `npm run dev` serves the Worker at http://127.0.0.1:8787. Point an MCP client that speaks
 Streamable HTTP at `http://127.0.0.1:8787/mcp` (or `/mcp/<module>` for one module), or call the
 REST API: `curl http://127.0.0.1:8787/api/v1/meta/ping`.
+
+`ops_activity` reads the GitHub API. Without a token GitHub allows 60 requests an hour, and one
+all-repo summary uses about 49. Put `GITHUB_TOKEN=<a GitHub token with no repository permissions>`
+in `.dev.vars` (gitignored), restart `npm run dev`, and try
+`curl 'http://127.0.0.1:8787/api/v1/ops/activity?kind=workflows&repo=bioc-website'`.
+
 More commands are in [AGENTS.md](AGENTS.md#commands).
 
 ## Contributing

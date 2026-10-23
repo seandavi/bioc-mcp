@@ -1,7 +1,9 @@
 import type { Client } from '@modelcontextprotocol/client';
 import { afterEach, describe, expect, test } from 'vitest';
 import { AboutSchema } from '../../src/core/about';
+import { metaModule } from '../../src/core/meta';
 import { opsModule } from '../../src/core/ops';
+import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
 import { GITHUB_RECORDED_AT, githubRoutes, githubUrl } from '../support/github-routes';
@@ -40,10 +42,20 @@ describe('MCP', () => {
     expect(tool.map((t) => t.name)).toEqual(['ops_activity']);
     expect(tool[0]!.outputSchema).toBeDefined();
     await client.close();
-    client = await connectClient(testApp().app, '/mcp');
+    const all = makeTestApp({ routes: githubRoutes(), extraModules: [pkgModule, opsModule], now });
+    client = await connectClient(all.app, '/mcp');
     const names = (await client.listTools()).tools.map((t) => t.name);
-    expect(names).toContain('meta_ping');
-    expect(names).toContain('ops_activity');
+    const expected = [metaModule, pkgModule, opsModule].flatMap((m) => m.capabilities.map((c) => c.name));
+    expect(names.filter((name) => !name.startsWith('example_')).sort()).toEqual([...expected].sort());
+  });
+
+  test('the tool text says what workflows lists and never mentions bioc-health', async () => {
+    client = await connectClient(testApp().app, '/mcp/ops');
+    const [tool] = (await client.listTools()).tools;
+    expect(JSON.stringify(tool)).not.toContain('bioc-health');
+    expect(tool!.description).toContain(
+      'every workflow when repo is given; without repo, only those that fail or warn',
+    );
   });
 
   test('a refused GitHub is an isError result starting upstream_error:', async () => {

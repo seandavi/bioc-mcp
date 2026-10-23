@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import type { RateLimiter } from '../src/rate-limit';
+import { rateLimitKey, type RateLimiter } from '../src/rate-limit';
 import { appFetch, makeTestApp } from './support/app';
 
 const REFUSED_BODY = {
@@ -17,6 +17,26 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+describe('rateLimitKey', () => {
+  test.each([
+    [undefined, 'unknown'],
+    ['203.0.113.9', '203.0.113.9'],
+    ['2001:db8:1:2::1', '2001:db8:1:2::/64'],
+    ['2001:DB8:0001:0002:ffff:ffff:ffff:ffff', '2001:db8:1:2::/64'],
+    ['2001:db8::', '2001:db8:0:0::/64'],
+    ['::1', '0:0:0:0::/64'],
+    ['::', '0:0:0:0::/64'],
+    ['::ffff:203.0.113.9', '203.0.113.9'],
+    ['fe80::1%eth0', 'fe80::1%eth0'],
+    ['1::2::3', '1::2::3'],
+    ['1:2:3:4:5:6:7:8:9', '1:2:3:4:5:6:7:8:9'],
+    ['1:2:3:4:5:6:7::8', '1:2:3:4:5:6:7::8'],
+    ['2001:db8:1:2:3:4:5:g', '2001:db8:1:2:3:4:5:g'],
+  ])('%s → %s', (address, key) => {
+    expect(rateLimitKey(address)).toBe(key);
+  });
 });
 
 describe('rate limiting', () => {
@@ -52,6 +72,19 @@ describe('rate limiting', () => {
     await appFetch(app)('http://test.local/mcp', { method: 'POST', body: '{}', headers });
     await appFetch(app)('http://test.local/api/v1/meta/ping', { headers });
     expect(limit.mock.calls).toEqual([[{ key: '203.0.113.9' }], [{ key: '203.0.113.9' }]]);
+  });
+
+  test('addresses in one IPv6 /64 share a key; a neighbouring /64 gets its own', async () => {
+    const { limit, rateLimiter } = limiter(true);
+    const { app } = makeTestApp({ rateLimiter });
+    for (const address of ['2001:db8:1:2::1', '2001:db8:1:2:ffff:ffff:ffff:ffff', '2001:db8:1:3::1']) {
+      await appFetch(app)('http://test.local/api/v1/meta/ping', { headers: { 'cf-connecting-ip': address } });
+    }
+    expect(limit.mock.calls).toEqual([
+      [{ key: '2001:db8:1:2::/64' }],
+      [{ key: '2001:db8:1:2::/64' }],
+      [{ key: '2001:db8:1:3::/64' }],
+    ]);
   });
 
   test("the key is 'unknown' without the header", async () => {

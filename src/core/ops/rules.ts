@@ -43,15 +43,19 @@ export function mergeableFrom(value: boolean | null): Mergeable {
   return value ? 'MERGEABLE' : 'CONFLICTING';
 }
 
-/** bioc-health pr_status. Only 'ok' | 'info' | 'warn' occur. */
+/**
+ * bioc-health pr_status, except that the reason counts failing checks instead of naming them:
+ * check names come from the PR's own workflow file, so they are contributor-controlled text.
+ * Only 'ok' | 'info' | 'warn' occur.
+ */
 export function prStatus(
-  failingChecks: readonly string[],
+  failingCheckCount: number,
   mergeable: Mergeable,
   updatedAgeDays: number,
   isDraft: boolean,
 ): { status: HealthStatus; reason: string } {
   const problems: string[] = [];
-  if (failingChecks.length > 0) problems.push(`failing checks: ${failingChecks.join(', ')}`);
+  if (failingCheckCount > 0) problems.push(`${failingCheckCount} failing check${failingCheckCount === 1 ? '' : 's'}`);
   if (mergeable === 'CONFLICTING') problems.push('merge conflicts');
   if (problems.length > 0) return { status: 'warn', reason: problems.join('; ') };
   if (!isDraft && updatedAgeDays > THRESHOLDS.prStaleDays) {
@@ -103,7 +107,12 @@ export const FAILURE_ISSUE_TITLE = /^([A-Za-z0-9:_.@\-]{1,64}\.service) is faili
 
 const TITLE_LIMIT = 80;
 
+/** At most `limit` UTF-16 code units: the first limit − 1 plus '…' when longer. */
+export function truncateText(text: string, limit: number): string {
+  return text.length <= limit ? text : `${text.slice(0, limit - 1)}…`;
+}
+
 /** At most 80 UTF-16 code units: the first 79 plus '…' when longer. */
 export function truncateTitle(title: string): string {
-  return title.length <= TITLE_LIMIT ? title : `${title.slice(0, TITLE_LIMIT - 1)}…`;
+  return truncateText(title, TITLE_LIMIT);
 }

@@ -1,5 +1,4 @@
 import * as z from 'zod';
-import { THRESHOLDS } from '../core/ops/config';
 import type { CapabilityEnv, Deps } from '../core/deps';
 import { CapabilityError } from '../errors';
 import { fetchUpstreamJson, pathSegment, type Upstream, type UpstreamResponse } from './http';
@@ -135,6 +134,13 @@ async function githubJson<S extends z.ZodType>(
   } catch (error) {
     if (!(error instanceof CapabilityError)) throw error;
     const { status } = error.details;
+    if (status === 401 && deps.env.GITHUB_TOKEN?.trim()) {
+      throw new CapabilityError(
+        'upstream_error',
+        "GitHub rejected this server's GITHUB_TOKEN (HTTP 401); the operator must replace the secret. Try again later.",
+        error.details,
+      );
+    }
     if (status === 403 || status === 429) {
       const tokenless = deps.env.GITHUB_TOKEN?.trim() ? '' : '; this server has no GITHUB_TOKEN, so the limit is 60 requests per hour';
       throw new CapabilityError(
@@ -204,10 +210,11 @@ export async function listWorkflowRuns(
   repo: string,
   file: string,
   branch: string,
+  perPage: number,
 ): Promise<Fetched<GithubWorkflowRun[]>> {
   const path =
     `${pathSegment(repo)}/actions/workflows/${pathSegment(file)}/runs` +
-    `?branch=${encodeURIComponent(branch)}&per_page=${THRESHOLDS.runsPerWorkflow}&exclude_pull_requests=true`;
+    `?branch=${encodeURIComponent(branch)}&per_page=${perPage}&exclude_pull_requests=true`;
   const { response, data } = await githubJson(deps, repo, path, WorkflowRunListSchema, 'workflow run list');
   return { response, data: data.workflow_runs };
 }

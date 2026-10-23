@@ -8,7 +8,7 @@ the first deploy, the docs-rebuild trigger, the usage metric and rollback. Desig
 
 | Workflow | Runs on | What it does | Secrets |
 |---|---|---|---|
-| `ci.yml` | pull requests and pushes | typecheck, tests | none |
+| `ci.yml` | pull requests and pushes to `main` | typecheck, tests | none |
 | `deploy.yml` | push to `main`, the daily schedule, `repository_dispatch` `docs-updated`, `workflow_dispatch` | builds the docs index from the live site, typechecks, tests, then `wrangler deploy`; environment `production` (admits only `main`) | `CLOUDFLARE_API_TOKEN` |
 
 Live endpoints: `https://bioc-mcp.seandavi.workers.dev/mcp` (MCP),
@@ -22,8 +22,13 @@ Cloudflare are derived from it and never edited by hand.
 
 | GSM secret | What | Copy lives in |
 |---|---|---|
-| `cdsci-bioc-mcp-cloudflare-deploy-token` | Cloudflare **Account** API token, "Edit Cloudflare Workers" template, scoped to the one account that owns `seandavi.workers.dev`; drop zone permissions if the dashboard allows (no routes are used) | GitHub environment `production`, secret `CLOUDFLARE_API_TOKEN` |
+| `cdsci-bioc-mcp-cloudflare-deploy-token` | Cloudflare **Account** API token for the one account that owns `seandavi.workers.dev`, with exactly **Account › Workers Scripts: Edit** and **Account › Account Settings: Read**. Do not start from the "Edit Cloudflare Workers" template, or remove everything else it adds: Workers KV Storage, Workers R2 Storage, Workers Tail, and the zone-level Workers Routes (no routes are used), plus User Details and Memberships if offered | GitHub environment `production`, secret `CLOUDFLARE_API_TOKEN` |
 | `cdsci-bioc-mcp-github-token` | GitHub fine-grained token, "Public repositories (read-only)", no permissions; rate limit only | Worker secret `GITHUB_TOKEN` |
+| `cdsci-bioc-mcp-analytics-token` | Cloudflare Account API token with only **Account › Account Analytics: Read**, for the usage query (§8). The deploy token does not have this permission and must not be given it | nowhere: exported in a local shell when querying; never in GitHub or the Worker |
+
+Every endpoint `wrangler deploy` uses here (script upload, versions, deployments, the workers.dev
+subdomain, the required-secrets check) accepts Workers Scripts: Edit; Account Settings: Read is kept
+from the template.
 
 Each GSM secret gets labels `repo=bioc-mcp`, `managed-by=manual` and annotations `consumed-by`,
 `scopes` and `rotated` (the convention already used in `cdsci-infra`). The account ID is not a
@@ -51,8 +56,9 @@ and the daily rebuild deploy unattended.
 
 By hand, because the Worker does not exist yet and `GITHUB_TOKEN` is a required secret
 (`wrangler.jsonc` `secrets.required`), which blocks a CI deploy until the Worker has it. From a
-clean checkout of `main`, with `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` exported from
-GSM:
+clean checkout of `main`, with `CLOUDFLARE_API_TOKEN` exported from GSM
+(`cdsci-bioc-mcp-cloudflare-deploy-token`) and `CLOUDFLARE_ACCOUNT_ID` (from
+`npx wrangler whoami`):
 
 ```sh
 npm ci && npm run docs:build && npm test
@@ -94,7 +100,8 @@ bioc-infrastructure's Actions secrets.
 ## 7. Rate limits
 
 120 requests per 60 s per client address per Cloudflare location, approximate (the Workers
-rate-limit binding), on `/mcp*` and `/api/*`. MCP and REST share one budget per address. A
+rate-limit binding), on `/mcp*` and `/api/*`. An IPv6 address counts by its /64 prefix, since one
+client usually holds the whole /64. MCP and REST share one budget per address. A
 refused request gets 429, `Retry-After: 60` and a `rate_limited` error body. If the limiter itself
 fails, requests are served. Change the limit in `wrangler.jsonc`; change the period in both
 `wrangler.jsonc` and `RATE_LIMIT_PERIOD_SECONDS` in `src/rate-limit.ts`.
@@ -115,12 +122,13 @@ Every capability call writes one data point to the Workers Analytics Engine data
 | `double3` | 1 if ok, else 0 |
 
 Data is kept for 3 months and shows up about a minute after the call. Always weight by
-`_sample_interval`. The layout is append-only: a change means a new dataset name. The query token
-needs Account Analytics: Read.
+`_sample_interval`. The layout is append-only: a change means a new dataset name. The query uses
+its own token, `cdsci-bioc-mcp-analytics-token` (§2), not the deploy token.
 
 ```sh
+export CLOUDFLARE_ANALYTICS_TOKEN=$(gcloud secrets versions access latest --secret=cdsci-bioc-mcp-analytics-token --project=cdsci-infra)
 curl -sS -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/analytics_engine/sql" \
-  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  -H "Authorization: Bearer $CLOUDFLARE_ANALYTICS_TOKEN" \
   --data "SELECT blob2 AS capability, blob1 AS transport, sum(_sample_interval) AS calls, sum(_sample_interval * double3) AS ok_calls, sum(_sample_interval * double1) / sum(_sample_interval) AS mean_latency_ms FROM bioc_mcp_usage_v1 WHERE timestamp > now() - INTERVAL '7' DAY GROUP BY capability, transport ORDER BY calls DESC"
 ```
 

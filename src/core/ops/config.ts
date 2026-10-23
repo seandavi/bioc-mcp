@@ -21,7 +21,7 @@ export type OpsRepo = (typeof OPS_REPOS)[number];
 export const EXPERIMENTAL_REPOS: ReadonlySet<OpsRepo> = new Set(['bioc-build', 'bioc-manifest']);
 
 /** Where bioc-notify@ (bioc-edge/notify-failure.sh) files "<unit> is failing" issues. */
-export const FAILURE_ISSUE_REPO: OpsRepo = 'bioc-edge';
+export const FAILURE_ISSUE_REPO = 'bioc-edge' satisfies OpsRepo;
 
 export const THRESHOLDS = {
   prStaleDays: 14,
@@ -38,3 +38,5 @@ export const PR_ITEM_LIMIT = 10;
 export const WORKFLOW_ITEM_LIMIT = 12;
 export const FAILURE_ITEM_LIMIT = 15;
 export const SUMMARY_PROBLEM_LIMIT = 5; // workflows named in the summary text
+export const FAILING_CHECK_LIMIT = 3; // names kept per PR in failing_checks
+export const CHECK_NAME_LIMIT = 40; // characters per kept name

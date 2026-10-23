@@ -64,20 +64,22 @@ src/upstreams/github.ts            NEW  GITHUB_BASE_URL, githubUpstream, githubR
                                         listCheckRuns(), getCombinedStatus(), listWorkflows(),
                                         listWorkflowRuns()
 src/core/ops/config.ts             NEW  OPS_OWNER, OPS_REPOS, OpsRepo, EXPERIMENTAL_REPOS,
-                                        FAILURE_ISSUE_REPO, THRESHOLDS, OPS_KINDS, OpsKind, item caps
+                                        FAILURE_ISSUE_REPO, THRESHOLDS, OPS_KINDS, OpsKind, item caps,
+                                        FAILING_CHECK_LIMIT, CHECK_NAME_LIMIT
 src/core/ops/rules.ts              NEW  the bioc-health classifications, pure: HealthStatus,
                                         FAILED_CONCLUSIONS, actionsStatus(), prChecksFailing(),
                                         Mergeable, mergeableFrom(), prStatus(), ageDays(),
                                         activitySince(), summarizeRuns(), FAILURE_ISSUE_TITLE,
-                                        truncateTitle()
+                                        truncateText(), truncateTitle()
 src/core/ops/activity.ts           NEW  opsActivity capability, OpsActivityDataSchema, the per-kind
                                         collectors and summary text
 src/core/ops/index.ts              NEW  opsModule
 src/core/registry.ts                    modules = [metaModule, pkgModule, opsModule]
 src/index.ts                            log githubTokenWarning(env) once, when the app is built
-test/support/app.ts                     makeTestApp gains an `env` option
+test/support/app.ts                     makeTestApp gains `env` and `fetch` options
 test/support/github-routes.ts      NEW  fixture file → URL map for the recorded GitHub fixtures
 test/upstreams/github.test.ts      NEW
+test/upstreams/imports.test.ts     NEW  adapters import core only as types (spec #46)
 test/core/ops/rules.test.ts        NEW
 test/core/ops/activity.test.ts     NEW
 test/core/ops/token.test.ts        NEW  the token never leaks; headers are sent
@@ -117,7 +119,7 @@ export type OpsRepo = (typeof OPS_REPOS)[number];
 export const EXPERIMENTAL_REPOS: ReadonlySet<OpsRepo> = new Set(['bioc-build', 'bioc-manifest']);
 
 /** Where bioc-notify@ (bioc-edge/notify-failure.sh) files "<unit> is failing" issues. */
-export const FAILURE_ISSUE_REPO: OpsRepo = 'bioc-edge';
+export const FAILURE_ISSUE_REPO = 'bioc-edge' satisfies OpsRepo;
 
 export const THRESHOLDS = {
   prStaleDays: 14,
@@ -134,6 +136,8 @@ export const PR_ITEM_LIMIT = 10;
 export const WORKFLOW_ITEM_LIMIT = 12;
 export const FAILURE_ITEM_LIMIT = 15;
 export const SUMMARY_PROBLEM_LIMIT = 5; // workflows named in the summary text
+export const FAILING_CHECK_LIMIT = 3; // names kept per PR in failing_checks
+export const CHECK_NAME_LIMIT = 40; // characters per kept name
 ```
 
 **Verified (2026-10-22):** all nine repos are public, their default branch is `main`, and they hold
@@ -272,13 +276,18 @@ and runs `fetchUpstreamJson(githubDeps(deps), githubUpstream, path)` then `schem
 | `listCheckRuns(deps, repo, sha)` | `${r}/commits/${pathSegment(sha)}/check-runs?per_page=100` | `GithubCheckRuns` |
 | `getCombinedStatus(deps, repo, sha)` | `${r}/commits/${pathSegment(sha)}/status` | `GithubCombinedStatus` |
 | `listWorkflows(deps, repo)` | `${r}/actions/workflows?per_page=100` | `GithubWorkflow[]` (the `workflows` array) |
-| `listWorkflowRuns(deps, repo, file, branch)` | `${r}/actions/workflows/${pathSegment(file)}/runs?branch=${encodeURIComponent(branch)}&per_page=20&exclude_pull_requests=true` | `GithubWorkflowRun[]` (the `workflow_runs` array) |
+| `listWorkflowRuns(deps, repo, file, branch, perPage)` | `${r}/actions/workflows/${pathSegment(file)}/runs?branch=${encodeURIComponent(branch)}&per_page=${perPage}&exclude_pull_requests=true` | `GithubWorkflowRun[]` (the `workflow_runs` array) |
 
 where `r = pathSegment(repo)`. Query strings are written in exactly this order, so URLs match the
-fixture routes. `per_page=20` is `THRESHOLDS.runsPerWorkflow`; import it rather than repeating it.
+fixture routes. activity.ts passes `THRESHOLDS.runsPerWorkflow` (20) as `perPage`. The adapter
+imports only types from `core/` (`test/upstreams/imports.test.ts` enforces it).
 
 Error mapping, in a private `githubJson(deps, repo, path, schema, what)` that every fetcher uses (`repo` appears only in the unexpected-shape message below):
 
+- `CapabilityError` with `details.status` 401 and a non-blank `GITHUB_TOKEN` → rethrow as
+  `CapabilityError('upstream_error', "GitHub rejected this server's GITHUB_TOKEN (HTTP 401); the operator must replace the secret. Try again later.", details)`.
+  Without a token a 401 is not about our secret and propagates unchanged. The message names the
+  variable, never its value.
 - `CapabilityError` with `details.status` 403 or 429 → rethrow as
   `CapabilityError('upstream_error', \`GitHub refused the request (HTTP ${status}), most likely its rate limit${tokenless ? '; this server has no GITHUB_TOKEN, so the limit is 60 requests per hour' : ''}. Try again later.\`, details)`.
 - `CapabilityError` with `code === 'not_found'` → rethrow as
@@ -323,14 +332,18 @@ export type Mergeable = 'MERGEABLE' | 'CONFLICTING' | 'UNKNOWN';
 /** REST mergeable (true | false | null) → the GraphQL value bioc-health stores. */
 export function mergeableFrom(value: boolean | null): Mergeable;
 
-/** bioc-health pr_status. Only 'ok' | 'info' | 'warn' occur. */
+/**
+ * bioc-health pr_status, except that the reason counts failing checks instead of naming them:
+ * check names come from the PR's own workflow file, so they are contributor-controlled text.
+ * Only 'ok' | 'info' | 'warn' occur.
+ */
 export function prStatus(
-  failingChecks: readonly string[],
+  failingCheckCount: number,
   mergeable: Mergeable,
   updatedAgeDays: number,
   isDraft: boolean,
 ): { status: HealthStatus; reason: string };
-// problems = [failing ? `failing checks: ${failing.join(', ')}` : none, mergeable === 'CONFLICTING' ? 'merge conflicts' : none]
+// problems = [count > 0 ? `${count} failing check${count === 1 ? '' : 's'}` : none, mergeable === 'CONFLICTING' ? 'merge conflicts' : none]
 // problems non-empty → { 'warn', problems.join('; ') }
 // !isDraft && updatedAgeDays > THRESHOLDS.prStaleDays → { 'info', `no activity for ${Math.round(updatedAgeDays)} days` }
 // else { 'ok', 'ok' }
@@ -359,8 +372,11 @@ export function summarizeRuns(runs: readonly GithubWorkflowRun[]): {
  */
 export const FAILURE_ISSUE_TITLE = /^([A-Za-z0-9:_.@\-]{1,64}\.service) is failing$/;
 
+/** At most `limit` UTF-16 code units: the first limit − 1 plus '…' when longer. */
+export function truncateText(text: string, limit: number): string;
+
 /** At most 80 UTF-16 code units: the first 79 plus '…' when longer. */
-export function truncateTitle(title: string): string;
+export function truncateTitle(title: string): string; // truncateText(title, 80)
 ```
 
 Rounding: Python's `round` rounds halves to even and `Math.round` rounds them up, so an age exactly
@@ -378,15 +394,15 @@ next to the threshold. Accept it.
 | workflows outside `.github/workflows/` skipped | same filter on `path` | Yes |
 | schedule staleness (cron) | not computed | No (non-goal) |
 | `pr_checks_failing(statusCheckRollup)` | `prChecksFailing(check-runs, combined status)` | Yes, assuming the rollup is the head commit's latest check runs and statuses |
-| `pr_status(failing, mergeable, updated age, draft)` | `prStatus`, `mergeable` from REST via `mergeableFrom` | Yes |
+| `pr_status(failing, mergeable, updated age, draft)` | `prStatus`, `mergeable` from REST via `mergeableFrom` | Same status. Differs on purpose: the reason counts failing checks (`2 failing checks`) instead of naming them, and `failing_checks` keeps 3 names of at most 40 characters, because check names are contributor-controlled on fork PRs |
 | stale issues: `updated_at` age > `issue_stale_days` | same | Yes |
 | new issues: `created_at[:10] >= since` | same | Yes |
 | `truncated: len == ISSUE_LIMIT` (200 issues, PRs listed apart) | `truncated: items.length === 100` over the mixed issues+PRs list | Same rule, smaller page (one call) |
 | crossref `TITLE` over open `failure_issue_repo` issues | `FAILURE_ISSUE_TITLE` over open, non-PR `bioc-edge` issues opened by `OPS_OWNER`; first issue per unit kept, as `filed.setdefault` does | Yes, without the unit-state comparison. Differs on purpose: crossref.py trusts the repo's issues, but this server shows the text to a model and `bioc-edge` is public, so titles from other accounts are ignored and the unit is bounded |
 
 **Verified:** the `<unit> is failing` issues are authored by `seandavi` (the account `gh` runs as on
-the host) with label `bug`, not by a `bioc-notify` account. The title is the only marker, as in
-crossref.py. `notify-failure.sh` comments on the open issue on each repeat failure and nothing
+the host) with label `bug`, not by a `bioc-notify` account. crossref.py uses the title as the only
+marker; this server also requires `user.login === OPS_OWNER` (see the row above). `notify-failure.sh` comments on the open issue on each repeat failure and nothing
 closes it on recovery.
 
 ### `src/core/ops/activity.ts`
@@ -421,7 +437,9 @@ appeared in `/api/openapi.json`, listed an MCP `outputSchema` with `oneOf`, and 
 ```ts
 const StatusSchema = z
   .enum(['ok', 'info', 'warn', 'fail'])
-  .describe("bioc-health's classification: 'fail' and 'warn' need attention, 'info' is worth knowing");
+  .describe(
+    "Classification by the bioc-infrastructure health report's rules: 'fail' and 'warn' need attention, 'info' is worth knowing",
+  );
 
 const RepoErrorSchema = z
   .string()
@@ -449,9 +467,12 @@ const PrItemSchema = z.object({
   age_days: z.number(),
   updated_age_days: z.number(),
   mergeable: z.enum(['MERGEABLE', 'CONFLICTING', 'UNKNOWN']).describe('UNKNOWN while GitHub computes it'),
-  failing_checks: z.array(z.string()).describe('Check runs and commit statuses failing on the head commit'),
+  failing_checks: z
+    .array(z.string())
+    .describe('Up to 3 failing check runs and commit statuses on the head commit (check runs first), each at most 40 characters'),
+  failing_check_count: z.number().int().describe('All failing check runs and commit statuses on the head commit'),
   status: StatusSchema,
-  reason: z.string().describe("e.g. 'failing checks: test; merge conflicts', 'no activity for 67 days', 'ok'"),
+  reason: z.string().describe("e.g. '2 failing checks; merge conflicts', 'no activity for 67 days', 'ok'"),
 });
 
 const WorkflowItemSchema = z.object({
@@ -516,7 +537,7 @@ const SummaryDataSchema = z.object({
         .number()
         .int()
         .nullable()
-        .describe("Open '<unit> is failing' issues; only for bioc-edge, null for other repos and when the repo could not be read"),
+        .describe("Units with an open '<unit> is failing' issue; only for bioc-edge (null for other repos, or when bioc-edge could not be read)"),
     }),
   ),
 });
@@ -571,14 +592,14 @@ const WorkflowsDataSchema = z.object({
     }),
   ),
   workflows: z.array(WorkflowItemSchema).describe('Repo order, then file path; at most 12'),
-  omitted: z.number().int(),
+  omitted: z.number().int().describe('Workflows eligible for the list but not listed because of the cap'),
 });
 
 const FailuresDataSchema = z.object({
   kind: z.literal('failures'),
   repo: z.literal('bioc-edge'),
   items: z.array(FailureItemSchema).describe('Newest first, at most 15'),
-  omitted: z.number().int(),
+  omitted: z.number().int().describe("Units with an open '<unit> is failing' issue not listed because of the cap"),
 });
 
 export const OpsActivityDataSchema = z.discriminatedUnion('kind', [
@@ -633,7 +654,7 @@ bytes of provenance instead of 2.5 KB for one per endpoint.
 
 **Collectors.** Within a repo, independent calls run concurrently; dependent ones in order.
 
-- **summary:** `listOpenIssues` and (`getRepo` → `listWorkflows` → `listWorkflowRuns` for each
+- **summary:** `listOpenIssues` and (`getRepo` ∥ `listWorkflows`, then `listWorkflowRuns` for each
   active `.github/workflows/` workflow, concurrently) in parallel. From the issues list: issues are
   items without `pull_request`, PRs those with it. `open_issues`, `stale_issues`
   (`ageDays(updated_at) > 30`), `new_issues` (`created_at.slice(0, 10) >= activitySince(now)`),
@@ -652,14 +673,16 @@ bytes of provenance instead of 2.5 KB for one per endpoint.
   `truncated` (`length === 100`). Sort all PRs by `created_at` descending (ties: config order, then
   `number` descending) and keep the first `PR_ITEM_LIMIT`. For each kept PR, concurrently:
   `getPull` (for `mergeable`), `listCheckRuns` and `getCombinedStatus` on `head.sha`; then
-  `failing_checks = prChecksFailing(check_runs, statuses)`, `mergeable = mergeableFrom(...)`, and
-  `{ status, reason } = prStatus(failing_checks, mergeable, updated_age_days, draft)`. A detail call
+  `failing = prChecksFailing(check_runs, statuses)`, `failing_checks` = the first
+  `FAILING_CHECK_LIMIT` names, each `truncateText(name, CHECK_NAME_LIMIT)`, `failing_check_count =
+  failing.length`, `mergeable = mergeableFrom(...)`, and
+  `{ status, reason } = prStatus(failing.length, mergeable, updated_age_days, draft)`. A detail call
   that fails makes the PR's repo `ok: false` (the whole repo, like any other read). `omitted` = PRs
   not kept; they are counted but never checked.
-- **workflows:** `getRepo` → `default_branch`; `listWorkflows` → keep `path.startsWith('.github/workflows/')`,
+- **workflows:** `getRepo` ∥ `listWorkflows` (concurrently); `default_branch` from the repo, then keep `path.startsWith('.github/workflows/')`,
   sort by `path`. For each: `file = path.split('/').at(-1)`. If `state !== 'active'`: status
   `'warn'`, reason `` `workflow is ${state}` ``, all run fields null, `streak 0`, `runs_examined 0`,
-  and no runs call. Otherwise `listWorkflowRuns(deps, repo, file, default_branch)` (concurrently
+  and no runs call. Otherwise `listWorkflowRuns(deps, repo, file, default_branch, THRESHOLDS.runsPerWorkflow)` (concurrently
   across workflows), `summarizeRuns(runs)`, `status = actionsStatus(latest_conclusion, EXPERIMENTAL_REPOS.has(repo))`,
   and `reason` = `` `no completed runs on ${default_branch}` `` when `latest_conclusion` is null,
   else `` `latest ${latest_conclusion}` `` + (`streak > 1` ? `` ` (${streak} in a row)` `` : ''),
@@ -693,12 +716,13 @@ bounded however many issues are open.
   3. When `bioc-edge` is in scope: `` `${k} open "<unit> is failing" issues in bioc-edge` `` +
      (k > 0 ? `` ` (${unitList}); nothing closes them when a unit recovers, so check before acting.` `` : `'.'`)
 - **issues:** `` `${scope}: ${open} open issues, ${stale} untouched over 30 days, ${new} opened in the last 7 days.` ``
-  + (items ? `` ` The ${items.length} newest are listed` `` + (omitted ? `` `; ${omitted} more are not${repo ? '' : ' (pass repo to narrow)'}` `` : '') + '.' : '')
+  + (items ? `` ` The ${items.length} newest are listed` `` + (omitted ? `` `; ${omitted} more are not${repo ? ` (see https://github.com/${OPS_OWNER}/${repo}/issues)` : ' (pass repo to narrow)'}` `` : '') + '.' : '')
 - **prs:** `` `${scope}: ${open} open PRs (${draft} draft, ${stale} non-draft untouched over 14 days).` ``
   + listed PRs with status `warn` → `` ` Need attention: ${first 5 as `${repo}#${number} (${reason})` joined '; '}${moreSuffix}.` ``
-  + (omitted ? `` ` ${omitted} older PRs were not checked${repo ? '' : '; pass repo to narrow'}.` `` : '')
+  + (omitted ? `` ` ${omitted} older PRs were not checked${repo ? ` (see https://github.com/${OPS_OWNER}/${repo}/pulls)` : '; pass repo to narrow'}.` `` : '')
 - **workflows:** `` `${scope}: ${total} default-branch workflows: ${fail} failing, ${warn} warn, ${info} with no completed run, ${ok} ok.` ``
-  + the problems sentence from summary step 2.
+  + the problems sentence from summary step 2
+  + (omitted ? `` ` Only the first ${WORKFLOW_ITEM_LIMIT} are listed; ${omitted} more are not.` `` : '').
 - **failures:** `` `${k} open "<unit> is failing" issues in bioc-edge` `` + (k > 0 ?
   `` `: ${unitList}. bioc-notify@ comments on the open issue at each failure and nothing closes it on recovery, so an open issue does not prove the unit is still failing.` `` : `'.'`)
 
@@ -715,10 +739,11 @@ export const opsActivity = defineCapability({
     "kind 'summary' (default) gives counts per repo and the workflows needing attention; 'issues' lists open " +
     "issues newest first, with staleness (untouched over 30 days); 'prs' lists open PRs with failing checks, " +
     "merge conflicts and staleness (over 14 days); 'workflows' gives each workflow's latest conclusion, failure " +
-    "streak and last success on the default branch; 'failures' lists the '<unit> is failing' issues bioc-notify@ " +
-    'files in bioc-edge, which nothing closes on recovery. repo narrows to one repo. Classifications match ' +
-    'bioc-health. Public GitHub data, cached 2 minutes. For a package\'s build or propagation state use ' +
-    'pkg_status. Does not report host, service or traffic health.',
+    "streak and last success on the default branch (every workflow when repo is given; without repo, only those " +
+    "that fail or warn); 'failures' lists the '<unit> is failing' issues bioc-notify@ files in bioc-edge, which " +
+    'nothing closes on recovery. repo narrows to one repo. Statuses (ok, info, warn, fail) follow the rules of ' +
+    "the bioc-infrastructure health report. Public GitHub data, cached 2 minutes. For a package's build or " +
+    'propagation state use pkg_status. Does not report host, service or traffic health.',
   input,
   data: OpsActivityDataSchema,
   handler,
@@ -794,9 +819,13 @@ about 330 bytes (10 → 3.3 KB), a workflow item about 330 bytes (12 → 4 KB). 
 about 7 KB with the caps. The envelope guard throws `result_too_large` rather than truncating if
 labels or error messages ever push one over.
 
-Text built from caller-controlled strings is bounded at the source: failure units are limited to 72
+Text built from caller-controlled strings is bounded at the source. Failure units are limited to 72
 characters, only `OPS_OWNER`'s issues count, and the summary names at most `FAILURE_ITEM_LIMIT` of
-them, so a flood of issues in the public `bioc-edge` repo cannot push an envelope over the limit.
+them. PR titles are cut to 80 characters. Check names (chosen by the PR's workflow file on fork
+PRs) are cut to 3 names of 40 characters and never appear in `reason` or the summary. Measured
+(spec #46 test): 10 PRs with 200-character titles and 100 failing 200-character checks each give a
+`kind=prs` envelope of 7,156 bytes (all repos). Non-ASCII text can take up to 3 bytes per
+character, so the guard's `result_too_large` remains the backstop.
 
 ### Fixtures
 
@@ -852,10 +881,10 @@ anything secret before committing (there is nothing: public issue metadata, run 
 ```ts
 export const GITHUB_RECORDED_AT: Date; // from test/fixtures/github/RECORDED_AT
 export function githubUrl(repo: string, suffix?: string): string; // `https://api.github.com/repos/seandavi/${repo}${suffix ?? ''}`
-export function githubRoutes(): Record<string, FixtureRoute>; // a fresh object each call, so tests can override entries
+export function githubRoutes(dir?: string): Record<string, FixtureRoute>; // dir defaults to test/fixtures/github; a fresh object each call, so tests can override entries
 ```
 
-`githubRoutes` walks `test/fixtures/github/<repo>/` (`readdirSync(…, { recursive: true })`) and maps
+`githubRoutes` walks `test/fixtures/github/<repo>/` (`readdirSync(…, { recursive: true, withFileTypes: true })`) and maps
 each file to its URL suffix:
 
 | File under `<repo>/` | URL suffix |
@@ -869,7 +898,8 @@ each file to its URL suffix:
 | `actions/workflows.json` | `/actions/workflows?per_page=100` |
 | `actions/runs/<file>.json` | `/actions/workflows/<file>/runs?branch=<default_branch from repo.json>&per_page=20&exclude_pull_requests=true` |
 
-An unknown file throws, so a stray fixture fails loudly. Tests use `now = () => GITHUB_RECORDED_AT`.
+An unknown file throws (any non-directory entry that `suffixFor` does not map), so a stray fixture
+fails loudly. Tests use `now = () => GITHUB_RECORDED_AT`.
 
 Scenarios and the state observed on 2026-10-22. Tests assert against the recorded files. If a
 scenario no longer holds when recorded, substitute a repo/workflow/PR that fits the criterion and
@@ -888,7 +918,7 @@ say so in the PR; scenarios GitHub cannot produce on demand are synthetic (inlin
 | PR with conflicts | bioc-website #74 | `mergeable: false` | `CONFLICTING`, `warn`, reason `merge conflicts` |
 | Stale PR | bioc-website #14 | non-draft, updated > 14 days ago, mergeable | `info`, `no activity for N days` |
 | PR mergeability pending | any PR whose detail has `mergeable: null` (bioc-edge #64 on 2026-10-22, may resolve on re-record) or synthetic | — | `UNKNOWN`, not a problem by itself |
-| PR with failing checks | synthetic: a check run `timed_out` and a status `error` on bioc-website #74's head | — | `failing_checks` = `[<run name>, <context>]`, `warn`, reason `failing checks: …; merge conflicts` |
+| PR with failing checks | synthetic: a check run `timed_out` and a status `error` on bioc-website #74's head | — | `failing_checks` = `[<run name>, <context>]`, `failing_check_count` 2, `warn`, reason `2 failing checks; merge conflicts` |
 | Failure issues | bioc-edge | open issues titled `<unit> is failing` | #69 `bioc-sync.service` (0 comments), #57 `bioc-rollup-minute.service` (97 comments) |
 | Issue list cap | all repos | > 15 open issues | 114 open issues → 15 listed, 99 omitted |
 | Truncated | synthetic: an issues page of 100 items | — | `truncated: true` |
@@ -899,8 +929,8 @@ say so in the PR; scenarios GitHub cannot produce on demand are synthetic (inlin
 
 - [ ] `ops_activity` is registered in module `ops` with upstream `github`. `validateRegistry(modules)`
       passes on the production list `[metaModule, pkgModule, opsModule]`.
-- [ ] `/mcp/ops` lists exactly `['ops_activity']`; `/mcp` lists `meta_ping`, `pkg_status` and
-      `ops_activity`.
+- [ ] `/mcp/ops` lists exactly `['ops_activity']`; `/mcp` lists exactly the meta, pkg and ops
+      tools.
 - [ ] For each kind, `GET /api/v1/ops/activity?kind=<kind>` (all repos) returns 200 and its body
       deep-equals the MCP `structuredContent` for the same input. No `kind` means `summary`.
 - [ ] One fixture test per `kind` asserts the data, `sources` and key summary substrings, covering
@@ -924,7 +954,7 @@ say so in the PR; scenarios GitHub cannot produce on demand are synthetic (inlin
 - [ ] **Token:** with `GITHUB_TOKEN` set to a sentinel, every GitHub request carries
       `authorization: Bearer <sentinel>`, `accept: application/vnd.github+json` and
       `x-github-api-version: 2022-11-28`. Without it, there is no `authorization` header. Across
-      every kind, the 403/404/500/timeout/network-error paths, REST bodies, MCP results, error
+      every kind, the 401/403/404/500/timeout/network-error paths, REST bodies, MCP results, error
       messages and details, values written to the cache, and every `console.*` call, the sentinel
       never appears.
 - [ ] `githubTokenWarning({})` returns the warning; `githubTokenWarning({ GITHUB_TOKEN: 'x' })`
@@ -952,20 +982,21 @@ All tests run in Node with `fixtureFetch(githubRoutes())`, `createMemoryCache`, 
   - `prChecksFailing`: runs `[test: success, lint: timed_out]` and statuses
     `[ci/legacy: error, ci/ok: success]` → `['lint', 'ci/legacy']`; an in-progress run
     (`conclusion: null`) is not failing.
-  - `prStatus`: `([], 'CONFLICTING', 1, false) → warn`, `(['ci'], 'MERGEABLE', 1, false) → warn`,
-    `([], 'MERGEABLE', 15, false) → info 'no activity for 15 days'`, `([], 'MERGEABLE', 15, true) → ok`,
-    `(['a', 'b'], 'CONFLICTING', 1, false)` reason `'failing checks: a, b; merge conflicts'`.
+  - `prStatus`: `(0, 'CONFLICTING', 1, false) → warn`, `(1, 'MERGEABLE', 1, false) → warn '1 failing check'`,
+    `(0, 'MERGEABLE', 15, false) → info 'no activity for 15 days'`, `(0, 'MERGEABLE', 15, true) → ok`,
+    `(2, 'CONFLICTING', 1, false)` reason `'2 failing checks; merge conflicts'`.
   - `mergeableFrom`: `true`, `false`, `null`.
   - `summarizeRuns`: newest-first runs `[in_progress, failure, failure, success, failure]` →
     `latest_conclusion 'failure'`, streak 2, `last_success_at` = the success's `created_at`,
     `newest_run_at` = the in-progress run's; `[failure, cancelled, failure]` → streak 1; `[]` → all
     null, streak 0.
-  - `ageDays`, `activitySince` (the 7-day boundary is inclusive by date), `truncateTitle` (80 kept,
+  - `ageDays`, `activitySince` (the 7-day boundary is inclusive by date), `truncateText`, `truncateTitle` (80 kept,
     81 → 79 + `…`), `FAILURE_ISSUE_TITLE` (matches `bioc-sync.service is failing` and a 64-character unit;
     not `bioc-sync is failing`, `Re: bioc-sync.service is failing`, a unit with a space or over 64
     characters).
 - `test/upstreams/github.test.ts`: each fetcher's URL (exactly the table), schema stripping,
-  `pathSegment` rejecting a `..` repo, 403/429 → rate-limit `upstream_error` (with and without a
+  `pathSegment` rejecting a `..` repo, 401 with a token → the replace-the-secret `upstream_error`,
+  403/429 → rate-limit `upstream_error` (with and without a
   token in `deps.env`), 404 → `upstream_error`, an unexpected shape → `upstream_error` naming `what`,
   500 and timeout passed through, and `githubTokenWarning`.
 - `test/core/ops/activity.test.ts`: one `describe` per kind through
@@ -977,15 +1008,18 @@ All tests run in Node with `fixtureFetch(githubRoutes())`, `createMemoryCache`, 
 - `test/core/ops/token.test.ts`: `deps.env = { GITHUB_TOKEN: SENTINEL }`; `deps.fetch` records each
   `Request` and its headers before delegating to `fixtureFetch`; a cache wrapper records every
   `put`; `vi.spyOn(console, …)` on `log`, `info`, `warn`, `error` and `debug`. Runs every kind, plus
-  routes overridden to 403, 404, 500, `'timeout'` and `'network-error'`, through REST and MCP
-  (`makeTestApp({ env })`), and asserts the sentinel is absent from every serialized output, error
-  and console argument, and present in every request's `authorization` header. A second case with
-  `env: {}` asserts no `authorization` header.
+  routes overridden to 401, 403, 404, 500, `'timeout'` and `'network-error'`, through REST and MCP
+  (`makeTestApp({ env })`; the REST and MCP timeouts go through `makeTestApp({ fetch })`), and
+  asserts the sentinel is absent from every serialized output, error and console argument, and
+  present in every request's `authorization` header. A second case with `env: {}` asserts no
+  `authorization` header.
 - `test/transports/ops.test.ts`: `makeTestApp({ routes: githubRoutes(), extraModules: [opsModule], now })`;
-  tools/list on `/mcp/ops` and `/mcp`, REST vs MCP equality per kind, REST 400 bodies, the MCP
-  `isError` text for an all-repos 403 (`upstream_error: …`), and `/api/v1/about` listing `github`
-  with `used_by: ['ops']`.
-- `test/support/app.ts`: `makeTestApp` takes `env?: CapabilityEnv` (default `{}`), passed to `deps.env`.
+  tools/list on `/mcp/ops`, and on `/mcp` built with `extraModules: [pkgModule, opsModule]`, asserting the
+  exact meta, pkg and ops tool set (besides the `example_` tools), REST vs MCP equality per kind,
+  REST 400 bodies, the MCP `isError` text for an all-repos 403 (`upstream_error: …`), and
+  `/api/v1/about` listing `github` with `used_by: ['ops']`.
+- `test/support/app.ts`: `makeTestApp` takes `env?: CapabilityEnv` (default `{}`), passed to `deps.env`, and `fetch?: FetchFn & { calls: string[] }` (replaces the
+  `fixtureFetch` built from `routes`).
 
 ## Risks
 
@@ -1003,7 +1037,9 @@ All tests run in Node with `fixtureFetch(githubRoutes())`, `createMemoryCache`, 
   memo exists because one body is 8 MB).
 - **Rate limit.** 5,000 requests/h with the token. A cold summary is about 1% of that; the 2-minute
   cache is per data-centre, so heavy use from many locations multiplies it. Unauthenticated
-  (dev only), 60/h runs out after one cold summary; the 403 message says so.
+  (dev only), 60/h runs out after one cold summary; the 403 message says so. Since #11 the Worker
+  rate-limits each client address (IPv6 by /64) on `/mcp` and `/api`, and the Cache API is verified
+  on the workers.dev hostname (spec #46).
 - **Six connections.** Workers queue a fetch while six others are waiting for response headers
   (**Verified**, Cloudflare limits page). `fetchUpstream`'s 10 s
   timeout starts before the queue, so a slow GitHub could time out queued requests. At about

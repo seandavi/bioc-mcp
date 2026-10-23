@@ -18,7 +18,9 @@ import type { UpstreamResponse } from '../../upstreams/http';
 import { defineCapability } from '../capability';
 import type { Deps } from '../deps';
 import {
+  CHECK_NAME_LIMIT,
   EXPERIMENTAL_REPOS,
+  FAILING_CHECK_LIMIT,
   FAILURE_ISSUE_REPO,
   FAILURE_ITEM_LIMIT,
   ISSUE_ITEM_LIMIT,
@@ -41,13 +43,16 @@ import {
   prChecksFailing,
   prStatus,
   summarizeRuns,
+  truncateText,
   truncateTitle,
   type HealthStatus,
 } from './rules';
 
 const StatusSchema = z
   .enum(['ok', 'info', 'warn', 'fail'])
-  .describe("bioc-health's classification: 'fail' and 'warn' need attention, 'info' is worth knowing");
+  .describe(
+    "Classification by the bioc-infrastructure health report's rules: 'fail' and 'warn' need attention, 'info' is worth knowing",
+  );
 
 const RepoErrorSchema = z
   .string()
@@ -75,9 +80,12 @@ const PrItemSchema = z.object({
   age_days: z.number(),
   updated_age_days: z.number(),
   mergeable: z.enum(['MERGEABLE', 'CONFLICTING', 'UNKNOWN']).describe('UNKNOWN while GitHub computes it'),
-  failing_checks: z.array(z.string()).describe('Check runs and commit statuses failing on the head commit'),
+  failing_checks: z
+    .array(z.string())
+    .describe('Up to 3 failing check runs and commit statuses on the head commit (check runs first), each at most 40 characters'),
+  failing_check_count: z.number().int().describe('All failing check runs and commit statuses on the head commit'),
   status: StatusSchema,
-  reason: z.string().describe("e.g. 'failing checks: test; merge conflicts', 'no activity for 67 days', 'ok'"),
+  reason: z.string().describe("e.g. '2 failing checks; merge conflicts', 'no activity for 67 days', 'ok'"),
 });
 
 const WorkflowItemSchema = z.object({
@@ -140,7 +148,7 @@ const SummaryDataSchema = z.object({
         .number()
         .int()
         .nullable()
-        .describe("Open '<unit> is failing' issues; only for bioc-edge, null for other repos and when the repo could not be read"),
+        .describe("Units with an open '<unit> is failing' issue; only for bioc-edge (null for other repos, or when bioc-edge could not be read)"),
     }),
   ),
 });
@@ -195,14 +203,14 @@ const WorkflowsDataSchema = z.object({
     }),
   ),
   workflows: z.array(WorkflowItemSchema).describe('Repo order, then file path; at most 12'),
-  omitted: z.number().int(),
+  omitted: z.number().int().describe('Workflows eligible for the list but not listed because of the cap'),
 });
 
 const FailuresDataSchema = z.object({
   kind: z.literal('failures'),
   repo: z.literal(FAILURE_ISSUE_REPO),
   items: z.array(FailureItemSchema).describe('Newest first, at most 15'),
-  omitted: z.number().int(),
+  omitted: z.number().int().describe("Units with an open '<unit> is failing' issue not listed because of the cap"),
 });
 
 export const OpsActivityDataSchema = z.discriminatedUnion('kind', [
@@ -229,7 +237,6 @@ const input = z.object({
 });
 
 const LIST_PAGE = 100; // per_page of the issue and PR lists: a full page means there may be more
-const MS_PER_DAY = 86_400_000;
 
 // ---- per-repo isolation -------------------------------------------------------------------
 
@@ -378,7 +385,9 @@ async function collectIssues(ctx: Context): Promise<Envelope<OpsActivityData>> {
       `${fresh} opened in the last ${THRESHOLDS.activityWindowDays} days.` +
       (listed.length > 0
         ? ` The ${listed.length} newest are listed` +
-          (omitted > 0 ? `; ${omitted} more are not${ctx.repo ? '' : ' (pass repo to narrow)'}` : '') +
+          (omitted > 0
+            ? `; ${omitted} more are not${ctx.repo ? ` (see https://github.com/${OPS_OWNER}/${ctx.repo}/issues)` : ' (pass repo to narrow)'}`
+            : '') +
           '.'
         : ''),
     errorsSentence(outcomes),
@@ -430,8 +439,9 @@ async function collectPrs(ctx: Context): Promise<Envelope<OpsActivityData>> {
             age_days: ageDays(pull.created_at, now),
             updated_age_days: updatedAge,
             mergeable,
-            failing_checks: failing,
-            ...prStatus(failing, mergeable, updatedAge, pull.draft),
+            failing_checks: failing.slice(0, FAILING_CHECK_LIMIT).map((name) => truncateText(name, CHECK_NAME_LIMIT)),
+            failing_check_count: failing.length,
+            ...prStatus(failing.length, mergeable, updatedAge, pull.draft),
             created_at: pull.created_at,
           };
         }),
@@ -468,7 +478,9 @@ async function collectPrs(ctx: Context): Promise<Envelope<OpsActivityData>> {
             .map((item) => `${item.repo}#${item.number} (${item.reason})`)
             .join('; ')}${moreSuffix(needAttention.length, 5)}.`
         : '') +
-      (omitted > 0 ? ` ${omitted} older PRs were not checked${ctx.repo ? '' : '; pass repo to narrow'}.` : ''),
+      (omitted > 0
+        ? ` ${omitted} older PRs were not checked${ctx.repo ? ` (see https://github.com/${OPS_OWNER}/${ctx.repo}/pulls)` : '; pass repo to narrow'}.`
+        : ''),
     errorsSentence(checkedOutcomes),
   ]);
   return { data: { kind: 'prs', repos: entries, items, omitted }, summary, sources: sourcesOf(checkedOutcomes) };
@@ -483,17 +495,16 @@ interface RepoWorkflows {
 
 const WORKFLOW_DIR = '.github/workflows/';
 
-/** getRepo → listWorkflows → the newest default-branch runs of each active workflow. */
+/** (getRepo ∥ listWorkflows) → the newest default-branch runs of each active workflow. */
 async function readWorkflows(
   deps: Deps,
   repo: OpsRepo,
   track: (response: UpstreamResponse) => void,
 ): Promise<RepoWorkflows> {
-  const repoRead = await getRepo(deps, repo);
+  const [repoRead, workflowsRead] = await Promise.all([getRepo(deps, repo), listWorkflows(deps, repo)]);
   track(repoRead.response);
-  const defaultBranch = repoRead.data.default_branch;
-  const workflowsRead = await listWorkflows(deps, repo);
   track(workflowsRead.response);
+  const defaultBranch = repoRead.data.default_branch;
   const workflows = workflowsRead.data
     .filter((workflow) => workflow.path.startsWith(WORKFLOW_DIR))
     .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
@@ -516,7 +527,7 @@ async function readWorkflows(
           runs_examined: 0,
         };
       }
-      const runsRead = await listWorkflowRuns(deps, repo, file, defaultBranch);
+      const runsRead = await listWorkflowRuns(deps, repo, file, defaultBranch, THRESHOLDS.runsPerWorkflow);
       track(runsRead.response);
       const runs = summarizeRuns(runsRead.data);
       const status = actionsStatus(runs.latest_conclusion, EXPERIMENTAL_REPOS.has(repo));
@@ -569,15 +580,17 @@ async function collectWorkflows(ctx: Context): Promise<Envelope<OpsActivityData>
   const eligible = listed === 'all' ? all : all.filter((item) => item.status === 'fail' || item.status === 'warn');
   const workflows = eligible.slice(0, WORKFLOW_ITEM_LIMIT);
 
+  const omitted = eligible.length - workflows.length;
   const totals = countByStatus(all);
   const summary = joinSentences([
     `${ctx.scope}: ${plural(all.length, 'default-branch workflow')}: ${totals.fail} failing, ${totals.warn} warn, ` +
       `${totals.info} with no completed run, ${totals.ok} ok.`,
     problemsSentence(all),
+    omitted > 0 ? `Only the first ${WORKFLOW_ITEM_LIMIT} are listed; ${omitted} more are not.` : undefined,
     errorsSentence(outcomes),
   ]);
   return {
-    data: { kind: 'workflows', listed, repos: entries, workflows, omitted: eligible.length - workflows.length },
+    data: { kind: 'workflows', listed, repos: entries, workflows, omitted },
     summary,
     sources: sourcesOf(outcomes),
   };
@@ -723,10 +736,11 @@ export const opsActivity = defineCapability({
     "kind 'summary' (default) gives counts per repo and the workflows needing attention; 'issues' lists open " +
     "issues newest first, with staleness (untouched over 30 days); 'prs' lists open PRs with failing checks, " +
     "merge conflicts and staleness (over 14 days); 'workflows' gives each workflow's latest conclusion, failure " +
-    "streak and last success on the default branch; 'failures' lists the '<unit> is failing' issues bioc-notify@ " +
-    'files in bioc-edge, which nothing closes on recovery. repo narrows to one repo. Classifications match ' +
-    "bioc-health. Public GitHub data, cached 2 minutes. For a package's build or propagation state use " +
-    'pkg_status. Does not report host, service or traffic health. ' +
+    "streak and last success on the default branch (every workflow when repo is given; without repo, only those " +
+    "that fail or warn); 'failures' lists the '<unit> is failing' issues bioc-notify@ files in bioc-edge, which " +
+    'nothing closes on recovery. repo narrows to one repo. Statuses (ok, info, warn, fail) follow the rules of ' +
+    "the bioc-infrastructure health report. Public GitHub data, cached 2 minutes. For a package's build or " +
+    'propagation state use pkg_status. Does not report host, service or traffic health. ' +
     'For why or how the infrastructure works this way (design, ADRs, runbooks) use docs_search.',
   input,
   data: OpsActivityDataSchema,

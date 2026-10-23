@@ -112,6 +112,26 @@ export const GithubWorkflowRunSchema = z.object({
 });
 export type GithubWorkflowRun = z.infer<typeof GithubWorkflowRunSchema>;
 
+export const GithubBranchSchema = z.object({
+  name: z.string(),
+  commit: z.object({
+    sha: z.string().regex(/^[0-9a-f]{40}$/),
+    commit: z.object({ committer: z.object({ date: z.string() }) }),
+  }),
+});
+export type GithubBranch = z.infer<typeof GithubBranchSchema>;
+
+export const GithubDeploymentSchema = z.object({
+  id: z.number().int(),
+  sha: z.string().regex(/^[0-9a-f]{40}$/),
+  ref: z.string(),
+  created_at: z.string(),
+});
+export type GithubDeployment = z.infer<typeof GithubDeploymentSchema>;
+
+export const GithubDeploymentStatusSchema = z.object({ state: z.string() }); // 'success', 'failure', 'in_progress', …
+export type GithubDeploymentStatus = z.infer<typeof GithubDeploymentStatusSchema>;
+
 const WorkflowListSchema = z.object({ workflows: z.array(GithubWorkflowSchema) });
 const WorkflowRunListSchema = z.object({ workflow_runs: z.array(GithubWorkflowRunSchema) });
 
@@ -217,4 +237,32 @@ export async function listWorkflowRuns(
     `?branch=${encodeURIComponent(branch)}&per_page=${perPage}&exclude_pull_requests=true`;
   const { response, data } = await githubJson(deps, repo, path, WorkflowRunListSchema, 'workflow run list');
   return { response, data: data.workflow_runs };
+}
+
+/** GET /repos/seandavi/<repo>/branches/<branch>: the head commit without its file list. */
+export async function getBranch(deps: Deps, repo: string, branch: string): Promise<Fetched<GithubBranch>> {
+  const path = `${pathSegment(repo)}/branches/${pathSegment(branch)}`;
+  return githubJson(deps, repo, path, GithubBranchSchema, 'branch');
+}
+
+/** Deployments to `environment`, newest first. */
+export async function listDeployments(
+  deps: Deps,
+  repo: string,
+  environment: string,
+  perPage: number,
+): Promise<Fetched<GithubDeployment[]>> {
+  const path = `${pathSegment(repo)}/deployments?environment=${encodeURIComponent(environment)}&per_page=${perPage}`;
+  return githubJson(deps, repo, path, z.array(GithubDeploymentSchema), 'deployment list');
+}
+
+/** Statuses of one deployment, newest first. */
+export async function listDeploymentStatuses(
+  deps: Deps,
+  repo: string,
+  id: number,
+  perPage: number,
+): Promise<Fetched<GithubDeploymentStatus[]>> {
+  const path = `${pathSegment(repo)}/deployments/${pathSegment(String(id))}/statuses?per_page=${perPage}`;
+  return githubJson(deps, repo, path, z.array(GithubDeploymentStatusSchema), 'deployment status list');
 }

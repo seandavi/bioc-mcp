@@ -30,6 +30,7 @@ async function main(): Promise<void> {
     fetch: fetchFn,
     now: () => new Date(),
     buildCommit: process.env.GITHUB_SHA ?? null,
+    env: values.network ? { GITHUB_TOKEN: process.env.GITHUB_TOKEN } : {},
   });
   const index = loadDocsIndex(artifact);
 

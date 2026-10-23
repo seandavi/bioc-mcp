@@ -2,16 +2,18 @@ import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import MiniSearch from 'minisearch';
-import type { Deps, FetchFn } from '../../src/core/deps';
+import type { CapabilityEnv, Deps, FetchFn } from '../../src/core/deps';
 import {
   DOCS_FORMAT_VERSION,
   DOCS_INDEX_OPTIONS,
   type DocsInput,
+  type DocsInputCommit,
   type DocsRecord,
   type DocsStore,
 } from '../../src/docs-index/schema';
 import { createMemoryCache } from '../../src/upstreams/cache';
 import { fetchUpstream, fetchUpstreamJson, pathSegment, type Upstream, type UpstreamResponse } from '../../src/upstreams/http';
+import { branchCommit, pagesCommit } from './commits';
 import type { DocsSourcesConfig } from './config';
 import { markdownRecords } from './markdown';
 import { siteRecords, siteSubsections, splitSiteRecords, type SiteSubsection } from './site';
@@ -20,6 +22,7 @@ export interface DocsBuildDeps {
   fetch: FetchFn;
   now: () => Date;
   buildCommit: string | null;
+  env: CapabilityEnv; // GITHUB_TOKEN, when set, goes to the GitHub API requests only
 }
 export interface DocsIndexArtifact {
   store: DocsStore;
@@ -32,13 +35,14 @@ export interface RenderedArtifact {
   bytes: number; // UTF-8 length of js
 }
 
-function inputFor(response: UpstreamResponse, recordCount: number): DocsInput {
+function inputFor(response: UpstreamResponse, recordCount: number, commit: DocsInputCommit | null): DocsInput {
   return {
     url: response.url,
     record_count: recordCount,
     last_modified: response.lastModified,
     fetched_at: response.fetchedAt,
     sha256: createHash('sha256').update(response.body, 'utf8').digest('hex'),
+    commit,
   };
 }
 
@@ -60,16 +64,17 @@ export async function buildDocsIndex(config: DocsSourcesConfig, deps: DocsBuildD
     timeoutMs: 30_000,
     description: 'Component docs in the bioc-* repos.',
   };
-  const fetchDeps: Deps = { fetch: deps.fetch, cache: createMemoryCache(deps.now), now: deps.now, env: {} };
+  const fetchDeps: Deps = { fetch: deps.fetch, cache: createMemoryCache(deps.now), now: deps.now, env: deps.env };
 
   const inputs: DocsInput[] = [];
   const records: DocsRecord[] = [];
-  const add = (response: UpstreamResponse, inputRecords: DocsRecord[]) => {
-    inputs.push(inputFor(response, inputRecords.length));
+  const add = (response: UpstreamResponse, inputRecords: DocsRecord[], commit: DocsInputCommit | null) => {
+    inputs.push(inputFor(response, inputRecords.length, commit));
     records.push(...inputRecords);
   };
 
   const site = await fetchUpstreamJson(fetchDeps, docsSite, 'search.json');
+  const siteCommit = await pagesCommit(fetchDeps, config.site_repo);
   const flat = siteRecords(site.json, config.site_url);
   // Page HTML is read only for h3 structure; the text and provenance stay search.json's (no meta.inputs entry).
   const subsectionsByPage = new Map<string, Map<string, SiteSubsection[]>>();
@@ -79,13 +84,14 @@ export async function buildDocsIndex(config: DocsSourcesConfig, deps: DocsBuildD
     const response = await fetchUpstream(fetchDeps, docsSite, page.split('/').map(pathSegment).join('/'));
     subsectionsByPage.set(page, siteSubsections(response.body));
   }
-  add(site.response, splitSiteRecords(flat, subsectionsByPage, config.site_url));
+  add(site.response, splitSiteRecords(flat, subsectionsByPage, config.site_url), siteCommit);
 
   for (const { repo, ref, files } of config.repos) {
+    const commit = await branchCommit(fetchDeps, repo, ref);
     for (const file of files) {
       const path = [repo, ref, ...file.split('/')].map(pathSegment).join('/');
       const response = await fetchUpstream(fetchDeps, githubRaw, path);
-      add(response, markdownRecords({ owner: config.github_owner, repo, ref, file, markdown: response.body }));
+      add(response, markdownRecords({ owner: config.github_owner, repo, ref, file, markdown: response.body }), commit);
     }
   }
 

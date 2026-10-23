@@ -6,12 +6,15 @@ import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache } from '../../src/upstreams/cache';
 import {
+  getBranch,
   getCombinedStatus,
   getPull,
   getRepo,
   githubRepoApiUrl,
   githubTokenWarning,
   listCheckRuns,
+  listDeploymentStatuses,
+  listDeployments,
   listOpenIssues,
   listOpenPulls,
   listWorkflowRuns,
@@ -77,6 +80,61 @@ describe('fetchers request exactly the documented URLs', () => {
       githubUrl('bioc-website', '/actions/workflows?per_page=100'),
       githubUrl('bioc-website', '/actions/workflows/links.yml/runs?branch=main&per_page=20&exclude_pull_requests=true'),
     ]);
+  });
+});
+
+describe('branch and deployment fetchers', () => {
+  const docs = 'docs/api.github.com/repos/seandavi/bioc-infrastructure';
+  const deploymentsUrl = githubUrl('bioc-infrastructure', '/deployments?environment=github-pages&per_page=10');
+  const statusesUrl = githubUrl('bioc-infrastructure', '/deployments/7131578958/statuses?per_page=1');
+  const branchUrl = githubUrl('bioc-infrastructure', '/branches/main');
+  const routes: Record<string, FixtureRoute> = {
+    [branchUrl]: { file: `${docs}/branches/main` },
+    [deploymentsUrl]: { file: `${docs}/deployments/%3Fenvironment%3Dgithub-pages%26per_page%3D10` },
+    [statusesUrl]: { file: `${docs}/deployments/7131578958/statuses/%3Fper_page%3D1` },
+  };
+
+  test('request the documented URLs and parse the recorded responses', async () => {
+    const { deps, fetch } = makeDeps(routes);
+    const branch = await getBranch(deps, 'bioc-infrastructure', 'main');
+    expect(branch.data.commit.sha).toMatch(/^[0-9a-f]{40}$/);
+    expect(branch.data.commit.commit.committer.date).toMatch(/^\d{4}-\d\d-\d\dT/);
+    const deployments = await listDeployments(deps, 'bioc-infrastructure', 'github-pages', 10);
+    expect(deployments.data).toHaveLength(10);
+    expect(deployments.data[0]).toMatchObject({ id: 7131578958, ref: 'main' });
+    const statuses = await listDeploymentStatuses(deps, 'bioc-infrastructure', 7131578958, 1);
+    expect(statuses.data).toEqual([{ state: 'success' }]);
+    expect(fetch.calls).toEqual([branchUrl, deploymentsUrl, statusesUrl]);
+  });
+
+  test('send the GitHub headers and the token', async () => {
+    const seen: Headers[] = [];
+    const inner = fixtureFetch(routes);
+    const { deps } = makeDeps(routes, { GITHUB_TOKEN: 'sentinel' });
+    await getBranch({ ...deps, fetch: (request) => (seen.push(request.headers), inner(request)) }, 'bioc-infrastructure', 'main');
+    expect(seen[0]!.get('accept')).toBe('application/vnd.github+json');
+    expect(seen[0]!.get('authorization')).toBe('Bearer sentinel');
+  });
+
+  test('reject a "/" in a branch name before any request', async () => {
+    const { deps, fetch } = makeDeps(routes);
+    expect((await errorOf(getBranch(deps, 'bioc-infrastructure', 'feature/x'))).code).toBe('invalid_input');
+    expect(fetch.calls).toEqual([]);
+  });
+
+  test.each([
+    ['branch', () => branchUrl, (d: Deps) => getBranch(d, 'bioc-infrastructure', 'main')],
+    ['deployment list', () => deploymentsUrl, (d: Deps) => listDeployments(d, 'bioc-infrastructure', 'github-pages', 10)],
+    ['deployment status list', () => statusesUrl, (d: Deps) => listDeploymentStatuses(d, 'bioc-infrastructure', 7131578958, 1)],
+  ])('name the %s when the shape is wrong', async (what, url, call) => {
+    const { deps } = makeDeps({ [url()]: { status: 200, body: '{"nope":1}' } });
+    expect((await errorOf(call(deps))).message).toBe(`GitHub returned an unexpected ${what} for seandavi/bioc-infrastructure.`);
+  });
+
+  test('a branch with a short sha is an unexpected shape', async () => {
+    const body = JSON.stringify({ name: 'main', commit: { sha: 'abc', commit: { committer: { date: '2026-10-16T23:21:08Z' } } } });
+    const { deps } = makeDeps({ [branchUrl]: { status: 200, body } });
+    expect((await errorOf(getBranch(deps, 'bioc-infrastructure', 'main'))).message).toContain('unexpected branch');
   });
 });
 

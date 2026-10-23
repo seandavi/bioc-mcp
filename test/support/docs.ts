@@ -2,7 +2,7 @@ import MiniSearch from 'minisearch';
 import type { Module } from '../../src/core/registry';
 import { createDocsModule } from '../../src/core/docs';
 import { loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
-import { DOCS_FORMAT_VERSION, DOCS_INDEX_OPTIONS, type DocsRecord } from '../../src/docs-index/schema';
+import { DOCS_FORMAT_VERSION, DOCS_INDEX_OPTIONS, type DocsInputCommit, type DocsRecord } from '../../src/docs-index/schema';
 import { fixtureArtifact } from '../docs-index/support';
 
 let shared: Promise<DocsIndex> | undefined;
@@ -12,8 +12,11 @@ export function fixtureDocsIndex(): Promise<DocsIndex> {
   return shared;
 }
 
-/** A DocsIndex over `records` (one input, https://docs.test/search.json, fetched_at 2026-10-22T00:00:00.000Z): builds the store and a MiniSearch with DOCS_INDEX_OPTIONS in memory. */
-export function syntheticDocsIndex(records: DocsRecord[]): DocsIndex {
+/**
+ * A DocsIndex over `records` (one input, https://docs.test/search.json, fetched_at 2026-10-22T00:00:00.000Z, built_at the
+ * same instant, with `commit`): builds the store and a MiniSearch with DOCS_INDEX_OPTIONS in memory.
+ */
+export function syntheticDocsIndex(records: DocsRecord[], commit: DocsInputCommit | null = null): DocsIndex {
   const miniSearch = new MiniSearch<DocsRecord>(DOCS_INDEX_OPTIONS);
   miniSearch.addAll(records);
   const store = {
@@ -29,6 +32,7 @@ export function syntheticDocsIndex(records: DocsRecord[]): DocsIndex {
           last_modified: null,
           fetched_at: '2026-10-22T00:00:00.000Z',
           sha256: '0'.repeat(64),
+          commit,
         },
       ],
     },

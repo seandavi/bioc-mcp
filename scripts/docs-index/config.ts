@@ -7,7 +7,8 @@ export const DocsSourcesConfigSchema = z
   .strictObject({
     max_artifact_bytes: z.number().int().positive(),
     site_url: z.url({ protocol: /^https$/ }).refine((u) => u.endsWith('/'), 'site_url must end with "/"'),
-    github_owner: z.string().regex(/^[A-Za-z0-9-]+$/),
+    site_repo: z.string().regex(segment), // the repo whose GitHub Pages deployments publish site_url
+    github_owner: z.literal('seandavi'), // commit lookups go through src/upstreams/github.ts, which reads only seandavi/*
     repos: z
       .array(
         z.strictObject({

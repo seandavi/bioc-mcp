@@ -71,7 +71,9 @@ test/
 - The docs index is built, never fetched at runtime: `scripts/build-docs-index.ts` reads
   `docs-sources.yaml`, and the Worker imports the result from `generated/`. The build also fetches each
   site page's HTML, only to split h2 records at their h3 headings; those fixtures sit next to
-  `search.json` and are not `meta.inputs` entries. Adding a docs source
+  `search.json` and are not `meta.inputs` entries. It also records each
+  input's source commit (a repo's branch head; the site's live Pages deployment) through the GitHub
+  adapter; those responses are fixtures under `test/fixtures/docs/api.github.com/`. Adding a docs source
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
   fixtures and the updated snapshot (`npx vitest run -u test/docs-index`). Re-recording can drop a
   section an eval question names; `test/docs-eval` then fails until `eval/docs-questions.yaml` is

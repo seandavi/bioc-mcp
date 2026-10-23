@@ -10,8 +10,14 @@ max_artifact_bytes: 4000000
 # of each page (for h3 structure only); record URLs are resolved against it.
 site_url: https://seandavi.github.io/bioc-infrastructure/
 
+# The seandavi/* repo whose GitHub Pages deployments publish site_url; the build records the commit
+# of the live deployment, and the head of its branch, as the site input's source commit.
+site_repo: bioc-infrastructure
+
 # Component docs, fetched from https://raw.githubusercontent.com/<github_owner>/<repo>/<ref>/<file>
 # and linked as https://github.com/<github_owner>/<repo>/blob/<ref>/<file>#<anchor>.
+# Must be seandavi: the build looks up each repo's branch head through the GitHub adapter, which
+# reads only seandavi/* repos.
 github_owner: seandavi
 repos:
   - repo: bioc-registry

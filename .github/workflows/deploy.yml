@@ -31,6 +31,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run docs:build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}  # rate limit only: the build reads public seandavi/* repos
       - run: npm run typecheck
       - run: npm test
       - run: npm run build

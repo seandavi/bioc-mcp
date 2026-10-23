@@ -61,9 +61,9 @@ describe('loadDocsIndex', () => {
   });
 
   it('throws on a different format_version', () => {
-    const store = { ...artifact.store, format_version: 2 };
+    const store = { ...artifact.store, format_version: 1 };
     expect(() => loadDocsIndex({ storeJson: JSON.stringify(store), indexJson: artifact.indexJson })).toThrow(
-      /format_version 1/,
+      /format_version 2/,
     );
   });
 
@@ -112,7 +112,7 @@ describe('loadDocsIndex', () => {
 
   it.each(['javascript:alert(1)', 'http://example.org/'])('rejects a record url %s', (url) => {
     const records = artifact.store.records.map((r, i) => (i === 0 ? { ...r, url } : r));
-    expect(loadWith(records)).toThrow(/format_version 1/);
+    expect(loadWith(records)).toThrow(/format_version 2/);
   });
 
   it('uses at most 16 distinct query terms', () => {

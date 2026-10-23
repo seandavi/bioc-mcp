@@ -132,7 +132,7 @@ throws `Error`:
 | 4 | `url.pathname.endsWith('/')` | `… must end with "/"` |
 | 5 | `url.search === '' && url.hash === ''` | `… must not have a query string or fragment` |
 | 6 | `Number.isInteger(ttlSeconds) && ttlSeconds > 0` | `Upstream "<id>" ttlSeconds must be a positive integer (got <ttlSeconds>)` |
-| 7 | `timeoutMs === undefined \|\| (Number.isFinite(timeoutMs) && timeoutMs > 0)` | `Upstream "<id>" timeoutMs must be a positive finite number (got <timeoutMs>)` |
+| 7 | `timeoutMs === undefined \|\| (Number.isInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= MAX_TIMEOUT_MS)` | `Upstream "<id>" timeoutMs must be a positive integer no greater than 60000 (got <timeoutMs>)` (tightened by #43) |
 
 "…" is the label `Upstream "<id>" baseUrl`. Two of these deliberately go beyond the issue text:
 
@@ -433,7 +433,7 @@ inline `deps.fetch` stubs, as `test/upstreams/http.test.ts` already does for the
       `NaN`, `Infinity`. It accepts an upstream without `timeoutMs`. `fetchUpstream` with an
       unregistered credentialed upstream throws `internal` without fetching, and the message does
       not contain the password.
-- [ ] `grep -rn "assertBaseUrl" src test docs` returns nothing.
+- [ ] `grep -rn "assertBaseUrl" src test docs/specs/2-scaffold.md` returns nothing.
 
 ## Test plan
 

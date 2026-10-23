@@ -5,7 +5,9 @@ Thanks for helping. The most useful contributions, roughly in order:
 1. **Questions it answers badly.** Open a
    [wrong or stale answer](https://github.com/seandavi/bioc-mcp/issues/new?template=wrong-answer.yml)
    issue with the question, what the server returned, and where the right answer lives. These
-   become evaluation cases.
+   become evaluation cases. The cases live in
+   [`eval/docs-questions.yaml`](eval/docs-questions.yaml); a PR adding a question with the URL of
+   the section that answers it is welcome too.
 2. **Docs sources.** A public page that should be searchable through `docs_search`. Use the
    [new tool or docs source](https://github.com/seandavi/bioc-mcp/issues/new?template=new-tool-or-source.yml)
    form.

@@ -24,7 +24,10 @@ export const PkgReleaseInfoDataSchema = z.object({
       .describe(
         "Targets of the site's packages/release and packages/devel symlinks, from the manifest index; null if not listed",
       ),
-    build: z.string().nullable(),
+    build: z
+      .string()
+      .nullable()
+      .describe('Identifier of the manifest build that produced the index (a commit-run id); null if the index gives none'),
     manifests: z
       .array(
         z.object({
@@ -39,7 +42,11 @@ export const PkgReleaseInfoDataSchema = z.object({
       )
       .describe('Published manifests, in index order'),
   }),
-  agree: z.boolean().describe('true when config.yaml and the manifest index name the same release and devel versions'),
+  agree: z
+    .boolean()
+    .describe(
+      'true when config.yaml, the manifest index versions and its packages/release and packages/devel symlinks all name the same release and devel versions (see disagreements)',
+    ),
   disagreements: z.array(z.string()).describe('Each mismatch found, in plain words; empty when agree is true'),
 });
 type PkgReleaseInfoData = z.infer<typeof PkgReleaseInfoDataSchema>;

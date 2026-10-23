@@ -2,7 +2,15 @@ import { describe, expect, test } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache } from '../../src/upstreams/cache';
-import { fetchUpstream, fetchUpstreamJson, pathSegment, sourceFor, USER_AGENT, type Upstream } from '../../src/upstreams/http';
+import {
+  DEFAULT_MAX_BYTES,
+  fetchUpstream,
+  fetchUpstreamJson,
+  pathSegment,
+  sourceFor,
+  USER_AGENT,
+  type Upstream,
+} from '../../src/upstreams/http';
 import { exampleUpstream } from '../support/example-module';
 import { fixtureFetch, type FixtureRoute } from '../support/fixture-fetch';
 
@@ -73,7 +81,7 @@ describe('fetchUpstream', () => {
     const { deps } = makeDeps({ [ALPHA]: { status: 404 } });
     const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('not_found');
-    expect(error.message).toBe(`Example upstream has nothing at ${ALPHA}`);
+    expect(error.message).toBe(`Example upstream has nothing at ${ALPHA}.`);
   });
 
   test('500 becomes upstream_error with the status', async () => {
@@ -88,7 +96,7 @@ describe('fetchUpstream', () => {
     const { deps } = makeDeps({ [ALPHA]: { status: 403 } });
     const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toBe('Example upstream returned HTTP 403');
+    expect(error.message).toBe('Example upstream returned HTTP 403.');
     expect(error.details.status).toBe(403);
   });
 
@@ -100,15 +108,7 @@ describe('fetchUpstream', () => {
   });
 
   test('a timeout while reading the body becomes upstream_timeout and caches nothing', async () => {
-    const { deps } = makeDeps({});
-    deps.fetch = async (request) =>
-      new Response(
-        new ReadableStream({
-          start(controller) {
-            request.signal.addEventListener('abort', () => controller.error(request.signal.reason), { once: true });
-          },
-        }),
-      );
+    const { deps } = makeDeps({ [ALPHA]: 'body-timeout' });
     const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('upstream_timeout');
     expect(error.message).toBe(`Example upstream did not answer within 50 ms (${ALPHA}). Try again shortly.`);
@@ -198,7 +198,7 @@ describe('fetchUpstream', () => {
         const { deps, fetch } = makeDeps({ [ALPHA]: { status: 302, headers: { location } } });
         const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
         expect(error.code).toBe('upstream_error');
-        expect(error.message).toBe('Example upstream redirected outside its base URL');
+        expect(error.message).toBe('Example upstream redirected outside its base URL.');
         expect(fetch.calls).toEqual([ALPHA]);
         expect(await deps.cache.get(ALPHA)).toBeUndefined();
       },
@@ -235,7 +235,7 @@ describe('fetchUpstream', () => {
         [moved]: { status: 302, headers: { location: 'https://evil.test/x' } },
       });
       const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
-      expect(error.message).toBe('Example upstream redirected outside its base URL');
+      expect(error.message).toBe('Example upstream redirected outside its base URL.');
       expect(fetch.calls).toEqual([ALPHA, moved]);
     });
 
@@ -263,14 +263,14 @@ describe('fetchUpstream', () => {
       });
       const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
       expect(error.code).toBe('upstream_error');
-      expect(error.message).toBe('Example upstream redirected more than 3 times');
+      expect(error.message).toBe('Example upstream redirected more than 3 times.');
       expect(fetch.calls).toEqual([ALPHA, hop(1), hop(2), hop(3)]);
     });
 
     test('a 3xx without a Location is an HTTP error', async () => {
       const { deps } = makeDeps({ [ALPHA]: { status: 302 } });
       const error = await codeOf(fetchUpstream(deps, exampleUpstream, 'items/alpha.json'));
-      expect(error.message).toBe('Example upstream returned HTTP 302');
+      expect(error.message).toBe('Example upstream returned HTTP 302.');
     });
 
     test('a path inside the base path is allowed', async () => {
@@ -308,6 +308,10 @@ describe('pathSegment', () => {
     }
     throw new Error('expected a CapabilityError');
   });
+
+  test('says what is wrong, with a period', () => {
+    expect(() => pathSegment('a/b')).toThrow('"a/b" cannot be used as a URL path segment.');
+  });
 });
 
 describe('fetchUpstreamJson', () => {
@@ -321,7 +325,75 @@ describe('fetchUpstreamJson', () => {
     const { deps } = makeDeps({ [ALPHA]: { status: 200, body: '<html>' } });
     const error = await codeOf(fetchUpstreamJson(deps, exampleUpstream, 'items/alpha.json'));
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toContain('not valid JSON');
+    expect(error.message).toBe('Example upstream returned a response that is not valid JSON.');
+  });
+});
+
+describe('byte cap', () => {
+  const small: Upstream = { ...exampleUpstream, maxBytes: 16 };
+  const tooLarge = `Example upstream sent more than 16 bytes (${ALPHA}); this server does not read responses that large.`;
+
+  test('a body of exactly maxBytes is returned', async () => {
+    const { deps } = makeDeps({ [ALPHA]: { status: 200, body: 'a'.repeat(16) } });
+    expect((await fetchUpstream(deps, small, 'items/alpha.json')).body).toBe('a'.repeat(16));
+  });
+
+  test('a body of maxBytes + 1 fails with upstream_error and caches nothing', async () => {
+    const { deps } = makeDeps({ [ALPHA]: { status: 200, body: 'a'.repeat(17) } });
+    const error = await codeOf(fetchUpstream(deps, small, 'items/alpha.json'));
+    expect(error.code).toBe('upstream_error');
+    expect(error.message).toBe(tooLarge);
+    expect(await deps.cache.get(ALPHA)).toBeUndefined();
+  });
+
+  test('bytes are counted, not characters', async () => {
+    const fits = makeDeps({ [ALPHA]: { status: 200, body: 'é'.repeat(8) } });
+    expect((await fetchUpstream(fits.deps, small, 'items/alpha.json')).body).toBe('é'.repeat(8));
+    const over = makeDeps({ [ALPHA]: { status: 200, body: 'é'.repeat(9) } });
+    expect((await codeOf(fetchUpstream(over.deps, small, 'items/alpha.json'))).message).toBe(tooLarge);
+  });
+
+  test('an endless stream is cancelled once past the cap', async () => {
+    let cancelled = false;
+    const { deps } = makeDeps({});
+    deps.fetch = async () =>
+      new Response(
+        new ReadableStream<Uint8Array>({
+          pull(controller) {
+            controller.enqueue(new Uint8Array(8));
+          },
+          cancel() {
+            cancelled = true;
+          },
+        }),
+      );
+    const error = await codeOf(fetchUpstream(deps, small, 'items/alpha.json'));
+    expect(error.code).toBe('upstream_error');
+    expect(cancelled).toBe(true);
+  });
+
+  test('a multi-byte character split across chunks decodes intact', async () => {
+    const { deps } = makeDeps({});
+    deps.fetch = async () =>
+      new Response(
+        new ReadableStream<Uint8Array>({
+          start(controller) {
+            controller.enqueue(new Uint8Array([0x22, 0xc3]));
+            controller.enqueue(new Uint8Array([0xa9, 0x22]));
+            controller.close();
+          },
+        }),
+      );
+    const { json } = await fetchUpstreamJson(deps, small, 'items/alpha.json');
+    expect(json).toBe('é');
+  });
+
+  test('without maxBytes the default is 2 MiB', async () => {
+    const fits = makeDeps({ [ALPHA]: { status: 200, body: 'a'.repeat(DEFAULT_MAX_BYTES) } });
+    expect((await fetchUpstream(fits.deps, exampleUpstream, 'items/alpha.json')).body).toHaveLength(DEFAULT_MAX_BYTES);
+    const over = makeDeps({ [ALPHA]: { status: 200, body: 'a'.repeat(DEFAULT_MAX_BYTES + 1) } });
+    const error = await codeOf(fetchUpstream(over.deps, exampleUpstream, 'items/alpha.json'));
+    expect(error.message).toContain('sent more than 2097152 bytes');
   });
 });
 

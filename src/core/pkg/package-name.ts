@@ -5,7 +5,10 @@ export const PackageNameSchema = z
   .string()
   .min(2)
   .max(100)
-  .regex(/^[A-Za-z][A-Za-z0-9.]*[A-Za-z0-9]$/, 'Not a valid R package name')
+  .regex(
+    /^[A-Za-z][A-Za-z0-9.]*[A-Za-z0-9]$/,
+    "Not a valid R package name: it must start with a letter, contain only letters, digits and '.', and not end with '.'",
+  )
   .describe('Package name, case-sensitive, e.g. "edgeR"');
 
 /** Edit distance with insert, delete and substitute each costing 1 (two-row DP). */
@@ -29,8 +32,10 @@ export function closeMatches(name: string, candidates: Iterable<string>, limit =
   for (const candidate of candidates) {
     if (candidate === name) continue;
     const lower = candidate.toLowerCase();
-    const distance = levenshtein(query, lower);
     const prefix = query.length >= 3 && lower.startsWith(query);
+    // The edit distance is at least the length difference, so this candidate can never be within 2.
+    if (!prefix && Math.abs(lower.length - query.length) > 2) continue;
+    const distance = levenshtein(query, lower);
     if (distance <= 2 || prefix) scored.push({ candidate, distance });
   }
   scored.sort((a, b) => a.distance - b.distance || (a.candidate < b.candidate ? -1 : a.candidate > b.candidate ? 1 : 0));

@@ -25,8 +25,18 @@ const JobSchema = z.object({
     .string()
     .nullable()
     .describe('R CMD check verdict as r-universe reports it (OK, NOTE, WARNING, ERROR, FAIL, FAILURE), or null'),
-  job: z.number().int().describe('GitHub Actions job id; the key for the registry check and build logs'),
-  url: z.string().nullable().describe('GitHub Actions job page; null if the build URL is not a GitHub Actions run'),
+  job: z
+    .string()
+    .describe(
+      'GitHub Actions job id, as a string of digits; pass it unchanged as job to pkg_check_output and pkg_build_environment',
+    ),
+  url: z
+    .string()
+    .nullable()
+    .describe(
+      'GitHub Actions job page; null if the build URL is not a GitHub Actions run. pkg_check_output and ' +
+        'pkg_build_environment return the same page as job_url, in the short form …/runs/<job>',
+    ),
 });
 type Job = z.infer<typeof JobSchema>;
 
@@ -101,7 +111,7 @@ export const PkgStatusDataSchema = z.object({
 });
 type PkgStatusData = z.infer<typeof PkgStatusDataSchema>;
 type Propagated = NonNullable<PkgStatusData['propagated']>;
-type Upstream = NonNullable<PkgStatusData['upstream']>;
+type UpstreamState = NonNullable<PkgStatusData['upstream']>;
 
 const GHA_RUN = /^https:\/\/github\.com\/r-universe\/[A-Za-z0-9._-]+\/actions\/runs\/\d+$/;
 const VERSION_FORMAT = /^\d+([.-]\d+)*$/;
@@ -131,7 +141,9 @@ export function compareRVersions(a: string, b: string): -1 | 0 | 1 | null {
   return 0;
 }
 
+/** The check-history query for /sql. `name` must be a valid package name, so it holds no quote; parse enforces it. */
 export function historySql(universe: Universe, name: string): string {
+  PackageNameSchema.parse(name);
   return [
     'SELECT obs_ts, config, r, "check", time, job',
     'FROM jobs',
@@ -170,12 +182,12 @@ function toJob(buildUrl: string, j: NonNullable<RUniversePackage['_jobs']>[numbe
     config: j.config,
     r: j.r ?? null,
     check: j.check ?? null,
-    job: j.job,
+    job: String(j.job),
     url: GHA_RUN.test(buildUrl) ? `${buildUrl}/job/${j.job}` : null,
   };
 }
 
-function shapeUpstream(record: RUniversePackage): Upstream {
+function shapeUpstream(record: RUniversePackage): UpstreamState {
   const failure = record._failure;
   return {
     version: record.Version,
@@ -220,7 +232,7 @@ function listWithMore(items: string[], shown: number): string {
 function behindReasons(
   universe: Universe,
   propagated: Propagated | null,
-  upstream: Upstream | null,
+  upstream: UpstreamState | null,
   behind: boolean | null,
 ): string[] {
   if (upstream === null || !(behind === true || propagated === null)) return [];
@@ -241,8 +253,9 @@ function behindReasons(
   if (upstream.status === 'success' && failing.length === 0) {
     reasons.push(
       'r-universe shows no failing build or check for this version, so the gate rejected it on another rule ' +
-        "(platform families, dependencies, manifest) or has not evaluated it yet; the registry's POST /gate " +
-        'gives the rule-by-rule decision.',
+        '(platform families, dependencies, manifest) or has not evaluated it yet; ' +
+        `POST ${new URL('gate', REGISTRY_BASE_URL).href} ` +
+        '(https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#post-gate) gives the rule-by-rule decision.',
     );
   }
   return reasons;
@@ -281,6 +294,11 @@ function summarize(name: string, data: PkgStatusData): string {
   }
   if (behind === true && upstream && propagated) {
     sentences.push(`Upstream ${upstream.version} is newer than propagated ${propagated.version}.`);
+    if (upstream.status === 'success' && failingChecks(upstream.jobs).length === 0) {
+      sentences.push(
+        `r-universe shows no failure for ${upstream.version}, so the gate's reason is not visible here; see behind_reasons.`,
+      );
+    }
   }
   const failed = upstream?.newer_commit_failed;
   if (failed) {
@@ -323,10 +341,15 @@ export const pkgStatus = defineCapability({
     const entry = registryEntry(index, name);
     if (!entry && !universePackage.found) {
       const matches = closeMatches(name, Object.keys(index.packages));
+      const otherUniverse =
+        universe === 'bioc'
+          ? " To check release, call again with universe 'bioc-release'."
+          : " To check devel, call again with universe 'bioc'.";
       throw new CapabilityError(
         'not_found',
         `No ${universe} propagation entry and no r-universe build for "${name}". Package names are case-sensitive.` +
-          (matches.length > 0 ? ` Did you mean: ${matches.join(', ')}?` : ''),
+          (matches.length > 0 ? ` Did you mean: ${matches.join(', ')}?` : '') +
+          otherUniverse,
       );
     }
 

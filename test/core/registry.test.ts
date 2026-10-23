@@ -115,6 +115,12 @@ describe('validateRegistry', () => {
     expect(() => validateRegistry([a, b])).toThrow(/Upstream "example" is declared twice/);
   });
 
+  test('rejects the same upstream when only maxBytes differs', () => {
+    const a = demoModule({ upstreams: [exampleUpstream] });
+    const b = demoModule({ name: 'demob', capabilities: [], upstreams: [{ ...exampleUpstream, maxBytes: 1 }] });
+    expect(() => validateRegistry([a, b])).toThrow(/Upstream "example" is declared twice/);
+  });
+
   test.each([
     ['a username', 'https://user@upstream.test/'],
     ['a username and password', 'https://user:secret@upstream.test/'],
@@ -139,9 +145,19 @@ describe('validateRegistry', () => {
     expect(() => validateRegistry([wrong])).toThrow(/ttlSeconds must be a positive integer/);
   });
 
-  test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY])('rejects timeoutMs %s', (timeoutMs) => {
+  test.each([0, -1, 1.5, 2 ** 32, 60_001, Number.NaN, Number.POSITIVE_INFINITY])('rejects timeoutMs %s', (timeoutMs) => {
     const wrong = demoModule({ upstreams: [{ ...exampleUpstream, timeoutMs }] });
-    expect(() => validateRegistry([wrong])).toThrow(/timeoutMs must be a positive finite number/);
+    expect(() => validateRegistry([wrong])).toThrow(/timeoutMs must be a positive integer no greater than 60000/);
+  });
+
+  test('accepts timeoutMs 60000', () => {
+    const upstream = { ...exampleUpstream, timeoutMs: 60_000 };
+    expect(() => validateRegistry([demoModule({ upstreams: [upstream] })])).not.toThrow();
+  });
+
+  test.each([0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY])('rejects maxBytes %s', (maxBytes) => {
+    const wrong = demoModule({ upstreams: [{ ...exampleUpstream, maxBytes }] });
+    expect(() => validateRegistry([wrong])).toThrow(/maxBytes must be a positive integer/);
   });
 
   test('accepts an upstream without timeoutMs', () => {

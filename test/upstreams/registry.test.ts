@@ -2,7 +2,13 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
 import { createMemoryCache, type UpstreamCache } from '../../src/upstreams/cache';
-import { getBuildManifest, getCheckFiles, getPropagationIndex, registryEntry } from '../../src/upstreams/registry';
+import {
+  getBuildManifest,
+  getCheckFiles,
+  getPropagationIndex,
+  registryEntry,
+  registryUpstream,
+} from '../../src/upstreams/registry';
 import { fixtureFetch, type FixtureRoute } from '../support/fixture-fetch';
 import { BIOC_INDEX_URL, buildsUrl, checksUrl, pkgRoutes } from '../support/pkg-routes';
 
@@ -33,17 +39,25 @@ async function errorOf(promise: Promise<unknown>): Promise<CapabilityError> {
   throw new Error('expected a CapabilityError');
 }
 
+describe('registryUpstream', () => {
+  test('reads up to 16 MiB, for the ~8 MB index', () => {
+    expect(registryUpstream.maxBytes).toBe(16 * 1024 * 1024);
+  });
+});
+
 describe('getPropagationIndex', () => {
   test('parses the index once per TTL: the second call touches neither cache nor fetch', async () => {
     const { deps, fetch, gets, clock } = makeDeps();
     const first = await getPropagationIndex(deps, 'bioc');
     expect(first.response.fromCache).toBe(false);
+    expect('body' in first.response).toBe(false);
     expect(Object.keys(first.packages)).toContain('trackViewer');
 
     clock.now = new Date(clock.now.getTime() + 60_000);
     const second = await getPropagationIndex(deps, 'bioc');
     expect(second.packages).toBe(first.packages);
     expect(second.response.fromCache).toBe(true);
+    expect('body' in second.response).toBe(false);
     expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
     expect(gets).toEqual([BIOC_INDEX_URL]);
   });

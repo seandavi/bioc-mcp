@@ -137,7 +137,7 @@ the fetch time.
 
 ```ts
 export interface PropagationIndex {
-  response: UpstreamResponse; // for sourceFor()
+  response: UpstreamResponseMeta; // for sourceFor(); the ~8 MB body is dropped once parsed
   packages: Record<string, unknown>; // parsed index.json; entries unvalidated
 }
 
@@ -179,7 +179,7 @@ Behaviour:
 4. A `not_found` from the registry (the index file is missing) is rethrown as
    `CapabilityError('upstream_error', \`Bioconductor propagation registry has no propagation index for ${universe}\`, …)`
    so it is never mistaken for "package not found".
-5. The load resolves to `{ response, packages: json }`, which the memo keeps and the first caller returns.
+5. The load resolves to `{ response: <response without body>, packages: json }`, which the memo keeps and the first caller returns.
 
 **Why the memo:** a cold `JSON.parse` of the 8 MB index took 11–18 ms in Node 26 on an Apple
 M-series laptop (five runs) and retained about 13 MB of heap. Without the memo, every call would
@@ -672,7 +672,9 @@ All tests run in Node with `fixtureFetch` and `createMemoryCache`. No network.
   per-package registry route (gap 1, #13). Reported in the PR, not solved here.
 - **Memory.** The parsed index holds about 13 MB per universe per isolate (about 26 MB when both
   universes are warm), against 128 MB. That is acceptable. A slimmer memo (only the fields
-  `RegistryEntrySchema` reads) is the next step if #7/#8 add more large indexes.
+  `RegistryEntrySchema` reads) is the next step if #7/#8 add more large indexes. The memo keeps
+  only the parsed index and the response's metadata; the ~8 MB body is dropped after
+  `JSON.parse` (#43). Keeping it measured about 8 MB more per universe in Node 26.
 - **8 KB margin.** The worst case in the 2026-10-22 data (`SEMPLR`) is estimated at about 6.4 KB
   with long reasons and summary. A package with more configs or artifacts could approach the
   limit. The envelope guard fails loudly (`result_too_large`) rather than truncating.

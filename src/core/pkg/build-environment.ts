@@ -3,12 +3,12 @@ import { sourceFor } from '../../upstreams/http';
 import { getBuildManifest, jobUrl, UNIVERSES } from '../../upstreams/registry';
 import { defineCapability } from '../capability';
 import { JobIdSchema, UniverseOfJobSchema } from './job';
-import { PackageNameSchema } from './package-name';
+import { closeMatches, PackageNameSchema } from './package-name';
 
 export const PkgBuildEnvironmentDataSchema = z.object({
   universe: z.enum(UNIVERSES),
   job: z.string(),
-  job_url: z.string().describe('GitHub Actions job page'),
+  job_url: z.string().describe("GitHub Actions job page; the same page as pkg_status's jobs[].url, in its short form"),
   image: z
     .string()
     .nullable()
@@ -20,8 +20,21 @@ export const PkgBuildEnvironmentDataSchema = z.object({
     .describe("Repos that are moving snapshots (p3m '.../latest'), which pin nothing by themselves"),
   deps_count: z.number().int().describe('How many dependencies the build installed'),
   deps: z
-    .array(z.object({ package: z.string(), version: z.string().nullable() }))
-    .describe('The requested dependencies in request order (duplicates removed); version null if the build did not install it'),
+    .array(
+      z.object({
+        package: z.string(),
+        version: z
+          .string()
+          .nullable()
+          .describe(
+            'Installed version; null if the build did not install it or the name is misspelled (names are case-sensitive; see did_you_mean)',
+          ),
+        did_you_mean: z
+          .array(z.string())
+          .describe('When version is null: installed names close to this one, best first, at most 3; empty otherwise'),
+      }),
+    )
+    .describe('The requested dependencies in request order (duplicates removed)'),
 });
 type PkgBuildEnvironmentData = z.infer<typeof PkgBuildEnvironmentDataSchema>;
 
@@ -39,7 +52,12 @@ function summarize(data: PkgBuildEnvironmentData): string {
     );
   }
   if (deps.length > 0) {
-    const versions = deps.slice(0, 10).map((d) => `${d.package} ${d.version ?? 'not installed'}`);
+    const versions = deps.slice(0, 10).map((d) => {
+      if (d.version !== null) return `${d.package} ${d.version}`;
+      return d.did_you_mean.length > 0
+        ? `${d.package} not installed (did you mean ${d.did_you_mean.join(', ')}?)`
+        : `${d.package} not installed`;
+    });
     sentences.push(`Versions: ${versions.join(', ')}${deps.length > 10 ? ` and ${deps.length - 10} more` : ''}.`);
   } else if (count > 0) {
     sentences.push('Pass dependencies to see installed versions.');
@@ -54,7 +72,8 @@ export const pkgBuildEnvironment = defineCapability({
   description:
     'What one r-universe build job ran with: the container image pinned by digest (or the GitHub-hosted ' +
     'runner image for macOS and Windows), the repositories it resolved dependencies from, how many it ' +
-    'installed, and the exact installed versions of the dependencies you name. Use it when a check broke ' +
+    'installed, and the exact installed versions of the dependencies you name. Names are case-sensitive; a ' +
+    'misspelled name has version null and did_you_mean suggestions. Use it when a check broke ' +
     'without the package changing. Get the job id and universe from pkg_status (upstream.jobs[].job). Only ' +
     "jobs whose log the registry captured are available. For the check's output, use pkg_check_output.",
   input: z.object({
@@ -72,6 +91,7 @@ export const pkgBuildEnvironment = defineCapability({
     const image = manifest.image ?? null;
     const repos = manifest.repos ?? [];
     const installed = manifest.deps ?? {};
+    const installedNames = Object.keys(installed);
     const data: PkgBuildEnvironmentData = {
       universe,
       job,
@@ -81,10 +101,10 @@ export const pkgBuildEnvironment = defineCapability({
       repos,
       moving_repos: repos.filter((r) => /\/latest\/?$/.test(r)),
       deps_count: Object.keys(installed).length,
-      deps: [...new Set(dependencies)].map((name) => ({
-        package: name,
-        version: Object.hasOwn(installed, name) ? installed[name]! : null,
-      })),
+      deps: [...new Set(dependencies)].map((name) => {
+        const version = Object.hasOwn(installed, name) ? installed[name]! : null;
+        return { package: name, version, did_you_mean: version === null ? closeMatches(name, installedNames, 3) : [] };
+      }),
     };
     return { data, summary: summarize(data), sources: [sourceFor(response)] };
   },

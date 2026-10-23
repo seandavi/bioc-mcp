@@ -485,6 +485,12 @@ describe('failure isolation', () => {
     expect(summary).toContain('Could not read bioc-traffic: GitHub REST API returned HTTP 500');
   });
 
+  test('a non-5xx per-repo error still ends the summary with a period', async () => {
+    const routes = { ...githubRoutes(), [githubUrl('bioc-traffic', ISSUES_SUFFIX)]: { status: 422 } as FixtureRoute };
+    const { summary } = await run('summary', {}, routes);
+    expect(summary.endsWith('Could not read bioc-traffic: GitHub REST API returned HTTP 422.')).toBe(true);
+  });
+
   test.each(['timeout', 'network-error'] as const)('a %s on one repo is a per-repo error', async (kind) => {
     const url = githubUrl('bioc-registry', ISSUES_SUFFIX);
     const routes = { ...githubRoutes(), [url]: kind };

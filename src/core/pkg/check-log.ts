@@ -20,6 +20,7 @@ export type SectionVerdict = (typeof SECTION_VERDICTS)[number];
 export interface CheckSection {
   check: string; // e.g. 'checking examples', 'checking whether package ‘h5mread’ can be installed'
   verdict: SectionVerdict;
+  offset: number; // where the body starts in the normalized text (the character after the header's '\n'), ≤ text.length
   text: string; // body lines joined with '\n', trailing empty lines removed
 }
 
@@ -33,6 +34,7 @@ export interface ParsedCheckLog {
 
 const HEADER = /^\* (.+?) \.\.\.(?: \[[^\]]*\])? (OK|NOTE|WARNING|ERROR|SKIPPED|INFO|NONE)$/;
 const STATUS_LINE = /^Status: /;
+const MAX_HEADER_LINE_CHARS = 1000; // real step headers are well under 300 characters; HEADER is quadratic on long lines
 
 function isSectionVerdict(verdict: string): verdict is SectionVerdict {
   return (SECTION_VERDICTS as readonly string[]).includes(verdict);
@@ -46,25 +48,34 @@ function countOf(status: string, noun: string): number {
 export function parseCheckLog(text: string): ParsedCheckLog {
   const sections: CheckSection[] = [];
   // The cast stops TypeScript narrowing `open` to null: close() assigns it.
-  let open = null as { check: string; verdict: SectionVerdict; body: string[] } | null;
+  let open = null as { check: string; verdict: SectionVerdict; offset: number; body: string[] } | null;
   let status: string | null = null;
 
   const close = () => {
     if (open) {
-      sections.push({ check: open.check, verdict: open.verdict, text: open.body.join('\n').replace(/\n+$/, '') });
+      sections.push({
+        check: open.check,
+        verdict: open.verdict,
+        offset: open.offset,
+        text: open.body.join('\n').replace(/\n+$/, ''),
+      });
       open = null;
     }
   };
 
+  let lineStart = 0;
   for (const line of text.split('\n')) {
     if (line.startsWith('* ') || STATUS_LINE.test(line)) {
       close();
       if (STATUS_LINE.test(line)) status = line.trim();
-      const match = HEADER.exec(line);
-      if (match && isSectionVerdict(match[2]!)) open = { check: match[1]!, verdict: match[2], body: [] };
+      const match = line.length <= MAX_HEADER_LINE_CHARS ? HEADER.exec(line) : null;
+      if (match && isSectionVerdict(match[2]!)) {
+        open = { check: match[1]!, verdict: match[2], offset: Math.min(lineStart + line.length + 1, text.length), body: [] };
+      }
     } else if (open) {
       open.body.push(line);
     }
+    lineStart += line.length + 1;
   }
   close();
 
@@ -86,16 +97,21 @@ export interface FittedSection extends CheckSection {
   truncated: boolean;
 }
 
-const omittedMarker = (lines: number) => `[… ${lines} lines omitted; read them with full=true …]`;
+const omittedMarker = (lines: number, offset: number) =>
+  `[… ${lines} lines omitted; read them with full=true and offset=${offset} …]`;
 
-/** Cut `text` to at most `maxBytes` (jsonTextBytes): its first 2 lines, a marker, then as many tail lines as fit. */
-export function fitSectionText(text: string, maxBytes: number): { text: string; truncated: boolean } {
+/**
+ * Cut `text` to at most `maxBytes` (jsonTextBytes): its first 2 lines, a marker, then as many tail lines as fit.
+ * `offset` is where `text` starts in the normalized log; the marker gives the offset of the first omitted line.
+ */
+export function fitSectionText(text: string, maxBytes: number, offset: number): { text: string; truncated: boolean } {
   if (jsonTextBytes(text) <= maxBytes) return { text, truncated: false };
   const lines = text.split('\n');
   const head = lines.slice(0, 2);
   const rest = lines.slice(2);
+  const restOffset = offset + head.reduce((sum, line) => sum + line.length + 1, 0);
   const withTail = (k: number) =>
-    [...head, omittedMarker(rest.length - k), ...rest.slice(rest.length - k)].join('\n');
+    [...head, omittedMarker(rest.length - k, restOffset), ...rest.slice(rest.length - k)].join('\n');
 
   // Each extra tail line adds at least 2 bytes and the marker loses at most 1, so size grows with k.
   let low = -1; // largest k known to fit
@@ -107,7 +123,7 @@ export function fitSectionText(text: string, maxBytes: number): { text: string; 
   }
   if (low >= 0) return { text: withTail(low), truncated: true };
 
-  const marker = omittedMarker(lines.length);
+  const marker = omittedMarker(lines.length, offset);
   return { text: jsonTextBytes(marker) <= maxBytes ? marker : '', truncated: true };
 }
 
@@ -128,9 +144,9 @@ export function selectSections(
   for (const index of chosen) {
     const section = sections[index]!;
     const allowance = Math.min(SECTION_MAX_BYTES, remaining);
-    const { text, truncated } = fitSectionText(section.text, allowance);
+    const { text, truncated } = fitSectionText(section.text, allowance, section.offset);
     remaining -= jsonTextBytes(text);
-    fitted.set(index, { check: section.check, verdict: section.verdict, text, truncated });
+    fitted.set(index, { check: section.check, verdict: section.verdict, offset: section.offset, text, truncated });
   }
   return {
     sections: [...chosen].sort((a, b) => a - b).map((index) => fitted.get(index)!),

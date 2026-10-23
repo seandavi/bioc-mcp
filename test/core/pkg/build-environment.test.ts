@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type * as z from 'zod';
+import * as z from 'zod';
 import { invokeCapability } from '../../../src/core/invoke';
 import { pkgBuildEnvironment, PkgBuildEnvironmentDataSchema } from '../../../src/core/pkg/build-environment';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
@@ -47,8 +47,8 @@ describe('container build (yarn)', () => {
     expect(data.moving_repos).toEqual([]);
     expect(data.deps_count).toBe(174);
     expect(data.deps).toEqual([
-      { package: 'biomaRt', version: '2.69.0' },
-      { package: 'httr2', version: '1.3.0' },
+      { package: 'biomaRt', version: '2.69.0', did_you_mean: [] },
+      { package: 'httr2', version: '1.3.0', did_you_mean: [] },
     ]);
     expect(data.job_url).toBe('https://github.com/r-universe/bioc/runs/96299707840');
     expect(summary).toContain('ran in container ghcr.io/r-universe-org/base-image@sha256:5cb77d52');
@@ -71,13 +71,32 @@ describe('container build (yarn)', () => {
       dependencies: ['httr2', 'notAPackage', 'biomaRt', 'httr2', 'constructor', 'toString'],
     });
     expect(data.deps).toEqual([
-      { package: 'httr2', version: '1.3.0' },
-      { package: 'notAPackage', version: null },
-      { package: 'biomaRt', version: '2.69.0' },
-      { package: 'constructor', version: null },
-      { package: 'toString', version: null },
+      { package: 'httr2', version: '1.3.0', did_you_mean: [] },
+      { package: 'notAPackage', version: null, did_you_mean: [] },
+      { package: 'biomaRt', version: '2.69.0', did_you_mean: [] },
+      { package: 'constructor', version: null, did_you_mean: [] },
+      { package: 'toString', version: null, did_you_mean: [] },
     ]);
     expect(summary).toContain('notAPackage not installed');
+  });
+
+  test('misspelled names get did_you_mean suggestions, in the data and the summary', async () => {
+    const { data, summary } = await buildEnvironment({
+      universe: 'bioc',
+      job: '96299707840',
+      dependencies: ['biomart', 'HTTR2', 'biomaRt'],
+    });
+    expect(data.deps).toEqual([
+      { package: 'biomart', version: null, did_you_mean: ['biomaRt'] },
+      { package: 'HTTR2', version: null, did_you_mean: ['httr2', 'httr'] },
+      { package: 'biomaRt', version: '2.69.0', did_you_mean: [] },
+    ]);
+    expect(summary).toContain('biomart not installed (did you mean biomaRt?)');
+  });
+
+  test('job_url says it is the same page as pkg_status jobs[].url', () => {
+    const json = z.toJSONSchema(PkgBuildEnvironmentDataSchema) as { properties: Record<string, { description?: string }> };
+    expect(json.properties.job_url!.description).toContain("pkg_status's jobs[].url");
   });
 });
 
@@ -102,7 +121,7 @@ describe('moving repository (bioc-release)', () => {
     });
     expect(data.moving_repos).toEqual(['https://p3m.dev/all/__linux__/resolute/latest']);
     expect(data.deps_count).toBe(274);
-    expect(data.deps).toEqual([{ package: 'shiny', version: '1.14.0' }]);
+    expect(data.deps).toEqual([{ package: 'shiny', version: '1.14.0', did_you_mean: [] }]);
     expect(summary).toContain(
       'https://p3m.dev/all/__linux__/resolute/latest is a moving snapshot; the dependency versions are the record of what it served.',
     );

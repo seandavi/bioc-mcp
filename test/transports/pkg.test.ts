@@ -5,6 +5,7 @@ import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
 import { bioconductorRoutes, statsPageUrl, statsTabUrl } from '../support/bioconductor-routes';
+import { depsRoutes } from '../support/deps-routes';
 import { BIOC_INDEX_URL, buildsUrl, checksUrl, pkgRoutes, RELEASE_INDEX_URL, ruUrl } from '../support/pkg-routes';
 
 let client: Client | undefined;
@@ -39,6 +40,8 @@ describe('MCP', () => {
       'pkg_build_environment',
       'pkg_release_info',
       'pkg_downloads',
+      'pkg_revdeps',
+      'pkg_missing_deps',
     ]);
     await client.close();
     client = await connectClient(testApp().app, '/mcp');
@@ -49,6 +52,8 @@ describe('MCP', () => {
     expect(names).toContain('pkg_downloads');
     expect(names).toContain('pkg_check_output');
     expect(names).toContain('pkg_build_environment');
+    expect(names).toContain('pkg_revdeps');
+    expect(names).toContain('pkg_missing_deps');
   });
 
   test('pkg_check_output on a job the registry has not captured is isError not_found:', async () => {
@@ -328,6 +333,109 @@ describe('GET /api/v1/about', () => {
       'pkg_build_environment',
       'pkg_release_info',
       'pkg_downloads',
+      'pkg_revdeps',
+      'pkg_missing_deps',
     ]);
+  });
+
+  test('lists CRAN as used by pkg', async () => {
+    const { body } = await get('/api/v1/about');
+    expect(AboutSchema.parse(body).upstreams.find((u) => u.id === 'cran')).toMatchObject({
+      base_url: 'https://cloud.r-project.org/',
+      ttl_seconds: 3600,
+      used_by: ['pkg'],
+    });
+  });
+});
+
+// The deps fixtures override the devel index, so these tests get their own app.
+function depsApp() {
+  return makeTestApp({
+    routes: { ...pkgRoutes, ...bioconductorRoutes, ...depsRoutes },
+    extraModules: [pkgModule],
+  });
+}
+
+async function getDeps(path: string) {
+  const { app, fetch } = depsApp();
+  const response = await app.fetch(new Request('http://test.local' + path));
+  return { response, body: (await response.json()) as Record<string, any>, fetch };
+}
+
+describe('GET /api/v1/pkg/revdeps', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body, fetch } = await getDeps('/api/v1/pkg/revdeps?package=flowWorkspace');
+    expect(response.status).toBe(200);
+    expect(body.data.counts.total).toBe(16);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
+    client = await connectClient(depsApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_revdeps', arguments: { package: 'flowWorkspace' } });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+  });
+
+  test('an unknown package is 404 not_found', async () => {
+    const { response, body } = await getDeps('/api/v1/pkg/revdeps?package=flowWorkspac');
+    expect(response.status).toBe(404);
+    expect(body.error.code).toBe('not_found');
+    expect(body.error.message).toContain('Did you mean: flowWorkspace?');
+  });
+
+  test('an unknown package over MCP is an isError result starting not_found:', async () => {
+    client = await connectClient(depsApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_revdeps', arguments: { package: 'flowWorkspac' } });
+    expect(result.isError).toBe(true);
+    expect(textOf(result).startsWith('not_found:')).toBe(true);
+  });
+
+  test('MCP text content carries the data after the summary', async () => {
+    client = await connectClient(depsApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_revdeps', arguments: { package: 'MDSvis' } });
+    const blocks = result.content as { text: string }[];
+    expect(blocks[0]!.text).toContain('MDSvis (bioc): no package');
+    expect(JSON.parse(blocks[1]!.text).data.package).toBe('MDSvis');
+  });
+
+  test.each([
+    'package=a%27b',
+    'package=x',
+    'package=flowWorkspace&depth=0',
+    'package=flowWorkspace&depth=21',
+    'package=flowWorkspace&depth=1.5',
+    'package=flowWorkspace&cursor=abc',
+    'package=flowWorkspace&cursor=-1',
+    'package=flowWorkspace&universe=cran',
+  ])('%s is 400 invalid_input without any fetch', async (query) => {
+    const { response, body, fetch } = await getDeps(`/api/v1/pkg/revdeps?${query}`);
+    expect(response.status).toBe(400);
+    expect(body.error.code).toBe('invalid_input');
+    expect(fetch.calls).toEqual([]);
+  });
+
+  test('a cursor past the end is 400 invalid_input saying to call again without cursor', async () => {
+    const { response, body } = await getDeps('/api/v1/pkg/revdeps?package=flowWorkspace&cursor=16');
+    expect(response.status).toBe(400);
+    expect(body.error.code).toBe('invalid_input');
+    expect(body.error.message).toContain('Call again without cursor.');
+  });
+});
+
+describe('GET /api/v1/pkg/missing_deps', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body } = await getDeps('/api/v1/pkg/missing_deps');
+    expect(response.status).toBe(200);
+    expect(body.data.counts).toEqual({ packages: 11, dependencies: 5 });
+    expect(body.sources).toHaveLength(4);
+    client = await connectClient(depsApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_missing_deps', arguments: {} });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+  });
+
+  test.each(['cursor=abc', 'universe=x'])('%s is 400 invalid_input without any fetch', async (query) => {
+    const { response, body, fetch } = await getDeps(`/api/v1/pkg/missing_deps?${query}`);
+    expect(response.status).toBe(400);
+    expect(body.error.code).toBe('invalid_input');
+    expect(fetch.calls).toEqual([]);
   });
 });

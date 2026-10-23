@@ -145,7 +145,8 @@ export function docsReadCapability(
       'the whole page. A record id or a bioc://docs/ URI also works. Long text comes in parts: call again ' +
       'with cursor set to next_cursor. Reads only the docs index bundled with this server and never ' +
       'fetches a URL, so a URL that is not in the index returns not_found with close matches. To find a ' +
-      'page, use docs_search. For live package state use pkg_status.',
+      'page, use docs_search. For live package state use pkg_status; for open issues, pull requests or ' +
+      'failing workflows use ops_activity.',
     input: DocsReadInputSchema,
     data: DocsReadDataSchema,
     async handler({ id_or_url, cursor }) {

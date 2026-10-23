@@ -146,7 +146,7 @@ describe('results', () => {
     expect(data.hits).toEqual([]);
     expect(sources).toEqual([]);
     expect(summary).toBe(
-      'No docs sections match "zzzqqqxxx" in adr. Try other words or drop source. For live package state use pkg_status.',
+      'No docs sections match "zzzqqqxxx" in adr. Try other words or drop source. For live package state use pkg_status; for open issues or failing workflows use ops_activity.',
     );
   });
 });

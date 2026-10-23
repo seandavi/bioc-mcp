@@ -48,6 +48,7 @@ describe('registry', () => {
       expect(tokens.length).toBeGreaterThan(0);
       for (const token of tokens.filter((t) => prefixes.has(t.split('_')[0]!))) expect(registered.has(token)).toBe(true);
       expect(capability.description).toContain('pkg_status');
+      expect(capability.description).toContain('ops_activity');
     }
     const [search, read] = docs.capabilities;
     expect(search!.description).toContain('docs_read');

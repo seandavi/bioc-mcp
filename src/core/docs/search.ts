@@ -92,7 +92,7 @@ function recordFilter(index: DocsIndex, source: string | undefined): ((record: D
 function describeHits(query: string, source: string | undefined, hits: DocsSearchData['hits'], omitted: number): string {
   const where = source ? ` in ${source}` : '';
   if (hits.length === 0) {
-    return `No docs sections match "${query}"${where}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status.`;
+    return `No docs sections match "${query}"${where}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.`;
   }
   const n = hits.length;
   const lines = hits.map((hit, i) => `\n${i + 1}. ${hit.title}${hit.section ? ` › ${hit.section}` : ''} ${hit.url}`);
@@ -117,7 +117,8 @@ export function docsSearchCapability(
       "breadcrumb, snippet and score. Pass a hit's url to docs_read for the full text. source narrows to " +
       "'site', 'adr' or 'repo:<name>' (e.g. 'repo:bioc-registry'). The docs describe design and " +
       "procedure, not live state: for a package's current build, check or propagation state use " +
-      'pkg_status. Open issues, failing workflows and other live repo activity are not in the docs.',
+      'pkg_status. Open issues, pull requests and failing workflows in the bioc-* repos are not in the ' +
+      'docs: use ops_activity.',
     input: DocsSearchInputSchema,
     data: DocsSearchDataSchema,
     async handler({ query, limit, source }) {

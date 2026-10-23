@@ -83,9 +83,9 @@ To support resources and prompts per module, `Module` gains optional `resources`
   equivalent of `bioc://docs/{+path}` is `GET /api/v1/docs/read?id_or_url=bioc://docs/<path>`,
   which paginates. There is no `/api/v1/docs/pages` route.
 - **No runtime fetch of any kind** in the docs module: it has `upstreams: []`.
-- **No `ops_*` cross-reference by name.** `ops_activity` (#9) does not exist yet. The descriptions
-  say what the docs do not cover (live repo activity, failing workflows) without naming a tool that
-  does not exist. #9 adds the name, as #6 did for `pkg_*`. `pkg_status` exists and is named.
+- **No docs for live repo activity.** Open issues, pull requests and failing workflows are not in
+  the docs. The descriptions and the zero-hit summary send the model to `ops_activity` (#9, already
+  registered) and `pkg_status` (#6) instead.
 - **No change to the envelope, `invokeCapability`, the REST transport, upstream adapters or
   `scripts/`.** The only change to `src/docs-index/` is an optional `filter` parameter on
   `search`.
@@ -103,7 +103,7 @@ To support resources and prompts per module, `Module` gains optional `resources`
 ```
 src/core/capability.ts          ResourceListing, ResourceTemplateDef, PromptDef, definePrompt(),
                                 BundledDataset; Module gains resources?, prompts?, datasets?
-src/core/registry.ts            modules = [metaModule, pkgModule, docsModule];
+src/core/registry.ts            modules = [metaModule, pkgModule, opsModule, docsModule];
                                 validateRegistry checks resource templates and prompts
 src/core/about.ts               AboutSchema.datasets; buildAbout fills it from Module.datasets
 src/transports/mcp.ts           registers the selected modules' resource templates and prompts
@@ -198,7 +198,7 @@ export interface Module {
 
 ### `src/core/registry.ts`
 
-`export const modules: readonly Module[] = [metaModule, pkgModule, docsModule];`
+`export const modules: readonly Module[] = [metaModule, pkgModule, opsModule, docsModule];`
 
 `validateRegistry` adds these checks, in module order, after the existing per-module checks. The
 first violation throws `Error`:
@@ -443,7 +443,8 @@ Capability: `module: 'docs'`, `name: 'docs_search'`, `title: 'Search the infrast
 > breadcrumb, snippet and score. Pass a hit's url to docs_read for the full text. source narrows to
 > 'site', 'adr' or 'repo:<name>' (e.g. 'repo:bioc-registry'). The docs describe design and
 > procedure, not live state: for a package's current build, check or propagation state use
-> pkg_status. Open issues, failing workflows and other live repo activity are not in the docs.
+> pkg_status. Open issues, pull requests and failing workflows in the bioc-* repos are not in the
+> docs: use ops_activity.
 
 MCP tool `docs_search`; REST
 `GET /api/v1/docs/search?query=why+does+the+registry+poll&limit=5&source=site`.
@@ -464,7 +465,7 @@ Handler (`{ query, limit, source }`, `deps` unused):
      then one line per hit, `` `\n${i + 1}. ${title}${section ? ` › ${section}` : ''} ${url}` ``.
      When `omitted_for_size > 0`, append
      `` `\n${k} more hit${k === 1 ? ' was' : 's were'} dropped to stay under 8 KB; lower limit for fewer, longer results.` ``.
-   - no hits: `` `No docs sections match "${q}"${source ? ` in ${source}` : ''}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status.` ``
+   - no hits: `` `No docs sections match "${q}"${source ? ` in ${source}` : ''}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.` ``
 7. **Size guard:** while `envelopeBytes(envelope) > MAX_RESULT_BYTES` and hits remain, drop the
    last hit, increment `omitted_for_size`, and rebuild `sources` and `summary`. Then return.
    `invokeCapability`'s own size check stays as the backstop.
@@ -553,7 +554,8 @@ Capability: `module: 'docs'`, `name: 'docs_read'`, `title: 'Read a docs page or 
 > the whole page. A record id or a bioc://docs/ URI also works. Long text comes in parts: call again
 > with cursor set to next_cursor. Reads only the docs index bundled with this server and never
 > fetches a URL, so a URL that is not in the index returns not_found with close matches. To find a
-> page, use docs_search. For live package state use pkg_status.
+> page, use docs_search. For live package state use pkg_status; for open issues, pull requests or
+> failing workflows use ops_activity.
 
 MCP tool `docs_read`; REST
 `GET /api/v1/docs/read?id_or_url=https%3A%2F%2Fseandavi.github.io%2Fbioc-infrastructure%2Fpropagation-gate.html%23why-the-registry-polls&cursor=5498`
@@ -736,12 +738,13 @@ export function docsTestModule(): Promise<Module>;
 - [ ] `npm ci && npm run typecheck && npm test && npm run build` pass on a clean checkout with the
       network disabled. The PR reports the gzip bundle size from `npm run build` (expected about
       650 KiB, under the 3 MB limit; #3 measured 647 KiB with the index referenced).
-- [ ] `modules` is `[metaModule, pkgModule, docsModule]`, and `validateRegistry(modules)` passes.
+- [ ] `modules` is `[metaModule, pkgModule, opsModule, docsModule]`, and `validateRegistry(modules)` passes.
 - [ ] `tools/list` on `/mcp/docs` is exactly `docs_read, docs_search` (sorted). `/mcp` includes
-      them alongside `meta_ping` and `pkg_status`. Each has `outputSchema` with `data`, `summary`
+      them alongside `meta_ping`, `pkg_status` and `ops_activity`. Each has `outputSchema` with `data`, `summary`
       and `sources`, and `readOnlyHint: true`.
 - [ ] **Descriptions:** `docs_search` and `docs_read` descriptions name `docs_read`/`docs_search`
-      and `pkg_status`, say the docs hold no live state, and name no tool absent from `modules`.
+      `pkg_status` and `ops_activity`, say the docs hold no live state, and name no tool absent
+      from `modules`.
       A test checks every `/\b[a-z]+_[a-z_]+\b/` tool-like token in both descriptions that starts
       with a registered module prefix against the registered capability names.
 - [ ] **Ranking:** the five [ranking questions](#ranking-questions) return the listed `hits[0].url`
@@ -825,7 +828,7 @@ with `deps = { fetch: fixtureFetch({}), cache: createMemoryCache(now), now, env:
 |---|---|
 | `test/core/docs/pages.test.ts` | 56 pages on the fixture index; `path`/`uri` for a site page, an ADR and `repo/bioc-edge/DATAPLANE.md`; `byUrl`/`byId`/`byPath`; `section()` with a percent-encoded fragment; `sectionLabel` for a site section, an ADR `#context` (→ `Context`) and a page-level record (`''`); `renderSection` drops the repeated heading line and collapses blank-line runs; `renderPage` header, page-level body first, one `## ` per other record; every ADR section appears once with its `Status:`/`Date:` lines; synthetic page-level body without the first section stays whole; synthetic duplicate page path throws |
 | `test/core/docs/chunk.test.ts` | text under budget → one part; cut after the last `\n` in the second half, else a space, else hard; escapes counted (`"`, `\n`, `\u0001` = 6); 3- and 4-byte characters counted and an emoji never split; `start === length` → empty; `start` out of range or `budget` 5 → RangeError; repeated calls cover the text exactly |
-| `test/core/docs/search.test.ts` | the five ranking questions; `adr` and `repo:bioc-edge` filters; unknown repo; input rejections; default/explicit limit; hit shape and snippet length; ADR `section` label; `sources` distinct with `as_of`; zero-hit summary mentions `pkg_status`; size guard on a synthetic index; `snippet()` unit cases (no match → leading 200 chars + `…`, match mid-text → leading `…`, word-start only, short text unchanged) |
+| `test/core/docs/search.test.ts` | the five ranking questions; `adr` and `repo:bioc-edge` filters; unknown repo; input rejections; default/explicit limit; hit shape and snippet length; ADR `section` label; `sources` distinct with `as_of`; zero-hit summary mentions `pkg_status` and `ops_activity`; size guard on a synthetic index; `snippet()` unit cases (no match → leading 200 chars + `…`, match mid-text → leading `…`, word-start only, short text unchanged) |
 | `test/core/docs/read.test.ts` | every resolution form in Acceptance; whole-corpus pagination loop; summary wording for one part and for several; cursor errors; not_found close matches (unknown page, unknown section, free text with no usable words, `http:` URL, foreign host) with `fetch.calls` `[]`; long input truncated to 200 characters in the message; spy on `index.search`: ≤ 8 distinct terms of ≤ 32 characters for long fragments and URLs |
 | `test/core/docs/resources.test.ts` | `list()` count, uri/name/title/description; `read()` of a page, of a repo doc, and of an unknown URI (throws `not_found`); a long fragment searches with ≤ 8 terms; a URI over 2,048 characters throws `not_found` without searching |
 | `test/core/docs/prompts.test.ts` | `render` contains the topic, `docs_search`, `source "adr"`, `docs_read`; `tools` all registered in `modules`; `args` rejects `''` |
@@ -838,13 +841,11 @@ Manual (in the PR): the `npm run dev` checks in Acceptance, and `npm run build`'
 
 ## Risks
 
-- **Clients that show only text content.** The MCP text content is the envelope's `summary` (#2's
-  rule; #12 checks clients). `docs_search`'s summary lists every hit with its URL, so it works
-  text-only. `docs_read`'s summary does not carry the page text, so a client that ignores
-  `structuredContent` sees a summary and no content. Repeating the text in the summary would halve
-  the per-call budget. Not verified against real clients here; the PR's manual steps check
-  Claude Code (or Claude Desktop), and if the model does not see `data.text` the text moves into the
-  summary. Otherwise #12 decides whether `docs_read` needs a different text content.
+- **Wire cost of the text content.** Since #35 the MCP text content is the summary, then
+  `JSON.stringify({ data, sources })` (`envelopeTextBlocks`), so a client that ignores
+  `structuredContent` still sees the page text from `docs_read`. The cost is that each result goes
+  over the wire twice (`structuredContent` and `content`), about 2× the envelope. The 8 KB limit
+  bounds the envelope, so a `docs_read` part is at most about 16 KB on the wire.
 - **Bundle size and isolate memory.** Registering `docsModule` puts the 1.7 MB index module in the
   Worker (about 650 KiB gzip total; #3 Verified). The first docs call or `bioc://about` read costs
   the ~16 ms load. `bioc://about` now loads the index, because `datasets` reads `meta`.

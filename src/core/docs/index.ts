@@ -1,7 +1,7 @@
 import { bundledDocsIndex } from '../../docs-index/bundled';
 import type { DocsIndex } from '../../docs-index/load';
 import type { Module } from '../capability';
-import { commitUrl, ageDays, docsFreshness, inputStaleWarning } from './freshness';
+import { ageDays, docsFreshness, inputStaleWarning } from './freshness';
 import { docsSource } from './pages';
 import { explainDecisionPrompt } from './prompts';
 import { docsReadCapability } from './read';
@@ -36,7 +36,6 @@ export function createDocsModule(getIndex: () => DocsIndex): Module {
               repo: input.commit.repo,
               ref: input.commit.ref,
               sha: input.commit.sha,
-              url: commitUrl(input.commit),
               head_sha: input.commit.head_sha,
               head_committed_at: input.commit.head_committed_at,
             },

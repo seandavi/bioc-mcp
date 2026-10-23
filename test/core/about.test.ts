@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'vitest';
+import * as z from 'zod';
 import { AboutSchema, buildAbout } from '../../src/core/about';
 import { metaModule } from '../../src/core/meta';
+import { modules } from '../../src/core/registry';
 import type { Module } from '../../src/core/registry';
 import { VERSION } from '../../src/version';
 import { exampleModule } from '../support/example-module';
@@ -33,7 +35,6 @@ describe('buildAbout', () => {
       repo: 'seandavi/data',
       ref: 'main',
       sha: 'a'.repeat(40),
-      url: `https://github.com/seandavi/data/commit/${'a'.repeat(40)}`,
       head_sha: 'b'.repeat(40),
       head_committed_at: '2026-10-21T00:00:00Z',
     };
@@ -59,6 +60,24 @@ describe('buildAbout', () => {
       { id: 'two', module: 'first', description: 'Two.', built_at: '2026-10-21T00:00:00Z', build_commit: null, age_days: 1, possibly_stale: [], inputs: [] },
       { id: 'three', module: 'second', description: 'Three.', built_at: '2026-10-20T00:00:00Z', build_commit: null, age_days: 2, possibly_stale: [], inputs: [] },
     ]);
+  });
+
+  test('stays under 12 KiB for the production modules', () => {
+    const bytes = new TextEncoder().encode(JSON.stringify(buildAbout(modules, NOW))).length;
+    // tripwire, measured 9,029 bytes on 2026-10-22; raise it deliberately
+    expect(bytes).toBeLessThanOrEqual(12_288);
+  });
+
+  test('describes the dataset fields', () => {
+    const json = z.toJSONSchema(AboutSchema) as any;
+    const dataset = json.properties.datasets.items.properties;
+    expect(dataset.age_days.description).toBe('Whole days since built_at');
+    expect(dataset.possibly_stale.description).toBeTruthy();
+    const input = dataset.inputs.items.properties;
+    expect(input.possibly_stale.description).toBeTruthy();
+    const commit = (input.commit.anyOf ?? input.commit.oneOf).find((s: any) => s.type === 'object').properties;
+    expect(commit.sha.description).toBeTruthy();
+    expect(commit.head_sha.description).toBeTruthy();
   });
 
   test('passes now to each module\'s datasets', () => {

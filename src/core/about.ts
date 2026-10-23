@@ -4,17 +4,16 @@ import type { Module } from './registry';
 import { PROTOCOL_VERSION, VERSION } from '../version';
 
 export const DatasetCommitSchema = z.object({
-  repo: z.string(), // 'seandavi/bioc-infrastructure'
-  ref: z.string(),
-  sha: z.string(),
-  url: z.string(), // https://github.com/<repo>/commit/<sha>
-  head_sha: z.string(), // head of ref when the dataset was built
-  head_committed_at: z.string(),
+  repo: z.string().describe("GitHub repository, e.g. 'seandavi/bioc-infrastructure'"),
+  ref: z.string().describe('Branch the input follows'),
+  sha: z.string().describe('Commit the input was built from (40 hex); its page is https://github.com/<repo>/commit/<sha>'),
+  head_sha: z.string().describe('Head of ref when the dataset was built; differs from sha when the input lagged its branch'),
+  head_committed_at: z.string().describe('Committer date of head_sha (ISO 8601)'),
 });
 
 export const DatasetInputSchema = SourceSchema.extend({
-  commit: DatasetCommitSchema.nullable(),
-  possibly_stale: z.string().nullable(), // the warning for this input; null when none
+  commit: DatasetCommitSchema.nullable().describe('Source commit of this input; null when unknown'),
+  possibly_stale: z.string().nullable().describe('Why this input may be out of date; null when there is no known reason'),
 });
 export type DatasetInput = z.infer<typeof DatasetInputSchema>;
 
@@ -51,10 +50,10 @@ export const AboutSchema = z.object({
       id: z.string(),
       module: z.string(), // the module that declared it
       description: z.string(),
-      built_at: z.string(),
-      build_commit: z.string().nullable(),
-      age_days: z.number().int().nonnegative(), // whole days since built_at
-      possibly_stale: z.array(z.string()), // every warning for the dataset and its inputs; [] when none
+      built_at: z.string().describe('When the dataset was built (ISO 8601)'),
+      build_commit: z.string().nullable().describe("This server's commit the dataset was built from (CI's GITHUB_SHA); null when built locally"),
+      age_days: z.number().int().nonnegative().describe('Whole days since built_at'),
+      possibly_stale: z.array(z.string()).describe('Every reason the dataset or one of its inputs may be out of date; [] when none'),
       inputs: z.array(DatasetInputSchema),
     }),
   ),

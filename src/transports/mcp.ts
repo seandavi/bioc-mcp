@@ -123,7 +123,7 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
     'bioc://about',
     {
       title: 'About this server',
-      description: 'Modules, tools, upstream sources and their cache TTLs.',
+      description: 'Modules, tools, upstream sources and their cache TTLs, and bundled datasets and their freshness.',
       mimeType: 'application/json',
     },
     async (uri) => ({

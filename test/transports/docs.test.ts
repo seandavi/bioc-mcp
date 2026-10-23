@@ -92,6 +92,20 @@ describe('tools', () => {
     expect(result.structuredContent).toEqual(body);
   });
 
+  test('docs_search carries freshness in structuredContent, text content and REST', async () => {
+    const { client } = await connect('/mcp/docs');
+    const result = await client.callTool({ name: 'docs_search', arguments: { query: 'why does the registry poll', limit: 3 } });
+    const structured = result.structuredContent as { data: any; summary: string };
+    expect(structured.data.freshness).toEqual({ index_built_at: '2026-10-22T00:00:00.000Z', index_age_days: 0, possibly_stale: [] });
+    for (const hit of structured.data.hits) {
+      expect(hit.as_of).toEqual(expect.any(String));
+      expect(hit.source_commit).toMatch(/^[0-9a-f]{40}$/);
+    }
+    expect(structured.summary).toContain('Index built 2026-10-22 (0 days old).');
+    const text = (result.content as { text: string }[]).map((block) => block.text).join('\n');
+    expect(text).toContain('"freshness"');
+  });
+
   test('docs_read structuredContent equals the REST body (fragment sent as %23)', async () => {
     const id = `${GATE}#why-the-registry-polls`;
     const { response, body } = await get(`/api/v1/docs/read?id_or_url=${encodeURIComponent(id)}`);
@@ -220,13 +234,42 @@ describe('prompts', () => {
 });
 
 describe('about', () => {
+  test('bioc://about and GET /api/v1/about carry the index warning from 2 days after the build, and not before', async () => {
+    const warning = 'The docs index was built 2026-10-22, 2 days ago; it is rebuilt daily, so docs changed since then are not in it.';
+    for (const [now, expected] of [
+      ['2026-10-24T00:00:00Z', [warning]],
+      ['2026-10-23T23:59:00Z', []],
+    ] as const) {
+      const { app } = makeTestApp({ extraModules: [pkgModule, opsModule, await docsTestModule()], now: () => new Date(now) });
+      const rest = (await (await app.fetch(new Request('http://test.local/api/v1/about'))).json()) as any;
+      expect(rest.datasets[0].possibly_stale).toEqual(expected);
+      client = await connectClient(app, '/mcp/docs');
+      const { contents } = await client.readResource({ uri: 'bioc://about' });
+      expect(JSON.parse((contents[0] as { text: string }).text)).toEqual(rest);
+      await client.close();
+      client = undefined;
+    }
+  });
+
   test('bioc://about and GET /api/v1/about list the docs-index dataset', async () => {
     const { response, body } = await get('/api/v1/about');
     expect(response.status).toBe(200);
     const about = AboutSchema.parse(body);
     expect(about.datasets).toHaveLength(1);
     expect(about.datasets[0]).toMatchObject({ id: 'docs-index', module: 'docs' });
-    expect(about.datasets[0]!.inputs).toHaveLength(16);
+    const dataset = about.datasets[0]!;
+    expect(dataset.inputs).toHaveLength(16);
+    expect(dataset).toMatchObject({ age_days: 0, possibly_stale: [] });
+    expect(dataset.inputs[0]!.commit).toMatchObject({
+      repo: 'seandavi/bioc-infrastructure',
+      ref: 'main',
+      sha: '256fd62eab16312a6188bef6bf74ea2bbab5f830',
+      url: 'https://github.com/seandavi/bioc-infrastructure/commit/256fd62eab16312a6188bef6bf74ea2bbab5f830',
+    });
+    for (const input of dataset.inputs) {
+      expect(input.commit!.url).toBe(`https://github.com/${input.commit!.repo}/commit/${input.commit!.sha}`);
+      expect(input.possibly_stale).toBeNull();
+    }
 
     const { client } = await connect('/mcp/pkg');
     const { contents } = await client.readResource({ uri: 'bioc://about' });

@@ -127,7 +127,7 @@ export function buildMcpServer(all: readonly Module[], selected: readonly Module
       mimeType: 'application/json',
     },
     async (uri) => ({
-      contents: [{ uri: uri.href, mimeType: 'application/json', text: JSON.stringify(buildAbout(all)) }],
+      contents: [{ uri: uri.href, mimeType: 'application/json', text: JSON.stringify(buildAbout(all, deps.now())) }],
     }),
   );
   return server;

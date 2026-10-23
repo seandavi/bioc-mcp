@@ -1,6 +1,7 @@
 import * as z from 'zod';
-import { envelopeSchema, type Envelope, type Source } from '../envelope';
+import { envelopeSchema, type Envelope } from '../envelope';
 import type { Upstream } from '../upstreams/http';
+import type { DatasetInput } from './about';
 import type { Deps } from './deps';
 
 // Split from registry.ts so capability modules can import defineCapability without a cycle
@@ -65,7 +66,9 @@ export interface BundledDataset {
   description: string;
   built_at: string; // ISO 8601
   build_commit: string | null;
-  inputs: Source[]; // each input URL with its as_of
+  age_days: number; // whole days since built_at
+  possibly_stale: string[]; // every warning for the dataset and its inputs; [] when none
+  inputs: DatasetInput[]; // each input URL with its as_of, source commit and warning
 }
 
 export interface Module {
@@ -75,5 +78,5 @@ export interface Module {
   capabilities: Capability[];
   resources?: readonly ResourceTemplateDef[]; // registered when the module is in the toolset
   prompts?: readonly PromptDef[]; // registered when the toolset has every tool in prompt.tools
-  datasets?: () => BundledDataset[]; // called by buildAbout; may load bundled data on first call
+  datasets?: (now: Date) => BundledDataset[]; // called by buildAbout; may load bundled data on first call
 }

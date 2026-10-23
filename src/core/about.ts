@@ -3,6 +3,21 @@ import { SourceSchema } from '../envelope';
 import type { Module } from './registry';
 import { PROTOCOL_VERSION, VERSION } from '../version';
 
+export const DatasetCommitSchema = z.object({
+  repo: z.string(), // 'seandavi/bioc-infrastructure'
+  ref: z.string(),
+  sha: z.string(),
+  url: z.string(), // https://github.com/<repo>/commit/<sha>
+  head_sha: z.string(), // head of ref when the dataset was built
+  head_committed_at: z.string(),
+});
+
+export const DatasetInputSchema = SourceSchema.extend({
+  commit: DatasetCommitSchema.nullable(),
+  possibly_stale: z.string().nullable(), // the warning for this input; null when none
+});
+export type DatasetInput = z.infer<typeof DatasetInputSchema>;
+
 export const AboutSchema = z.object({
   name: z.literal('bioc-mcp'),
   version: z.string(),
@@ -38,14 +53,16 @@ export const AboutSchema = z.object({
       description: z.string(),
       built_at: z.string(),
       build_commit: z.string().nullable(),
-      inputs: z.array(SourceSchema),
+      age_days: z.number().int().nonnegative(), // whole days since built_at
+      possibly_stale: z.array(z.string()), // every warning for the dataset and its inputs; [] when none
+      inputs: z.array(DatasetInputSchema),
     }),
   ),
 });
 export type About = z.infer<typeof AboutSchema>;
 
 /** Describes every registered module, whichever toolset path served it. */
-export function buildAbout(modules: readonly Module[]): About {
+export function buildAbout(modules: readonly Module[], now: Date): About {
   const upstreams = new Map<string, About['upstreams'][number]>();
   for (const module of modules) {
     for (const upstream of module.upstreams) {
@@ -80,12 +97,14 @@ export function buildAbout(modules: readonly Module[]): About {
     })),
     upstreams: [...upstreams.values()],
     datasets: modules.flatMap((module) =>
-      (module.datasets?.() ?? []).map((dataset) => ({
+      (module.datasets?.(now) ?? []).map((dataset) => ({
         id: dataset.id,
         module: module.name,
         description: dataset.description,
         built_at: dataset.built_at,
         build_commit: dataset.build_commit,
+        age_days: dataset.age_days,
+        possibly_stale: dataset.possibly_stale,
         inputs: dataset.inputs,
       })),
     ),

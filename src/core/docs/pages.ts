@@ -24,6 +24,8 @@ export interface DocsPages {
   byUrl: Map<string, DocsPage>; // key: page.url
   /** The record of `page` whose URL hash, without '#', is `fragment` (normalised through URL). */
   section(page: DocsPage, fragment: string): DocsRecord | undefined;
+  /** The page `record` belongs to (by page id); undefined for a record not in this index. */
+  pageOf(record: DocsRecord): DocsPage | undefined;
 }
 
 const cache = new WeakMap<DocsIndex, DocsPages>();
@@ -91,6 +93,7 @@ export function docsPages(index: DocsIndex): DocsPages {
       const hash = new URL('#' + fragment, page.url).hash;
       return page.records.find((record) => new URL(record.url).hash === hash);
     },
+    pageOf: (record) => byId.get(pageIdOf(record)),
   };
   cache.set(index, pages);
   return pages;
@@ -131,7 +134,8 @@ export function renderSection(record: DocsRecord): string {
 /**
  * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record.
  * An ADR's page-level record holds the whole ADR, and its section records repeat that text; the page-level
- * body is cut where the first section's body starts, which keeps the 'Status:' and 'Date:' lines.
+ * body is cut where the first section's body last starts, which keeps the 'Status:' and 'Date:' lines and never
+ * drops intro text that repeats it.
  */
 export function renderPage(page: DocsPage): string {
   const [head, ...rest] = page.records as [DocsRecord, ...DocsRecord[]];
@@ -145,8 +149,13 @@ export function renderPage(page: DocsPage): string {
 function pagePreamble(head: DocsRecord, sections: DocsRecord[]): string {
   const pageBody = body(head);
   const first = sections.map(body).find((text) => text !== '');
-  const at = first === undefined ? -1 : pageBody.indexOf(first);
+  const at = first === undefined ? -1 : pageBody.lastIndexOf(first);
   return at === -1 ? pageBody : pageBody.slice(0, at).trim();
+}
+
+/** Provenance for a docs result: the page's public URL (no #anchor), dated by the input it was built from. */
+export function docsPageSource(page: DocsPage): Source {
+  return { url: page.url, as_of: docsSource(page.input).as_of };
 }
 
 /** Provenance for an index input: { url: input.url, as_of: input.last_modified ?? input.fetched_at }. */

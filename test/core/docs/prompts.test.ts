@@ -9,6 +9,7 @@ describe('explainDecisionPrompt', () => {
     expect(text).toContain('docs_search');
     expect(text).toContain('source "adr"');
     expect(text).toContain('docs_read');
+    expect(text).toContain('url without its #anchor');
   });
 
   it('quotes the topic as JSON so quotes in it cannot end the query', () => {

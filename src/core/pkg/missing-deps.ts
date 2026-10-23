@@ -1,6 +1,6 @@
 import * as z from 'zod';
-import { getBiocDataPackageList } from '../../upstreams/bioconductor';
-import { getCranPackageList } from '../../upstreams/cran';
+import { getBiocDataPackagesFile } from '../../upstreams/bioconductor';
+import { getCranPackagesFile } from '../../upstreams/cran';
 import { sourceFor } from '../../upstreams/http';
 import { getPropagationIndex, UNIVERSES } from '../../upstreams/registry';
 import { defineCapability } from '../capability';
@@ -131,17 +131,17 @@ export const pkgMissingDeps = defineCapability({
   async handler({ universe, cursor }, deps) {
     const [index, cran, annotation, experiment] = await Promise.all([
       getPropagationIndex(deps, universe),
-      getCranPackageList(deps),
-      getBiocDataPackageList(deps, universe, 'data/annotation'),
-      getBiocDataPackageList(deps, universe, 'data/experiment'),
+      getCranPackagesFile(deps),
+      getBiocDataPackagesFile(deps, universe, 'data/annotation'),
+      getBiocDataPackagesFile(deps, universe, 'data/experiment'),
     ]);
     const graph = dependencyGraph(index);
     const found = (name: string) =>
       Object.hasOwn(index.packages, name) ||
       BASE_R_PACKAGES.has(name) ||
-      cran.names.has(name) ||
-      annotation.names.has(name) ||
-      experiment.names.has(name);
+      cran.versions.has(name) ||
+      annotation.versions.has(name) ||
+      experiment.versions.has(name);
 
     const affected: AffectedPackage[] = [];
     const neededBy = new Map<string, number>();
@@ -176,9 +176,9 @@ export const pkgMissingDeps = defineCapability({
       checked_against: [
         { source: 'registry_index', packages: Object.keys(index.packages).length },
         { source: 'base_r', packages: BASE_R_PACKAGES.size },
-        { source: 'cran', packages: cran.names.size },
-        { source: 'bioc_data_annotation', packages: annotation.names.size },
-        { source: 'bioc_data_experiment', packages: experiment.names.size },
+        { source: 'cran', packages: cran.versions.size },
+        { source: 'bioc_data_annotation', packages: annotation.versions.size },
+        { source: 'bioc_data_experiment', packages: experiment.versions.size },
       ],
       counts: { packages: affected.length, dependencies: dependencies.length },
       dependencies: dependencies.slice(0, DEPENDENCIES_LISTED),

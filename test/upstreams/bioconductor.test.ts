@@ -4,18 +4,19 @@ import { CapabilityError } from '../../src/errors';
 import { createMemoryCache } from '../../src/upstreams/cache';
 import {
   biocDataRepoPath,
+  bioconductorUpstream,
   findStatsPage,
-  getBiocDataPackageList,
   getBiocConfig,
+  getBiocDataPackagesFile,
+  getBiocPackagesFile,
   getManifestIndex,
-  getPackagesFile,
   getStatsTab,
   packagesPath,
   parseDataAsOf,
-  parsePackagesFile,
   parseStatsTab,
   parseStatsYears,
 } from '../../src/upstreams/bioconductor';
+import { parsePackagesFile } from '../../src/upstreams/packages-file';
 import {
   bioconductorRoutes,
   CONFIG_URL,
@@ -231,11 +232,11 @@ describe('biocDataRepoPath', () => {
   });
 });
 
-describe('getBiocDataPackageList', () => {
+describe('getBiocDataPackagesFile', () => {
   test('reads the devel annotation list: GO.db', async () => {
     const { deps, fetch } = makeDeps(depsRoutes);
-    const list = await getBiocDataPackageList(deps, 'bioc', 'data/annotation');
-    expect([...list.names]).toEqual(['GO.db']);
+    const list = await getBiocDataPackagesFile(deps, 'bioc', 'data/annotation');
+    expect([...list.versions.keys()]).toEqual(['GO.db']);
     expect(list.response.url).toBe(biocDataUrl('bioc', 'data/annotation'));
     expect(list.response.lastModified).toBe('2026-10-21T15:23:33.000Z');
     expect(fetch.calls).toEqual([biocDataUrl('bioc', 'data/annotation')]);
@@ -262,94 +263,43 @@ describe('packagesPath', () => {
   });
 });
 
-describe('parsePackagesFile', () => {
-  const URL = packagesUrl('3.24', 'bioc');
-  const stanza = (name: string, version: string) => `Package: ${name}\nVersion: ${version}\nDepends: R (>= 4.0)\n`;
+describe('getBiocPackagesFile', () => {
+  const experimentUrl = packagesUrl('3.24', 'data/experiment');
 
-  test('the recorded 3.24 software file gives its ten packages in file order', () => {
-    const versions = parsePackagesFile(readBiocFixture('packages/3.24/bioc/src/contrib/PACKAGES'), URL);
-    expect([...versions]).toEqual([
-      ['anndataR', '1.3.2'],
-      ['biomaRt', '2.69.3'],
-      ['Chromatograms', '1.3.4'],
-      ['ClustIRR', '1.11.0'],
-      ['edge', '2.45.0'],
-      ['edgeR', '4.99.10'],
-      ['lipidr', '2.27.0'],
-      ['RMassBank', '3.23.0'],
-      ['SEMPLR', '1.1.2'],
-      ['trackViewer', '1.49.3'],
-    ]);
-  });
-
-  test('continuation lines are ignored', () => {
-    const body = 'Package: abc\nVersion: 1.0\nImports: foo,\n    bar,\n\tbaz\nDescription: x\n  Version: 9.9\n';
-    expect([...parsePackagesFile(body, URL)]).toEqual([['abc', '1.0']]);
-  });
-
-  test('CRLF bodies parse the same', () => {
-    const body = stanza('abc', '1.0') + '\n' + stanza('def', '2.0-1');
-    expect(parsePackagesFile(body.replaceAll('\n', '\r\n'), URL)).toEqual(parsePackagesFile(body, URL));
-  });
-
-  test('consecutive blank lines are allowed; empty and blank bodies give an empty Map', () => {
-    expect([...parsePackagesFile(stanza('abc', '1.0') + '\n\n \n' + stanza('def', '2.0'), URL).keys()]).toEqual([
-      'abc',
-      'def',
-    ]);
-    expect(parsePackagesFile('', URL).size).toBe(0);
-    expect(parsePackagesFile('\n\n  \n', URL).size).toBe(0);
-  });
-
-  test.each([
-    ['a stanza without Version', 'Package: abc\nDepends: R\n'],
-    ['a stanza without Package', 'Version: 1.0\n'],
-    ['two Package lines in one stanza', 'Package: abc\nPackage: def\nVersion: 1.0\n'],
-    ['two Version lines in one stanza', 'Package: abc\nVersion: 1.0\nVersion: 1.1\n'],
-    ['the same package in two stanzas', stanza('abc', '1.0') + '\n' + stanza('abc', '1.1')],
-    ['a version 1.0.0a', stanza('abc', '1.0.0a')],
-    ['an empty version', 'Package: abc\nVersion:\n'],
-    ['an invalid package name', stanza('1abc', '1.0')],
-    ['a package name ending in a dot', stanza('abc.', '1.0')],
-    ['a continuation line before any field', '  continued\nPackage: abc\nVersion: 1.0\n'],
-    ['a continuation line after a blank line', stanza('abc', '1.0') + '\n  continued\n'],
-    ['a line with no colon', 'Package: abc\nVersion 1.0\n'],
-  ])('%s throws upstream_error naming the URL', (_label, body) => {
-    let error: unknown;
-    try {
-      parsePackagesFile(body, URL);
-    } catch (e) {
-      error = e;
-    }
-    expect(error).toBeInstanceOf(CapabilityError);
-    expect((error as CapabilityError).code).toBe('upstream_error');
-    expect((error as CapabilityError).message).toContain(URL);
-    expect((error as CapabilityError).details).toEqual({ upstream: 'bioconductor', url: URL });
-  });
-});
-
-describe('getPackagesFile', () => {
-  test('returns the recorded body with its last-modified', async () => {
+  test('returns the recorded entries with the last-modified and no body', async () => {
     const { deps, fetch } = makeDeps();
-    const response = await getPackagesFile(deps, '3.24', 'data-experiment');
-    expect(fetch.calls).toEqual([packagesUrl('3.24', 'data/experiment')]);
-    expect(response.body).toBe(readBiocFixture('packages/3.24/data/experiment/src/contrib/PACKAGES'));
-    expect(response.lastModified).toBe('2026-10-22T21:31:29.000Z');
+    const file = await getBiocPackagesFile(deps, '3.24', 'data-experiment');
+    expect(fetch.calls).toEqual([experimentUrl]);
+    expect([...file.versions]).toEqual([
+      ...parsePackagesFile(
+        readBiocFixture('packages/3.24/data/experiment/src/contrib/PACKAGES'),
+        bioconductorUpstream,
+        experimentUrl,
+      ),
+    ]);
+    expect(file.versions.size).toBeGreaterThan(0);
+    expect(file.response.lastModified).toBe('2026-10-22T21:31:29.000Z');
+    expect('body' in file.response).toBe(false);
   });
 
-  test('a 404 is an upstream_error naming the repository path and version', async () => {
+  test('a 404 is an upstream_error naming the URL', async () => {
     const { deps } = makeDeps({ [packagesUrl('3.25', 'books')]: NOT_FOUND });
-    const error = await getPackagesFile(deps, '3.25', 'books').catch((e) => e);
+    const error = await getBiocPackagesFile(deps, '3.25', 'books').catch((e) => e);
     expect(error).toBeInstanceOf(CapabilityError);
     expect(error.code).toBe('upstream_error');
-    expect(error.message).toContain('books PACKAGES for Bioconductor 3.25');
-    expect(error.message).toContain(packagesUrl('3.25', 'books'));
+    expect(error.message).toBe(`bioconductor.org has no PACKAGES file at ${packagesUrl('3.25', 'books')}`);
+    expect(error.details).toEqual({ upstream: 'bioconductor', url: packagesUrl('3.25', 'books') });
   });
 
   test('a bad version fetches nothing', async () => {
     const { deps, fetch } = makeDeps();
-    expect(await codeOf(getPackagesFile(deps, '3.24/../x', 'bioc'))).toBe('upstream_error');
-    expect(await codeOf(getPackagesFile(deps, 'devel', 'bioc'))).toBe('upstream_error');
+    expect(await codeOf(getBiocPackagesFile(deps, '3.24/../x', 'bioc'))).toBe('upstream_error');
+    expect(await codeOf(getBiocPackagesFile(deps, 'devel', 'bioc'))).toBe('upstream_error');
     expect(fetch.calls).toEqual([]);
+  });
+
+  test('an empty 200 body is allowed', async () => {
+    const { deps } = makeDeps({ [packagesUrl('3.25', 'books')]: { status: 200, body: '' } });
+    expect((await getBiocPackagesFile(deps, '3.25', 'books')).versions.size).toBe(0);
   });
 });

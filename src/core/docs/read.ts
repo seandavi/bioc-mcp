@@ -2,10 +2,11 @@ import * as z from 'zod';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../envelope';
 import { CapabilityError } from '../../errors';
 import type { DocsIndex } from '../../docs-index/load';
-import { DocsSourceKindSchema, type DocsRecord } from '../../docs-index/schema';
+import { DocsSourceKindSchema, type DocsInput, type DocsRecord } from '../../docs-index/schema';
 import { defineCapability, type Capability } from '../capability';
 import { chunkText, DOCS_READ_TEXT_BUDGET } from './chunk';
-import { docsPages, docsPageSource, renderPage, renderSectionTree, sectionLabel, type DocsPage, type DocsPages } from './pages';
+import { docsFreshness, DocsFreshnessSchema, inputNote, type DocsFreshness } from './freshness';
+import { docsPages, docsPageSource, docsSource, renderPage, renderSectionTree, sectionLabel, type DocsPage, type DocsPages } from './pages';
 
 /** Longest id_or_url that docs_read and the docs-page resource accept. */
 export const MAX_DOCS_REFERENCE_LENGTH = 2048;
@@ -35,6 +36,9 @@ export const DocsReadDataSchema = z.object({
   crumbs: z.array(z.string()),
   source: DocsSourceKindSchema,
   repo: z.string().nullable(),
+  as_of: z.string().describe("When the page's source was current (ISO 8601)"),
+  source_commit: z.string().nullable().describe('Commit (40-hex sha) the page was built from; null when unknown'),
+  freshness: DocsFreshnessSchema,
   text: z.string().describe('This part of the Markdown text'),
   offset: z.number().int().nonnegative().describe('Start of this part in the full text, in UTF-16 code units'),
   total_chars: z.number().int().nonnegative().describe('Length of the full text, in UTF-16 code units'),
@@ -157,11 +161,17 @@ function readSummary(
   end: number,
   total: number,
   nextCursor: string | null,
+  input: DocsInput,
+  freshness: DocsFreshness,
 ): string {
-  return offset === 0 && nextCursor === null
-    ? `${label} (${url}), full text, ${total} characters.`
-    : `${label} (${url}), characters ${offset + 1}–${end} of ${total}.` +
+  const range =
+    offset === 0 && nextCursor === null
+      ? `${label} (${url}), full text, ${total} characters.`
+      : `${label} (${url}), characters ${offset + 1}–${end} of ${total}.` +
         (nextCursor === null ? '' : ` Call docs_read again with cursor "${nextCursor}" for the rest.`);
+  const note = inputNote(input);
+  const stale = freshness.possibly_stale.map((warning) => ` Possibly stale: ${warning}`).join('');
+  return `${range} ${note[0]!.toUpperCase()}${note.slice(1)}.${stale}`;
 }
 
 export function docsReadCapability(
@@ -181,7 +191,7 @@ export function docsReadCapability(
       'failing workflows use ops_activity.',
     input: DocsReadInputSchema,
     data: DocsReadDataSchema,
-    async handler({ id_or_url, cursor }) {
+    async handler({ id_or_url, cursor }, deps) {
       const index = getIndex();
       const pages = docsPages(index);
       const target = resolveDocsTarget(pages, id_or_url);
@@ -202,6 +212,8 @@ export function docsReadCapability(
       const section = target.kind === 'page' ? '' : sectionLabel(target.record);
       const label = target.kind === 'page' ? `"${page.title}"` : `"${page.title}" › ${section}`;
       const sources = [docsPageSource(page)];
+      const { input } = page;
+      const freshness = docsFreshness(index.meta, [input], deps.now());
       const envelopeOf = (text: string, start: number, end: number, nextCursor: string | null): Envelope<DocsReadData> => ({
         data: {
           kind: target.kind,
@@ -212,12 +224,15 @@ export function docsReadCapability(
           crumbs: source.crumbs,
           source: source.source,
           repo: source.repo ?? null,
+          as_of: docsSource(input).as_of,
+          source_commit: input.commit?.sha ?? null,
+          freshness,
           text,
           offset: start,
           total_chars: full.length,
           next_cursor: nextCursor,
         },
-        summary: readSummary(label, url, start, end, full.length, nextCursor),
+        summary: readSummary(label, url, start, end, full.length, nextCursor, input, freshness),
         sources,
       });
 

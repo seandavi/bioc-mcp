@@ -6,7 +6,8 @@ import { DocsSourcesConfigSchema, parseDocsSourcesConfig } from '../../scripts/d
 const valid = {
   max_artifact_bytes: 1000,
   site_url: 'https://example.org/docs/',
-  github_owner: 'owner',
+  site_repo: 'site',
+  github_owner: 'seandavi',
   repos: [{ repo: 'a', ref: 'main', files: ['README.md'] }],
 };
 
@@ -23,6 +24,8 @@ describe('docs-sources.yaml', () => {
   it.each([
     ['an http: site_url', { ...valid, site_url: 'http://example.org/docs/' }],
     ['a site_url without a trailing slash', { ...valid, site_url: 'https://example.org/docs' }],
+    ['a missing site_repo', { ...valid, site_repo: undefined }],
+    ['a github_owner other than seandavi', { ...valid, github_owner: 'other' }],
     ['an unknown key', { ...valid, extra: 1 }],
     ['a duplicate repo', { ...valid, repos: [valid.repos[0], valid.repos[0]] }],
     ['a file not ending in .md', { ...valid, repos: [{ repo: 'a', ref: 'main', files: ['notes.txt'] }] }],

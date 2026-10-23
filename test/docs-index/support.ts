@@ -17,7 +17,7 @@ export function buildFromFixtures(
   config: DocsSourcesConfig = realConfig(),
   fetch: FetchFn = fixtureDocsFetch(DOCS_FIXTURES_DIR),
 ): Promise<DocsIndexArtifact> {
-  return buildDocsIndex(config, { fetch, now: NOW, buildCommit: BUILD_COMMIT });
+  return buildDocsIndex(config, { fetch, now: NOW, buildCommit: BUILD_COMMIT, env: {} });
 }
 
 let shared: Promise<DocsIndexArtifact> | undefined;

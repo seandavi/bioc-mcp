@@ -9,116 +9,228 @@
         "record_count": 381,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "6458f04d48beb666ad9dde01684bdbe576c7d4fc04bc53dae7a1816d27f3e503"
+        "sha256": "6458f04d48beb666ad9dde01684bdbe576c7d4fc04bc53dae7a1816d27f3e503",
+        "commit": {
+          "repo": "seandavi/bioc-infrastructure",
+          "ref": "main",
+          "sha": "256fd62eab16312a6188bef6bf74ea2bbab5f830",
+          "head_sha": "256fd62eab16312a6188bef6bf74ea2bbab5f830",
+          "head_committed_at": "2026-10-16T23:21:08Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-registry/main/README.md",
         "record_count": 11,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "d4f0899354884f8390c8ed7813947c9862adbc01f9ced41ff49d9f6d773c489a"
+        "sha256": "d4f0899354884f8390c8ed7813947c9862adbc01f9ced41ff49d9f6d773c489a",
+        "commit": {
+          "repo": "seandavi/bioc-registry",
+          "ref": "main",
+          "sha": "5d4c642b397376e5e53e4082c597cf632d8dc514",
+          "head_sha": "5d4c642b397376e5e53e4082c597cf632d8dc514",
+          "head_committed_at": "2026-10-22T20:08:54Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-registry/main/docs/api.md",
         "record_count": 22,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "960b5dba0886994249d0de5e2595c76cadada120ae03390fb693b32fa3a4e2a4"
+        "sha256": "960b5dba0886994249d0de5e2595c76cadada120ae03390fb693b32fa3a4e2a4",
+        "commit": {
+          "repo": "seandavi/bioc-registry",
+          "ref": "main",
+          "sha": "5d4c642b397376e5e53e4082c597cf632d8dc514",
+          "head_sha": "5d4c642b397376e5e53e4082c597cf632d8dc514",
+          "head_committed_at": "2026-10-22T20:08:54Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-edge/main/README.md",
         "record_count": 11,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "f6fa605bc7647bab621d3d098dbdb6e6f87241b9708f044ee105840c50b416a2"
+        "sha256": "f6fa605bc7647bab621d3d098dbdb6e6f87241b9708f044ee105840c50b416a2",
+        "commit": {
+          "repo": "seandavi/bioc-edge",
+          "ref": "main",
+          "sha": "60a9264a4460130b28f7acadcee3f31d55187812",
+          "head_sha": "60a9264a4460130b28f7acadcee3f31d55187812",
+          "head_committed_at": "2026-10-22T20:43:39Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-edge/main/DATAPLANE.md",
         "record_count": 20,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "fe90f08d6dec7e8616209eed157a1743cd8c7bdd054227b0f27e1af4f534d604"
+        "sha256": "fe90f08d6dec7e8616209eed157a1743cd8c7bdd054227b0f27e1af4f534d604",
+        "commit": {
+          "repo": "seandavi/bioc-edge",
+          "ref": "main",
+          "sha": "60a9264a4460130b28f7acadcee3f31d55187812",
+          "head_sha": "60a9264a4460130b28f7acadcee3f31d55187812",
+          "head_committed_at": "2026-10-22T20:43:39Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-traffic/main/README.md",
         "record_count": 5,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "23939af803c8ad074efeb43dc1a32a08fd32cb67ef702a944ad99e3e1760e56d"
+        "sha256": "23939af803c8ad074efeb43dc1a32a08fd32cb67ef702a944ad99e3e1760e56d",
+        "commit": {
+          "repo": "seandavi/bioc-traffic",
+          "ref": "main",
+          "sha": "7e567d57d6145dac0455746cc19c405e61fb4c0f",
+          "head_sha": "7e567d57d6145dac0455746cc19c405e61fb4c0f",
+          "head_committed_at": "2026-10-16T22:47:38Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-traffic/main/docs/published-comparison.md",
         "record_count": 8,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "37dbc81f0605aa615fc9e08acdd8ea659ec16c59b6886613fb7aa21fea37c3a6"
+        "sha256": "37dbc81f0605aa615fc9e08acdd8ea659ec16c59b6886613fb7aa21fea37c3a6",
+        "commit": {
+          "repo": "seandavi/bioc-traffic",
+          "ref": "main",
+          "sha": "7e567d57d6145dac0455746cc19c405e61fb4c0f",
+          "head_sha": "7e567d57d6145dac0455746cc19c405e61fb4c0f",
+          "head_committed_at": "2026-10-16T22:47:38Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-build/main/README.md",
         "record_count": 6,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "d3da9b09aa14a90f796547cc5a38d292d50c548f604750421ec815ff1f27a01a"
+        "sha256": "d3da9b09aa14a90f796547cc5a38d292d50c548f604750421ec815ff1f27a01a",
+        "commit": {
+          "repo": "seandavi/bioc-build",
+          "ref": "main",
+          "sha": "4c28399b7a3cc2de78f0589d803742be671418e8",
+          "head_sha": "4c28399b7a3cc2de78f0589d803742be671418e8",
+          "head_committed_at": "2026-10-06T23:04:32Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-manifest/main/README.md",
         "record_count": 6,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "bc924c741f18d8b29e86e5c2e10d69db961dbcf0e302dd8079f3f6409ece2430"
+        "sha256": "bc924c741f18d8b29e86e5c2e10d69db961dbcf0e302dd8079f3f6409ece2430",
+        "commit": {
+          "repo": "seandavi/bioc-manifest",
+          "ref": "main",
+          "sha": "be4806c91ae8e0baabdd26da5b77306a767143eb",
+          "head_sha": "be4806c91ae8e0baabdd26da5b77306a767143eb",
+          "head_committed_at": "2026-10-05T19:47:10Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-website/main/README.md",
         "record_count": 7,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "e5888ba7b36f3c6bb7744432b34c7d98010ed92e84e53dab04d4ece1ffc0849d"
+        "sha256": "e5888ba7b36f3c6bb7744432b34c7d98010ed92e84e53dab04d4ece1ffc0849d",
+        "commit": {
+          "repo": "seandavi/bioc-website",
+          "ref": "main",
+          "sha": "09b840bfc977f8265f74b4eb179cab9eb8621f4c",
+          "head_sha": "09b840bfc977f8265f74b4eb179cab9eb8621f4c",
+          "head_committed_at": "2026-10-23T02:50:11Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-infrastructure/main/README.md",
         "record_count": 6,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "423ce7c7d52479f2d3f4137ff26725e6f81262e38974d9ab16b7a02577562bf7"
+        "sha256": "423ce7c7d52479f2d3f4137ff26725e6f81262e38974d9ab16b7a02577562bf7",
+        "commit": {
+          "repo": "seandavi/bioc-infrastructure",
+          "ref": "main",
+          "sha": "256fd62eab16312a6188bef6bf74ea2bbab5f830",
+          "head_sha": "256fd62eab16312a6188bef6bf74ea2bbab5f830",
+          "head_committed_at": "2026-10-16T23:21:08Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-r-universe-build-db/main/README.md",
         "record_count": 13,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "6360918f39fc0a71f10af724630cef3c7a26d6f3844ac619d8401f560fcc8d9e"
+        "sha256": "6360918f39fc0a71f10af724630cef3c7a26d6f3844ac619d8401f560fcc8d9e",
+        "commit": {
+          "repo": "seandavi/bioc-r-universe-build-db",
+          "ref": "main",
+          "sha": "0badc2edf9ff6e74ae4c6d43ec054f45fa1cc235",
+          "head_sha": "0badc2edf9ff6e74ae4c6d43ec054f45fa1cc235",
+          "head_committed_at": "2026-03-03T23:16:42Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-intelligence/main/README.md",
         "record_count": 16,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "a063d080beb82c26eaac28f07ef879e645128f7d9bbdec2eb001c555059967dd"
+        "sha256": "a063d080beb82c26eaac28f07ef879e645128f7d9bbdec2eb001c555059967dd",
+        "commit": {
+          "repo": "seandavi/bioc-intelligence",
+          "ref": "main",
+          "sha": "dca73b0bf80cd3b5d5dc2858e028e984db1a84ed",
+          "head_sha": "dca73b0bf80cd3b5d5dc2858e028e984db1a84ed",
+          "head_committed_at": "2026-10-07T16:22:18Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-on-ice/main/README.md",
         "record_count": 12,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "e05db46f6ca1324f2f2b4d59d69ae8c7261c845730c4ecc770c956d635bf2a9e"
+        "sha256": "e05db46f6ca1324f2f2b4d59d69ae8c7261c845730c4ecc770c956d635bf2a9e",
+        "commit": {
+          "repo": "seandavi/bioc-on-ice",
+          "ref": "main",
+          "sha": "9793eb0060750ffd329d59a6bc2296f786fe79b0",
+          "head_sha": "9793eb0060750ffd329d59a6bc2296f786fe79b0",
+          "head_committed_at": "2026-10-02T22:51:11Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-harnesses/main/README.md",
         "record_count": 6,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "17381ac7e04c1f4013676d0e7867851a1452b97915ad5bad3d742c44439ab882"
+        "sha256": "17381ac7e04c1f4013676d0e7867851a1452b97915ad5bad3d742c44439ab882",
+        "commit": {
+          "repo": "seandavi/bioc-harnesses",
+          "ref": "main",
+          "sha": "6c83017f343c5919ad1481ecfcde7a640845af2b",
+          "head_sha": "6c83017f343c5919ad1481ecfcde7a640845af2b",
+          "head_committed_at": "2026-09-01T01:27:31Z"
+        }
       },
       {
         "url": "https://raw.githubusercontent.com/seandavi/bioc-mcp/main/README.md",
         "record_count": 5,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
-        "sha256": "323cd8ef4825bd8297561ca7e3525123e414e9b88a54d036b5960c85dbf24cef"
+        "sha256": "323cd8ef4825bd8297561ca7e3525123e414e9b88a54d036b5960c85dbf24cef",
+        "commit": {
+          "repo": "seandavi/bioc-mcp",
+          "ref": "main",
+          "sha": "4e734e4da635fca48751e90795201c2b36029bb3",
+          "head_sha": "4e734e4da635fca48751e90795201c2b36029bb3",
+          "head_committed_at": "2026-10-23T03:33:24Z"
+        }
       }
     ]
   },
-  "store_sha256": "4e2d428bacd32eeadcc622f7805eb03899710da5a8d90c9eae7d51683f69e004",
+  "store_sha256": "496f9897668014179152c0ba9f74db57665a2f51e14e8d16c0161e33751899b0",
   "index_sha256": "7ce6a4f0a694b27c81adad057464691140a08b746b4e6df49d467f29544c1388",
   "records": [
     {

@@ -189,7 +189,7 @@ describe('rendering', () => {
 
 describe('docsSource', () => {
   it('prefers last_modified, else fetched_at', () => {
-    const input = { url: 'https://docs.test/s.json', record_count: 1, last_modified: null, fetched_at: '2026-10-22T00:00:00Z', sha256: '0'.repeat(64) };
+    const input = { url: 'https://docs.test/s.json', record_count: 1, last_modified: null, fetched_at: '2026-10-22T00:00:00Z', sha256: '0'.repeat(64), commit: null };
     expect(docsSource(input)).toEqual({ url: input.url, as_of: '2026-10-22T00:00:00Z' });
     expect(docsSource({ ...input, last_modified: '2026-10-01T00:00:00Z' }).as_of).toBe('2026-10-01T00:00:00Z');
   });

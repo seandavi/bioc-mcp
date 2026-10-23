@@ -49,6 +49,7 @@ async function main(): Promise<void> {
     fetch: fetchFn,
     now: () => new Date(),
     buildCommit: process.env.GITHUB_SHA ?? null,
+    env: values.fixtures ? {} : { GITHUB_TOKEN: process.env.GITHUB_TOKEN },
   });
   const rendered = renderArtifactModule(artifact);
   await writeArtifactModule(outDir, rendered, config.max_artifact_bytes);

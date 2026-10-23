@@ -113,7 +113,7 @@ export function createRestApp({ modules, deps, usage }: RestAppOptions): OpenAPI
       responses: { 200: json(AboutSchema, 'Server description'), 429: tooManyRequests },
     }),
   );
-  api.get('/api/v1/about', (c) => c.json(buildAbout(modules), 200));
+  api.get('/api/v1/about', (c) => c.json(buildAbout(modules, deps.now()), 200));
 
   api.doc31('/api/openapi.json', {
     openapi: '3.1.0',

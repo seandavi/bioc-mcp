@@ -1,7 +1,7 @@
 import type { Options } from 'minisearch';
 import * as z from 'zod';
 
-export const DOCS_FORMAT_VERSION = 1;
+export const DOCS_FORMAT_VERSION = 2;
 
 export const DocsSourceKindSchema = z.enum(['site', 'adr', 'repo']);
 export const DocsRecordSchema = z.object({
@@ -16,12 +16,24 @@ export const DocsRecordSchema = z.object({
 });
 export type DocsRecord = z.infer<typeof DocsRecordSchema>;
 
+const CommitShaSchema = z.string().regex(/^[0-9a-f]{40}$/);
+
+export const DocsInputCommitSchema = z.object({
+  repo: z.string().regex(/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/), // 'seandavi/bioc-registry'
+  ref: z.string().min(1), // branch the input follows: docs-sources.yaml ref, or the Pages deployment's ref
+  sha: CommitShaSchema, // commit the input was built from
+  head_sha: CommitShaSchema, // head of ref when the index was built; equals sha for repo files
+  head_committed_at: z.string(), // ISO 8601 committer date of head_sha, as GitHub sends it
+});
+export type DocsInputCommit = z.infer<typeof DocsInputCommitSchema>;
+
 export const DocsInputSchema = z.object({
   url: z.string(), // the URL fetched (search.json or a raw file)
   record_count: z.number().int().nonnegative(),
   last_modified: z.string().nullable(), // ISO 8601 from Last-Modified; null when absent
   fetched_at: z.string(), // ISO 8601
   sha256: z.string().regex(/^[0-9a-f]{64}$/), // of the response body (UTF-8)
+  commit: DocsInputCommitSchema.nullable(), // null only for the site when no live Pages deployment is found
 });
 export type DocsInput = z.infer<typeof DocsInputSchema>;
 

@@ -4,6 +4,7 @@ import type { FetchFn } from '../../src/core/deps';
 
 function fixturePath(root: string, url: URL): string {
   const segments = [url.hostname, ...url.pathname.split('/').filter(Boolean).map(decodeURIComponent)];
+  if (url.search) segments.push(encodeURIComponent(url.search));
   for (const segment of segments) {
     if (segment === '.' || segment === '..' || segment.includes('/') || segment.includes('\\')) {
       throw new Error(`Refusing unsafe fixture path for ${url.href}: segment ${JSON.stringify(segment)}`);
@@ -13,7 +14,8 @@ function fixturePath(root: string, url: URL): string {
 }
 
 /**
- * Answers from files under `root`, at `<root>/<hostname>/<decoded path segments>`; a missing file
+ * Answers from files under `root`, at `<root>/<hostname>/<decoded path segments>`, plus one last segment,
+ * `encodeURIComponent(url.search)`, for a URL with a query string; a missing file
  * is a 404 Response. Content-Type is application/json for .json, text/plain otherwise; no other headers.
  * Throws on a URL whose hostname or decoded path segment is '.', '..' or contains '/' or '\\'.
  */

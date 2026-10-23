@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
-import { renderArtifactModule, writeArtifactModule } from '../../scripts/docs-index/build';
+import { buildDocsIndex, renderArtifactModule, writeArtifactModule } from '../../scripts/docs-index/build';
+import { fixtureDocsFetch } from '../../scripts/docs-index/fixtures';
 import { siteSubsections } from '../../scripts/docs-index/site';
 import { loadDocsIndex } from '../../src/docs-index/load';
 import { DocsRecordSchema } from '../../src/docs-index/schema';
@@ -15,6 +16,9 @@ import { BUILD_COMMIT, DOCS_FIXTURES_DIR, NOW, buildFromFixtures, fixtureArtifac
 
 const SITE_URL = 'https://seandavi.github.io/bioc-infrastructure/';
 const SEARCH_URL = SITE_URL + 'search.json';
+const GITHUB_API = 'https://api.github.com/repos/seandavi/';
+const LIVE_DEPLOYMENT_ID = 7131578958;
+const LIVE_SHA = '256fd62eab16312a6188bef6bf74ea2bbab5f830';
 
 /** The distinct pages (href before '#') of the fixture search.json. */
 const SITE_PAGES: string[] = [
@@ -43,6 +47,16 @@ function routesFor(override?: Parameters<typeof fixtureFetch>[0][string]) {
       const path = `seandavi/${repo}/${ref}/${file}`;
       routes[`https://raw.githubusercontent.com/${path}`] = { file: `docs/raw.githubusercontent.com/${path}` };
     }
+  }
+  const github = 'docs/api.github.com/repos/seandavi';
+  routes[`${GITHUB_API}bioc-infrastructure/deployments?environment=github-pages&per_page=10`] = {
+    file: `${github}/bioc-infrastructure/deployments/%3Fenvironment%3Dgithub-pages%26per_page%3D10`,
+  };
+  routes[`${GITHUB_API}bioc-infrastructure/deployments/${LIVE_DEPLOYMENT_ID}/statuses?per_page=1`] = {
+    file: `${github}/bioc-infrastructure/deployments/${LIVE_DEPLOYMENT_ID}/statuses/%3Fper_page%3D1`,
+  };
+  for (const { repo, ref } of config.repos) {
+    routes[`${GITHUB_API}${repo}/branches/${ref}`] = { file: `${github}/${repo}/branches/${ref}` };
   }
   return routes;
 }
@@ -106,6 +120,77 @@ describe('buildDocsIndex', () => {
     }
     expect(inputs.reduce((sum, i) => sum + i.record_count, 0)).toBe(store.meta.record_count);
     expect(store.meta).toMatchObject({ built_at: '2026-10-22T00:00:00.000Z', build_commit: BUILD_COMMIT });
+  });
+
+  it('records the live Pages deployment as the site input commit', async () => {
+    const { store } = await fixtureArtifact();
+    const branch = JSON.parse(
+      readFileSync(join(DOCS_FIXTURES_DIR, 'api.github.com', 'repos', 'seandavi', 'bioc-infrastructure', 'branches', 'main'), 'utf8'),
+    ) as { commit: { sha: string; commit: { committer: { date: string } } } };
+    expect(store.meta.inputs[0]?.commit).toEqual({
+      repo: 'seandavi/bioc-infrastructure',
+      ref: 'main',
+      sha: LIVE_SHA,
+      head_sha: branch.commit.sha,
+      head_committed_at: branch.commit.commit.committer.date,
+    });
+  });
+
+  it('records each repo file with the head of its configured ref as its commit', async () => {
+    const { store } = await fixtureArtifact();
+    const config = realConfig();
+    const files = config.repos.flatMap(({ repo, ref, files }) => files.map(() => ({ repo, ref })));
+    expect(store.meta.inputs.slice(1)).toHaveLength(files.length);
+    store.meta.inputs.slice(1).forEach((input, i) => {
+      const { repo, ref } = files[i]!;
+      expect(input.commit).toMatchObject({ repo: `seandavi/${repo}`, ref });
+      expect(input.commit!.sha).toBe(input.commit!.head_sha);
+      expect(input.commit!.sha).toMatch(/^[0-9a-f]{40}$/);
+    });
+  });
+
+  it('fails the build when a branch lookup has no fixture', async () => {
+    const routes = routesFor();
+    routes[`${GITHUB_API}bioc-edge/branches/main`] = { status: 404 };
+    const error = await buildFromFixtures(realConfig(), fixtureFetch(routes)).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(CapabilityError);
+    expect((error as CapabilityError).message).toContain('bioc-edge/branches/main');
+  });
+
+  it('fails the build on a GitHub rate limit', async () => {
+    const routes = routesFor();
+    routes[`${GITHUB_API}bioc-edge/branches/main`] = { status: 403 };
+    const error = await buildFromFixtures(realConfig(), fixtureFetch(routes)).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(CapabilityError);
+    expect((error as CapabilityError).message).toMatch(/rate limit/);
+  });
+
+  it('fails the build on a branch response of the wrong shape', async () => {
+    const routes = routesFor();
+    routes[`${GITHUB_API}bioc-edge/branches/main`] = { status: 200, body: '{"name":"main"}' };
+    const error = await buildFromFixtures(realConfig(), fixtureFetch(routes)).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(CapabilityError);
+    expect((error as CapabilityError).message).toContain('unexpected branch');
+  });
+
+  it('sends GITHUB_TOKEN to api.github.com requests only', async () => {
+    const inner = fixtureDocsFetch(DOCS_FIXTURES_DIR);
+    const seen: { url: string; authorization: string | null }[] = [];
+    await buildDocsIndex(realConfig(), {
+      fetch: (request) => {
+        seen.push({ url: request.url, authorization: request.headers.get('authorization') });
+        return inner(request);
+      },
+      now: NOW,
+      buildCommit: BUILD_COMMIT,
+      env: { GITHUB_TOKEN: 'token-for-test' },
+    });
+    const github = seen.filter((r) => new URL(r.url).hostname === 'api.github.com');
+    const others = seen.filter((r) => new URL(r.url).hostname !== 'api.github.com');
+    expect(github.length).toBeGreaterThan(0);
+    expect(github.every((r) => r.authorization === 'Bearer token-for-test')).toBe(true);
+    expect(others.length).toBeGreaterThan(0);
+    expect(others.every((r) => r.authorization === null)).toBe(true);
   });
 
   it('fetches 41 site pages and records 535 records', async () => {

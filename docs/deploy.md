@@ -84,7 +84,9 @@ for the GitHub token. Revoke the old token after the next successful Deploy run.
 The docs index is built into the bundle, so a rebuild that is not deployed never reaches users.
 `deploy.yml` listens for `repository_dispatch` type `docs-updated` and for `workflow_dispatch`;
 either rebuilds the docs index from the live site and deploys. The daily schedule covers a
-missed dispatch.
+missed dispatch. The docs build looks up each docs input's source commit with the GitHub REST API
+(about 14 calls), authenticated with the workflow's own `github.token` only to avoid the
+60-per-hour anonymous limit.
 
 The sender (bioc-infrastructure's docs deploy; a follow-up issue there) can use either:
 

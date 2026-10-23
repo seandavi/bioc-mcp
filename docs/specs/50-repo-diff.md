@@ -94,6 +94,8 @@ snapshot in the docs.
 ```
 src/upstreams/bioconductor.ts          + BIOC_REPOS, BiocRepo, packagesPath(), getPackagesFile(),
                                           parsePackagesFile(); bioconductorUpstream.description extended
+src/upstreams/package-name.ts          NEW  PackageNameSchema, moved from src/core/pkg/package-name.ts
+src/core/pkg/package-name.ts           re-exports PackageNameSchema; closeMatches stays
 src/core/pkg/repo-diff.ts              NEW  pkgRepoDiff, PkgRepoDiffDataSchema, REPO_DIFF_CATEGORIES,
                                           RepoDiffCategory, REPO_DIFF_REASONS, RepoDiff, diffRepos(),
                                           loadRepoDiff()
@@ -165,8 +167,10 @@ export function parsePackagesFile(body: string, url: string): Map<string, string
 3. Any other line must match `/^([^\s:]+):[ \t]*(.*)$/`. Only `Package` and `Version` are kept;
    their values are `match[2].trim()`. Other field names are ignored.
 4. At the end of each stanza (blank line or end of body): exactly one `Package` and exactly one
-   `Version` line were seen; `Package` passes `PackageNameSchema` (`src/core/pkg/package-name.ts`;
-   import the schema, not a copy of its regex); `Version` matches `/^\d+([.-]\d+)*$/`; and the
+   `Version` line were seen; `Package` passes `PackageNameSchema` (`src/upstreams/package-name.ts`;
+   import the schema, not a copy of its regex. It lives under `src/upstreams` because adapters may
+   not value-import `src/core` (`test/upstreams/imports.test.ts`); `src/core/pkg/package-name.ts`
+   re-exports it, so existing imports keep working); `Version` matches `/^\d+([.-]\d+)*$/`; and the
    name is not already in the Map.
 5. Return the Map in file order.
 

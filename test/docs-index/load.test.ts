@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
+import { QUERY_STOP_WORDS, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
 import { fixtureArtifact } from './support';
 import type { DocsIndexArtifact } from '../../scripts/docs-index/build';
 
@@ -120,5 +120,23 @@ describe('loadDocsIndex', () => {
     const misses = Array.from({ length: 16 }, (_, i) => 'zqxj' + String.fromCharCode(97 + i)).join(' ');
     expect(index.search(`${misses} registry`)).toEqual([]);
     expect(index.search(`registry ${misses}`).length).toBeGreaterThan(0);
+  });
+
+  it('ranks the rollback-worker runbook first for "how do I roll back the Worker"', () => {
+    expect(index.search('how do I roll back the Worker')[0]?.record.id).toBe('site:operations.html#rollback-worker');
+  });
+
+  it('drops stop words from the query', () => {
+    const scored = (query: string) => index.search(query).map((hit) => [hit.record.id, hit.score]);
+    expect(scored('how do I purge the cache')).toEqual(scored('purge cache'));
+  });
+
+  it('still searches a query of only stop words', () => {
+    expect(index.search('how do I').length).toBeGreaterThan(0);
+  });
+
+  it('does not count stop words against the 16-term budget', () => {
+    const stops = [...QUERY_STOP_WORDS].slice(0, 16).join(' ');
+    expect(index.search(`${stops} registry`)).toEqual(index.search('registry'));
   });
 });

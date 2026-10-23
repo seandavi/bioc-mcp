@@ -21,7 +21,8 @@ export interface DocsIndex {
   /** The input (search.json or raw file) a record was built from, for provenance. */
   inputFor(id: string): DocsInput | undefined;
   /**
-   * Ranked with DOCS_INDEX_OPTIONS.searchOptions over the first MAX_SEARCH_TERMS distinct terms of `query`;
+   * Ranked with DOCS_INDEX_OPTIONS.searchOptions over the first MAX_SEARCH_TERMS distinct terms of `query`
+   * that are not in QUERY_STOP_WORDS (all its terms, if every one is a stop word);
    * at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. `filter` keeps only hits
    * whose record it accepts; applied inside the ranked search, before `limit`.
    */
@@ -40,16 +41,36 @@ export const MAX_SEARCH_TERMS = 16;
 
 const tokenize: (text: string) => string[] = MiniSearch.getDefault('tokenize');
 
-/** The first MAX_SEARCH_TERMS distinct lower-cased tokens of `query`, joined by ' '. */
+/** English function words and question words that search() drops from a query (lower case). */
+export const QUERY_STOP_WORDS: ReadonlySet<string> = new Set([
+  'a', 'about', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'being',
+  'both', 'but', 'by', 'can', 'could', 'did', 'do', 'does', 'doing', 'during', 'each', 'for', 'from',
+  'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his',
+  'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'just', 'me', 'my', 'myself', 'of',
+  'on', 'or', 'our', 'ours', 'ourselves', 'she', 'should', 'so', 'some', 'such', 'than', 'that',
+  'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those',
+  'through', 'to', 'until', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who',
+  'whom', 'why', 'will', 'with', 'would', 'you', 'your', 'yours', 'yourself', 'yourselves',
+]);
+
+/**
+ * The first MAX_SEARCH_TERMS distinct lower-cased tokens of `query` that are not stop words, joined by ' '.
+ * A query of only stop words keeps its first MAX_SEARCH_TERMS distinct terms instead.
+ */
 function boundedQuery(query: string): string {
   const terms = new Set<string>();
+  const stopTerms = new Set<string>();
   for (const token of tokenize(query)) {
     const term = token.toLowerCase();
     if (term === '') continue;
+    if (QUERY_STOP_WORDS.has(term)) {
+      if (stopTerms.size < MAX_SEARCH_TERMS) stopTerms.add(term);
+      continue;
+    }
     terms.add(term);
     if (terms.size === MAX_SEARCH_TERMS) break;
   }
-  return [...terms].join(' ');
+  return [...(terms.size > 0 ? terms : stopTerms)].join(' ');
 }
 
 /** Parses and checks both strings. Throws Error on any mismatch; never returns a partial index. */

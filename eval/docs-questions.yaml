@@ -1,0 +1,203 @@
+# Docs search evaluation set: real questions about the stack, each with every docs section that
+# answers it on its own. `npm run eval:docs` sends each question verbatim to docs_search
+# (limit 10) and reports recall@1, recall@5 and MRR@10. A question counts as found when any of
+# its answers is among the hits. Answers are record URLs (docs_search hit.url); test/docs-eval
+# checks that each one exists in the fixture index. Quote `question` and `from`: a " #" in a
+# plain YAML string starts a comment.
+questions:
+  - id: runbook-failed-sync
+    question: "bioc-sync.service is failing. How do I recover and re-upload what is missing from R2?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks
+    from: "bioc-health skill, runbook operations.html#failed-sync"
+  - id: runbook-purge
+    question: "How do I purge a stale PACKAGES file from the edge cache?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks
+      - https://seandavi.github.io/bioc-infrastructure/cache.html#purging
+    from: "bioc-health skill, runbook operations.html#purge"
+  - id: runbook-rollback-worker
+    question: "How do I roll back the bioconductor.org Worker to the previous version?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks
+    from: "bioc-health skill, runbook operations.html#rollback-worker"
+  - id: runbook-rollback-site
+    question: "A bad site build is live. How do I pin bioconductor.org to an older build?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks
+    from: "bioc-health skill, runbook operations.html#rollback-site"
+  - id: runbook-yank
+    question: "How do I stop users downloading a bad package tarball before master removes it?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks
+    from: "bioc-health skill, runbook operations.html#yank"
+  - id: runbook-rollback-dns
+    question: "If Cloudflare itself fails, how do we send bioconductor.org traffic back to CloudFront?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#runbooks
+      - https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#migration-plan
+    from: "operations.qmd runbook #rollback-dns"
+  - id: who-is-alerted
+    question: "Who notices when the hourly sync or the Logpush check fails, and how?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#who-operates-what
+      - https://seandavi.github.io/bioc-infrastructure/ci.html#scheduled-jobs-outside-github-actions
+    from: "bioc-infrastructure#43 (detectors that alert nowhere)"
+  - id: scheduled-detectors
+    question: "Which timers run on onclappc02 and what does each one check?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/ci.html#scheduled-jobs-outside-github-actions
+      - https://seandavi.github.io/bioc-infrastructure/operations.html#who-operates-what
+    from: "bioc-infrastructure#43 (detectors and the ops checkouts)"
+  - id: report-a-problem
+    question: "Where do I report a broken page or a failed download on bioconductor.org?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/report.html#where-to-report
+      - https://seandavi.github.io/bioc-infrastructure/report.html
+    from: "bioc-infrastructure#43 (reporting and triage)"
+  - id: report-triage
+    question: "What happens to a problem report after it is filed? Who triages it?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/report.html#how-triage-works
+    from: "bioc-infrastructure#43 (reporting and triage)"
+  - id: is-page-cached
+    question: "How can I tell whether a page came from the edge cache or is stale?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/cache.html#is-this-page-cached
+    from: "bioc-infrastructure#43 (cache regressions found by hand)"
+  - id: raw-client-addresses
+    question: "Are client IP addresses stored raw in the access logs, or hashed at the edge?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html#decision
+    from: "ADR 0012 (supersedes ADR 0009); bioc-infrastructure#67 (bioc-traffic guards raw addresses)"
+  - id: stats-static-files
+    question: "Why are the download statistics static files rather than a live service?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0004-download-statistics-are-generated-static-files.html#decision
+    from: "ADR 0004"
+  - id: logs-unfiltered
+    question: "Why are the access logs mirrored unfiltered instead of dropping bots on ingest?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0002-mirror-access-logs-unfiltered.html#decision
+    from: "ADR 0002"
+  - id: request-logging-destination
+    question: "Where do the request logs go now that bioconductor.org is on Cloudflare?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#decision
+      - https://seandavi.github.io/bioc-infrastructure/adr/0003-request-logging-after-the-cloudflare-cutover.html#amendment-2026-08-10-delivery-destination-moved-to-google-cloud-storage
+    from: "ADR 0003"
+  - id: old-releases-archival
+    question: "Are old releases and their checkResults still synced and regenerated?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0006-old-releases-and-their-checkresults-are-archival.html#decision
+    from: "ADR 0006"
+  - id: release-roll-approval
+    question: "What makes a person approve the release roll before anything is deleted?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0007-cloudflare-workflows-for-the-release-roll-guard.html#decision
+    from: "ADR 0007"
+  - id: three-repos
+    question: "Why is the new stack split across separate repositories?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0008-three-repos-and-a-strangler-migration.html#decision
+    from: "ADR 0008; bioc-infrastructure#119"
+  - id: manifest-not-registry
+    question: "Why is the list of authorized packages called the manifest and not a registry?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html#decision
+    from: "ADR 0010; bioc-infrastructure#119 (bioc-manifest stays separate)"
+  - id: one-gate
+    question: "Do packages built by bioc-build go through the same propagation gate as r-universe builds?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0011-one-propagation-gate-for-every-producer.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0011-one-propagation-gate-for-every-producer.html#decision
+      - https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#the-gate-check-by-check
+    from: "ADR 0011"
+  - id: redirect-policy
+    question: "Should an old URL keep redirecting to a landing page that no longer has its content?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0013-redirects-land-on-content-or-they-go.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0013-redirects-land-on-content-or-they-go.html#decision
+    from: "ADR 0013"
+  - id: completeness-by-origin
+    question: "How do we decide that a part of the site no longer depends on master?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0005-completeness-is-measured-by-origin-not-page-type.html#decision
+    from: "ADR 0005"
+  - id: publication-boundary
+    question: "What must never be published on the public infrastructure docs site?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html
+      - https://seandavi.github.io/bioc-infrastructure/adr/0001-public-docs-site-with-a-publication-boundary.html#decision
+    from: "ADR 0001"
+  - id: who-generates-stats
+    question: "Who generates the /packages/stats/ files now, and where are they served from?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/download-stats.html
+      - https://seandavi.github.io/bioc-infrastructure/start-here.html#what-each-box-is
+      - https://seandavi.github.io/bioc-infrastructure/how-it-works.html#serving
+    from: "bioc-infrastructure#117 (stats generated by bioc-traffic, served from R2)"
+  - id: empty-october-stats
+    question: "Why did the package download stats stop counting after the cutover?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/download-stats.html
+    from: "bioc-infrastructure#117 (follow-up to #114, the empty October)"
+  - id: what-is-a-download
+    question: "What counts as a download in the package statistics?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/download-stats.html#what-counts-as-a-download
+    from: "bioc-infrastructure#67 (the fixed /packages/stats definition)"
+  - id: stats-agree
+    question: "Do bioc-traffic's download counts match the numbers published at /packages/stats/?"
+    answers:
+      - https://github.com/seandavi/bioc-traffic/blob/main/docs/published-comparison.md
+      - https://seandavi.github.io/bioc-infrastructure/download-stats.html#do-the-two-systems-agree
+    from: "bioc-infrastructure#117 (generator output sanity)"
+  - id: humans-vs-bots
+    question: "How are human downloads told apart from bots, mirrors and CI?"
+    answers:
+      - https://github.com/seandavi/bioc-traffic/blob/main/README.md#not-all-traffic-is-people
+      - https://seandavi.github.io/bioc-infrastructure/improvements.html#download-statistics-that-can-tell-people-from-bots
+    from: "bioc-infrastructure#67 (interpreted usage by traffic class)"
+  - id: propagated-commit
+    question: "Which version of edgeR propagated, and from which commit?"
+    answers:
+      - https://github.com/seandavi/bioc-registry/blob/main/README.md#try-it-in-30-seconds
+      - https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#index-entry-shape
+      - https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-pkguniversepackage
+    from: "bioc-infrastructure#67 (registry example questions)"
+  - id: registry-sql
+    question: "Can I query a package's check history across observations with SQL?"
+    answers:
+      - https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-sql
+    from: "bioc-infrastructure#67 (the lake: Parquet that DuckDB reads)"
+  - id: intelligence-sources
+    question: "Where do bioc-intelligence's citation and grant numbers come from?"
+    answers:
+      - https://github.com/seandavi/bioc-intelligence/blob/main/README.md#data-sources
+    from: "bioc-infrastructure#67 (bioc-intelligence produces citations, grants, impact)"
+  - id: add-to-manifest
+    question: "How do I authorize a new package for bioc-build?"
+    answers:
+      - https://github.com/seandavi/bioc-manifest/blob/main/README.md#adding-a-package
+      - https://github.com/seandavi/bioc-manifest/blob/main/README.md
+    from: "bioc-infrastructure#119 (bioc-manifest is the trust root)"
+  - id: registry-polls
+    question: "Why does the registry poll r-universe instead of waiting for webhooks?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls
+    from: "proposal-mcp.qmd (docs search example question)"
+  - id: install-from-new-stack
+    question: "Is my BiocManager install coming from the new Cloudflare stack?"
+    answers:
+      - https://seandavi.github.io/bioc-infrastructure/install.html#is-my-install-coming-from-the-new-stack
+    from: "install.qmd; bioc-infrastructure#43 (package or install problem form)"

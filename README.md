@@ -51,6 +51,9 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 
 The `docs` module also serves each page as an MCP resource (`bioc://docs/…`) and an
 `explain-decision` prompt.
+The `pkg` module serves a `triage-failing-package` prompt, which uses `pkg_status`,
+`pkg_check_output` and the docs tools, so it is offered only where both modules are (`/mcp`,
+`/mcp/pkg+docs`).
 
 ## Connect
 

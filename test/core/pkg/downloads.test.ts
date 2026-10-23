@@ -80,6 +80,10 @@ describe('pkg_downloads', () => {
     expect(data.months).toHaveLength(12);
     expect(data.months[0]).toMatchObject({ month: 'Jan', downloads: 34147 });
     expect(data.months.at(-1)).toMatchObject({ month: 'Dec', downloads: 66159 });
+    expect(envelope.sources).toEqual([
+      { url: statsPageUrl('bioc', 'edgeR'), as_of: AS_OF },
+      { url: statsTabUrl('bioc', 'edgeR', 2025), as_of: AS_OF },
+    ]);
     expect(envelope.summary).toBe(
       'edgeR (bioc) in 2025: 841103 downloads from 226167 distinct IPs. ' +
         "Figures follow bioconductor.org's published /packages/stats definition.",
@@ -89,8 +93,18 @@ describe('pkg_downloads', () => {
 
   test('other category: rnaseqGene is a workflow, after three 404 pages', async () => {
     const { envelope, data, fetch } = await downloads({ package: 'rnaseqGene' });
-    expect(data).toMatchObject({ category: 'workflows', year: 2026, partial_month: 'Oct', total: { downloads: 4730 } });
+    expect(data).toMatchObject({
+      category: 'workflows',
+      year: 2026,
+      year_requested: null,
+      note: null,
+      partial_month: 'Oct',
+      total: { distinct_ips: 2690, downloads: 4730 },
+    });
     expect(data.months).toHaveLength(10);
+    expect(data.months[0]).toEqual({ month: 'Jan', distinct_ips: 43, downloads: 74 });
+    expect(data.months.at(-1)).toEqual({ month: 'Oct', distinct_ips: 514, downloads: 789 });
+    expect(data.years_available).toEqual(Array.from({ length: 13 }, (_, i) => 2014 + i));
     expect(fetch.calls).toEqual([
       statsPageUrl('bioc', 'rnaseqGene'),
       statsPageUrl('data-annotation', 'rnaseqGene'),
@@ -124,12 +138,31 @@ describe('pkg_downloads', () => {
     expect(fetch.calls).toEqual([statsPageUrl('bioc', 'edgeR')]);
   });
 
+  test('a gap in the years is shown as ranges', async () => {
+    const page = EDGER_PAGE.replace('href="edgeR_2010_stats.tab"', 'href="#"');
+    expect(page).not.toBe(EDGER_PAGE);
+    const { result, fetch } = await run(
+      { package: 'edgeR', year: 2010 },
+      OCT,
+      { [statsPageUrl('bioc', 'edgeR')]: { status: 200, body: page, headers: { 'content-type': 'text/html' } } },
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe('not_found');
+    expect(result.error.message).toBe('edgeR (bioc) has no download stats for 2010; years with stats: 2009, 2011–2026.');
+    expect(fetch.calls).toEqual([statsPageUrl('bioc', 'edgeR')]);
+  });
+
   test('January: the default year falls back to the latest year with stats', async () => {
     const { envelope, data, fetch } = await downloads({ package: 'edgeR' }, JAN);
     const note = 'bioconductor.org has no 2027 download stats for edgeR yet; showing 2026, the latest year with stats.';
     expect(data).toMatchObject({ year: 2026, year_requested: null, note, data_as_of: AS_OF, partial_month: 'Oct' });
     expect(data.months).toHaveLength(10);
     expect(envelope.summary).toContain(` through ${AS_OF}. ${note} Figures follow`);
+    expect(envelope.sources).toEqual([
+      { url: statsPageUrl('bioc', 'edgeR'), as_of: AS_OF },
+      { url: statsTabUrl('bioc', 'edgeR', 2026), as_of: AS_OF },
+    ]);
     expect(fetch.calls.some((url) => url.includes('_2027_'))).toBe(false);
     expect(fetch.calls).toEqual([statsPageUrl('bioc', 'edgeR'), statsTabUrl('bioc', 'edgeR', 2026)]);
   });

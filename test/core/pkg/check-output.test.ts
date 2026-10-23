@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type * as z from 'zod';
+import * as z from 'zod';
 import { jsonTextBytes, normalizeText } from '../../../src/core/pkg/check-log';
 import { pkgCheckOutput, PkgCheckOutputDataSchema } from '../../../src/core/pkg/check-output';
 import { invokeCapability } from '../../../src/core/invoke';
@@ -100,7 +100,9 @@ describe('truncation', () => {
       'checking R code for possible problems',
     ]);
     expect(data.check!.sections[6]!.truncated).toBe(false);
-    expect(summary).toContain('Some output was cut to fit; read the whole log with full=true.');
+    expect(summary).toContain(
+      "Some output was cut to fit; each cut section's marker gives the offset to read it with full=true.",
+    );
     expect(summary).toContain('and 3 more');
   });
 
@@ -114,6 +116,19 @@ describe('truncation', () => {
     expect(section.text).toContain('lines omitted; read them with full=true');
     expect(section.text.endsWith('Execution halted')).toBe(true);
     expect(jsonTextBytes(section.text)).toBeLessThanOrEqual(2000);
+  });
+
+  test('singIST: section.offset and the marker offset read the log from the right place', async () => {
+    const { data } = await checkOutput({ universe: 'bioc', job: '95858209718' });
+    const section = data.check!.sections[0]!;
+    const full = normalizeText(fixtureFile('bioc', '95858209718', '00check.log'));
+    const lines = full.slice(full.indexOf('* checking examples')).split('\n').slice(1);
+    expect(full.slice(section.offset).startsWith(lines[0]!)).toBe(true);
+    const marked = Number(/offset=(\d+)/.exec(section.text)![1]);
+    expect(full.slice(marked).startsWith(lines[2]!)).toBe(true);
+
+    const page = await checkOutput({ universe: 'bioc', job: '95858209718', full: true, offset: marked });
+    expect(page.data.text!.text.startsWith(lines[2]!)).toBe(true);
   });
 });
 
@@ -164,6 +179,17 @@ describe('bioc-checks job without 00check.log (DeepTarget)', () => {
     const { error } = await failure({ universe: 'bioc', job: '91902836490' });
     expect(error.code).toBe('not_found');
     expect(error.message).toContain('00BiocCheck.log, output.log');
+    expect(error.message.endsWith('Its files: 00BiocCheck.log, output.log. Pass one of them as file.')).toBe(true);
+  });
+
+  test('a missing-file message lists at most 40 files and counts the rest', async () => {
+    const files: Record<string, string> = { 'pkgdata.txt': "FILE='x_1.0.tar.gz'\n" };
+    for (let i = 0; i < 44; i++) files[`f${String(i).padStart(2, '0')}.Rout`] = 'x';
+    const url = checksUrl('bioc', '8');
+    const { error } = await failure({ universe: 'bioc', job: '8' }, { [url]: { status: 200, body: JSON.stringify(files) } });
+    expect(error.code).toBe('not_found');
+    const names = Array.from({ length: 40 }, (_, i) => `f${String(i).padStart(2, '0')}.Rout`);
+    expect(error.message).toContain(`Its files: ${names.join(', ')} and 5 more. Pass one of them as file.`);
   });
 
   test('output.log comes back whole as a tail, with no job_info', async () => {
@@ -183,7 +209,7 @@ test('bioc-release job', async () => {
 });
 
 describe('errors', () => {
-  test('a job the registry never captured is not_found, with the capture explanation', async () => {
+  test('a job the registry has not captured is not_found, with the capture explanation', async () => {
     const { error } = await failure({ universe: 'bioc', job: '112702240220' });
     expect(error.code).toBe('not_found');
     expect(error.message).toContain('has no captured check output');
@@ -251,7 +277,25 @@ describe('size budget', () => {
     expect(data.check!.sections).toHaveLength(12);
     expect(data.check!.sections_omitted).toBe(3);
     const total = data.check!.sections.reduce((sum, s) => sum + jsonTextBytes(s.text), 0);
-    expect(total).toBeLessThan(4500); // a smaller budget than the first one was needed
+    expect(total).toBeLessThanOrEqual(2500); // the first budget (4500) did not fit, so the loop stepped down
+  });
+});
+
+describe('descriptions', () => {
+  test('total_chars, files_total and job_url are described', () => {
+    const json = z.toJSONSchema(PkgCheckOutputDataSchema) as {
+      properties: Record<string, { description?: string; properties?: Record<string, { description?: string }>; anyOf?: { properties?: Record<string, { description?: string }> }[] }>;
+    };
+    expect(json.properties.files_total!.description).toBeTruthy();
+    expect(json.properties.job_url!.description).toBeTruthy();
+    const textSchema = json.properties.text!.anyOf!.find((branch) => branch.properties)!;
+    expect(textSchema.properties!.total_chars!.description).toBeTruthy();
+  });
+
+  test('the tool and file descriptions say what bioc-checks jobs hold', () => {
+    expect(pkgCheckOutput.description).toContain("pass file='output.log' for BiocCheck's results");
+    const fileDescription = z.toJSONSchema(pkgCheckOutput.input).properties!.file as { description: string };
+    expect(fileDescription.description).toContain('bioc-checks jobs have no 00check.log');
   });
 });
 

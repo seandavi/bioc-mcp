@@ -43,6 +43,15 @@ describe('closeMatches', () => {
     expect(closeMatches('edgr', candidates, 1)).toEqual(['edge']);
   });
 
+  test('a prefix match survives the length filter; a non-prefix more than 2 characters longer is skipped', () => {
+    expect(closeMatches('Bioc', ['BiocParallel', 'Biobase'])).toEqual(['BiocParallel']);
+  });
+
+  test('a 100-character query against 3,000 candidates matches nothing', () => {
+    const names = Array.from({ length: 3000 }, (_, i) => `pkg${i}`);
+    expect(closeMatches('a'.repeat(100), names)).toEqual([]);
+  });
+
   test('orders ties by code unit, not locale', () => {
     expect(closeMatches('abc', ['abe', 'abd', 'Abf'])).toEqual(['Abf', 'abd', 'abe']);
   });

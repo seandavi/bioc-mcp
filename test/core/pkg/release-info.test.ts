@@ -5,7 +5,7 @@ import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/env
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { bioconductorRoutes, CONFIG_URL, MANIFEST_URL, readBiocFixture } from '../../support/bioconductor-routes';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
-import type * as z from 'zod';
+import * as z from 'zod';
 import { testContext } from '../../support/invoke-context';
 
 type Data = z.output<typeof PkgReleaseInfoDataSchema>;
@@ -73,6 +73,14 @@ describe('pkg_release_info', () => {
         'config.yaml and the manifest index (generated 2026-10-22T17:45:18Z) agree.',
     );
     expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+  });
+
+  test('agree and manifest.build are described', () => {
+    expect(PkgReleaseInfoDataSchema.shape.agree.description).toContain('packages/release and packages/devel symlinks');
+    const json = z.toJSONSchema(PkgReleaseInfoDataSchema) as unknown as {
+      properties: { manifest: { properties: { build: { description?: string } } } };
+    };
+    expect(json.properties.manifest.properties.build.description).toBeTruthy();
   });
 
   test('the versions disagree', async () => {

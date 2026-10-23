@@ -50,7 +50,11 @@ const EntryDepsSchema = z.object({
   }),
 });
 
-const codeUnitOrder = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+/** Sort comparator by UTF-16 code units (locale-independent), for stable name lists. */
+export const codeUnitOrder = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+
+/** How many of graph.depsUnknown the revdeps and missing-deps results list. */
+export const DEPS_UNKNOWN_LISTED = 20;
 
 // getPropagationIndex returns the same `packages` object for every call within one memo period,
 // so each index version is parsed once per isolate. registryEntry() is not used: it throws on any

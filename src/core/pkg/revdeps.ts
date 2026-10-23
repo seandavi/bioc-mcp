@@ -3,7 +3,7 @@ import { CapabilityError } from '../../errors';
 import { sourceFor } from '../../upstreams/http';
 import { getPropagationIndex, UNIVERSES } from '../../upstreams/registry';
 import { defineCapability } from '../capability';
-import { dependencyGraph, reverseDependencies, type HardDependencyField } from './dependency-graph';
+import { DEPS_UNKNOWN_LISTED, dependencyGraph, reverseDependencies, type HardDependencyField } from './dependency-graph';
 import { CursorSchema, packagesPhrase, parseCursor, takePage } from './paging';
 import { closeMatches, PackageNameSchema } from './package-name';
 
@@ -50,7 +50,6 @@ export const PkgRevdepsDataSchema = z.object({
 type PkgRevdepsData = z.infer<typeof PkgRevdepsDataSchema>;
 
 const REVDEPS_PAGE_BYTES = 4000;
-const DEPS_UNKNOWN_LISTED = 20;
 
 function countField(
   direct: ReadonlyMap<string, readonly HardDependencyField[]> | undefined,
@@ -69,7 +68,7 @@ function summarize(data: PkgRevdepsData): string {
     total > 0
       ? `${name} (${universe}): ${packagesPhrase(total)} in the propagation index ${total === 1 ? 'depends' : 'depend'} on it through Depends, Imports or LinkingTo (${counts.direct} directly${max_depth === null ? '' : `; levels searched: ${max_depth}`}).`
       : `${name} (${universe}): no package in the propagation index depends on it through Depends, Imports or LinkingTo.`;
-  if (!data.in_index) summary += ` ${name} itself is not in the index.`;
+  if (!data.in_index) summary += ` ${name} itself is not in the index (it may be on CRAN or base R; pkg_missing_deps says whether it is missing).`;
   if (next_cursor !== null) {
     summary += ` Listed: ${offset + 1}–${offset + shown} of ${total}; call again with cursor "${next_cursor}" for the rest.`;
   } else if (offset > 0) {
@@ -89,7 +88,8 @@ export const pkgRevdeps = defineCapability({
     'Which packages depend on this one, and how many: the reverse hard dependencies (Depends, Imports, ' +
     'LinkingTo) within the Bioconductor propagation index, direct and transitive, with counts per level. ' +
     'Answers "if this package breaks, what is blocked downstream?". Also works for a name that is not in ' +
-    'the index, listing the packages still waiting on it. depth 1 gives direct dependents only. Long lists ' +
+    'the index (a CRAN or base R package, or one missing from the registry), listing the index packages that ' +
+    'depend on it. depth 1 gives direct dependents only. Long lists ' +
     'are paged: pass next_cursor back as cursor with the same package, universe and depth. Suggests is not ' +
     "followed, and CRAN packages are not included. universe 'bioc' is devel (default), 'bioc-release' is " +
     'release. Package names are case-sensitive. For the build state of a package use pkg_status; for ' +
@@ -116,7 +116,7 @@ export const pkgRevdeps = defineCapability({
     const inIndex = Object.hasOwn(index.packages, name);
     const direct = graph.dependents.get(name);
     if (!inIndex && direct === undefined) {
-      const matches = closeMatches(name, Object.keys(index.packages));
+      const matches = closeMatches(name, new Set([...Object.keys(index.packages), ...graph.dependents.keys()]));
       const otherUniverse =
         universe === 'bioc'
           ? " To check release, call again with universe 'bioc-release'."

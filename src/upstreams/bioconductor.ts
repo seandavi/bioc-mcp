@@ -15,7 +15,8 @@ export const bioconductorUpstream: Upstream = {
   ttlSeconds: 3600, // proposal: stats 1 h, config.yaml and manifests 1 h
   description:
     'bioconductor.org: config.yaml (release and devel versions), the published manifest index, ' +
-    'the source PACKAGES index of each repository, and package download stats (/packages/stats).',
+    'the source PACKAGES index of each repository (software, annotation and experiment data, workflows, books), ' +
+    'and package download stats (/packages/stats).',
 };
 
 const upstreamDetails = (url: string) => ({ upstream: bioconductorUpstream.id, url });

@@ -149,7 +149,8 @@ Behaviour:
 
 1. `path = \`data/prop/${pathSegment(universe)}/index.json\``, `url = new URL(path, REGISTRY_BASE_URL).href`.
 2. Memo: `const parsedIndexes = new WeakMap<UpstreamCache, Map<string, MemoEntry>>()` at module
-   scope, keyed by `deps.cache` then `url`, where `MemoEntry = { load: Promise<PropagationIndex>;
+   scope (Since #52 this memo, its load deadline and `withinMs` live in `SharedLoads` in
+   src/upstreams/shared-load.ts; `getPropagationIndex` calls `propagationIndexes.get`), keyed by `deps.cache` then `url`, where `MemoEntry = { load: Promise<PropagationIndex>;
    expiresAt: number;
    loadDeadline: number | undefined }`. The memo lives exactly as long as the cache it sits in front of, so each
    test app (fresh `createMemoryCache`) gets a fresh memo and the Worker (one cache per isolate)

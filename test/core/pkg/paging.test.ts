@@ -61,10 +61,9 @@ describe('takePage', () => {
     expect(takePage([], 0, 10)).toEqual({ page: [], nextCursor: null });
   });
 
-  test('multi-byte names are counted in UTF-8 bytes', () => {
-    // '"é"' is 4 bytes (+1 = 5); two of them fit in 10, three characters' worth would fit in 15 as ASCII only.
-    expect(takePage(['é', 'é', 'é'], 0, 10)).toEqual({ page: ['é', 'é'], nextCursor: '2' });
-    expect(takePage(['a', 'a', 'a'], 0, 10)).toEqual({ page: ['a', 'a'], nextCursor: '2' });
+  test('multi-byte names are counted in UTF-8 bytes, not UTF-16 code units', () => {
+    // Each case would return both items if takePage measured `.length` instead of UTF-8 bytes.
+    expect(takePage(['é', 'é'], 0, 9)).toEqual({ page: ['é'], nextCursor: '1' }); // '"é"' is 4 bytes + 1 = 5; two = 10
     expect(takePage(['日本', '日本'], 0, 10)).toEqual({ page: ['日本'], nextCursor: '1' }); // 8 + 1 = 9; two = 18
   });
 });

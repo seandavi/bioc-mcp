@@ -77,24 +77,28 @@ describe('pkg_revdeps on the fixtures', () => {
 
   test('flowWorkspace, direct only', async () => {
     const all = await revdeps({ package: 'flowWorkspace' });
-    const { data, envelope } = await revdeps({ package: 'flowWorkspace', depth: 1 });
+    const { data, envelope, fetch } = await revdeps({ package: 'flowWorkspace', depth: 1 });
     expect(data.max_depth).toBe(1);
     expect(data.counts.total).toBe(10);
     expect(data.counts.by_depth).toEqual([{ depth: 1, count: 10 }]);
     expect(data.dependents).toEqual([all.data.dependents[0]]);
     expect(envelope.summary).toContain('(10 directly; levels searched: 1).');
+    expect(envelope.sources).toEqual([INDEX_SOURCE]);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
   });
 
   test('a mid-graph package: ggcyto', async () => {
-    const { data } = await revdeps({ package: 'ggcyto' });
+    const { data, envelope, fetch } = await revdeps({ package: 'ggcyto' });
     expect(data.counts.direct).toBe(4);
     expect(data.dependents[0]).toEqual({ depth: 1, names: ['CompensAID', 'CytoML', 'CytoPipeline', 'flowGate'] });
     expect(data.counts.total).toBe(7);
     expect(data.dependents.at(-1)).toEqual({ depth: 3, names: ['MDSvis'] });
+    expect(envelope.sources).toEqual([INDEX_SOURCE]);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
   });
 
   test('a leaf: MDSvis', async () => {
-    const { data, envelope } = await revdeps({ package: 'MDSvis' });
+    const { data, envelope, fetch } = await revdeps({ package: 'MDSvis' });
     expect(data.in_index).toBe(true);
     expect(data.counts).toEqual({
       direct: 0,
@@ -107,19 +111,24 @@ describe('pkg_revdeps on the fixtures', () => {
       'MDSvis (bioc): no package in the propagation index depends on it through Depends, Imports or LinkingTo.' +
         NOT_IN_INDEX_SUMMARY_TAIL,
     );
+    expect(envelope.sources).toEqual([INDEX_SOURCE]);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
   });
 
   test('a name not in the index: BiocSet', async () => {
-    const { data, envelope } = await revdeps({ package: 'BiocSet' });
+    const { data, envelope, fetch } = await revdeps({ package: 'BiocSet' });
     expect(data.in_index).toBe(false);
     expect(data.counts.direct).toBe(3);
     expect(data.counts.direct_by_field).toEqual({ depends: 1, imports: 2, linking_to: 0 });
     expect(data.counts.total).toBe(3);
     expect(data.dependents).toEqual([{ depth: 1, names: ['RegEnrich', 'plaid', 'sparrow'] }]);
     expect(envelope.summary).toBe(
-      'BiocSet (bioc): 3 packages in the propagation index depend on it through Depends, Imports or LinkingTo (3 directly). BiocSet itself is not in the index.' +
+      'BiocSet (bioc): 3 packages in the propagation index depend on it through Depends, Imports or LinkingTo (3 directly). BiocSet itself is not in the index (it may be on CRAN or base R; pkg_missing_deps says whether it is missing).' +
         NOT_IN_INDEX_SUMMARY_TAIL,
     );
+    expect(envelope.sources).toEqual([INDEX_SOURCE]);
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
+    expect(pkgRevdeps.description).toContain('(a CRAN or base R package, or one missing from the registry)');
   });
 
   test('an unknown name is not_found with a suggestion and the release hint', async () => {
@@ -130,6 +139,19 @@ describe('pkg_revdeps on the fixtures', () => {
     expect(result.error.message).toBe(
       'No bioc propagation entry named "flowWorkspac", and no package in the bioc index depends on it. Package names are case-sensitive.' +
         ' Did you mean: flowWorkspace?' +
+        " To check release, call again with universe 'bioc-release'.",
+    );
+    expect(fetch.calls).toEqual([BIOC_INDEX_URL]);
+  });
+
+  test('a case slip on a name that only has dependents suggests it', async () => {
+    const { result, fetch } = await run({ package: 'biocset' });
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe('not_found');
+    expect(result.error.message).toBe(
+      'No bioc propagation entry named "biocset", and no package in the bioc index depends on it. Package names are case-sensitive.' +
+        ' Did you mean: BiocSet?' +
         " To check release, call again with universe 'bioc-release'.",
     );
     expect(fetch.calls).toEqual([BIOC_INDEX_URL]);

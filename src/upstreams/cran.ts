@@ -1,6 +1,6 @@
 import type { Deps } from '../core/deps';
 import type { Upstream } from './http';
-import { getPackageList, type PackageList } from './packages-file';
+import { getPackagesFile, type PackagesFile } from './packages-file';
 
 export const CRAN_BASE_URL = 'https://cloud.r-project.org/';
 
@@ -16,7 +16,7 @@ export const cranUpstream: Upstream = {
     'dependencies of Bioconductor packages are on CRAN.',
 };
 
-/** GET src/contrib/PACKAGES on CRAN. */
-export function getCranPackageList(deps: Deps): Promise<PackageList> {
-  return getPackageList(deps, cranUpstream, 'src/contrib/PACKAGES');
+/** GET src/contrib/PACKAGES on CRAN; an empty file is upstream_error. */
+export function getCranPackagesFile(deps: Deps): Promise<PackagesFile> {
+  return getPackagesFile(deps, cranUpstream, 'src/contrib/PACKAGES');
 }

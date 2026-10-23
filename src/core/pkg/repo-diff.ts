@@ -4,8 +4,7 @@ import { CapabilityError } from '../../errors';
 import {
   BIOC_REPOS,
   getBiocConfig,
-  getPackagesFile,
-  parsePackagesFile,
+  getBiocPackagesFile,
   type BiocRepo,
 } from '../../upstreams/bioconductor';
 import { sourceFor } from '../../upstreams/http';
@@ -230,24 +229,21 @@ export async function loadRepoDiff(
     getPropagationIndex(deps, universe),
     getBiocConfig(deps).then(async ({ response, config }) => {
       const bioconductorVersion = universe === 'bioc' ? config.devel_version : config.release_version;
-      const files = await Promise.all(BIOC_REPOS.map((repo) => getPackagesFile(deps, bioconductorVersion, repo)));
+      const files = await Promise.all(BIOC_REPOS.map((repo) => getBiocPackagesFile(deps, bioconductorVersion, repo)));
       return { configResponse: response, bioconductorVersion, files };
     }),
   ]);
   const { configResponse, bioconductorVersion, files } = compared;
 
-  // A cached response keeps its fetchedAt, so the key changes only when a PACKAGES file is refetched.
-  const key = [bioconductorVersion, ...files.map((r) => `${r.url} ${r.fetchedAt}`)].join('\n');
+  // A memoized PACKAGES file keeps its fetchedAt, so the key changes only when a PACKAGES file is reloaded.
+  const key = [bioconductorVersion, ...files.map((f) => `${f.response.url} ${f.response.fetchedAt}`)].join('\n');
   let memo = repoDiffs.get(index.packages);
   if (memo?.key !== key) {
     memo = {
       key,
       diff: diffRepos(
         index.packages,
-        files.map((response, i) => ({
-          repo: BIOC_REPOS[i]!,
-          versions: parsePackagesFile(response.body, response.url),
-        })),
+        files.map((file, i) => ({ repo: BIOC_REPOS[i]!, versions: file.versions })),
         index.response.url,
       ),
     };
@@ -257,7 +253,7 @@ export async function loadRepoDiff(
   return {
     diff: memo.diff,
     bioconductorVersion,
-    sources: [sourceFor(index.response), sourceFor(configResponse), ...files.map((response) => sourceFor(response))],
+    sources: [sourceFor(index.response), sourceFor(configResponse), ...files.map((file) => sourceFor(file.response))],
   };
 }
 

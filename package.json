@@ -18,7 +18,8 @@
     "cf-typegen": "wrangler types --strict-vars=false",
     "docs:build": "tsx scripts/build-docs-index.ts",
     "docs:fixtures": "tsx scripts/build-docs-index.ts --fixtures",
-    "docs:record": "tsx scripts/build-docs-index.ts --record-fixtures"
+    "docs:record": "tsx scripts/build-docs-index.ts --record-fixtures",
+    "eval:docs": "tsx scripts/eval-docs.ts"
   },
   "dependencies": {
     "@hono/zod-openapi": "^1.6.3",

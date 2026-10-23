@@ -37,9 +37,10 @@ src/
   envelope.ts         result envelope: data + text summary + provenance; size limit; MCP text blocks
   usage.ts            usage events → Analytics Engine (the usage metric)
   rate-limit.ts       per-address rate limit on /mcp and /api
-scripts/              build-time Node code (never bundled); build-docs-index.ts builds the index
+scripts/              build-time Node code (never bundled); build-docs-index.ts builds the index; eval-docs.ts runs the docs evaluation
 generated/            build output, gitignored: docs-index.js + docs-index.d.ts
 docs-sources.yaml     the docs corpus: site URL, repos and files, size limit
+eval/                 docs-questions.yaml: the docs search evaluation set (npm run eval:docs)
 docs/deploy.md        deploy runbook: secrets, first deploy, dispatch, usage queries
 test/
   fixtures/<upstream>/  recorded upstream responses
@@ -63,17 +64,27 @@ test/
   (`sources: [{ url, as_of }]`).
 - Upstream adapters build every path through `pathSegment()` (`src/upstreams/http.ts`) for each
   caller-supplied value and fetch only through `fetchUpstream`, which refuses redirects that leave
-  the upstream's base URL. Upstream `baseUrl`s are `https:` and end with `/`.
+  the upstream's base URL. Upstream `baseUrl`s are `https:`, carry no credentials and end with `/`;
+  `ttlSeconds` is a positive integer, `timeoutMs` (at most 60000) and `maxBytes` positive integers
+  when set (`assertUpstream` enforces this). `fetchUpstream` stops reading a body past `maxBytes`
+  (default 2 MiB) and fails with `upstream_error`.
 - The docs index is built, never fetched at runtime: `scripts/build-docs-index.ts` reads
   `docs-sources.yaml`, and the Worker imports the result from `generated/`. Adding a docs source
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
-  fixtures and the updated snapshot (`npx vitest run -u test/docs-index`).
+  fixtures and the updated snapshot (`npx vitest run -u test/docs-index`). Re-recording can drop a
+  section an eval question names; `test/docs-eval` then fails until `eval/docs-questions.yaml` is
+  updated in the same PR.
+- The docs evaluation (`eval/docs-questions.yaml`) holds real questions, each with every section URL
+  that answers it on its own. Questions go to `docs_search` verbatim. Never reword a question or
+  narrow its answers to improve a score. A ranking change reports `npm run eval:docs` before and
+  after in its PR.
 - MCP text content carries the data, not only the summary: a successful tool result's `content` is
   the summary, then `JSON.stringify({ data, sources })` (`envelopeTextBlocks` in src/envelope.ts),
   so clients that ignore `structuredContent` see the same facts. Never build `content` any other way.
-- No tool returns more than ~8 KB of text. `assertEnvelopeSize` checks `JSON.stringify(envelope)`
-  against `MAX_RESULT_BYTES` (8192), which is always larger than the MCP text content, so one
-  check bounds REST, `structuredContent` and `content`.
+- No tool returns more than ~8 KB of text. `invokeCapability` runs `assertEnvelopeSize` on the
+  envelope after the output schema parse (what the transports send), checking
+  `JSON.stringify(envelope)` against `MAX_RESULT_BYTES` (8192), which is always larger than the
+  MCP text content, so one check bounds REST, `structuredContent` and `content`.
 - Usage events carry no argument values and no client addresses; the Analytics Engine layout in
   src/usage.ts is append-only, and a layout change needs a new dataset name.
 - Tests never hit the network: upstream calls go through an injectable `fetch`, fed from
@@ -104,6 +115,10 @@ Node ≥ 22.12 (CI uses 24).
   until `npm run docs:fixtures` has run once.
 - `npm run docs:build`: build it from the live docs (network). `npm run docs:record` does the same
   and re-records `test/fixtures/docs/`.
+- `npm run eval:docs`: recall@1, recall@5 and MRR@10 of `docs_search` on
+  `eval/docs-questions.yaml`, over an index built in memory from `test/fixtures/docs/` (no
+  network). Add `-- --network` to use the live docs. It fails only when an answer URL is not in
+  the index; scores never fail it.
 - `npm run cf-typegen`: regenerate `worker-configuration.d.ts` after editing `wrangler.jsonc`.
 - Deploying: see docs/deploy.md. Never run wrangler deploy from a branch.
 

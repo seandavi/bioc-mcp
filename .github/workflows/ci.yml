@@ -20,3 +20,5 @@ jobs:
       - run: npm run docs:fixtures
       - run: npm run typecheck
       - run: npm test
+      - name: Docs search evaluation (report only)
+        run: npm run eval:docs

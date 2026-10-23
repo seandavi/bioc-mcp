@@ -8,6 +8,7 @@ import {
   pathSegment,
   type Upstream,
   type UpstreamResponse,
+  type UpstreamResponseMeta,
 } from './http';
 
 export const UNIVERSES = ['bioc', 'bioc-release'] as const;
@@ -26,6 +27,7 @@ export const registryUpstream: Upstream = {
   baseUrl: REGISTRY_BASE_URL,
   ttlSeconds: 300,
   timeoutMs: 15_000, // the index is ~8 MB
+  maxBytes: 16 * 1024 * 1024, // the devel index was 8.0 MB on 2026-10-22; /checks responses reach several MB
   description:
     'bioc-registry: the propagation index (which package versions passed the gate or were seeded), ' +
     'build observations, and captured per-job R CMD check output and build manifests, for the bioc ' +
@@ -57,7 +59,7 @@ export const RegistryEntrySchema = z.object({
 export type RegistryEntry = z.infer<typeof RegistryEntrySchema>;
 
 export interface PropagationIndex {
-  response: UpstreamResponse; // for sourceFor()
+  response: UpstreamResponseMeta; // for sourceFor(); the ~8 MB body is dropped once parsed
   packages: Record<string, unknown>; // parsed index.json; entries unvalidated
 }
 
@@ -168,7 +170,8 @@ async function loadPropagationIndex(
       details,
     );
   }
-  return { response, packages: json as Record<string, unknown> };
+  const { body: _body, ...meta } = response;
+  return { response: meta, packages: json as Record<string, unknown> };
 }
 
 /** packages[name] validated with RegistryEntrySchema; undefined when absent. */

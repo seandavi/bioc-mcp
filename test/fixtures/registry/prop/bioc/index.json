@@ -987,6 +987,338 @@
       "git_url": "https://github.com/bioc/edge"
     }
   },
+  "anndataR": {
+    "version": "1.3.3",
+    "sha256": "406ebf208ebcbdaae0aa3bd149cbfc879d24cd9aeb20f7feb5763cf2949fc598",
+    "ts": "2026-10-22T20:45:55.856Z",
+    "bioccheck": "WARNING",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "406ebf208ebcbdaae0aa3bd149cbfc879d24cd9aeb20f7feb5763cf2949fc598",
+        "file": "anndataR_1.3.3.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "c49614753d9ad6f66c92651fcecbab14bcb79d7a8045ced85c5d048231bf52e6",
+        "distro": "resolute",
+        "file": "anndataR_1.3.3.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "647e08a212c9426ba4891804ece4a3bdee75dc37f3f763b136a8fceaee42460e",
+        "distro": "resolute",
+        "file": "anndataR_1.3.3.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "a2bf9249cb5a9122f6bc6c75f42c58a20f684f46ef2c37ead1b3c7391ba72f21",
+        "file": "anndataR_1.3.3.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "b16608254c5ca0b9bed3eb248b41154549f7525184ecaa6a7e0c6487cf6e6b9d",
+        "file": "anndataR_1.3.3.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "fbad60d26bcf1e82db01bdb317a39f90935743a6ee8a452fb1fc49e8b324eed6",
+        "file": "anndataR_1.3.3.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "00ccef9936df292371125a3303c8ea491e129210b1621b3fdfbd843bb0496381",
+        "file": "anndataR_1.3.3.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "8e4796adf83bf44a24d836a8ad69c5a3dd8e60fd8f22270cad1016f1919e0c7a",
+        "file": "anndataR_1.3.3.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "2f6707fc6a8215b2401951f70eb8cd91410d5003610aa7b1b4d86a617eb9b3ed",
+        "file": "anndataR_1.3.3.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 4.5.0)",
+      "Imports": "cli, lifecycle, Matrix, methods, purrr, R6 (>= 2.4.0), reticulate (>= 1.41.1), rlang, stats",
+      "Suggests": "BiocFileCache, BiocStyle, DelayedArray, HDF5Array, jsonlite, knitr, processx, rhdf5 (>= 2.57.5), Rarr (>= 2.1.13), rmarkdown, S4Vectors, Seurat, SeuratObject, SingleCellExperiment, spelling, SummarizedExperiment, testthat (>= 3.0.0), vctrs, withr, yaml",
+      "License": "MIT + file LICENSE",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "AnnData interoperability in R",
+      "Description": "Bring the power and flexibility of AnnData to the R\necosystem, allowing you to effortlessly manipulate and analyse\nyour single-cell data. This package lets you work with backed\nh5ad and zarr files, directly access various slots (e.g. X,\nobs, var), or convert the data into SingleCellExperiment and\nSeurat objects.",
+      "biocViews": "SingleCell, DataImport, DataRepresentation",
+      "Author": "Robrecht Cannoodt [aut, cre] (ORCID:\n<https://orcid.org/0000-0003-3641-729X>, github: rcannood),\nLuke Zappia [aut] (ORCID: <https://orcid.org/0000-0001-7744-8565>,\ngithub: lazappi),\nMartin Morgan [aut] (ORCID: <https://orcid.org/0000-0002-5874-8148>,\ngithub: mtmorgan),\nLouise Deconinck [aut] (ORCID: <https://orcid.org/0000-0001-8100-6823>,\ngithub: LouiseDck),\nDanila Bredikhin [ctb] (ORCID: <https://orcid.org/0000-0001-8089-6983>,\ngithub: gtca),\nIsaac Virshup [ctb] (ORCID: <https://orcid.org/0000-0002-1710-8945>,\ngithub: ivirshup),\nBrian Schilder [ctb] (ORCID: <https://orcid.org/0000-0001-5949-2191>,\ngithub: bschilder),\nChananchida Sang-aram [ctb] (ORCID:\n<https://orcid.org/0000-0002-0922-0822>, github: csangara),\nArtür Manukyan [ctb] (ORCID: <https://orcid.org/0000-0002-0441-9517>,\ngithub: Artur-man),\nHugo Gruson [ctb] (ORCID: <https://orcid.org/0000-0002-4094-1476>,\ngithub: Bisaloo),\nData Intuitive [fnd],\nChan Zuckerberg Initiative [fnd],\nscverse consortium [spn]",
+      "Maintainer": "Robrecht Cannoodt <rcannood@gmail.com>",
+      "URL": "https://anndataR.scverse.org/, https://github.com/scverse/anndataR",
+      "BugReports": "https://github.com/scverse/anndataR/issues",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "usage_python.html",
+          "title": "Python Integration with anndataR"
+        },
+        {
+          "filename": "usage_seurat.html",
+          "title": "Read/write Seurat objects using anndataR"
+        },
+        {
+          "filename": "usage_singlecellexperiment.html",
+          "title": "Read/write SingleCellExperiment objects using anndataR"
+        },
+        {
+          "filename": "anndataR.html",
+          "title": "Using anndataR"
+        }
+      ],
+      "commit": {
+        "id": "339176dfe3c961c5aa329d700af59d398a19f3ab",
+        "time": 1792651635
+      },
+      "git_url": "https://github.com/bioc/anndataR"
+    },
+    "archs": [
+      "linux",
+      "win",
+      "mac"
+    ],
+    "origin": "r-universe"
+  },
+  "progeny": {
+    "version": "1.35.0",
+    "sha256": "20587929888b1f1f2fc11b97183b08cc884d4bfe9352761711a8b705220e5402",
+    "ts": "2026-08-08T21:06:53.166Z",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "20587929888b1f1f2fc11b97183b08cc884d4bfe9352761711a8b705220e5402",
+        "file": "progeny_1.35.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "a247b910ded3950bff7e03cba476df54b70b16afe8d1378b09dbdd1da2a43f98",
+        "file": "progeny_1.35.0.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "5151101621a4f447a4c8c5788f834e0236a9eb1a7922888fc4016a4b1bda61e2",
+        "file": "progeny_1.35.0.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "a96ac935f956c9ea2d0c8480479f30b312445ee9cb7f7ca12345e6636bd4b435",
+        "file": "progeny_1.35.0.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "427d0a5b642f2bacd9a2e0dc61f02ea75b3bb41f14abb29e7a06e2fc71d21164",
+        "file": "progeny_1.35.0.tgz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "85426a83c112c76f0634e1d2761b2637aa09e35725f2b25292c36a8e4a02f6c5",
+        "file": "progeny_1.35.0.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "0cc669eeca3d45ea51ef22b5a300128bbfc2cee90fdc602291566fb936b7395d",
+        "file": "progeny_1.35.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "8dd2e24a8053ff9005add5b94829c3f2d038c024a92b31d850668a894bd24a07",
+        "file": "progeny_1.35.0.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "15c3cce206fbeb5efbd7864ae5ce8dfdb5b6f31cedd32f273a5d758f08dd15a0",
+        "file": "progeny_1.35.0.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 3.6.0)",
+      "Imports": "Biobase, stats, dplyr, tidyr, ggplot2, ggrepel, gridExtra, decoupleR, reshape2",
+      "Suggests": "airway, biomaRt, BiocFileCache, broom, Seurat, SingleCellExperiment, DESeq2, BiocStyle, knitr, readr, readxl, pheatmap, tibble, rmarkdown, testthat (>= 2.1.0)",
+      "License": "Apache License (== 2.0) | file LICENSE",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Pathway RespOnsive GENes for activity inference from gene\nexpression",
+      "Description": "PROGENy is resource that leverages a large compendium of\npublicly available signaling perturbation experiments to yield\na common core of pathway responsive genes for human and mouse.\nThese, coupled with any statistical method, can be used to\ninfer pathway activities from bulk or single-cell\ntranscriptomics.",
+      "biocViews": "SystemsBiology, GeneExpression, FunctionalPrediction,\nGeneRegulation",
+      "Author": "Michael Schubert [aut],\nAlberto Valdeolivas [ctb] (ORCID:\n<https://orcid.org/0000-0001-5482-9023>),\nChristian H. Holland [ctb] (ORCID:\n<https://orcid.org/0000-0002-3060-5786>),\nIgor Bulanov [ctb],\nAurélien Dugourd [cre, ctb]",
+      "Maintainer": "Aurélien Dugourd <aurelien.dugourd@bioquant.uni-heidelberg.de>",
+      "URL": "https://github.com/saezlab/progeny",
+      "BugReports": "https://github.com/saezlab/progeny/issues",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "progeny.html",
+          "title": "PROGENy pathway signatures"
+        }
+      ],
+      "commit": {
+        "id": "9779c69771093ae4f39373fdff63eb788473c134",
+        "time": 1777380401
+      },
+      "git_url": "https://github.com/bioc/progeny"
+    }
+  },
+  "TimerQuant": {
+    "version": "1.43.0",
+    "sha256": "d746af2290e1d06a7c2bbf80e456b0d302f3c3d2d4b5c6370d541219ae00e9a9",
+    "ts": "2026-10-06T20:17:44Z",
+    "bioccheck": "error",
+    "archs": [
+      "linux"
+    ],
+    "origin": "bioc-build",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "4.6",
+        "sha256": "d746af2290e1d06a7c2bbf80e456b0d302f3c3d2d4b5c6370d541219ae00e9a9",
+        "file": "TimerQuant_1.43.0.tar.gz"
+      }
+    ],
+    "desc": {
+      "Depends": "shiny",
+      "Imports": "ggplot2, grid, gridExtra, deSolve, dplyr, locfit",
+      "Suggests": "BiocStyle, reshape2, knitr, shinyBS",
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Timer Quantification",
+      "Description": "Supplementary Data package for tandem timer methods paper\nby Barry et al. (2015) including TimerQuant shiny applications.",
+      "Maintainer": "Joseph Barry <joseph.barry@embl.de>",
+      "Author": "Joseph Barry",
+      "biocViews": "ExperimentData, Danio_rerio_Data, HighThroughputImagingData,\nTissue",
+      "commit": {
+        "id": "991b0da6bdb37d919c7ef018c352ce81d1421213",
+        "time": 1777379319
+      },
+      "git_url": "https://git.bioconductor.org/packages/TimerQuant"
+    }
+  },
+  "methylationArrayAnalysis": {
+    "version": "1.37.1",
+    "sha256": "b5364c2577ab7bcc22e1f6c74c5b3e578ad422de567e2467b0239feec700b225",
+    "ts": "2026-10-06T20:10:14Z",
+    "bioccheck": "ok",
+    "archs": [
+      "linux"
+    ],
+    "origin": "bioc-build",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "4.6",
+        "sha256": "b5364c2577ab7bcc22e1f6c74c5b3e578ad422de567e2467b0239feec700b225",
+        "file": "methylationArrayAnalysis_1.37.1.tar.gz"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 3.3.0), knitr, rmarkdown, BiocStyle, limma, minfi,\nIlluminaHumanMethylation450kanno.ilmn12.hg19,\nIlluminaHumanMethylation450kmanifest, RColorBrewer, missMethyl,\nmatrixStats, minfiData, Gviz, DMRcate, stringr,\nFlowSorted.Blood.450k",
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "A cross-package Bioconductor workflow for analysing methylation\narray data",
+      "Description": "Methylation in the human genome is known to be associated\nwith development and disease. The Illumina Infinium methylation\narrays are by far the most common way to interrogate\nmethylation across the human genome. This Bioconductor workflow\nuses multiple packages for the analysis of methylation array\ndata. Specifically, we demonstrate the steps involved in a\ntypical differential methylation analysis pipeline including:\nquality control, filtering, normalization, data exploration and\nstatistical testing for probe-wise differential methylation. We\nfurther outline other analyses such as differential methylation\nof regions, differential variability analysis, estimating cell\ntype composition and gene ontology testing. Finally, we provide\nsome examples of how to visualise methylation array data.",
+      "Maintainer": "Jovana Maksimovic <jovana.maksimovic@petermac.org>",
+      "Author": "Jovana Maksimovic [aut, cre]",
+      "biocViews": "Workflow, EpigeneticsWorkflow",
+      "commit": {
+        "id": "f2f5edef895add108b89247a9e7028b16f11dbe7",
+        "time": 1786939667
+      },
+      "git_url": "https://git.bioconductor.org/packages/methylationArrayAnalysis"
+    }
+  },
+  "OMA": {
+    "version": "1.1.8",
+    "sha256": "abda013d8b60f6ec64d4f5490b3e0e4e4352ce8d00b0c67a6839a116cff895ce",
+    "ts": "2026-10-17T14:30:29.518Z",
+    "bioccheck": "ERROR",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "abda013d8b60f6ec64d4f5490b3e0e4e4352ce8d00b0c67a6839a116cff895ce",
+        "file": "OMA_1.1.8.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "5a66e3899f6a004ba56b60946f44610fb3744c2a688411759aa1e0abfbe0d123",
+        "distro": "resolute",
+        "file": "OMA_1.1.8.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "a500275acc9820b6453d57a877b7e5407a4b524c13d09c03bb16f4474953cada",
+        "distro": "resolute",
+        "file": "OMA_1.1.8.tar.gz"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 4.5.0)",
+      "Suggests": "ape, BiocBook, BiocManager, BiocStyle, bluster, ComplexHeatmap, curatedMetagenomicData, dendextend, DirichletMultinomial, dplyr, DT, factoextra, ggdag, ggExtra, ggplot2, ggpubr, ggtree, glue, gt, knitr, Maaslin2, maaslin3, mediation, mia, miaTime, miaViz, microbiomeDataSets, mikropml, MOFA2, NbClust, NMF, patchwork, philr, phyloseq, qgraph, rebook, scales, scater, scuttle, sechm, sessioninfo, shadowtext, stats, tidySingleCellExperiment, tidyverse, vegan",
+      "License": "CC BY 4.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Orchestrating Microbiome Analysis with Bioconductor",
+      "Description": "This is a reference cookbook for **Microbiome Data\nScience** with R and Bioconductor.",
+      "biocViews": "Microbiome, Workflow",
+      "Author": "Tuomas Borman [aut, cre] (ORCID:\n<https://orcid.org/0000-0002-8563-8884>),\nLeo Lahti [aut] (ORCID: <https://orcid.org/0000-0001-5537-637X>),\nFelix GM Ernst [aut] (ORCID: <https://orcid.org/0000-0001-5064-0928>),\nand others (see the full list of contributors) [ctb]",
+      "Maintainer": "Tuomas Borman <tuomas.v.borman@utu.fi>",
+      "URL": "https://bioconductor.org/books/release/OMA/,\nhttps://github.com/microbiome/OMA",
+      "BugReports": "https://github.com/microbiome/OMA/issues",
+      "SystemRequirements": "quarto",
+      "VignetteBuilder": "knitr",
+      "Date": "2026-10-17",
+      "vignettes": [
+        {
+          "filename": "stub.html",
+          "title": "Link to book"
+        }
+      ],
+      "commit": {
+        "id": "a33442b2c643b1194d87945f2478cdb28cf1d675",
+        "time": 1792226516
+      },
+      "git_url": "https://github.com/bioc/OMA"
+    },
+    "archs": [
+      "linux"
+    ],
+    "origin": "r-universe"
+  },
   "GEOfastq": {
     "version": "1.21.0",
     "sha256": "2eee5140dd6dfcc8b48182061c75803999153b1532a40429ba980a224a80e062",

@@ -3,6 +3,7 @@ import * as z from 'zod';
 import { CapabilityError } from '../errors';
 import type { Deps } from '../core/deps';
 import { fetchUpstream, fetchUpstreamJson, pathSegment, type Upstream, type UpstreamResponse } from './http';
+import { PackageNameSchema } from './package-name';
 
 export const BIOCONDUCTOR_BASE_URL = 'https://bioconductor.org/';
 
@@ -13,7 +14,7 @@ export const bioconductorUpstream: Upstream = {
   ttlSeconds: 3600, // proposal: stats 1 h, config.yaml and manifests 1 h
   description:
     'bioconductor.org: config.yaml (release and devel versions), the published manifest index, ' +
-    'and package download stats (/packages/stats).',
+    'the source PACKAGES index of each repository, and package download stats (/packages/stats).',
 };
 
 const upstreamDetails = (url: string) => ({ upstream: bioconductorUpstream.id, url });
@@ -82,6 +83,103 @@ export async function getManifestIndex(deps: Deps): Promise<{ response: Upstream
     );
   }
   return { response, index: parsed.data };
+}
+
+// Source PACKAGES indexes
+
+/** bioconductor.org repositories the registry carries packages for; data/annotation is not one (it has none). */
+export const BIOC_REPOS = ['bioc', 'data-experiment', 'workflows', 'books'] as const;
+export type BiocRepo = (typeof BIOC_REPOS)[number];
+
+const BIOC_REPO_PATHS: Record<BiocRepo, string> = {
+  bioc: 'bioc',
+  'data-experiment': 'data/experiment',
+  workflows: 'workflows',
+  books: 'books',
+};
+
+const BIOC_VERSION = /^\d+\.\d+$/;
+
+/** 'packages/{version}/{repo path}/src/contrib/PACKAGES'; version through pathSegment(), repo paths are constants. */
+export function packagesPath(biocVersion: string, repo: BiocRepo): string {
+  if (!BIOC_VERSION.test(biocVersion)) {
+    throw new CapabilityError(
+      'upstream_error',
+      `bioconductor.org config.yaml names version "${biocVersion}", which is not of the form 3.24`,
+      upstreamDetails(new URL('config.yaml', BIOCONDUCTOR_BASE_URL).href),
+    );
+  }
+  return `packages/${pathSegment(biocVersion)}/${BIOC_REPO_PATHS[repo]}/src/contrib/PACKAGES`;
+}
+
+/** GET packages/{version}/{repo path}/src/contrib/PACKAGES. The body is parsed by the caller (parsePackagesFile). */
+export async function getPackagesFile(deps: Deps, biocVersion: string, repo: BiocRepo): Promise<UpstreamResponse> {
+  try {
+    return await fetchUpstream(deps, bioconductorUpstream, packagesPath(biocVersion, repo));
+  } catch (error) {
+    if (error instanceof CapabilityError && error.code === 'not_found') {
+      throw new CapabilityError(
+        'upstream_error',
+        `bioconductor.org has no ${BIOC_REPO_PATHS[repo]} PACKAGES for Bioconductor ${biocVersion} (${error.details.url})`,
+        error.details,
+      );
+    }
+    throw error;
+  }
+}
+
+const PACKAGES_FIELD = /^([^\s:]+):[ \t]*(.*)$/;
+const PACKAGES_VERSION = /^\d+([.-]\d+)*$/;
+
+/** Package → Version from a PACKAGES (DCF) body, in file order; throws upstream_error (with `url`) on any deviation. */
+export function parsePackagesFile(body: string, url: string): Map<string, string> {
+  const malformed = () =>
+    new CapabilityError(
+      'upstream_error',
+      `bioconductor.org returned a PACKAGES file in an unexpected format (${url})`,
+      upstreamDetails(url),
+    );
+  const versions = new Map<string, string>();
+  let packageNames: string[] = [];
+  let packageVersions: string[] = [];
+  let inStanza = false;
+
+  const endStanza = () => {
+    if (!inStanza) return;
+    const name = packageNames[0];
+    const version = packageVersions[0];
+    if (
+      packageNames.length !== 1 ||
+      packageVersions.length !== 1 ||
+      name === undefined ||
+      version === undefined ||
+      !PackageNameSchema.safeParse(name).success ||
+      !PACKAGES_VERSION.test(version) ||
+      versions.has(name)
+    ) {
+      throw malformed();
+    }
+    versions.set(name, version);
+    packageNames = [];
+    packageVersions = [];
+    inStanza = false;
+  };
+
+  for (const line of body.split(/\r?\n/)) {
+    if (/^\s*$/.test(line)) {
+      endStanza();
+    } else if (line.startsWith(' ') || line.startsWith('\t')) {
+      if (!inStanza) throw malformed();
+    } else {
+      const match = PACKAGES_FIELD.exec(line);
+      if (!match) throw malformed();
+      inStanza = true;
+      if (match[1] === 'Package') packageNames.push(match[2]!.trim());
+      else if (match[1] === 'Version') packageVersions.push(match[2]!.trim());
+    }
+  }
+  endStanza();
+  return versions;
 }
 
 // Download stats

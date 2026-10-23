@@ -6,11 +6,15 @@ import { opsModule } from '../../src/core/ops';
 import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
+import { docsTestModule } from '../support/docs';
 import { GITHUB_RECORDED_AT, githubRoutes, githubUrl } from '../support/github-routes';
 import type { FixtureRoute } from '../support/fixture-fetch';
 
 const KINDS = ['summary', 'issues', 'prs', 'workflows', 'failures'] as const;
 const now = () => GITHUB_RECORDED_AT;
+
+// pkg's triage prompt names the docs tools, so a registry holding pkg must hold docs too.
+const docsModule = await docsTestModule();
 
 let client: Client | undefined;
 afterEach(async () => {
@@ -42,10 +46,10 @@ describe('MCP', () => {
     expect(tool.map((t) => t.name)).toEqual(['ops_activity']);
     expect(tool[0]!.outputSchema).toBeDefined();
     await client.close();
-    const all = makeTestApp({ routes: githubRoutes(), extraModules: [pkgModule, opsModule], now });
+    const all = makeTestApp({ routes: githubRoutes(), extraModules: [pkgModule, opsModule, docsModule], now });
     client = await connectClient(all.app, '/mcp');
     const names = (await client.listTools()).tools.map((t) => t.name);
-    const expected = [metaModule, pkgModule, opsModule].flatMap((m) => m.capabilities.map((c) => c.name));
+    const expected = [metaModule, pkgModule, opsModule, docsModule].flatMap((m) => m.capabilities.map((c) => c.name));
     expect(names.filter((name) => !name.startsWith('example_')).sort()).toEqual([...expected].sort());
   });
 

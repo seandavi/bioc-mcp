@@ -130,7 +130,9 @@ it up; `validateRegistry` enforces naming and REST-compatible input.
 
 MCP resources and prompts belong to a module too: `resources` (a `ResourceTemplateDef` under
 `bioc://<module>/`) and `prompts` (`definePrompt`, listing every tool its text names in `tools`).
-Both are MCP only; a prompt is offered only on toolsets that include all of its tools. Bundled,
+Both are MCP only; a prompt is offered only on toolsets that include all of its tools, and a prompt
+that names another module's tools makes that module a registration dependency (`validateRegistry`
+rejects unknown tools; test apps must register both). Bundled,
 build-time data (like the docs index) is reported to `bioc://about` through `datasets`.
 
 ## Git

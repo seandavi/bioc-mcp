@@ -4,8 +4,12 @@ import { AboutSchema } from '../../src/core/about';
 import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
+import { docsTestModule } from '../support/docs';
 import { bioconductorRoutes, statsPageUrl, statsTabUrl } from '../support/bioconductor-routes';
 import { BIOC_INDEX_URL, buildsUrl, checksUrl, pkgRoutes, RELEASE_INDEX_URL, ruUrl } from '../support/pkg-routes';
+
+// pkg's triage prompt names the docs tools, so a registry holding pkg must hold docs too.
+const docsModule = await docsTestModule();
 
 let client: Client | undefined;
 afterEach(async () => {
@@ -14,7 +18,7 @@ afterEach(async () => {
 });
 
 function testApp() {
-  return makeTestApp({ routes: { ...pkgRoutes, ...bioconductorRoutes }, extraModules: [pkgModule] });
+  return makeTestApp({ routes: { ...pkgRoutes, ...bioconductorRoutes }, extraModules: [pkgModule, docsModule] });
 }
 
 async function get(path: string) {

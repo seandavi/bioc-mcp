@@ -69,7 +69,9 @@ test/
   when set (`assertUpstream` enforces this). `fetchUpstream` stops reading a body past `maxBytes`
   (default 2 MiB) and fails with `upstream_error`.
 - The docs index is built, never fetched at runtime: `scripts/build-docs-index.ts` reads
-  `docs-sources.yaml`, and the Worker imports the result from `generated/`. Adding a docs source
+  `docs-sources.yaml`, and the Worker imports the result from `generated/`. The build also fetches each
+  site page's HTML, only to split h2 records at their h3 headings; those fixtures sit next to
+  `search.json` and are not `meta.inputs` entries. Adding a docs source
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
   fixtures and the updated snapshot (`npx vitest run -u test/docs-index`). Re-recording can drop a
   section an eval question names; `test/docs-eval` then fails until `eval/docs-questions.yaml` is

@@ -5,7 +5,7 @@ import type { DocsIndex } from '../../docs-index/load';
 import { DocsSourceKindSchema, type DocsRecord } from '../../docs-index/schema';
 import { defineCapability, type Capability } from '../capability';
 import { chunkText, DOCS_READ_TEXT_BUDGET } from './chunk';
-import { docsPages, docsPageSource, renderPage, renderSection, sectionLabel, type DocsPage, type DocsPages } from './pages';
+import { docsPages, docsPageSource, renderPage, renderSectionTree, sectionLabel, type DocsPage, type DocsPages } from './pages';
 
 /** Longest id_or_url that docs_read and the docs-page resource accept. */
 export const MAX_DOCS_REFERENCE_LENGTH = 2048;
@@ -188,7 +188,7 @@ export function docsReadCapability(
       if (target.kind === 'missing') throw docsNotFound(index, pages, id_or_url, target, 'tool');
 
       const { page } = target;
-      const full = target.kind === 'page' ? renderPage(page) : renderSection(target.record);
+      const full = target.kind === 'page' ? renderPage(page) : renderSectionTree(page, target.record);
       const offset = cursor === undefined ? 0 : Number(cursor);
       if (offset > full.length || (offset === full.length && offset > 0)) {
         throw new CapabilityError(

@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { docsPages, docsPageSource, docsSource, renderPage, renderSection, sectionLabel, type DocsPages } from '../../../src/core/docs/pages';
+import { docsPages, docsPageSource, docsSource, renderPage, renderSection, renderSectionTree, sectionLabel, subsectionsOf, type DocsPages } from '../../../src/core/docs/pages';
 import type { DocsIndex } from '../../../src/docs-index/load';
 import type { DocsRecord } from '../../../src/docs-index/schema';
 import { fixtureDocsIndex, syntheticDocsIndex } from '../../support/docs';
@@ -136,6 +136,25 @@ describe('rendering', () => {
         expect(text.split(sectionBody), section.id).toHaveLength(2);
       }
     }
+  });
+
+  it('finds the subsections of a section: the run after it with nested crumbs', () => {
+    const page = docsPages(
+      syntheticDocsIndex([
+        record({ id: 'site:z.html', url: 'https://docs.test/z.html', text: 'intro' }),
+        record({ id: 'site:z.html#a', url: 'https://docs.test/z.html#a', section: 'A', crumbs: ['Top'], text: 'A\nintro' }),
+        record({ id: 'site:z.html#a1', url: 'https://docs.test/z.html#a1', section: 'A1', crumbs: ['Top', 'A'], text: 'A1\none' }),
+        record({ id: 'site:z.html#a2', url: 'https://docs.test/z.html#a2', section: 'A2', crumbs: ['Top', 'A'], text: 'A2\ntwo' }),
+        record({ id: 'site:z.html#b', url: 'https://docs.test/z.html#b', section: 'B', crumbs: ['Top'], text: 'B\nb' }),
+      ]),
+    ).list[0]!;
+    const [head, a, a1, a2, b] = page.records as [DocsRecord, DocsRecord, DocsRecord, DocsRecord, DocsRecord];
+    expect(subsectionsOf(page, a)).toEqual([a1, a2]);
+    expect(subsectionsOf(page, b)).toEqual([]);
+    expect(subsectionsOf(page, head)).toEqual([]);
+    expect(subsectionsOf(page, record({ id: 'site:z.html#c', url: 'https://docs.test/z.html#c' }))).toEqual([]);
+    expect(renderSectionTree(page, a)).toBe([a, a1, a2].map(renderSection).join('\n\n'));
+    expect(renderSectionTree(page, b)).toBe(renderSection(b));
   });
 
   it('keeps a page-level body that does not contain the first section', () => {

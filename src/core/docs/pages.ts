@@ -132,6 +132,29 @@ export function renderSection(record: DocsRecord): string {
 }
 
 /**
+ * The records nested under `record` on `page`: the maximal run of records right after it in
+ * page.records whose crumbs are [...record.crumbs, record.section]. [] for the page-level record
+ * or a record whose section is ''.
+ */
+export function subsectionsOf(page: DocsPage, record: DocsRecord): DocsRecord[] {
+  if (record.id === page.id || record.section === '') return [];
+  const at = page.records.indexOf(record);
+  if (at === -1) return [];
+  const crumbs = [...record.crumbs, record.section];
+  const nested: DocsRecord[] = [];
+  for (const next of page.records.slice(at + 1)) {
+    if (next.crumbs.length !== crumbs.length || next.crumbs.some((crumb, i) => crumb !== crumbs[i])) break;
+    nested.push(next);
+  }
+  return nested;
+}
+
+/** renderSection(record), then renderSection(s) for each of subsectionsOf(page, record), joined by '\n\n'. */
+export function renderSectionTree(page: DocsPage, record: DocsRecord): string {
+  return [record, ...subsectionsOf(page, record)].map(renderSection).join('\n\n');
+}
+
+/**
  * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record.
  * An ADR's page-level record holds the whole ADR, and its section records repeat that text; the page-level
  * body is cut where the first section's body last starts, which keeps the 'Status:' and 'Date:' lines and never

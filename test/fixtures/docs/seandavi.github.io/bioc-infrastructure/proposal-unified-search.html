@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-10-02">
+
+<title>Unified search: a proposal – Bioconductor Infrastructure</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7e725af8e1b2581408ee27b5818d3660.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-88cd55e827d36f33feca41c66d4eeb1c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KLLV1GCF4E"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KLLV1GCF4E', { 'anonymize_ip': true});
+</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bioconductor Infrastructure</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./install.html"> 
+<span class="menu-text">Installing Packages</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./report.html"> 
+<span class="menu-text">Report a Problem</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/seandavi/bioc-infrastructure"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./proposal-unified-search.html">Proposals</a></li><li class="breadcrumb-item"><a href="./proposal-unified-search.html">Unified Search</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./install.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installing Packages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reporting a Problem</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mirror-how-to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Running a Mirror</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">How it works</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-it-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How bioconductor.org Works</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cache.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge Cache</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./astro-site-build.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Astro Site Build</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./propagation-gate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propagation Gate</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Operating</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Operations &amp; Runbooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CI &amp; Scheduled Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Plans</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry-switch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registry Switch (plan)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cloudflare-account-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cloudflare Account Migration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Proposals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proposal-unified-search.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Unified Search</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Records</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./improvements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What the New Site Has Changed</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./traffic-2026-09-30.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Day of Traffic (2026-09-30)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dns-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNS Inventory &amp; Cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-universe-size-limits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">r-universe Size Limits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-packages-in-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Packages in r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./current-state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Current State (legacy)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./legacy-propagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Legacy Propagation &amp; Push Hooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./builder-transition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Builder Transition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./views-and-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VIEWS &amp; r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducing-package-pages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Download Stats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r2-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R2 Migration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decommission-plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decommission Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Decisions (ADRs)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0001-public-docs-site-with-a-publication-boundary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0001 — The docs site is public, with a publication boundary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0002-mirror-access-logs-unfiltered.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0002 — Mirror the access logs unfiltered; interpret with views</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0003 — Request logging after the Cloudflare cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0004-download-statistics-are-generated-static-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0004 — Download statistics are generated static files, not a live service</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0005-completeness-is-measured-by-origin-not-page-type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0005 — Completeness is measured by origin, not by page type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0006-old-releases-and-their-checkresults-are-archival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0006 — 33 of 35 releases, and checkResults for them, are archival</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0007-cloudflare-workflows-for-the-release-roll-guard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0008-three-repos-and-a-strangler-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0008 — Split by audience into three repositories; migrate by strangling behind the Worker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0009-client-addresses-are-hashed-at-the-edge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0009 — Client addresses are hashed at the edge, not de-identified downstream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0011-one-propagation-gate-for-every-producer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0011 — One propagation gate for every producer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0012 — Client addresses are stored raw; de-identification is a view</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0013-redirects-land-on-content-or-they-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0013 — A redirect lands on the content, or it goes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#guiding-principles" id="toc-guiding-principles" class="nav-link" data-scroll-target="#guiding-principles">Guiding principles</a></li>
+  <li><a href="#what-changed-since-the-grant-was-written" id="toc-what-changed-since-the-grant-was-written" class="nav-link" data-scroll-target="#what-changed-since-the-grant-was-written">What changed since the grant was written</a></li>
+  <li><a href="#who-uses-the-site" id="toc-who-uses-the-site" class="nav-link" data-scroll-target="#who-uses-the-site">Who uses the site</a>
+  <ul class="collapse">
+  <li><a href="#how-search-on-the-site-is-used-today" id="toc-how-search-on-the-site-is-used-today" class="nav-link" data-scroll-target="#how-search-on-the-site-is-used-today">How search on the site is used today</a></li>
+  </ul></li>
+  <li><a href="#what-exists-today" id="toc-what-exists-today" class="nav-link" data-scroll-target="#what-exists-today">What exists today</a>
+  <ul class="collapse">
+  <li><a href="#the-data-plane" id="toc-the-data-plane" class="nav-link" data-scroll-target="#the-data-plane">The data plane</a></li>
+  <li><a href="#how-indexes-stay-current" id="toc-how-indexes-stay-current" class="nav-link" data-scroll-target="#how-indexes-stay-current">How indexes stay current</a></li>
+  </ul></li>
+  <li><a href="#personas" id="toc-personas" class="nav-link" data-scroll-target="#personas">Personas</a></li>
+  <li><a href="#search-experiences" id="toc-search-experiences" class="nav-link" data-scroll-target="#search-experiences">Search experiences</a></li>
+  <li><a href="#agents" id="toc-agents" class="nav-link" data-scroll-target="#agents">Agents</a></li>
+  <li><a href="#extending-it" id="toc-extending-it" class="nav-link" data-scroll-target="#extending-it">Extending it</a></li>
+  <li><a href="#sustainability-and-cost" id="toc-sustainability-and-cost" class="nav-link" data-scroll-target="#sustainability-and-cost">Sustainability and cost</a></li>
+  <li><a href="#possible-measures" id="toc-possible-measures" class="nav-link" data-scroll-target="#possible-measures">Possible measures</a></li>
+  <li><a href="#invariants" id="toc-invariants" class="nav-link" data-scroll-target="#invariants">Invariants</a></li>
+  <li><a href="#funding-data" id="toc-funding-data" class="nav-link" data-scroll-target="#funding-data">Funding data</a></li>
+  <li><a href="#the-original-plan" id="toc-the-original-plan" class="nav-link" data-scroll-target="#the-original-plan">The original plan</a></li>
+  <li><a href="#proposed-sequence" id="toc-proposed-sequence" class="nav-link" data-scroll-target="#proposed-sequence">Proposed sequence</a></li>
+  <li><a href="#open-questions" id="toc-open-questions" class="nav-link" data-scroll-target="#open-questions">Open questions</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/proposal-unified-search.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/proposal-unified-search.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./proposal-unified-search.html">Proposals</a></li><li class="breadcrumb-item"><a href="./proposal-unified-search.html">Unified Search</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Unified search: a proposal</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 2, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Status: proposal, under discussion (2026-10-02)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A proposal for delivering the unified search funded by CZI’s Essential Open Source Software program (EOSS cycle 6, <em>Supporting and Sustaining Bioconductor Developers</em>, funded in 2024). None of the search work in that grant has been built yet. This page proposes a rescope based on what exists now. Nothing here is decided. Counts are from 2026-10-02 unless another date is given.</p>
+</div>
+</div>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The grant promised a unified search across bioconductor.org, the support site, code.bioconductor.org and the YouTube channel, built on a hosted search engine with a public API. Three of those four platforms have changed since it was written:</p>
+<ul>
+<li><strong>The support site</strong> is being replaced by a new Discourse site.</li>
+<li><strong>code.bioconductor.org</strong> is down: its certificate expired on 2026-08-30.</li>
+<li><strong>bioconductor.org</strong> moved to a static build on Cloudflare in September 2026.</li>
+</ul>
+<p>The original plan was mostly about collecting data: scrapers feeding one index. Most of that data now exists, or has an obvious home, in the modules built for the migration. What nobody has built is the hard part: retrieval quality and the experiences people actually use.</p>
+<p>The proposal:</p>
+<ol type="1">
+<li><strong>Sustainability first.</strong> Anything that needs significant or costly infrastructure to run is out of scope (<a href="#fig-cost-ladder" class="quarto-xref">Figure&nbsp;5</a>).</li>
+<li><strong>The data plane is logical.</strong> It is a contract, not a machine: open, versioned files about many entities (packages, builds, people, publications, grants, requests, submissions), each published by the producer that owns it and linked by stable identifiers (<a href="#fig-data-plane" class="quarto-xref">Figure&nbsp;2</a>). It serves search, analytics, integration and agents equally. It isn’t a single server or search engine. Databases and search indexes can still be part of the infrastructure that produces it, or consumers that serve an application from it.</li>
+<li><strong>Agents are first-class users,</strong> and with human review, contributors. Machines already make most requests to bioconductor.org (<a href="#fig-traffic-mix" class="quarto-xref">Figure&nbsp;1</a>).</li>
+<li><strong>Search is several focused experiences,</strong> each matched to a persona (<a href="#tbl-experiences" class="quarto-xref">Table&nbsp;6</a>). General web search is left to Google, once the site stops blocking it.</li>
+<li><strong>Retrieval quality is measured</strong> against a versioned test set before and after every ranking change.</li>
+<li><strong>New sources and new functions plug in</strong> without changing what exists: a new producer publishes files under the same contract, and a new tool, skill or agent procedure reads them (<a href="#extending-it">Extending it</a>).</li>
+<li><strong>Decide with the data we already have.</strong> The request logs, the registry and bioc-intelligence already answer many design questions empirically. For example, a three-day look at the logs (<a href="#tbl-search-use" class="quarto-xref">Table&nbsp;2</a>) showed that Google sends about six times as many package-page visits as the header search box gets searches, and that most “searches” are Bingbot crawling result pages. Look before building, and measure after.</li>
+</ol>
+</section>
+<section id="guiding-principles" class="level2">
+<h2 class="anchored" data-anchor-id="guiding-principles">Guiding principles</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Sustainability and maintainability come first
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bioconductor’s infrastructure is run by a very small team on grant and volunteer time, and the project moved off its servers in 2026 precisely because they were costly to run and impossible for anyone else to take over. A search that needs its own servers would recreate that problem. So every component must:</p>
+<ul>
+<li><strong>run from static files or pay-per-use serverless,</strong> with no standing bill and nothing to patch;</li>
+<li><strong>be rebuildable from its sources</strong> by CI, so losing it costs a rebuild, not a recovery;</li>
+<li><strong>be documented and tested</strong> where a newcomer, or an agent, can find it;</li>
+<li><strong>justify itself against a measurement,</strong> not an expectation.</li>
+</ul>
+<p>When in doubt, leave it out. A missing feature can be added later; a running service has to be paid for and operated indefinitely.</p>
+</div>
+</div>
+<p><strong>The data plane is logical.</strong> “Data plane” means the contract, not a system. Each producer publishes its slice as open, versioned files, and consumers link them through stable identifiers: package names, ORCIDs, DOIs, grant numbers, URLs (<a href="#tbl-entities" class="quarto-xref">Table&nbsp;4</a>). bioc-registry owns facts with fixed definitions (versions, builds, checks, DESCRIPTION fields); bioc-intelligence owns interpretation (publications, citations, people, funders); bioc-traffic owns usage. Search is one consumer among several. The same files feed the website itself, dashboards, grant and board reports, mirrors, other projects, and agents. A producer can use a database or an index internally, and a consumer can load the files into a search engine to serve an application; neither becomes the data plane. Nothing in this proposal adds a central database.</p>
+<p><strong>Agents are first-class.</strong> People increasingly find and use software through AI assistants, and the project’s own maintenance increasingly runs through agents. Both need the same things search needs: stable URLs, pages that render without JavaScript, structured metadata, and bulk data with documented schemas. Designing for agents is designing for search. See <a href="#agents">Agents</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Use the data we already have
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The new stack logs every request, the registry records every build and propagation, and bioc-intelligence links packages to the literature. That makes most questions about search, usage and impact answerable with a query instead of a guess, a survey or a vendor’s assumption. <a href="#tbl-search-use" class="quarto-xref">Table&nbsp;2</a> took minutes to produce from the existing logs, and it changed priorities: crawlability before a better search box, and a robots.txt line before any new feature. Every proposal on this page should start the same way: what do the data say today? What measurement will show whether the change worked? Most of the <a href="#possible-measures">possible measures</a> need no new infrastructure.</p>
+</div>
+</div>
+<p><strong>Indexes are derived.</strong> Every index, whether a Pagefind bundle, a Parquet extract, a sitemap or <code>llms.txt</code>, is rebuilt from the sources of truth and never edited by hand (<a href="#fig-index-lifecycle" class="quarto-xref">Figure&nbsp;3</a>).</p>
+<p><strong>Open to extension.</strong> The contract is small enough that adding a data source or a capability means adding one producer or one consumer, not changing the others. See <a href="#extending-it">Extending it</a>.</p>
+</section>
+<section id="what-changed-since-the-grant-was-written" class="level2">
+<h2 class="anchored" data-anchor-id="what-changed-since-the-grant-was-written">What changed since the grant was written</h2>
+<div id="tbl-changes" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-changes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: How the ground has shifted since the grant was written. Left: the assumptions in the 2023 application and its 2024 requirements draft. Right: the state on 2026-10-02, with links to the pages that own each fact.
+</figcaption>
+<div aria-describedby="tbl-changes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>When the grant was written (2023)</th>
+<th>Now (2026-10)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Site search: legacy Solr. The grant’s own baseline: “edgeR” returned more than 7,500 results with no way to refine them</td>
+<td>Solr retired (<code>/solr</code> returns 404). <a href="./astro-site-build.html">Pagefind</a> runs in the browser over a static index built with the site. It covers release package names, titles and descriptions, and the prose pages</td>
+</tr>
+<tr class="even">
+<td>Site on AWS servers (master, staging)</td>
+<td>Static Astro build in R2, served by a Cloudflare Worker since 2026-09-28 (<a href="./how-it-works.html">how it works</a>)</td>
+</tr>
+<tr class="odd">
+<td>support.bioconductor.org (Biostar)</td>
+<td>Being replaced by a new Discourse site, starting from scratch</td>
+</tr>
+<tr class="even">
+<td>code.bioconductor.org (code search, devel branch only)</td>
+<td>Certificate expired 2026-08-30; not usable</td>
+</tr>
+<tr class="odd">
+<td>Package metadata spread across the build system, VIEWS and BiocPkgTools</td>
+<td><a href="./propagation-gate.html">bioc-registry</a> observes r-universe, gates propagation, and publishes an index plus Parquet</td>
+</tr>
+<tr class="even">
+<td>Funding to come from the Authors@R <code>fnd</code> role</td>
+<td>Only 146 of 3,790 packages declare <code>fnd</code>. Publication-linked grants already cover more (<a href="#funding-data">below</a>)</td>
+</tr>
+<tr class="odd">
+<td>LLMs as an optional component</td>
+<td>AI assistants and crawlers are regular clients of the site (<a href="#fig-traffic-mix" class="quarto-xref">Figure&nbsp;1</a>)</td>
+</tr>
+<tr class="even">
+<td>No search analytics</td>
+<td>Every request is logged (<a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html">ADR 0003</a>). Queries typed into the Pagefind box are not</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="who-uses-the-site" class="level2">
+<h2 class="anchored" data-anchor-id="who-uses-the-site">Who uses the site</h2>
+<div id="fig-traffic-mix" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-traffic-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="light-content">
+<p><img src="diagrams/unified-search/traffic-mix-light.svg" class="img-fluid figure-img" alt="Requests by client type on 2026-09-30: R and package clients 32.6%, other automation 32.5%, browser-like 20.8%, search crawlers 5.7%, mirrors 3.2%, AI crawlers 2.3%, CI 1.6%, unknown 0.7%, monitoring 0.5%."></p>
+</div>
+<div class="dark-content">
+<p><img src="diagrams/unified-search/traffic-mix-dark.svg" class="img-fluid figure-img" alt="Requests by client type on 2026-09-30: R and package clients 32.6%, other automation 32.5%, browser-like 20.8%, search crawlers 5.7%, mirrors 3.2%, AI crawlers 2.3%, CI 1.6%, unknown 0.7%, monitoring 0.5%."></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-traffic-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Requests to bioconductor.org and www by client type over one UTC day (2026-09-30, 5.8 million requests), using bioc-traffic’s first (v0) classification. Green: R installs; blue: browser-like clients, which claim to be browsers and are not a count of people; violet: search and AI crawlers; grey: other machines. Source and caveats: <a href="./traffic-2026-09-30.html">One day of traffic</a>.
+</figcaption>
+</figure>
+</div>
+<p>At most a fifth of requests even claim to come from a browser. Search crawlers and AI crawlers together make 8% of requests, and they are how most people will reach a package page. Whatever the project builds for search has to work for them first.</p>
+<section id="how-search-on-the-site-is-used-today" class="level3">
+<h3 class="anchored" data-anchor-id="how-search-on-the-site-is-used-today">How search on the site is used today</h3>
+<p>bioconductor.org has no page analytics: the Astro build carries no analytics tag, and we found no Google Search Console or Bing Webmaster verification in the site’s pages or DNS. It may be verified some other way; we didn’t check further. The edge logs are the only record, and they see two kinds of search:</p>
+<ul>
+<li><strong>The header search box</strong> submits to <code>/help/search/?search-bar=…</code>, so the query is in the logged URL.</li>
+<li><strong>Pagefind’s own box</strong> runs in the browser. The logs show only the index files it fetches, not what was typed.</li>
+</ul>
+<div id="tbl-search-use" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-search-use-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Search activity on bioconductor.org since the 2026-09-28 cutover, from bioc-traffic’s Cloudflare request logs, queried 2026-10-02. “Clients” are distinct hashed addresses, not people. Crawlers were identified by declared user agent only, so the browser rows still include some disguised automation. Index fetches undercount queries, because a browser reuses chunks it has already fetched; they also include the Pagefind run that a header-form submission triggers. Referrer rows count only browser requests that sent a referrer; 84% of browser requests to landing pages sent none.
+</figcaption>
+<div aria-describedby="tbl-search-use-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 36%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Signal, 2026-09-28 20:09 to 2026-10-01 24:00 UTC (3.2 days)</th>
+<th style="text-align: right;">Requests</th>
+<th style="text-align: right;">Distinct clients</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Header-form searches (query in the URL), all clients</td>
+<td style="text-align: right;">11,263</td>
+<td style="text-align: right;">610</td>
+</tr>
+<tr class="even">
+<td>… from declared crawlers</td>
+<td style="text-align: right;">9,968</td>
+<td style="text-align: right;">172</td>
+</tr>
+<tr class="odd">
+<td>… of which Bingbot</td>
+<td style="text-align: right;">9,959</td>
+<td style="text-align: right;">163</td>
+</tr>
+<tr class="even">
+<td>… from browser user agents</td>
+<td style="text-align: right;">1,295</td>
+<td style="text-align: right;">438</td>
+</tr>
+<tr class="odd">
+<td>… of which came from a bioconductor.org page</td>
+<td style="text-align: right;">1,239</td>
+<td style="text-align: right;">412</td>
+</tr>
+<tr class="even">
+<td>Pagefind index fetches (a query typed in the page), browser user agents</td>
+<td style="text-align: right;">718</td>
+<td style="text-align: right;">418</td>
+</tr>
+<tr class="odd">
+<td>Header-form searches by browsers, per full day (09-29, 09-30, 10-01)</td>
+<td style="text-align: right;">446, 462, 347</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Browser clients searching either way, per full day (09-29, 09-30, 10-01)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">167, 161, 128</td>
+</tr>
+<tr class="odd">
+<td>Package landing-page views by browsers with a Google referrer</td>
+<td style="text-align: right;">8,657</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>… with an AI-assistant referrer (ChatGPT, Perplexity, Claude, Gemini, Copilot)</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>What the logs already show:</p>
+<ul>
+<li><strong>People do search the site:</strong> about 130–170 clients a day, and 350–460 header-form searches a day.</li>
+<li><strong>Google matters more than the search box.</strong> It sent about 8,700 package-page visits in the same window, roughly six times the header-form searches. AI assistants sent 74, which is small but no longer zero.</li>
+<li><strong>Most search requests come from Bingbot crawling search-result URLs:</strong> 9,580 distinct query strings in three days. Each is a unique URL with no unique content. robots.txt should disallow <code>/help/search/</code> (added to <a href="https://github.com/seandavi/bioc-website/issues/33">bioc-website#33</a>).</li>
+</ul>
+<p>What nobody can see today: what people type into Pagefind, how many searches return nothing, which result they pick, and how bioconductor.org ranks in Google. <a href="#possible-measures">Possible measures</a> lists ways to see them.</p>
+</section>
+</section>
+<section id="what-exists-today" class="level2">
+<h2 class="anchored" data-anchor-id="what-exists-today">What exists today</h2>
+<p>None of these modules was built under the grant. They are what a search effort would build on.</p>
+<div id="tbl-modules" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-modules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: The modules a search effort would build on, as of 2026-10-02. “Runs on” shows where each one costs money or attention. Two batch jobs (bioc-traffic, bioc-intelligence) run on a project host because they read a private data lake; nothing in this proposal adds another.
+</figcaption>
+<div aria-describedby="tbl-modules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Module</th>
+<th>Holds or does</th>
+<th>Runs on</th>
+<th>Search-relevant role today</th>
+<th>Gap for search</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://github.com/seandavi/bioc-registry">bioc-registry</a></td>
+<td>Observes r-universe; the propagation gate; <code>index.json</code> with versions, DESCRIPTION fields, vignettes and commits; check history as Parquet; SQL in the browser</td>
+<td>Worker + R2</td>
+<td>Source of truth for package facts; the trigger for re-indexing</td>
+<td>Software universes only; drops <code>Authors@R</code> (<a href="https://github.com/seandavi/bioc-registry/issues/63">bioc-registry#63</a>)</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/seandavi/bioc-website">bioc-website</a></td>
+<td>Renders package data and prose into static pages; builds the Pagefind index</td>
+<td>GitHub Actions → R2</td>
+<td>Site search, package pages</td>
+<td>No robots.txt, sitemap, canonical links or structured data of its own (<a href="https://github.com/seandavi/bioc-website/issues/33">#33</a>–<a href="https://github.com/seandavi/bioc-website/issues/36">#36</a>); vignette text not indexed</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/seandavi/bioc-edge">bioc-edge</a></td>
+<td>The Worker serving bioconductor.org: routes, redirects, logging</td>
+<td>Worker + R2</td>
+<td>Serves everything; can host small endpoints</td>
+<td>Duplicate URLs, crawler headers (<a href="https://github.com/seandavi/bioc-edge/issues/55">bioc-edge#55</a>)</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/seandavi/bioc-traffic">bioc-traffic</a></td>
+<td>Request logs since 2020, client classes, download statistics</td>
+<td>Batch job + private R2</td>
+<td>Popularity signals; header-form search queries are in the logs</td>
+<td>No events from the Pagefind box; statistics not yet published</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/seandavi/bioc-intelligence">bioc-intelligence</a></td>
+<td>3,810 packages: biocViews, downloads, describing publications (961 packages), citations, NIH grants (613 grants, 265 packages)</td>
+<td>Monthly batch job; static dashboard</td>
+<td>Publications, impact and funding; dashboards</td>
+<td>No people, ORCID or <code>fnd</code> (<a href="https://github.com/seandavi/bioc-intelligence/issues/23">bioc-intelligence#23</a>); NIH funders only</td>
+</tr>
+<tr class="even">
+<td>bioc-contrib-intelligence</td>
+<td>Issues and timelines from the package-submission trackers</td>
+<td>Batch job</td>
+<td>Review history and precedent</td>
+<td>Not package repositories</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/seandavi/bioc-build">bioc-build</a>, <a href="https://github.com/seandavi/bioc-manifest">bioc-manifest</a></td>
+<td>Builds the data and workflow packages r-universe can’t</td>
+<td>GitHub Actions</td>
+<td>Feeds the registry for non-software packages</td>
+<td>Proof of concept</td>
+</tr>
+<tr class="even">
+<td>Discourse (new support site)</td>
+<td>Questions and answers</td>
+<td>Hosted, not by this project</td>
+<td>Its own search, JSON API, crawlable</td>
+<td>Whether the Biostar archive is imported is undecided</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<section id="the-data-plane" class="level3">
+<h3 class="anchored" data-anchor-id="the-data-plane">The data plane</h3>
+<div id="fig-data-plane" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-plane-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="light-content">
+<p><img src="diagrams/unified-search/data-plane-light.svg" class="img-fluid figure-img" alt="Four sources feed four producers in a logical data plane: r-universe and bioc-build into bioc-registry, the bioconductor.org edge into bioc-traffic, literature via cdsci-lake into bioc-intelligence, community sites into bioc-contrib-intelligence. The plane publishes open, versioned files joined on the package, read by search, analytics, integration and agents."></p>
+</div>
+<div class="dark-content">
+<p><img src="diagrams/unified-search/data-plane-dark.svg" class="img-fluid figure-img" alt="Four sources feed four producers in a logical data plane: r-universe and bioc-build into bioc-registry, the bioconductor.org edge into bioc-traffic, literature via cdsci-lake into bioc-intelligence, community sites into bioc-contrib-intelligence. The plane publishes open, versioned files joined on the package, read by search, analytics, integration and agents."></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-plane-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The logical data plane. Left: sources (green: builds and community; blue: the edge; amber: external literature). Centre, violet: four producers, each owning one slice and publishing it as files. Right: consumers. Search is one of four kinds, and agents read the same files as everything else. Adapted from the “One data layer” slide in the <a href="https://talks.seandavis.net/2026-10-01-bioc-tab/">2026-10-01 Technical Advisory Board talk</a>.
+</figcaption>
+</figure>
+</div>
+<div id="tbl-entities" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-entities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Where each entity lives in the data plane. Target state: today bioc-website still reads r-universe and package tarballs directly rather than through the registry. Rows marked “New” are the only new producers this proposal adds.
+</figcaption>
+<div aria-describedby="tbl-entities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Entity</th>
+<th>Identifier</th>
+<th>Source of truth</th>
+<th>Produced by</th>
+<th>Published as</th>
+<th>Main consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Package (name, version, title, description, biocViews, dependencies)</td>
+<td>Package name + version</td>
+<td>DESCRIPTION via r-universe or bioc-build</td>
+<td>bioc-registry</td>
+<td><code>index.json</code>, Parquet</td>
+<td>Website build, package finder, intelligence, agents</td>
+</tr>
+<tr class="even">
+<td>Build and check status</td>
+<td>Package, version, platform, job</td>
+<td>r-universe and bioc-build results</td>
+<td>bioc-registry</td>
+<td>Parquet, <code>/next/</code> pages</td>
+<td>Package pages, maintainers, agents</td>
+</tr>
+<tr class="odd">
+<td>Vignettes (list and titles)</td>
+<td>Package + file name</td>
+<td>r-universe metadata</td>
+<td>bioc-registry → bioc-website</td>
+<td>Page data</td>
+<td>Site search, sitemap, guided paths</td>
+</tr>
+<tr class="even">
+<td>Vignette full text</td>
+<td>URL</td>
+<td>Built vignette HTML</td>
+<td>New: indexed at site build</td>
+<td>Pagefind bundle</td>
+<td>Quick search, guided paths</td>
+</tr>
+<tr class="odd">
+<td>People (authors, maintainers, roles)</td>
+<td>ORCID, else a normalized name</td>
+<td><code>Authors@R</code></td>
+<td>bioc-registry keeps it; bioc-intelligence parses it</td>
+<td>Parquet</td>
+<td>Package finder, profiles, dashboards, JSON-LD</td>
+</tr>
+<tr class="even">
+<td>Funders and grants</td>
+<td>Funder name (normalized), grant number</td>
+<td><code>fnd</code> role; acknowledgements on linked publications</td>
+<td>bioc-intelligence</td>
+<td>Parquet</td>
+<td>Dashboards, package pages</td>
+</tr>
+<tr class="odd">
+<td>Publications and citations</td>
+<td>DOI, PMID</td>
+<td>CITATION and DOI → OpenAlex, iCite</td>
+<td>bioc-intelligence</td>
+<td>Parquet</td>
+<td>Package pages, researchers</td>
+</tr>
+<tr class="even">
+<td>Requests and usage</td>
+<td>URL path, day, client class</td>
+<td>Edge logs</td>
+<td>bioc-traffic</td>
+<td>Aggregated Parquet, no client addresses</td>
+<td>Ranking tiebreaks, dashboards, download statistics</td>
+</tr>
+<tr class="odd">
+<td>Submissions and reviews</td>
+<td>Tracker issue number</td>
+<td>Contributions trackers</td>
+<td>bioc-contrib-intelligence</td>
+<td>JSONL, Parquet</td>
+<td>Review precedent, agents</td>
+</tr>
+<tr class="even">
+<td>Support questions and answers</td>
+<td>Topic ID, tags</td>
+<td>Discourse</td>
+<td>Discourse</td>
+<td>Its own search and API</td>
+<td>Linked from site search and package pages</td>
+</tr>
+<tr class="odd">
+<td>Videos</td>
+<td>YouTube video ID</td>
+<td>YouTube channel</td>
+<td>New, small: a curated index</td>
+<td>Static JSON</td>
+<td>Guided paths, package pages</td>
+</tr>
+<tr class="even">
+<td>Code search</td>
+<td></td>
+<td>none</td>
+<td>Out of scope until code.bioconductor.org has an owner</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="how-indexes-stay-current" class="level3">
+<h3 class="anchored" data-anchor-id="how-indexes-stay-current">How indexes stay current</h3>
+<div id="fig-index-lifecycle" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-index-lifecycle-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="light-content">
+<p><img src="diagrams/unified-search/index-lifecycle-light.svg" class="img-fluid figure-img" alt="A registry propagation is the event; CI rebuilds the website (pages, Pagefind shards, sitemap, JSON-LD) and the package finder's Parquet, and bioc-intelligence refreshes its marts. Everything lands as immutable files on R2 served by the edge; rollback moves a pointer."></p>
+</div>
+<div class="dark-content">
+<p><img src="diagrams/unified-search/index-lifecycle-dark.svg" class="img-fluid figure-img" alt="A registry propagation is the event; CI rebuilds the website (pages, Pagefind shards, sitemap, JSON-LD) and the package finder's Parquet, and bioc-intelligence refreshes its marts. Everything lands as immutable files on R2 served by the edge; rollback moves a pointer."></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-index-lifecycle-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Index lifecycle. A propagation in bioc-registry (green) is the event every consumer keys off. CI rebuilds the site and its indexes (blue); the finder extract and intelligence marts (violet) refresh from the same event. The outputs are immutable files on R2, so rolling back is moving a pointer, as it already is for the <a href="./how-it-works.html">site build</a>. Nothing scrapes bioconductor.org.
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="personas" class="level2">
+<h2 class="anchored" data-anchor-id="personas">Personas</h2>
+<p>The requirements draft listed 31 user stories, nearly all built around one package (DESeq2) and one maintainer. Most of them are lookups and reports, like “show the download statistics for DESeq2” or “list developers with more than five packages”. They don’t say what people are trying to do, or where they start. <a href="#tbl-personas" class="quarto-xref">Table&nbsp;5</a> replaces them with personas. The next step is to write two or three concrete tasks per persona, each a starting query plus the answer an expert would accept. Those tasks become the retrieval test set (<a href="#invariants">I1</a>). The personas written for the agent harnesses in <a href="https://github.com/seandavi/bioc-harnesses">bioc-harnesses</a> (maintainers, analysts, core team) are a starting point for the developer and analyst rows.</p>
+<div id="tbl-personas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-personas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Personas, what they are trying to do, and which surface serves them. “Best surface” is where the persona should land first, not the only place they can. The last column shows whether the data plane already holds what that surface needs.
+</figcaption>
+<div aria-describedby="tbl-personas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Persona</th>
+<th>Trying to</th>
+<th>Example needs</th>
+<th>Best surface</th>
+<th>Data exists?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>New user (biologist or analyst)</td>
+<td>Get from a data type to a working analysis</td>
+<td>“I have bulk RNA-seq counts, what do I use?”; “how do I install?”; “convert gene symbols to Entrez IDs”</td>
+<td>Google, then guided paths and vignettes</td>
+<td>Packages and vignettes yes; curated paths no</td>
+</tr>
+<tr class="even">
+<td>Single-cell user</td>
+<td>Assemble a workflow across many packages</td>
+<td>“Which packages do QC, normalization and clustering for scRNA-seq?”</td>
+<td>Guided path built on OSCA and biocViews; package finder</td>
+<td>Yes; path curation no</td>
+</tr>
+<tr class="odd">
+<td>Package user with a problem</td>
+<td>Fix an error, understand a method</td>
+<td>“DESeq2: every gene contains at least one zero”; “how does limma handle batch effects?”</td>
+<td>Google, Discourse, vignette full text</td>
+<td>Discourse yes; vignette text not indexed</td>
+</tr>
+<tr class="even">
+<td>Developer or maintainer</td>
+<td>Build and maintain packages</td>
+<td>“Who else implements X?”; “what depends on my package?”; “why is my build red?”</td>
+<td>Package finder (reverse dependencies, biocViews); build pages; contributions guide</td>
+<td>Yes (registry)</td>
+</tr>
+<tr class="odd">
+<td>Prospective contributor (from Python, tidyverse)</td>
+<td>Find where they fit</td>
+<td>“Which packages work with AnnData and scverse?”; “who maintains this ecosystem?”</td>
+<td>Package finder and people profiles</td>
+<td>Packages yes; people pending</td>
+</tr>
+<tr class="even">
+<td>Open-source software researcher</td>
+<td>Study the ecosystem</td>
+<td>Dependency networks, maintainer load, citation and funding patterns, growth</td>
+<td>Documented Parquet; SQL in the browser</td>
+<td>Mostly yes</td>
+</tr>
+<tr class="odd">
+<td>Bioconductor leader (core team, boards)</td>
+<td>Steward the project</td>
+<td>“Which funders support our packages?”; “which high-impact packages have one maintainer?”</td>
+<td>Dashboards</td>
+<td>Publications and NIH yes; people and other funders pending</td>
+</tr>
+<tr class="even">
+<td>Educator</td>
+<td>Find teaching material</td>
+<td>Videos, workshops and books on a topic</td>
+<td>Guided paths; video index</td>
+<td>Books yes; videos not indexed</td>
+</tr>
+<tr class="odd">
+<td>AI agent, for any of the above</td>
+<td>Answer accurately, act on events</td>
+<td>Current APIs, which package to use, why a build failed, how a submission compares</td>
+<td>Crawlable pages, JSON-LD, <code>llms.txt</code>, Parquet, MCP</td>
+<td>Partly; structured data pending</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="search-experiences" class="level2">
+<h2 class="anchored" data-anchor-id="search-experiences">Search experiences</h2>
+<div id="tbl-experiences" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-experiences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: The search experiences, each matched to the personas in <a href="#tbl-personas" class="quarto-xref">Table&nbsp;5</a>. “Cost model” is the standing cost of running it: “Static” means files on R2 rebuilt by CI; “browser” means the reader’s machine does the work.
+</figcaption>
+<div aria-describedby="tbl-experiences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Experience</th>
+<th>Serves</th>
+<th>How</th>
+<th>Cost model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Google and other engines</td>
+<td>Everyone, long-tail questions</td>
+<td>Unblock crawling, a real sitemap, canonical links, structured data (<a href="https://github.com/seandavi/bioc-website/issues/33">bioc-website#33–36</a>, <a href="https://github.com/seandavi/bioc-edge/issues/55">bioc-edge#55</a>)</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Quick site search</td>
+<td>People who start on bioconductor.org</td>
+<td>Pagefind, adding vignette full text, type badges, separate bundles per surface merged in the browser, and a feedback button on results (“found it” / “didn’t find it”, plus an optional “report a missing result” link into the existing issue forms)</td>
+<td>Static + a tiny Worker endpoint</td>
+</tr>
+<tr class="odd">
+<td>Package finder</td>
+<td>Developers, single-cell users, contributors</td>
+<td>Facets (biocViews, repository, maintainer, ORCID, build status, reverse dependencies) over registry and intelligence Parquet, queried in the browser</td>
+<td>Static + browser</td>
+</tr>
+<tr class="even">
+<td>Guided paths</td>
+<td>New and domain users, educators</td>
+<td>Curated pages per data type or task, kept as versioned files with named maintainers and CI checks against the registry</td>
+<td>Static</td>
+</tr>
+<tr class="odd">
+<td>Support</td>
+<td>People with a problem</td>
+<td>Discourse’s own search; site search links out with the query filled in; package pages show recent topics</td>
+<td>Discourse’s</td>
+</tr>
+<tr class="even">
+<td>Data and agent access</td>
+<td>Researchers, tool builders, agents</td>
+<td>Documented Parquet, <code>llms.txt</code>, JSON-LD, and an MCP server over the same files if demand appears</td>
+<td>Static + Worker</td>
+</tr>
+<tr class="odd">
+<td>Dashboards</td>
+<td>Leaders, researchers</td>
+<td>The bioc-intelligence dashboard, extended with people and funders</td>
+<td>Static + browser</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="agents" class="level2">
+<h2 class="anchored" data-anchor-id="agents">Agents</h2>
+<div id="fig-agents-loop" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-agents-loop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="light-content">
+<p><img src="diagrams/unified-search/agents-loop-light.svg" class="img-fluid figure-img" alt="Events from the data plane (a version propagates, a build breaks, a submission is reviewed, zero-result searches spike, a person asks a question) reach an agent that reads the same data people see and cites stable URLs. It produces answers with citations, draft maintainer notes, draft issues or pull requests, and review precedent, all behind human review."></p>
+</div>
+<div class="dark-content">
+<p><img src="diagrams/unified-search/agents-loop-dark.svg" class="img-fluid figure-img" alt="Events from the data plane (a version propagates, a build breaks, a submission is reviewed, zero-result searches spike, a person asks a question) reach an agent that reads the same data people see and cites stable URLs. It produces answers with citations, draft maintainer notes, draft issues or pull requests, and review precedent, all behind human review."></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-agents-loop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Agents in the loop. Left: events the data plane already produces or could produce (coral: a failure). Centre: an agent reading the data plane through the same files and pages people use. Right: what it produces. Everything that would change the project passes human review first (dashed coral boundary).
+</figcaption>
+</figure>
+</div>
+<p>Agents matter to this proposal in three ways.</p>
+<ul>
+<li><strong>As readers.</strong> Assistants answer questions about Bioconductor every day, from whatever they can crawl. Crawlable pages, JSON-LD, <code>llms.txt</code> and Markdown twins of pages (this site already publishes <a href="https://seandavi.github.io/bioc-infrastructure/llms.txt"><code>llms.txt</code></a> that way) decide whether those answers are current and correct. This is the cheapest search investment with the widest reach.</li>
+<li><strong>As actors.</strong> The data plane emits events: a version propagates, a build breaks on one platform, a submission gets a review, zero-result searches spike. An agent subscribed to them can draft a note to a maintainer, triage a failure, suggest a synonym or a fix to a guided path, or find precedent for a submission. Answers must cite their sources (<a href="#invariants">I12</a>), and anything that changes the project goes through human review.</li>
+<li><strong>As maintainers.</strong> The modules in <a href="#tbl-modules" class="quarto-xref">Table&nbsp;3</a> were built and are maintained with agents. That only works because each one is small, documented, tested and rebuildable. The sustainability rules above are also what makes agent maintenance safe. A hosted search cluster is exactly the kind of system an agent can’t safely operate.</li>
+</ul>
+</section>
+<section id="extending-it" class="level2">
+<h2 class="anchored" data-anchor-id="extending-it">Extending it</h2>
+<p>Search is one consumer of the data plane among several. The website itself, the <code>/next/</code> package pages, the bioc-intelligence dashboard, mirrors and BiocManager already read parts of it today. The design has to make it cheap to add both new data and new capabilities.</p>
+<p><strong>A new data source</strong> (the Discourse site, workshop materials, Hub resources, conference talks) joins by publishing files under the same contract as the existing producers. It needs:</p>
+<ul>
+<li><strong>an owner,</strong> meaning one repo and one maintainer;</li>
+<li><strong>stable identifiers</strong> for its own records, and links to existing entities through theirs (package name, ORCID, DOI, grant number);</li>
+<li><strong>a documented schema</strong> with dated snapshots and a <code>latest</code> alias;</li>
+<li><strong>a rebuild</strong> from its own source of truth, run by CI or a scheduled serverless job;</li>
+<li><strong>no private data</strong> in the published files.</li>
+</ul>
+<p>Nothing downstream has to change for the source to exist. Each consumer opts in when it’s useful.</p>
+<p><strong>A new capability</strong> is a new consumer of those files. Besides interfaces for people, the capabilities with the most leverage are for agents:</p>
+<ul>
+<li><strong><a href="https://github.com/Bioconductor/ai-agent-skills">Bioconductor’s AI agent skills</a></strong> teach coding agents the project’s conventions and workflows.</li>
+<li><strong>Agentic standard operating procedures (SOPs)</strong> behind those skills turn recurring work into written, reviewable steps. Examples: triaging a build failure, pre-reviewing a submission, refreshing a guided path when a package is deprecated, answering a support question with citations.</li>
+<li><strong>Harnesses</strong> like <a href="https://github.com/seandavi/bioc-harnesses">bioc-harnesses</a> package the skills and procedures for maintainers, analysts and the core team.</li>
+</ul>
+<p>All of these read the data plane through the same files, pages and (if built) MCP server. They are triggered by the same events (<a href="#fig-agents-loop" class="quarto-xref">Figure&nbsp;4</a>), and their output goes through the same human review.</p>
+<p>That gives the data plane a single, stable job: be the dependable, documented ground truth that people, tools, skills and agents all build on. A skill or SOP needs current package facts, build state, usage and literature. With the data plane in place, it can get them by reading files instead of scraping websites.</p>
+</section>
+<section id="sustainability-and-cost" class="level2">
+<h2 class="anchored" data-anchor-id="sustainability-and-cost">Sustainability and cost</h2>
+<div id="fig-cost-ladder" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cost-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="light-content">
+<p><img src="diagrams/unified-search/cost-ladder-light.svg" class="img-fluid figure-img" alt="Options from least to most to run: Google with crawlable pages; a static Pagefind index; SQL in the browser over Parquet; a small Worker API; managed semantic search; a hosted Elasticsearch or OpenSearch cluster; a self-hosted LLM or vector database. The first three are in scope, a Worker API when needed, managed semantic search only if tests show a gain, and the last two are out of scope."></p>
+</div>
+<div class="dark-content">
+<p><img src="diagrams/unified-search/cost-ladder-dark.svg" class="img-fluid figure-img" alt="Options from least to most to run: Google with crawlable pages; a static Pagefind index; SQL in the browser over Parquet; a small Worker API; managed semantic search; a hosted Elasticsearch or OpenSearch cluster; a self-hosted LLM or vector database. The first three are in scope, a Worker API when needed, managed semantic search only if tests show a gain, and the last two are out of scope."></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cost-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: The cost and upkeep ladder, qualitative. Each row is a way to deliver part of search, ordered from least to most to run. “Standing cost” is what it costs when nobody is using it; “Upkeep” is the work that comes back every month. Green: in scope; blue: when a need is shown; amber: only if the test set shows a gain; coral: out of scope.
+</figcaption>
+</figure>
+</div>
+<p>The new stack serves bioconductor.org for roughly $240–500 a month, against about $5,000 for the AWS estate it replaces (<a href="./improvements.html">costs</a>). A managed search cluster would add a standing monthly bill of its own, plus patching, upgrades and someone on call. It would do that for a site whose search traffic Pagefind already handles from static files (<a href="#tbl-search-use" class="quarto-xref">Table&nbsp;2</a>). That is why running one is out of scope for this effort. It isn’t ruled out by the design: a search engine fed from the data plane’s files is a legitimate consumer, if someone has a need for it and the means to run it. The original plan’s hosted engine and public API are the main things this proposal drops.</p>
+<p>Two operational risks are known for the static approach:</p>
+<ul>
+<li><strong>DuckDB-WASM range reads.</strong> Newer versions of DuckDB-WASM have been reported to download whole remote Parquet files instead of byte ranges (<a href="https://github.com/duckdb/duckdb-wasm/discussions/2247">duckdb-wasm discussion #2247</a>). Pin the version, and add a CI check on bytes transferred.</li>
+<li><strong>Pagefind size.</strong> Pagefind loads only the index chunks a query needs. Its documentation cites about 300 kB of payload for a 10,000-page site (<a href="https://pagefind.app/">pagefind.app</a>). Adding vignette full text will grow the index, so measure that before and after.</li>
+</ul>
+</section>
+<section id="possible-measures" class="level2">
+<h2 class="anchored" data-anchor-id="possible-measures">Possible measures</h2>
+<p>Ways to tell whether search, and the site’s findability in general, are working. These are possibilities, not commitments. Most use data already collected; the rest are cheap to add.</p>
+<div id="tbl-measures" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-measures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Candidate measures for search and findability. “Available today?” says whether the raw data exists now, not whether anyone reports on it. Rows marked “No” need a small addition; none needs new standing infrastructure. Query-level data follows I15: no addresses or user IDs, short retention, aggregates only in anything published.
+</figcaption>
+<div aria-describedby="tbl-measures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Area</th>
+<th>Measure</th>
+<th>What it tells us</th>
+<th>Source</th>
+<th>Available today?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Site search use</td>
+<td>Searches per day by people vs crawlers; clients searching</td>
+<td>Whether the search box matters, and to whom</td>
+<td>Edge logs (header form)</td>
+<td>Yes (<a href="#tbl-search-use" class="quarto-xref">Table&nbsp;2</a>)</td>
+</tr>
+<tr class="even">
+<td>Site search quality</td>
+<td>Queries typed, zero-result rate, result clicked and its rank, reformulations</td>
+<td>Where search fails people</td>
+<td>Pagefind events, sent to a Worker and Analytics Engine (I15 privacy rules)</td>
+<td>No; a small addition</td>
+</tr>
+<tr class="odd">
+<td>Explicit feedback</td>
+<td>“Found it” / “didn’t find it” on a results page, with the query and the rank of any clicked result; free-text reports of a missing result</td>
+<td>Which queries fail, in people’s own judgement; new cases for the test set (I1)</td>
+<td>A feedback button posting to a Worker and Analytics Engine; reports through the existing <a href="./report.html">issue forms</a></td>
+<td>No; a small addition</td>
+</tr>
+<tr class="even">
+<td>Retrieval quality</td>
+<td>NDCG@10 and recall@10 on the persona test set; exact package name ranked first</td>
+<td>Whether a ranking change helped, before it ships</td>
+<td>CI over a versioned test set (I1)</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Google</td>
+<td>Impressions, clicks, click-through and average position per page and query, over time</td>
+<td>How people find packages and vignettes from the web</td>
+<td>Google Search Console (free, with an API)</td>
+<td>Not set up, as far as we found</td>
+</tr>
+<tr class="even">
+<td>Other engines</td>
+<td>The same for Bing</td>
+<td>A second view of web findability</td>
+<td>Bing Webmaster Tools</td>
+<td>Not set up, as far as we found</td>
+</tr>
+<tr class="odd">
+<td>Index coverage</td>
+<td>Pages in the sitemap vs pages indexed; crawl errors</td>
+<td>Whether the crawlability fixes worked</td>
+<td>Search Console, sitemap</td>
+<td>No (no sitemap yet)</td>
+</tr>
+<tr class="even">
+<td>Crawler activity</td>
+<td>Requests by search and AI crawler, by path class, over time</td>
+<td>What crawlers read, and what they waste</td>
+<td>Edge logs, bioc-traffic client classes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Referrals</td>
+<td>Landings by referrer: Google, other engines, AI assistants, other sites</td>
+<td>Which doors people come in through, and how that shifts</td>
+<td>Edge logs (<code>Referer</code>)</td>
+<td>Raw data yes; no report</td>
+</tr>
+<tr class="even">
+<td>Agent consumption</td>
+<td>Fetches of <code>llms.txt</code>, <code>.md</code> pages, Parquet files; MCP calls</td>
+<td>Whether agents use what is built for them</td>
+<td>Edge logs, Worker</td>
+<td>Partly</td>
+</tr>
+<tr class="odd">
+<td>Package reach</td>
+<td>Landing-page and vignette views by people, per package, over time</td>
+<td>Which packages and documents people actually read</td>
+<td>Edge logs + client classes</td>
+<td>Partly (v0 classes)</td>
+</tr>
+<tr class="even">
+<td>Support</td>
+<td>Searches and no-result searches on Discourse</td>
+<td>Gaps in answers and documentation</td>
+<td>Discourse admin reports</td>
+<td>When the new site launches</td>
+</tr>
+<tr class="odd">
+<td>Freshness</td>
+<td>Time from a propagation to the updated page, index and Parquet</td>
+<td>Whether “current” is true</td>
+<td>Registry ledger, build timestamps</td>
+<td>No; derivable</td>
+</tr>
+<tr class="even">
+<td>Cost</td>
+<td>Monthly cost of each search surface; bytes per search</td>
+<td>Whether sustainability holds as usage grows (I14)</td>
+<td>Cloudflare analytics, Pagefind payloads</td>
+<td>Partly (estimates)</td>
+</tr>
+<tr class="odd">
+<td>Agent outcomes</td>
+<td>Agent drafts merged, edited or rejected</td>
+<td>Whether agent work saves time</td>
+<td>GitHub</td>
+<td>No; derivable</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="invariants" class="level2">
+<h2 class="anchored" data-anchor-id="invariants">Invariants</h2>
+<p>Rules that should hold whichever engine or interface is chosen. Each one comes from a source we read on 2026-10-02.</p>
+<div id="tbl-invariants" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-invariants-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Design invariants for any Bioconductor search surface, grouped by area: evaluation (I1–I2), data and indexes (I3–I5), ranking (I6–I8), interface (I9–I10, I12), crawlability (I11, I13), and operations (I14–I15). The IR textbook, the Hearst book and the BEIR paper are general references; the rest describe what specific systems do.
+</figcaption>
+<div aria-describedby="tbl-invariants-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Invariant</th>
+<th>Why</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>I1</td>
+<td>Judge search against written-down information needs in a fixed, versioned test set; tune on a separate set</td>
+<td>Relevance is judged against the need, not the query; tuning on the reported set overstates quality</td>
+<td><a href="https://nlp.stanford.edu/IR-book/html/htmledition/information-retrieval-system-evaluation-1.html">IIR ch.&nbsp;8</a></td>
+</tr>
+<tr class="even">
+<td>I2</td>
+<td>Query logs are an evaluation input: track zero-result queries and reformulations</td>
+<td>The most overlooked source of search problems; fixes are synonyms and “best bets”</td>
+<td><a href="https://www.nngroup.com/articles/search-log-analysis/">NN/g</a></td>
+</tr>
+<tr class="odd">
+<td>I3</td>
+<td>An index is derived: rebuilt from the sources of truth, never edited, stamped with its inputs</td>
+<td>Fixes belong upstream; a lost index costs a rebuild</td>
+<td><a href="https://pagefind.app/docs/">Pagefind</a>, <a href="https://rust-lang.github.io/rfcs/3463-crates-io-policy-update.html">crates.io policy</a></td>
+</tr>
+<tr class="even">
+<td>I4</td>
+<td>Publish bulk, static, versioned files first; every interface is a consumer of them</td>
+<td>crates.io points heavy users at a daily dump and rate-limits its API; R2 egress is free</td>
+<td><a href="https://rust-lang.github.io/rfcs/3463-crates-io-policy-update.html">crates.io policy</a>, <a href="https://developers.cloudflare.com/r2/pricing/">R2 pricing</a></td>
+</tr>
+<tr class="odd">
+<td>I5</td>
+<td>Facets need controlled, consistently assigned metadata, generated from the data, not hand-tagged</td>
+<td>Faceted navigation fails when labels are inconsistent or don’t match how people think</td>
+<td><a href="http://searchuserinterfaces.com/book/sui_ch8_navigation_and_search.html">Hearst, <em>Search User Interfaces</em> ch.&nbsp;8</a></td>
+</tr>
+<tr class="even">
+<td>I6</td>
+<td>Start with a lexical (BM25-class) baseline; add semantic or hybrid retrieval only for a measured gain</td>
+<td>Across 18 datasets, BM25 is a robust baseline; better re-rankers cost much more</td>
+<td><a href="https://arxiv.org/abs/2104.08663">BEIR</a></td>
+</tr>
+<tr class="odd">
+<td>I7</td>
+<td>Rank an exact name match first, then text relevance, then popularity as a tiebreaker; publish the signals</td>
+<td>How crates.io, npm and r-universe rank packages</td>
+<td><a href="https://github.com/rust-lang/crates.io/blob/main/src/controllers/krate/search.rs">crates.io search</a>, <a href="https://docs.r-universe.dev/browse/search.html">r-universe</a></td>
+</tr>
+<tr class="even">
+<td>I8</td>
+<td>Curated guides are data with an owner, a date and automated checks</td>
+<td>CRAN Task Views: named maintainers, versioned, CI-checked against CRAN</td>
+<td><a href="https://github.com/cran-task-views/ctv/blob/main/Documentation.md">CRAN Task Views</a></td>
+</tr>
+<tr class="odd">
+<td>I9</td>
+<td>Every result shows why it matched: title, a snippet around the matched terms, its type</td>
+<td>Query-biased snippets beat lead sentences; people choose results by their “scent”</td>
+<td><a href="http://searchuserinterfaces.com/book/sui_ch5_retrieval_results.html">Hearst ch.&nbsp;5</a>, <a href="https://www.nngroup.com/articles/information-scent/">NN/g</a></td>
+</tr>
+<tr class="even">
+<td>I10</td>
+<td>Search never dead-ends: zero results say so and offer next steps; facets never lead to empty sets</td>
+<td>No-results pages drive abandonment</td>
+<td><a href="https://www.nngroup.com/articles/search-no-results-serp/">NN/g</a></td>
+</tr>
+<tr class="odd">
+<td>I11</td>
+<td>One stable, canonical, pre-rendered URL per entity, linked with plain <code>&lt;a href&gt;</code></td>
+<td>Crawlers can’t follow fragment URLs; canonical links consolidate duplicates</td>
+<td><a href="https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls">Google: canonicals</a>, <a href="https://www.w3.org/Provider/Style/URI">Cool URIs</a></td>
+</tr>
+<tr class="even">
+<td>I12</td>
+<td>Generated answers cite retrievable sources; source text stays the primary artifact</td>
+<td>The best models lacked full citation support about half the time</td>
+<td><a href="https://arxiv.org/abs/2305.14627">ALCE</a></td>
+</tr>
+<tr class="odd">
+<td>I13</td>
+<td>Machine-readable metadata (JSON-LD, sitemap, <code>llms.txt</code>) is generated from the same records as the visible page</td>
+<td>Google ignores markup for content that isn’t on the page, and <code>lastmod</code> that isn’t accurate</td>
+<td><a href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data">Google: structured data</a>, <a href="https://llmstxt.org/">llms.txt</a></td>
+</tr>
+<tr class="even">
+<td>I14</td>
+<td>Running cost scales with content, not with traffic</td>
+<td>Static indexes and free egress make a traffic spike cost nothing extra</td>
+<td><a href="https://pagefind.app/">Pagefind</a>, <a href="https://developers.cloudflare.com/r2/pricing/">R2 pricing</a></td>
+</tr>
+<tr class="odd">
+<td>I15</td>
+<td>Log queries for aggregate analysis only: no addresses or user IDs, short retention, never publish raw logs</td>
+<td>Numbering users did not keep the 2006 AOL search logs anonymous</td>
+<td><a href="https://archive.nytimes.com/www.nytimes.com/learning/teachers/featured_articles/20060810thursday.html">NYT</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Practices to avoid, from the same sources:</p>
+<ul>
+<li><strong>A hosted search cluster for a low-traffic site.</strong> Even crates.io, which runs server-side search, only ranks the top 1,000 candidates, because ranking every match is “prohibitively expensive”.</li>
+<li><strong>LLM summaries in place of source text,</strong> or answers without citations.</li>
+<li><strong>No test set,</strong> or tuning on the set you report.</li>
+<li><strong>Content that only appears after JavaScript runs,</strong> or deduplicating pages with robots.txt instead of canonical links.</li>
+<li><strong>Keeping raw addresses or user IDs in query logs.</strong></li>
+</ul>
+</section>
+<section id="funding-data" class="level2">
+<h2 class="anchored" data-anchor-id="funding-data">Funding data</h2>
+<p>The grant planned to find funders through the Authors@R <code>fnd</code> role. That is the weakest route:</p>
+<ul>
+<li><strong><code>fnd</code> declarations:</strong> 146 of 3,790 packages (3.9%) in Bioconductor 3.24. Many name a PI rather than an agency, and CZI alone appears under at least five spellings.</li>
+<li><strong>Publications:</strong> bioc-intelligence links 961 packages to a describing publication. Through NIH RePORTER alone, 613 NIH grants already attach to 265 packages. Most of those papers acknowledge grants, but only NIH links are captured so far. Adding other funders from publication metadata (for example OpenAlex funder records) is the larger gain.</li>
+<li><strong>What <code>fnd</code> adds:</strong> funders a package declares but its paper doesn’t acknowledge. It reaches bioc-intelligence through <code>Authors@R</code> (<a href="https://github.com/seandavi/bioc-registry/issues/63">bioc-registry#63</a>, <a href="https://github.com/seandavi/bioc-intelligence/issues/23">bioc-intelligence#23</a>).</li>
+</ul>
+<p>“Which packages did CZI fund?” belongs on a dashboard backed by publication funding plus <code>fnd</code>. It isn’t a search query.</p>
+</section>
+<section id="the-original-plan" class="level2">
+<h2 class="anchored" data-anchor-id="the-original-plan">The original plan</h2>
+<p>The 2023 application and a 2024 requirements draft describe one search index fed by four scrapers (packages, YouTube, the support site, package code), a Python API over it, an optional external LLM, and a public API so that R users could query the index directly. Compared with today:</p>
+<ul>
+<li><strong>The index and API were the plan’s centre.</strong> This proposal keeps the intent: developers can analyse Bioconductor data, and the website gets one search entry point. It moves that intent onto files and browser-side search (I4, I14).</li>
+<li><strong>Two of the four sources have moved.</strong> The support site is moving to Discourse, and code.bioconductor.org has no owner. The packages source is now the registry.</li>
+<li><strong>The user stories were reports, not searches.</strong> They are replaced by personas (<a href="#tbl-personas" class="quarto-xref">Table&nbsp;5</a>).</li>
+<li><strong>Video summaries were to be LLM-generated.</strong> An index needs titles, descriptions and transcripts, not summaries (I12). Linking videos to packages by name is unreliable for packages named with ordinary words, so a small curated index is cheaper and more accurate.</li>
+<li><strong>No success metric or analytics were planned.</strong> The grant’s own baseline (7,500 results for “edgeR”) becomes test case zero (I1, I2).</li>
+</ul>
+</section>
+<section id="proposed-sequence" class="level2">
+<h2 class="anchored" data-anchor-id="proposed-sequence">Proposed sequence</h2>
+<ol type="1">
+<li><strong>Crawlability:</strong> robots.txt, sitemap, canonical links, URL normalization, structured data (<a href="https://github.com/seandavi/bioc-website/issues/33">bioc-website#33–36</a>, <a href="https://github.com/seandavi/bioc-edge/issues/55">bioc-edge#55</a>). Small changes with the largest immediate effect, for people and agents alike.</li>
+<li><strong>Data plane gaps:</strong> <code>Authors@R</code> into the registry; people, ORCID and funders in bioc-intelligence; non-NIH funders from publications; registry coverage of data and workflow packages through bioc-build.</li>
+<li><strong>Measure:</strong> a standing report from the logs we already have (<a href="#tbl-search-use" class="quarto-xref">Table&nbsp;2</a>); Google Search Console and Bing Webmaster Tools for bioconductor.org; the persona test set; anonymous query and zero-result events from Pagefind (<a href="#tbl-measures" class="quarto-xref">Table&nbsp;7</a>).</li>
+<li><strong>Quick search and package finder:</strong> vignette full text in Pagefind; a feedback button on results; facets over Parquet in the browser.</li>
+<li><strong>Guided paths:</strong> start with RNA-seq and single-cell; link Discourse tags and a curated video index.</li>
+<li><strong>Data and agent access:</strong> documented Parquet, <code>llms.txt</code> for package and vignette pages, events, and an MCP server once the persona work shows demand.</li>
+</ol>
+<p>The search design ADR on the <a href="./roadmap.html">roadmap</a> (M3) should record the decisions taken here.</p>
+</section>
+<section id="open-questions" class="level2">
+<h2 class="anchored" data-anchor-id="open-questions">Open questions</h2>
+<ul>
+<li>The award’s end date, any extension, and the budget left for search.</li>
+<li>Will the Biostar archive be imported into Discourse? If not, years of answers drop out of Google and out of reach of agents.</li>
+<li>Does anyone own code.bioconductor.org? If not, it leaves the scope.</li>
+<li>Who does the interface design: grant-funded staff, a contractor, or the champions program the same grant funds?</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+.mermaid { cursor: zoom-in; }
+.mermaid.zoomed {
+  position: fixed; inset: 0; z-index: 9999; cursor: zoom-out;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--quarto-body-bg, #fff);
+}
+.mermaid.zoomed svg { max-width: 95vw !important; max-height: 95vh !important; height: auto !important; }
+</style>
+<script>
+document.querySelectorAll("pre.mermaid").forEach(function (el) {
+  el.addEventListener("click", function () { el.classList.toggle("zoomed"); });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/seandavi\.github\.io\/bioc-infrastructure\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/proposal-unified-search.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/proposal-unified-search.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

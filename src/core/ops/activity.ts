@@ -726,7 +726,8 @@ export const opsActivity = defineCapability({
     "streak and last success on the default branch; 'failures' lists the '<unit> is failing' issues bioc-notify@ " +
     'files in bioc-edge, which nothing closes on recovery. repo narrows to one repo. Classifications match ' +
     "bioc-health. Public GitHub data, cached 2 minutes. For a package's build or propagation state use " +
-    'pkg_status. Does not report host, service or traffic health.',
+    'pkg_status. Does not report host, service or traffic health. ' +
+    'For why or how the infrastructure works this way (design, ADRs, runbooks) use docs_search.',
   input,
   data: OpsActivityDataSchema,
   async handler({ repo, kind }, deps) {

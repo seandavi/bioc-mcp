@@ -305,7 +305,8 @@ export const pkgStatus = defineCapability({
     "registry's /sql console (not executed). universe 'bioc' is devel (default), 'bioc-release' is release. " +
     'Package names are case-sensitive. For why a job failed, pass its job id to pkg_check_output; for what it ' +
     'ran with, to pkg_build_environment. For download counts use pkg_downloads; for release and devel ' +
-    'versions use pkg_release_info.',
+    'versions use pkg_release_info. ' +
+    'For why or how the infrastructure works this way (design, ADRs, runbooks) use docs_search.',
   input: z.object({
     package: PackageNameSchema,
     universe: z

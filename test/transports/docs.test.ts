@@ -3,6 +3,7 @@ import { afterEach, describe, expect, test } from 'vitest';
 import { AboutSchema } from '../../src/core/about';
 import { explainDecisionPrompt } from '../../src/core/docs/prompts';
 import { modules, validateRegistry } from '../../src/core/registry';
+import { opsModule } from '../../src/core/ops';
 import { pkgModule } from '../../src/core/pkg';
 import { connectClient, makeTestApp } from '../support/app';
 import { docsTestModule } from '../support/docs';
@@ -18,7 +19,7 @@ afterEach(async () => {
 });
 
 async function testApp() {
-  return makeTestApp({ extraModules: [pkgModule, await docsTestModule()] });
+  return makeTestApp({ extraModules: [pkgModule, opsModule, await docsTestModule()] });
 }
 
 async function get(path: string) {
@@ -54,6 +55,14 @@ describe('registry', () => {
     expect(search!.description).toContain('docs_read');
     expect(read!.description).toContain('docs_search');
   });
+
+  test('pkg and ops descriptions send design questions to docs_search', () => {
+    const capabilities = modules.flatMap((m) => m.capabilities);
+    for (const name of ['pkg_status', 'pkg_downloads', 'ops_activity']) {
+      const capability = capabilities.find((c) => c.name === name)!;
+      expect(capability.description.endsWith('(design, ADRs, runbooks) use docs_search.')).toBe(true);
+    }
+  });
 });
 
 describe('tools', () => {
@@ -67,10 +76,10 @@ describe('tools', () => {
     }
   });
 
-  test('/mcp lists them alongside meta_ping and pkg_status', async () => {
+  test('/mcp lists them alongside meta_ping, pkg_status and ops_activity', async () => {
     const { client } = await connect('/mcp');
     const names = (await client.listTools()).tools.map((t) => t.name);
-    expect(names).toEqual(expect.arrayContaining(['docs_read', 'docs_search', 'meta_ping', 'pkg_status']));
+    expect(names).toEqual(expect.arrayContaining(['docs_read', 'docs_search', 'meta_ping', 'pkg_status', 'ops_activity']));
   });
 
   test('docs_search structuredContent equals the REST body', async () => {

@@ -7,8 +7,9 @@
 **A public, read-only [Model Context Protocol](https://modelcontextprotocol.io) server, and the
 equivalent REST API, for Bioconductor.** Connect an AI agent (Claude, Codex, Gemini, …) to one URL
 and it can check a package's build and propagation state, read why a check failed, see release
-dates and downloads, and see what is happening across the `bioc-*` repos, with every answer linked
-to the public source it came from. Infrastructure docs search is coming.
+dates and downloads, see what is happening across the `bioc-*` repos, and search the
+infrastructure docs and ADRs for why it works that way, with every answer linked to the public
+source it came from.
 
 > **Status: pre-alpha.** Deploys from `main`; expect breaking changes. The REST API is unstable
 > until v1. The design is in the
@@ -156,6 +157,7 @@ curl -s "$BIOC_MCP/api/v1/meta/ping"
 curl -s "$BIOC_MCP/api/v1/pkg/status?package=edgeR&universe=bioc-release"
 curl -s "$BIOC_MCP/api/v1/ops/activity?kind=failures"
 curl -s "$BIOC_MCP/api/v1/docs/search?query=propagation+gate"
+curl -s -G "$BIOC_MCP/api/v1/docs/read" --data-urlencode 'id_or_url=https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls'
 ```
 
 Every body is `{ data, summary, sources }`. `sources` is a list of `{ url, as_of }`: the upstream

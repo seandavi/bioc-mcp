@@ -1,9 +1,10 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { FixtureRoute } from './fixture-fetch';
 
-const GITHUB_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'github');
+const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'fixtures');
+const GITHUB_DIR = join(FIXTURES_DIR, 'github');
 
 export const GITHUB_RECORDED_AT = new Date(readFileSync(join(GITHUB_DIR, 'RECORDED_AT'), 'utf8').trim());
 
@@ -33,20 +34,21 @@ function suffixFor(path: string, defaultBranch: string): string | undefined {
   return undefined;
 }
 
-/** Every recorded GitHub response, keyed by URL. A fresh object each call, so tests can override entries. */
-export function githubRoutes(): Record<string, FixtureRoute> {
+/** Every recorded GitHub response under `dir` (default test/fixtures/github), keyed by URL. A fresh object each call. */
+export function githubRoutes(dir: string = GITHUB_DIR): Record<string, FixtureRoute> {
   const routes: Record<string, FixtureRoute> = {};
-  for (const repo of readdirSync(GITHUB_DIR, { withFileTypes: true }).filter((entry) => entry.isDirectory())) {
-    const repoDir = join(GITHUB_DIR, repo.name);
+  for (const repo of readdirSync(dir, { withFileTypes: true }).filter((entry) => entry.isDirectory())) {
+    const repoDir = join(dir, repo.name);
     const { default_branch: defaultBranch } = JSON.parse(readFileSync(join(repoDir, 'repo.json'), 'utf8')) as {
       default_branch: string;
     };
-    for (const file of readdirSync(repoDir, { recursive: true, withFileTypes: false }) as string[]) {
-      const path = file.split('\\').join('/');
-      if (!path.endsWith('.json')) continue;
+    for (const entry of readdirSync(repoDir, { recursive: true, withFileTypes: true })) {
+      if (!entry.isFile()) continue;
+      const fullPath = join(entry.parentPath, entry.name);
+      const path = relative(repoDir, fullPath).split(sep).join('/');
       const suffix = suffixFor(path, defaultBranch);
       if (suffix === undefined) throw new Error(`Unknown GitHub fixture: ${repo.name}/${path}`);
-      routes[githubUrl(repo.name, suffix)] = { file: `github/${repo.name}/${path}` };
+      routes[githubUrl(repo.name, suffix)] = { file: relative(FIXTURES_DIR, fullPath).split(sep).join('/') };
     }
   }
   return routes;

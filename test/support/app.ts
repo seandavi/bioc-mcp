@@ -8,6 +8,7 @@ import type { RateLimiter } from '../../src/rate-limit';
 import { createMemoryCache } from '../../src/upstreams/cache';
 import { createMemoryUsageSink } from '../../src/usage';
 import { exampleModule } from './example-module';
+import type { FetchFn } from '../../src/core/deps';
 import { fixtureFetch, type FixtureRoute } from './fixture-fetch';
 
 export const ALPHA_URL = 'https://upstream.test/items/alpha.json';
@@ -18,6 +19,7 @@ const allowAll: RateLimiter = { limit: async () => ({ success: true }) };
 export function makeTestApp(
   options: {
     routes?: Record<string, FixtureRoute>;
+    fetch?: FetchFn & { calls: string[] };
     now?: () => Date;
     extraModules?: Module[];
     env?: CapabilityEnv;
@@ -25,7 +27,7 @@ export function makeTestApp(
   } = {},
 ) {
   const now = options.now ?? (() => new Date('2026-10-22T12:00:00Z'));
-  const fetch = fixtureFetch(options.routes ?? { [ALPHA_URL]: ALPHA_ROUTE });
+  const fetch = options.fetch ?? fixtureFetch(options.routes ?? { [ALPHA_URL]: ALPHA_ROUTE });
   const cache = createMemoryCache(now);
   const usage = createMemoryUsageSink();
   const app = createApp({

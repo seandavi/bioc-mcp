@@ -1,3 +1,6 @@
+import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import type { Deps } from '../../src/core/deps';
 import { CapabilityError } from '../../src/errors';
@@ -32,8 +35,6 @@ async function errorOf(promise: Promise<unknown>): Promise<CapabilityError> {
   }
   throw new Error('expected a CapabilityError');
 }
-
-const WEBSITE_SHA = '87c427974dd00029c68624541011b823e4d79c96';
 
 describe('fetchers request exactly the documented URLs', () => {
   test('repo', async () => {
@@ -70,7 +71,7 @@ describe('fetchers request exactly the documented URLs', () => {
     const { deps, fetch } = makeDeps();
     const workflows = await listWorkflows(deps, 'bioc-website');
     expect(workflows.data.map((w) => w.path)).toContain('.github/workflows/links.yml');
-    const runs = await listWorkflowRuns(deps, 'bioc-website', 'links.yml', 'main');
+    const runs = await listWorkflowRuns(deps, 'bioc-website', 'links.yml', 'main', 20);
     expect(runs.data).toHaveLength(20);
     expect(fetch.calls).toEqual([
       githubUrl('bioc-website', '/actions/workflows?per_page=100'),
@@ -119,6 +120,24 @@ describe('errors', () => {
     expect(error.message).toContain('rate limit');
     expect(error.message).toContain('no GITHUB_TOKEN');
     expect(error.details.status).toBe(status);
+  });
+
+  test('HTTP 401 with a token says the operator must replace the secret, without leaking it', async () => {
+    const { deps } = makeDeps({ [url]: { status: 401 } }, { GITHUB_TOKEN: 'sentinel' });
+    const error = await errorOf(getRepo(deps, 'bioc-website'));
+    expect(error.code).toBe('upstream_error');
+    expect(error.message).toBe(
+      "GitHub rejected this server's GITHUB_TOKEN (HTTP 401); the operator must replace the secret. Try again later.",
+    );
+    expect(error.details.status).toBe(401);
+    expect(JSON.stringify([error.message, error.details])).not.toContain('sentinel');
+  });
+
+  test('HTTP 401 without a token is a plain upstream_error that does not blame GITHUB_TOKEN', async () => {
+    const { deps } = makeDeps({ [url]: { status: 401 } });
+    const error = await errorOf(getRepo(deps, 'bioc-website'));
+    expect(error.code).toBe('upstream_error');
+    expect(error.message).not.toContain('GITHUB_TOKEN');
   });
 
   test('with a token the rate-limit message does not blame its absence', async () => {
@@ -179,4 +198,26 @@ describe('githubTokenWarning', () => {
   });
 });
 
-void WEBSITE_SHA;
+describe('githubRoutes', () => {
+  test('throws on a file it cannot map', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'gh-routes-'));
+    try {
+      mkdirSync(join(dir, 'bioc-x'));
+      writeFileSync(join(dir, 'bioc-x', 'repo.json'), '{"default_branch":"main"}');
+      writeFileSync(join(dir, 'bioc-x', 'notes.txt'), 'stray');
+      expect(() => githubRoutes(dir)).toThrow('Unknown GitHub fixture: bioc-x/notes.txt');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test('maps every recorded file', () => {
+    const root = join(import.meta.dirname, '..', 'fixtures', 'github');
+    const files = readdirSync(root, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .flatMap((repo) =>
+        readdirSync(join(root, repo.name), { recursive: true, withFileTypes: true }).filter((entry) => entry.isFile()),
+      );
+    expect(Object.keys(githubRoutes())).toHaveLength(files.length);
+  });
+});

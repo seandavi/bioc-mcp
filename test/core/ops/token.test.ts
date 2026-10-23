@@ -77,7 +77,7 @@ describe('with a token', () => {
     expect(consoleCalls.map((args) => JSON.stringify(args)).join('')).not.toContain(SENTINEL);
   });
 
-  test.each([403, 404, 500, 'timeout', 'network-error'] as const)('a %s on every repo leaks nothing', async (status) => {
+  test.each([401, 403, 404, 500, 'timeout', 'network-error'] as const)('a %s on every repo leaks nothing', async (status) => {
     for (const kind of KINDS) {
       const { deps, requests, puts } = recordingDeps(overridden(status), { GITHUB_TOKEN: SENTINEL }, status === 'timeout' ? 'timeout' : undefined);
       const result = await invokeCapability(opsActivity, { kind }, deps, testContext());
@@ -106,10 +106,20 @@ describe('with a token', () => {
     client = await connectClient(app, '/mcp/ops');
     const mcp = await client.callTool({ name: 'ops_activity', arguments: { kind } });
     expect(leaks(mcp)).toBe(false);
+    expect(consoleCalls.map((args) => JSON.stringify(args)).join('')).not.toContain(SENTINEL);
   });
 
-  test.each([403, 404, 500, 'network-error'] as const)('REST and MCP errors for a %s do not contain the token', async (status) => {
-    const { app } = makeTestApp({ routes: overridden(status), extraModules: [opsModule], env: { GITHUB_TOKEN: SENTINEL }, now });
+  test.each([401, 403, 404, 500, 'timeout', 'network-error'] as const)('REST and MCP errors for a %s do not contain the token', async (status) => {
+    const timingOut =
+      status === 'timeout'
+        ? Object.assign(() => Promise.reject(new DOMException('timed out', 'TimeoutError')), { calls: [] as string[] })
+        : undefined;
+    const { app } = makeTestApp({
+      ...(timingOut ? { fetch: timingOut } : { routes: overridden(status) }),
+      extraModules: [opsModule],
+      env: { GITHUB_TOKEN: SENTINEL },
+      now,
+    });
     for (const kind of KINDS) {
       const rest = await app.fetch(new Request(`http://test.local/api/v1/ops/activity?kind=${kind}`));
       expect(rest.status).toBe(502);
@@ -119,6 +129,7 @@ describe('with a token', () => {
     const mcp = await client.callTool({ name: 'ops_activity', arguments: { kind: 'summary' } });
     expect(mcp.isError).toBe(true);
     expect(leaks(mcp)).toBe(false);
+    expect(consoleCalls.map((args) => JSON.stringify(args)).join('')).not.toContain(SENTINEL);
   });
 });
 

@@ -8,6 +8,7 @@ import {
   prChecksFailing,
   prStatus,
   summarizeRuns,
+  truncateText,
   truncateTitle,
 } from '../../../src/core/ops/rules';
 import type { GithubWorkflowRun } from '../../../src/upstreams/github';
@@ -68,28 +69,28 @@ describe('mergeableFrom', () => {
 
 describe('prStatus', () => {
   test('conflicts warn', () => {
-    expect(prStatus([], 'CONFLICTING', 1, false)).toEqual({ status: 'warn', reason: 'merge conflicts' });
+    expect(prStatus(0, 'CONFLICTING', 1, false)).toEqual({ status: 'warn', reason: 'merge conflicts' });
   });
 
   test('failing checks warn', () => {
-    expect(prStatus(['ci'], 'MERGEABLE', 1, false)).toEqual({ status: 'warn', reason: 'failing checks: ci' });
+    expect(prStatus(1, 'MERGEABLE', 1, false)).toEqual({ status: 'warn', reason: '1 failing check' });
   });
 
   test('both problems are joined', () => {
-    expect(prStatus(['a', 'b'], 'CONFLICTING', 1, false).reason).toBe('failing checks: a, b; merge conflicts');
+    expect(prStatus(2, 'CONFLICTING', 1, false).reason).toBe('2 failing checks; merge conflicts');
   });
 
   test('a non-draft PR untouched for more than 14 days is info', () => {
-    expect(prStatus([], 'MERGEABLE', 15, false)).toEqual({ status: 'info', reason: 'no activity for 15 days' });
+    expect(prStatus(0, 'MERGEABLE', 15, false)).toEqual({ status: 'info', reason: 'no activity for 15 days' });
   });
 
   test('14 days exactly is ok; a draft is never stale', () => {
-    expect(prStatus([], 'MERGEABLE', 14, false).status).toBe('ok');
-    expect(prStatus([], 'MERGEABLE', 15, true)).toEqual({ status: 'ok', reason: 'ok' });
+    expect(prStatus(0, 'MERGEABLE', 14, false).status).toBe('ok');
+    expect(prStatus(0, 'MERGEABLE', 15, true)).toEqual({ status: 'ok', reason: 'ok' });
   });
 
   test('UNKNOWN mergeability is not a problem by itself', () => {
-    expect(prStatus([], 'UNKNOWN', 1, false).status).toBe('ok');
+    expect(prStatus(0, 'UNKNOWN', 1, false).status).toBe('ok');
   });
 });
 
@@ -168,6 +169,13 @@ describe('truncateTitle', () => {
   test('keeps 80 characters and cuts 81 to 79 plus an ellipsis', () => {
     expect(truncateTitle('a'.repeat(80))).toBe('a'.repeat(80));
     expect(truncateTitle('a'.repeat(81))).toBe(`${'a'.repeat(79)}…`);
+  });
+});
+
+describe('truncateText', () => {
+  test('keeps limit characters and cuts one more to limit − 1 plus an ellipsis', () => {
+    expect(truncateText('abcd', 4)).toBe('abcd');
+    expect(truncateText('abcdef', 4)).toBe('abc…');
   });
 });
 

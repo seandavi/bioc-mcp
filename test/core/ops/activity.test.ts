@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, expectTypeOf, test } from 'vitest';
 import type * as z from 'zod';
 import type { Deps } from '../../../src/core/deps';
 import { invokeCapability } from '../../../src/core/invoke';
@@ -136,9 +136,9 @@ describe('issues', () => {
     expect(data.items.every((item) => item.stale === (item.updated_age_days > 30))).toBe(true);
   });
 
-  test('a single repo does not say to narrow', async () => {
+  test('a single repo does not say to narrow; it points to the GitHub list', async () => {
     const { summary } = await run('issues', { repo: 'bioc-infrastructure' });
-    expect(summary).toContain('more are not.');
+    expect(summary).toContain('more are not (see https://github.com/seandavi/bioc-infrastructure/issues).');
     expect(summary).not.toContain('pass repo to narrow');
   });
 
@@ -195,8 +195,64 @@ describe('prs', () => {
     const { data } = await run('prs', { repo: 'bioc-website' }, routes);
     const pr = data.items.find((i) => i.number === 74)!;
     expect(pr.failing_checks).toEqual(['build-deploy', 'ci/legacy']);
+    expect(pr.failing_check_count).toBe(2);
     expect(pr.status).toBe('warn');
-    expect(pr.reason).toBe('failing checks: build-deploy, ci/legacy; merge conflicts');
+    expect(pr.reason).toBe('2 failing checks; merge conflicts');
+  });
+
+  /** n bioc-mcp PRs created from 2026-10-22T12:00Z (newer than every recorded PR; the newest is bioc-infrastructure#122 at 11:51) with 100 failing checks each. */
+  function hostileRoutes(count: number, title: string): Record<string, FixtureRoute> {
+    const template = fixtureJson('bioc-website/pulls.json')[0];
+    const pulls = Array.from({ length: count }, (_, i) => ({
+      ...template,
+      number: 700 + i,
+      title,
+      created_at: `2026-10-22T12:${String(i).padStart(2, '0')}:00Z`,
+      updated_at: `2026-10-22T12:${String(i).padStart(2, '0')}:00Z`,
+      head: { sha: `b${i}`, ref: 'x' },
+    })).reverse();
+    const checkRuns = Array.from({ length: 100 }, (_, i) => ({
+      name: `${i}-${'c'.repeat(200)}`,
+      status: 'completed',
+      conclusion: 'failure',
+    }));
+    const routes: Record<string, FixtureRoute> = {
+      ...githubRoutes(),
+      [githubUrl('bioc-mcp', PULLS_SUFFIX)]: { status: 200, body: JSON.stringify(pulls) },
+    };
+    for (let i = 0; i < count; i++) {
+      routes[githubUrl('bioc-mcp', `/pulls/${700 + i}`)] = { status: 200, body: JSON.stringify({ number: 700 + i, mergeable: false }) };
+      routes[githubUrl('bioc-mcp', `/commits/b${i}/check-runs?per_page=100`)] = {
+        status: 200,
+        body: JSON.stringify({ total_count: 100, check_runs: checkRuns }),
+      };
+      routes[githubUrl('bioc-mcp', `/commits/b${i}/status`)] = { status: 200, body: '{"statuses":[]}' };
+    }
+    return routes;
+  }
+
+  test('a PR with 100 long failing checks stays bounded', async () => {
+    for (const extra of [{}, { repo: 'bioc-mcp' }]) {
+      const { envelope, data, summary } = await run('prs', extra, hostileRoutes(1, 'title'));
+      expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+      const item = data.items.find((i) => i.repo === 'bioc-mcp' && i.number === 700)!;
+      expect(item.failing_checks).toHaveLength(3);
+      for (const name of item.failing_checks) {
+        expect(name.length).toBeLessThanOrEqual(40);
+        expect(name.endsWith('…')).toBe(true);
+      }
+      expect(item.failing_check_count).toBe(100);
+      expect(item.reason).toBe('100 failing checks; merge conflicts');
+      expect(summary).not.toContain('c'.repeat(40));
+    }
+  });
+
+  test('ten hostile PRs still fit', async () => {
+    for (const extra of [{}, { repo: 'bioc-mcp' }]) {
+      const { envelope, data } = await run('prs', extra, hostileRoutes(10, 'T'.repeat(200)));
+      expect(data.items.filter((i) => i.repo === 'bioc-mcp')).toHaveLength(10);
+      expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+    }
   });
 
   test('a PR whose mergeability is still being computed is UNKNOWN and not a problem', async () => {
@@ -232,7 +288,7 @@ describe('prs', () => {
     expect(data.items.map((i) => i.number)).toEqual([511, 510, 509, 508, 507, 506, 505, 504, 503, 502]);
     expect(data.omitted).toBe(2);
     expect(data.repos[0]).toMatchObject({ open: 12 });
-    expect(summary).toContain('2 older PRs were not checked.');
+    expect(summary).toContain('2 older PRs were not checked (see https://github.com/seandavi/bioc-mcp/pulls).');
     expect(fetch.calls).toHaveLength(1 + 3 * 10);
     expect(fetch.calls.some((url) => url.includes('/pulls/500') || url.includes('/commits/a0/'))).toBe(false);
   });
@@ -366,9 +422,31 @@ describe('workflows', () => {
         body: JSON.stringify({ total_count: 15, workflows }),
       },
     };
-    const { data } = await run('workflows', { repo: 'bioc-mcp' }, routes);
+    const { data, summary } = await run('workflows', { repo: 'bioc-mcp' }, routes);
     expect(data.workflows).toHaveLength(12);
     expect(data.omitted).toBe(3);
+    expect(summary).toContain('Only the first 12 are listed; 3 more are not.');
+  });
+
+  test('getRepo and listWorkflows are requested together', async () => {
+    const { deps } = makeDeps();
+    const inner = deps.fetch;
+    let seen!: () => void;
+    const workflowsSeen = new Promise<void>((resolve) => (seen = resolve));
+    let workflowsBeforeRepo: boolean | undefined;
+    deps.fetch = async (request) => {
+      if (request.url === githubUrl('bioc-website', '/actions/workflows?per_page=100')) seen();
+      if (request.url === githubUrl('bioc-website')) {
+        workflowsBeforeRepo = await Promise.race([
+          workflowsSeen.then(() => true),
+          new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 100)),
+        ]);
+      }
+      return inner(request);
+    };
+    const result = await invokeCapability(opsActivity, { kind: 'workflows', repo: 'bioc-website' }, deps, testContext());
+    expect(result.ok).toBe(true);
+    expect(workflowsBeforeRepo).toBe(true);
   });
 });
 
@@ -446,8 +524,13 @@ describe('failures', () => {
       failureIssue(100 + i, `${String(i).padStart(2, '0')}${'u'.repeat(62)}.service is failing`),
     );
     const routes = edgeIssues(issues);
-    for (const kind of ['failures', 'summary'] as const) {
-      const { envelope, summary } = await run(kind, kind === 'summary' ? { repo: 'bioc-edge' } : {}, routes);
+    const runs = [
+      ['failures', {}],
+      ['summary', {}],
+      ['summary', { repo: 'bioc-edge' }],
+    ] as const;
+    for (const [kind, extra] of runs) {
+      const { envelope, summary } = await run(kind, extra, routes);
       expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
       expect(summary).toContain('60 open "<unit> is failing" issues in bioc-edge');
       expect(summary).toContain('and 45 more');
@@ -566,6 +649,12 @@ function failureIssue(number: number, title: string, { author = 'seandavi' }: { 
 const edgeIssues = (issues: readonly object[]) => ({
   ...githubRoutes(),
   [githubUrl('bioc-edge', ISSUES_SUFFIX)]: { status: 200, body: JSON.stringify(issues) } as FixtureRoute,
+});
+
+describe('types', () => {
+  test('failures data names bioc-edge as its only repo', () => {
+    expectTypeOf<Of<'failures'>['repo']>().toEqualTypeOf<'bioc-edge'>();
+  });
 });
 
 describe('size', () => {

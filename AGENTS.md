@@ -63,7 +63,10 @@ test/
   (`sources: [{ url, as_of }]`).
 - Upstream adapters build every path through `pathSegment()` (`src/upstreams/http.ts`) for each
   caller-supplied value and fetch only through `fetchUpstream`, which refuses redirects that leave
-  the upstream's base URL. Upstream `baseUrl`s are `https:` and end with `/`.
+  the upstream's base URL. Upstream `baseUrl`s are `https:`, carry no credentials and end with `/`;
+  `ttlSeconds` is a positive integer, `timeoutMs` (at most 60000) and `maxBytes` positive integers
+  when set (`assertUpstream` enforces this). `fetchUpstream` stops reading a body past `maxBytes`
+  (default 2 MiB) and fails with `upstream_error`.
 - The docs index is built, never fetched at runtime: `scripts/build-docs-index.ts` reads
   `docs-sources.yaml`, and the Worker imports the result from `generated/`. Adding a docs source
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
@@ -71,9 +74,10 @@ test/
 - MCP text content carries the data, not only the summary: a successful tool result's `content` is
   the summary, then `JSON.stringify({ data, sources })` (`envelopeTextBlocks` in src/envelope.ts),
   so clients that ignore `structuredContent` see the same facts. Never build `content` any other way.
-- No tool returns more than ~8 KB of text. `assertEnvelopeSize` checks `JSON.stringify(envelope)`
-  against `MAX_RESULT_BYTES` (8192), which is always larger than the MCP text content, so one
-  check bounds REST, `structuredContent` and `content`.
+- No tool returns more than ~8 KB of text. `invokeCapability` runs `assertEnvelopeSize` on the
+  envelope after the output schema parse (what the transports send), checking
+  `JSON.stringify(envelope)` against `MAX_RESULT_BYTES` (8192), which is always larger than the
+  MCP text content, so one check bounds REST, `structuredContent` and `content`.
 - Usage events carry no argument values and no client addresses; the Analytics Engine layout in
   src/usage.ts is append-only, and a layout change needs a new dataset name.
 - Tests never hit the network: upstream calls go through an injectable `fetch`, fed from

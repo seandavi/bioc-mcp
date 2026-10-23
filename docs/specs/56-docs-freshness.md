@@ -320,7 +320,7 @@ only `commit` objects added to the 16 inputs.
 
 ```ts
 import * as z from 'zod';
-import type { DocsIndexMeta, DocsInput, DocsInputCommit } from '../../docs-index/schema';
+import type { DocsIndexMeta, DocsInput } from '../../docs-index/schema';
 import { docsSource } from './pages';
 
 /** The Deploy workflow rebuilds the index daily; at this age at least one rebuild failed or did not run. */
@@ -333,8 +333,12 @@ const DAY_MS = 86_400_000;
 /** Whole days from `timestamp` to `now`, rounded down; 0 if `timestamp` is in the future or unparseable. */
 export function ageDays(timestamp: string, now: Date): number;
 
-/** `https://github.com/${commit.repo}/commit/${commit.sha}` */
-export function commitUrl(commit: DocsInputCommit): string;
+/**
+ * The URL every page built from `input` starts with: for a raw.githubusercontent.com file, its GitHub blob URL
+ * (https://github.com/<owner>/<repo>/blob/<ref>/<path>, as scripts/docs-index/markdown.ts links it); otherwise the
+ * directory of the input URL (the site root for search.json).
+ */
+export function inputPagesUrl(input: DocsInput): string;
 
 /** null unless ageDays(meta.built_at, now) >= DOCS_INDEX_STALE_AFTER_DAYS; then INDEX_WARNING below. */
 export function indexStaleWarning(meta: DocsIndexMeta, now: Date): string | null;
@@ -350,7 +354,11 @@ export const DocsFreshnessSchema = z.object({
   index_age_days: z.number().int().nonnegative().describe('Whole days since index_built_at'),
   possibly_stale: z
     .array(z.string())
-    .describe('Why this result may be out of date: the index is 2+ days old, or a source was behind its branch; [] when neither'),
+    .describe(
+      'Why this result may be out of date: the index is 2+ days old, a source was behind its branch, or a ' +
+        "source's commit is unknown and it is 14+ days old. A source's warning starts with the URL its pages " +
+        'start with; [] when none',
+    ),
 });
 export type DocsFreshness = z.output<typeof DocsFreshnessSchema>;
 
@@ -366,8 +374,8 @@ Warning texts are exact. `<date>` means the first 10 characters of an ISO string
 first 7 of a sha, and `<n>` an integer:
 
 - INDEX_WARNING: `The docs index was built <built_at date>, <n> days ago; it is rebuilt daily, so docs changed since then are not in it.`
-- BEHIND: `<input.url> comes from <repo>@<sha7>, but <ref> was already at <head_sha7> (committed <head_committed_at date>) when the index was built; it may lag <ref>.`
-- UNKNOWN: `<input.url> is <n> days old (as of <as_of date>) and its source commit is unknown.`
+- BEHIND: `Docs under <inputPagesUrl(input)> come from <repo>@<sha7>, but <ref> was already at <head_sha7> (committed <head_committed_at date>) when the index was built; they may lag <ref>.`
+- UNKNOWN: `Docs under <inputPagesUrl(input)> are <n> days old (as of <as_of date>) and their source commit is unknown.`
   `<n>` here is `ageDays(docsSource(input).as_of, now)`, and the rule fires at `n >= 14`.
 
 ### 7. `docs_search` (`src/core/docs/search.ts`)
@@ -442,8 +450,7 @@ and `"…", characters 1–7000 of 12000. Call docs_read again with cursor "7000
 export const DatasetCommitSchema = z.object({
   repo: z.string(), // 'seandavi/bioc-infrastructure'
   ref: z.string(),
-  sha: z.string(),
-  url: z.string(), // https://github.com/<repo>/commit/<sha>
+  sha: z.string(), // its page is https://github.com/<repo>/commit/<sha>
   head_sha: z.string(), // head of ref when the dataset was built
   head_committed_at: z.string(),
 });
@@ -484,7 +491,7 @@ export interface BundledDataset {
   possibly_stale: docsFreshness(meta, meta.inputs, now).possibly_stale,
   inputs: meta.inputs.map((input) => ({
     ...docsSource(input),
-    commit: input.commit && { ...input.commit, url: commitUrl(input.commit) }, // key order: repo, ref, sha, url, head_sha, head_committed_at
+    commit: input.commit && { repo, ref, sha, head_sha, head_committed_at }, // from input.commit, in this key order; no url
     possibly_stale: inputStaleWarning(input, now),
   })),
 }
@@ -525,7 +532,7 @@ the same JSON. The OpenAPI document picks up the schema change through `AboutSch
       `possibly_stale`. An input with `commit: null` gets the UNKNOWN warning at 14 days, not at 13.
       An input with `sha === head_sha` gets none at any age.
 - [ ] `bioc://about` and `GET /api/v1/about` return identical JSON. The docs-index dataset has
-      `age_days`, `possibly_stale` and 16 inputs, each with `commit` (with `url`) and
+      `age_days`, `possibly_stale` and 16 inputs, each with `commit` (no `url`) and
       `possibly_stale`. `AboutSchema.parse` accepts it.
 - [ ] Every `docs_search` and `docs_read` result is still ≤ 8192 bytes (`assertEnvelopeSize`).
       `npm run eval:docs` shows recall@1 0.765 and recall@5 0.912 unchanged. MRR@10 is reported
@@ -538,7 +545,7 @@ the same JSON. The OpenAPI document picks up the schema change through `AboutSch
 
 New:
 
-- `test/core/docs/freshness.test.ts`: `ageDays` (floor, future → 0, garbage → 0); `commitUrl`;
+- `test/core/docs/freshness.test.ts`: `ageDays` (floor, future → 0, garbage → 0); `inputPagesUrl` (raw file → blob URL, other → directory, every fixture record's `url` starts with it);
   `indexStaleWarning` at 47:59:59 → null and at 48:00:00 → the exact INDEX text; `inputStaleWarning`
   for BEHIND (exact text), UNKNOWN at 13 vs 14 days (exact text), and `sha === head_sha` at 400
   days → null; `inputNote` with and without a commit; `docsFreshness` de-duplicates inputs by url

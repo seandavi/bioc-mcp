@@ -163,7 +163,7 @@ How it works:
   `await invokeCapability(capability, { query: q.question, limit: DOCS_EVAL_LIMIT }, deps, context)`.
   When the result is not `ok`, it throws
   `` new Error(`docs_search failed for "${q.id}": ${result.error.code}: ${result.error.message}`) ``.
-  Otherwise `top_urls` is `envelope.data.hits.map((hit) => hit.url)`. Going through
+  Otherwise `top_urls` is `DocsSearchDataSchema.parse(envelope.data).hits.map((hit) => hit.url)`. Going through
   `invokeCapability` measures what MCP and REST clients get, including input parsing and the
   size trimming (`omitted_for_size`).
 - `unknown_answers` is `q.answers.filter((url) => !recordUrls.has(url))`, with

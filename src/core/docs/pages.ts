@@ -126,9 +126,9 @@ function withBody(head: string, text: string): string {
   return text === '' ? head : `${head}\n\n${text}`;
 }
 
-/** '## <label>\n\n<url>\n\n<body>' (an empty body leaves the URL line last). */
-export function renderSection(record: DocsRecord): string {
-  return withBody(`## ${sectionLabel(record) || record.title}\n\n${record.url}`, body(record));
+/** '<## or ###> <label>\n\n<url>\n\n<body>' (an empty body leaves the URL line last); `level` 3 for a nested record. */
+export function renderSection(record: DocsRecord, level: 2 | 3 = 2): string {
+  return withBody(`${'#'.repeat(level)} ${sectionLabel(record) || record.title}\n\n${record.url}`, body(record));
 }
 
 /**
@@ -149,13 +149,14 @@ export function subsectionsOf(page: DocsPage, record: DocsRecord): DocsRecord[] 
   return nested;
 }
 
-/** renderSection(record), then renderSection(s) for each of subsectionsOf(page, record), joined by '\n\n'. */
+/** renderSection(record), then renderSection(s, 3) for each of subsectionsOf(page, record), joined by '\n\n'. */
 export function renderSectionTree(page: DocsPage, record: DocsRecord): string {
-  return [record, ...subsectionsOf(page, record)].map(renderSection).join('\n\n');
+  return [renderSection(record), ...subsectionsOf(page, record).map((s) => renderSection(s, 3))].join('\n\n');
 }
 
 /**
- * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record.
+ * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r, level) for every other record,
+ * level 3 when r has more crumbs than the page (an h3), else 2.
  * An ADR's page-level record holds the whole ADR, and its section records repeat that text; the page-level
  * body is cut where the first section's body last starts, which keeps the 'Status:' and 'Date:' lines and never
  * drops intro text that repeats it.
@@ -165,7 +166,7 @@ export function renderPage(page: DocsPage): string {
   const isPageLevel = head.id === page.id;
   const sections = isPageLevel ? rest : page.records;
   const parts = [withBody(`# ${page.title}\n\n${page.url}`, isPageLevel ? pagePreamble(head, rest) : '')];
-  for (const record of sections) parts.push(renderSection(record));
+  for (const record of sections) parts.push(renderSection(record, record.crumbs.length > page.crumbs.length ? 3 : 2));
   return parts.join('\n\n');
 }
 

@@ -118,7 +118,9 @@ Node ≥ 22.12 (CI uses 24).
   `npx vitest` or `npx tsc` on a fresh clone fail with "Cannot find module '../../generated/docs-index'"
   until `npm run docs:fixtures` has run once.
 - `npm run docs:build`: build it from the live docs (network). `npm run docs:record` does the same
-  and re-records `test/fixtures/docs/`.
+  and re-records `test/fixtures/docs/`. Both call the GitHub API (about 14 requests); export
+  `GITHUB_TOKEN` (e.g. `GITHUB_TOKEN=$(gh auth token) npm run docs:record`) to avoid the 60-per-hour
+  anonymous limit. The build reads the token from the shell, not from `.dev.vars`.
 - `npm run eval:docs`: recall@1, recall@5 and MRR@10 of `docs_search` on
   `eval/docs-questions.yaml`, over an index built in memory from `test/fixtures/docs/` (no
   network). Add `-- --network` to use the live docs. It fails only when an answer URL is not in

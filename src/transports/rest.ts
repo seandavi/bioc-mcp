@@ -109,7 +109,7 @@ export function createRestApp({ modules, deps, usage }: RestAppOptions): OpenAPI
       operationId: 'about',
       tags: ['meta'],
       summary: 'About this server',
-      description: 'Modules, tools, upstream sources and their cache TTLs (same JSON as the bioc://about resource).',
+      description: 'Modules, tools, upstream sources and their cache TTLs, and bundled datasets and their freshness (same JSON as the bioc://about resource).',
       responses: { 200: json(AboutSchema, 'Server description'), 429: tooManyRequests },
     }),
   );

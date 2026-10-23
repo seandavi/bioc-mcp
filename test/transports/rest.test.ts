@@ -100,6 +100,12 @@ describe('GET /api/openapi.json', () => {
     expect(body.paths['/api/v1/meta/ping'].get.operationId).toBe('meta_ping');
     expect(body.paths['/api/v1/meta/ping'].get.responses['429']).toBeDefined();
     expect(body.paths['/api/v1/about'].get.responses['429']).toBeDefined();
+    const about = body.paths['/api/v1/about'].get;
+    expect(about.description).toBe(
+      'Modules, tools, upstream sources and their cache TTLs, and bundled datasets and their freshness (same JSON as the bioc://about resource).',
+    );
+    const dataset = about.responses['200'].content['application/json'].schema.properties.datasets.items.properties;
+    expect(dataset.age_days.description).toBe('Whole days since built_at');
     expect(body.tags).toEqual([
       { name: 'meta', description: metaModule.description },
       { name: 'example', description: exampleModule.description },

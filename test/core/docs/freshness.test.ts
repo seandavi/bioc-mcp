@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
+import * as z from 'zod';
+import { fixtureDocsIndex } from '../../support/docs';
 import {
   ageDays,
-  commitUrl,
   docsFreshness,
   DocsFreshnessSchema,
   indexStaleWarning,
+  inputPagesUrl,
   inputNote,
   inputStaleWarning,
 } from '../../../src/core/docs/freshness';
@@ -55,12 +57,6 @@ describe('ageDays', () => {
   });
 });
 
-describe('commitUrl', () => {
-  it('is the GitHub commit page', () => {
-    expect(commitUrl(commit)).toBe(`https://github.com/seandavi/bioc-registry/commit/${'a'.repeat(40)}`);
-  });
-});
-
 describe('indexStaleWarning', () => {
   const meta = metaOf([input()]);
 
@@ -81,8 +77,8 @@ describe('inputStaleWarning', () => {
 
   it('says the input may lag its branch when its commit is behind the head', () => {
     expect(inputStaleWarning(input({ commit: behind }), now)).toBe(
-      'https://raw.githubusercontent.com/seandavi/bioc-registry/main/README.md comes from seandavi/bioc-registry@aaaaaaa, ' +
-        'but main was already at bbbbbbb (committed 2026-10-20) when the index was built; it may lag main.',
+      'Docs under https://github.com/seandavi/bioc-registry/blob/main/README.md come from seandavi/bioc-registry@aaaaaaa, ' +
+        'but main was already at bbbbbbb (committed 2026-10-20) when the index was built; they may lag main.',
     );
   });
 
@@ -94,7 +90,7 @@ describe('inputStaleWarning', () => {
     const unknown = input({ commit: null, last_modified: '2026-10-08T00:00:00Z' });
     expect(inputStaleWarning(unknown, at('2026-10-21T23:59:59Z'))).toBeNull();
     expect(inputStaleWarning(unknown, at('2026-10-22T00:00:00Z'))).toBe(
-      'https://raw.githubusercontent.com/seandavi/bioc-registry/main/README.md is 14 days old (as of 2026-10-08) and its source commit is unknown.',
+      'Docs under https://github.com/seandavi/bioc-registry/blob/main/README.md are 14 days old (as of 2026-10-08) and their source commit is unknown.',
     );
   });
 
@@ -102,6 +98,35 @@ describe('inputStaleWarning', () => {
     const fresh = input({ commit: null, last_modified: '2026-10-21T00:00:00Z', fetched_at: '2026-01-01T00:00:00Z' });
     expect(inputStaleWarning(fresh, now)).toBeNull();
     expect(inputStaleWarning(input({ commit: null, fetched_at: '2026-01-01T00:00:00Z' }), now)).toContain('294 days old');
+  });
+});
+
+describe('inputPagesUrl', () => {
+  it('is the GitHub blob URL of a raw.githubusercontent.com file', () => {
+    expect(inputPagesUrl(input({ url: 'https://raw.githubusercontent.com/seandavi/bioc-registry/main/docs/api.md' }))).toBe(
+      'https://github.com/seandavi/bioc-registry/blob/main/docs/api.md',
+    );
+  });
+
+  it('is the directory of any other input URL', () => {
+    expect(inputPagesUrl(input({ url: 'https://seandavi.github.io/bioc-infrastructure/search.json' }))).toBe(
+      'https://seandavi.github.io/bioc-infrastructure/',
+    );
+    expect(inputPagesUrl(input({ url: 'https://docs.test/search.json' }))).toBe('https://docs.test/');
+  });
+
+  it('prefixes the url of every fixture record', async () => {
+    const index = await fixtureDocsIndex();
+    for (const record of index.records) {
+      expect(record.url.startsWith(inputPagesUrl(index.inputFor(record.id)!)), record.id).toBe(true);
+    }
+  });
+});
+
+describe('DocsFreshnessSchema', () => {
+  it('describes all three reasons possibly_stale can hold', () => {
+    const json = z.toJSONSchema(DocsFreshnessSchema) as any;
+    expect(json.properties.possibly_stale.description).toContain('14+ days old');
   });
 });
 

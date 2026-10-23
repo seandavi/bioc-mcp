@@ -126,6 +126,9 @@ describe('bioc://about', () => {
     client = await connectClient(makeTestApp().app, '/mcp/meta');
     const { resources } = await client.listResources();
     expect(resources.map((resource) => resource.uri)).toContain('bioc://about');
+    expect(resources.find((resource) => resource.uri === 'bioc://about')?.description).toBe(
+      'Modules, tools, upstream sources and their cache TTLs, and bundled datasets and their freshness.',
+    );
     const { contents } = await client.readResource({ uri: 'bioc://about' });
     const text = (contents[0] as { text: string }).text;
     const about = AboutSchema.parse(JSON.parse(text));

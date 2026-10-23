@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { QUERY_STOP_WORDS, SUPERSEDED_ADR_BOOST, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
+import { QUERY_STOP_WORDS, SUPERSEDED_ADR_BOOST, ignoredSearchTerms, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
 import { syntheticDocsIndex } from '../support/docs';
 import type { DocsRecord } from '../../src/docs-index/schema';
 import { fixtureArtifact } from './support';
@@ -171,11 +171,56 @@ describe('loadDocsIndex', () => {
       source: 'adr',
     });
 
+    const section = (n: string): DocsRecord => ({
+      id: `site:adr/${n}.html#decision`,
+      url: `https://docs.test/adr/${n}.html#decision`,
+      title: 'Hash the addresses',
+      section: 'Decision',
+      crumbs: [],
+      text: 'Decision\nHash the addresses at the edge.',
+      source: 'adr',
+    });
+
     it('scores a superseded ADR SUPERSEDED_ADR_BOOST times as high as an identical current one', () => {
       const synthetic = syntheticDocsIndex([adr('0001', 'Superseded by 0002'), adr('0002', 'Accepted by 0002')]);
       const hits = synthetic.search('hash addresses');
       expect(hits.map((hit) => hit.record.id)).toEqual(['site:adr/0002.html', 'site:adr/0001.html']);
       expect(hits[1]!.score).toBeCloseTo(hits[0]!.score * SUPERSEDED_ADR_BOOST, 9);
     });
+
+    it('scores the section records of a superseded ADR SUPERSEDED_ADR_BOOST times as high too', () => {
+      const synthetic = syntheticDocsIndex([
+        adr('0001', 'Superseded by 0002'),
+        section('0001'),
+        adr('0002', 'Accepted by 0002'),
+        section('0002'),
+      ]);
+      const hits = synthetic.search('hash addresses');
+      const old = hits.find((hit) => hit.record.id === 'site:adr/0001.html#decision')!;
+      const current = hits.find((hit) => hit.record.id === 'site:adr/0002.html#decision')!;
+      expect(old.score).toBeCloseTo(current.score * SUPERSEDED_ADR_BOOST, 9);
+    });
+  });
+});
+
+describe('ignoredSearchTerms', () => {
+  const Q18 =
+    'registry poll webhooks gate propagation edge traffic build manifest website universe check status release download cache worker deploy';
+
+  it('is empty for a short query', () => {
+    expect(ignoredSearchTerms('why does the registry poll')).toEqual([]);
+  });
+
+  it('is empty for a query of 16 distinct words', () => {
+    expect(ignoredSearchTerms(Q18.split(' ').slice(0, 16).join(' '))).toEqual([]);
+  });
+
+  it('lists the distinct words after the first 16, in query order', () => {
+    expect(ignoredSearchTerms(Q18)).toEqual(['worker', 'deploy']);
+  });
+
+  it('does not count repeats or stop words', () => {
+    expect(ignoredSearchTerms(`${Q18} the registry REGISTRY why`)).toEqual(['worker', 'deploy']);
+    expect(ignoredSearchTerms(`the why ${Q18}`)).toEqual(['worker', 'deploy']);
   });
 });

@@ -18,6 +18,8 @@ site_repo: bioc-infrastructure
 # and linked as https://github.com/<github_owner>/<repo>/blob/<ref>/<file>#<anchor>.
 # Must be seandavi: the build looks up each repo's branch head through the GitHub adapter, which
 # reads only seandavi/* repos.
+# Each ref must be a branch: the build looks up its head with GET /repos/seandavi/<repo>/branches/<ref>,
+# so a tag fails with not_found.
 github_owner: seandavi
 repos:
   - repo: bioc-registry

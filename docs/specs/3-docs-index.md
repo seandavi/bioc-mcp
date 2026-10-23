@@ -223,7 +223,7 @@ export const DocsSourcesConfigSchema = z.strictObject({
   github_owner: z.string().regex(/^[A-Za-z0-9-]+$/),
   repos: z.array(z.strictObject({
     repo: z.string().regex(segment),
-    ref: z.string().regex(segment),                       // a branch or tag without "/"
+    ref: z.string().regex(segment),                       // a branch without "/" (the build looks up its head with GET /repos/seandavi/<repo>/branches/<ref>)
     files: z.array(z.string().regex(/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*\.md$/)).min(1),
   })).min(1),
 }).refine((c) => new Set(c.repos.map((r) => r.repo)).size === c.repos.length, 'each repo may appear once');
@@ -314,6 +314,12 @@ export interface DocsIndex {
 
 /** search() uses at most this many distinct query terms: each costs one prefix and one fuzzy sub-query. */
 export const MAX_SEARCH_TERMS = 16;
+
+/**
+ * The distinct lower-cased terms of `query` that are not stop words, after the first MAX_SEARCH_TERMS of them,
+ * in query order: the words search() leaves out. [] for a query with at most MAX_SEARCH_TERMS such terms.
+ */
+export function ignoredSearchTerms(query: string): string[];
 
 export interface DocsIndexJson { storeJson: string; indexJson: string }
 

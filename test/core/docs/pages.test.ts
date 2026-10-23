@@ -104,6 +104,11 @@ describe('rendering', () => {
     expect(renderSection(r)).toBe('## Heading\n\nhttps://docs.test/x.html#h\n\nfirst\n\nsecond');
   });
 
+  it('renders a nested record one level deeper', () => {
+    const r = record({ id: 'site:x.html#h', url: 'https://docs.test/x.html#h', section: 'H', text: 'H\nbody' });
+    expect(renderSection(r, 3)).toBe('### H\n\nhttps://docs.test/x.html#h\n\nbody');
+  });
+
   it('keeps the first line of repo text and falls back to the title with no label', () => {
     const r = record({ id: 'repo:a/B.md', url: 'https://github.com/x/a/blob/main/B.md', source: 'repo', repo: 'a', title: 'B doc', text: '# B\nbody' });
     expect(renderSection(r)).toBe('## B doc\n\nhttps://github.com/x/a/blob/main/B.md\n\n# B\nbody');
@@ -114,12 +119,15 @@ describe('rendering', () => {
     expect(renderSection(r)).toBe('## H\n\nhttps://docs.test/x.html#h');
   });
 
-  it('renders a page: header, page-level body, then one ## per other record', () => {
+  it('renders a page: header, page-level body, then one ## per h2 record and one ### per h3 record', () => {
     const page = pages.byPath.get('propagation-gate.html')!;
     const text = renderPage(page);
+    const others = page.records.slice(1);
     expect(text.startsWith(`# ${page.title}\n\n${page.url}\n\n`)).toBe(true);
-    expect(text.match(/^## /gm)).toHaveLength(page.records.length - 1);
-    expect(text).toContain('## Why the registry polls\n\nhttps://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls\n\n');
+    expect(text.match(/^## /gm)).toHaveLength(others.filter((r) => r.crumbs.length === page.crumbs.length).length);
+    expect(text.match(/^### /gm)).toHaveLength(others.filter((r) => r.crumbs.length > page.crumbs.length).length);
+    expect(text).toContain('\n\n### Two traps in the data\n\n');
+    expect(text).toContain('\n\n## Why the registry polls\n\nhttps://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls\n\n');
     expect(text).not.toMatch(/\n{3,}/);
   });
 
@@ -153,7 +161,7 @@ describe('rendering', () => {
     expect(subsectionsOf(page, b)).toEqual([]);
     expect(subsectionsOf(page, head)).toEqual([]);
     expect(subsectionsOf(page, record({ id: 'site:z.html#c', url: 'https://docs.test/z.html#c' }))).toEqual([]);
-    expect(renderSectionTree(page, a)).toBe([a, a1, a2].map(renderSection).join('\n\n'));
+    expect(renderSectionTree(page, a)).toBe([renderSection(a), renderSection(a1, 3), renderSection(a2, 3)].join('\n\n'));
     expect(renderSectionTree(page, b)).toBe(renderSection(b));
   });
 
@@ -176,6 +184,19 @@ describe('rendering', () => {
     ).list[0]!;
     expect(renderPage(page)).toBe(
       '# T\n\nhttps://docs.test/z.html\n\nStatus: Accepted\n\nTBD for now.\n\n## A\n\nhttps://docs.test/z.html#a\n\nTBD',
+    );
+  });
+
+  it('renders h3 records of a page with a nested head as ###', () => {
+    const page = docsPages(
+      syntheticDocsIndex([
+        record({ id: 'site:w.html', url: 'https://docs.test/w.html', crumbs: ['Top'], text: 'intro' }),
+        record({ id: 'site:w.html#a', url: 'https://docs.test/w.html#a', section: 'A', crumbs: ['Top'], text: 'A\nbody' }),
+        record({ id: 'site:w.html#a1', url: 'https://docs.test/w.html#a1', section: 'A1', crumbs: ['Top', 'A'], text: 'A1\nsub' }),
+      ]),
+    ).list[0]!;
+    expect(renderPage(page)).toBe(
+      '# T\n\nhttps://docs.test/w.html\n\nintro\n\n## A\n\nhttps://docs.test/w.html#a\n\nbody\n\n### A1\n\nhttps://docs.test/w.html#a1\n\nsub',
     );
   });
 

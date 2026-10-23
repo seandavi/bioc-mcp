@@ -76,6 +76,19 @@ function boundedQuery(query: string): string {
   return [...(terms.size > 0 ? terms : stopTerms)].join(' ');
 }
 
+/**
+ * The distinct lower-cased terms of `query` that are not stop words, after the first MAX_SEARCH_TERMS of them,
+ * in query order: the words search() leaves out. [] for a query with at most MAX_SEARCH_TERMS such terms.
+ */
+export function ignoredSearchTerms(query: string): string[] {
+  const terms = new Set<string>();
+  for (const token of tokenize(query)) {
+    const term = token.toLowerCase();
+    if (term !== '' && !QUERY_STOP_WORDS.has(term)) terms.add(term);
+  }
+  return [...terms].slice(MAX_SEARCH_TERMS);
+}
+
 /** Parses and checks both strings. Throws Error on any mismatch; never returns a partial index. */
 export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
   const parsed = DocsStoreSchema.safeParse(JSON.parse(json.storeJson));

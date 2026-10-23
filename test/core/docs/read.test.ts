@@ -122,8 +122,15 @@ describe('pagination', () => {
       if (data.next_cursor === null) break;
       cursor = data.next_cursor;
     }
-    expect(text.indexOf('## Roll back the Worker')).toBeGreaterThan(-1);
-    expect(text.indexOf('## Roll back DNS')).toBeGreaterThan(text.indexOf('## Roll back the Worker'));
+    expect(text.startsWith('## Runbooks')).toBe(true);
+    expect(text).toContain('\n\n### Roll back the Worker\n\n');
+    expect(text.indexOf('### Roll back DNS')).toBeGreaterThan(text.indexOf('### Roll back the Worker'));
+    expect(text).not.toContain('\n## Roll back');
+  });
+
+  it('says in its description that a section read includes its subsections and the result carries freshness', () => {
+    expect(read.description).toContain('reads that section and the subsections under it');
+    expect(read.description.endsWith('(index build date and any reason the page may be out of date).')).toBe(true);
   });
 
   it('reads every page and every section in full within the size limit', async () => {
@@ -386,7 +393,7 @@ describe('freshness', () => {
     const now = new Date('2026-10-22T00:00:00Z');
     const page = await at(now, { id_or_url: EDGE }, behind);
     expect(page.data.freshness.possibly_stale).toHaveLength(1);
-    expect(page.data.freshness.possibly_stale[0]).toMatch(/^https:\/\/raw\.githubusercontent\.com\/seandavi\/bioc-edge\/main\/DATAPLANE\.md comes from seandavi\/bioc-edge@[0-9a-f]{7}, but main was already at bbbbbbb \(committed 2026-10-20\)/);
+    expect(page.data.freshness.possibly_stale[0]).toMatch(/^Docs under https:\/\/github\.com\/seandavi\/bioc-edge\/blob\/main\/DATAPLANE\.md come from seandavi\/bioc-edge@[0-9a-f]{7}, but main was already at bbbbbbb \(committed 2026-10-20\)/);
     expect(page.summary).toContain(` Possibly stale: ${page.data.freshness.possibly_stale[0]}`);
     expect((await at(now, { id_or_url: GATE }, behind)).data.freshness.possibly_stale).toEqual([]);
   });
@@ -398,7 +405,7 @@ describe('freshness', () => {
     expect(at14.data.source_commit).toBeNull();
     expect(at14.summary).toContain('As of 2026-10-22. Possibly stale: ');
     expect(at14.data.freshness.possibly_stale).toContain(
-      'https://docs.test/search.json is 14 days old (as of 2026-10-22) and its source commit is unknown.',
+      'Docs under https://docs.test/ are 14 days old (as of 2026-10-22) and their source commit is unknown.',
     );
     const at13 = await at(new Date('2026-11-04T23:59:59Z'), { id_or_url: 'https://docs.test/p.html' }, unknown);
     expect(at13.data.freshness.possibly_stale.some((w: string) => w.includes('source commit is unknown'))).toBe(false);

@@ -48,8 +48,13 @@ describe('docsPageResource', () => {
 
   it('reads a split h2 with its subsections', async () => {
     const text = resource.read('bioc://docs/operations.html#runbooks');
-    expect(text.indexOf('## Roll back the Worker')).toBeGreaterThan(-1);
-    expect(text.indexOf('## Roll back DNS')).toBeGreaterThan(text.indexOf('## Roll back the Worker'));
+    expect(text).toContain('\n\n### Roll back the Worker\n\n');
+    expect(text.indexOf('### Roll back DNS')).toBeGreaterThan(text.indexOf('### Roll back the Worker'));
+    expect(text).not.toContain('\n## Roll back');
+  });
+
+  it('renders h3 records of a whole page as ###', () => {
+    expect(resource.read('bioc://docs/operations.html')).toContain('\n\n### Deploy the Worker\n\n');
   });
 
   it('throws not_found for an unknown URI, pointing at docs_search', () => {

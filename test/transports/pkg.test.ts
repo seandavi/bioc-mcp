@@ -39,6 +39,7 @@ describe('MCP', () => {
       'pkg_build_environment',
       'pkg_release_info',
       'pkg_downloads',
+      'pkg_repo_diff',
     ]);
     await client.close();
     client = await connectClient(testApp().app, '/mcp');
@@ -47,6 +48,7 @@ describe('MCP', () => {
     expect(names).toContain('pkg_status');
     expect(names).toContain('pkg_release_info');
     expect(names).toContain('pkg_downloads');
+    expect(names).toContain('pkg_repo_diff');
     expect(names).toContain('pkg_check_output');
     expect(names).toContain('pkg_build_environment');
   });
@@ -309,6 +311,40 @@ describe('GET /api/v1/pkg/downloads', () => {
   );
 });
 
+describe('GET /api/v1/pkg/repo_diff', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body } = await get('/api/v1/pkg/repo_diff');
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({ universe: 'bioc', bioconductor_version: '3.24', category: 'version_differs' });
+    expect(body.sources).toHaveLength(6);
+    client = await connectClient(testApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_repo_diff', arguments: {} });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+    expect(textOf(result)).toBe(body.summary);
+  });
+
+  test('the query parameters select repo, category and limit', async () => {
+    const { response, body } = await get(
+      '/api/v1/pkg/repo_diff?universe=bioc-release&repo=bioc&category=only_bioconductor&limit=10',
+    );
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({ universe: 'bioc-release', repo: 'bioc', total: 1 });
+  });
+
+  test('a cursor that is not digits is 400 invalid_input with no fetch', async () => {
+    const { response, body, fetch } = await get('/api/v1/pkg/repo_diff?cursor=x');
+    expect(response.status).toBe(400);
+    expect(body.error.code).toBe('invalid_input');
+    expect(fetch.calls).toEqual([]);
+  });
+
+  test('is listed in the OpenAPI document', async () => {
+    const { body } = await get('/api/openapi.json');
+    expect(body.paths['/api/v1/pkg/repo_diff'].get.operationId).toBe('pkg_repo_diff');
+  });
+});
+
 describe('GET /api/v1/about', () => {
   test('lists the registry, both r-universe upstreams and bioconductor.org as used by pkg', async () => {
     const { response, body } = await get('/api/v1/about');
@@ -328,6 +364,7 @@ describe('GET /api/v1/about', () => {
       'pkg_build_environment',
       'pkg_release_info',
       'pkg_downloads',
+      'pkg_repo_diff',
     ]);
   });
 });

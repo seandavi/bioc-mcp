@@ -45,6 +45,7 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `pkg` | `pkg_build_environment` | What image, repositories and dependency versions did a build job use? |
 | `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
 | `pkg` | `pkg_downloads` | How many downloads, and from how many distinct IPs, did this package get each month of a year? |
+| `pkg` | `pkg_repo_diff` | How many packages does the registry serve at the same version as bioconductor.org, and which differ? |
 | `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
 | `docs` | `docs_search` | Which sections of the infrastructure docs (site pages, ADRs, component docs) match these words? |
 | `docs` | `docs_read` | The full text of one docs page or section, from a `docs_search` URL. |
@@ -146,6 +147,7 @@ The client loads fewer tools into its context.
 - "What image and dependency versions did that check run with?" (`pkg_build_environment`)
 - "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)
+- "Which release packages does the registry serve at a different version from bioconductor.org, and why?" (`pkg_repo_diff`)
 - "Which bioc-* workflows are failing right now?" (`ops_activity`)
 - "Why does the registry poll r-universe instead of receiving webhooks? Cite the page." (`docs_search`,
   then `docs_read`)

@@ -2,11 +2,11 @@
   "meta": {
     "built_at": "2026-10-22T00:00:00.000Z",
     "build_commit": "test-commit",
-    "record_count": 418,
+    "record_count": 535,
     "inputs": [
       {
         "url": "https://seandavi.github.io/bioc-infrastructure/search.json",
-        "record_count": 264,
+        "record_count": 381,
         "last_modified": null,
         "fetched_at": "2026-10-22T00:00:00.000Z",
         "sha256": "6458f04d48beb666ad9dde01684bdbe576c7d4fc04bc53dae7a1816d27f3e503"
@@ -118,8 +118,8 @@
       }
     ]
   },
-  "store_sha256": "fc24f0e89b3f1222a8867d6c2364e84510596f00c658fef35d96df06fb04cb62",
-  "index_sha256": "37167ac51cdeb5b56fe601bdb6b5bd84c49b8c18ea3d0f9ca676ec35c1674646",
+  "store_sha256": "4e2d428bacd32eeadcc622f7805eb03899710da5a8d90c9eae7d51683f69e004",
+  "index_sha256": "7ce6a4f0a694b27c81adad057464691140a08b746b4e6df49d467f29544c1388",
   "records": [
     {
       "id": "site:adr/0013-redirects-land-on-content-or-they-go.html",
@@ -951,7 +951,21 @@
         "Unified Search"
       ],
       "source": "site",
-      "text_chars": 3288
+      "text_chars": 641
+    },
+    {
+      "id": "site:proposal-unified-search.html#how-search-on-the-site-is-used-today",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#how-search-on-the-site-is-used-today",
+      "title": "Unified search: a proposal",
+      "section": "How search on the site is used today",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search",
+        "Who uses the site"
+      ],
+      "source": "site",
+      "text_chars": 2645
     },
     {
       "id": "site:proposal-unified-search.html#what-exists-today",
@@ -964,7 +978,35 @@
         "Unified Search"
       ],
       "source": "site",
-      "text_chars": 5109
+      "text_chars": 2199
+    },
+    {
+      "id": "site:proposal-unified-search.html#the-data-plane",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#the-data-plane",
+      "title": "Unified search: a proposal",
+      "section": "The data plane",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search",
+        "What exists today"
+      ],
+      "source": "site",
+      "text_chars": 2480
+    },
+    {
+      "id": "site:proposal-unified-search.html#how-indexes-stay-current",
+      "url": "https://seandavi.github.io/bioc-infrastructure/proposal-unified-search.html#how-indexes-stay-current",
+      "title": "Unified search: a proposal",
+      "section": "How indexes stay current",
+      "crumbs": [
+        "Overview",
+        "Proposals",
+        "Unified Search",
+        "What exists today"
+      ],
+      "source": "site",
+      "text_chars": 411
     },
     {
       "id": "site:proposal-unified-search.html#personas",
@@ -1146,7 +1188,105 @@
         "Operations & Runbooks"
       ],
       "source": "site",
-      "text_chars": 6033
+      "text_chars": 347
+    },
+    {
+      "id": "site:operations.html#deploy-worker",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#deploy-worker",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Deploy the Worker",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 759
+    },
+    {
+      "id": "site:operations.html#rollback-worker",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#rollback-worker",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Roll back the Worker",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 280
+    },
+    {
+      "id": "site:operations.html#rollback-site",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#rollback-site",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Roll back the site build",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 956
+    },
+    {
+      "id": "site:operations.html#failed-sync",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#failed-sync",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "A failed sync",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 1259
+    },
+    {
+      "id": "site:operations.html#purge",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#purge",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Purge the edge cache",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 472
+    },
+    {
+      "id": "site:operations.html#yank",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#yank",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Pull a bad package",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 1234
+    },
+    {
+      "id": "site:operations.html#rollback-dns",
+      "url": "https://seandavi.github.io/bioc-infrastructure/operations.html#rollback-dns",
+      "title": "Operations: who runs what, runbooks, open decisions",
+      "section": "Roll back DNS",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "Operations & Runbooks",
+        "Runbooks"
+      ],
+      "source": "site",
+      "text_chars": 703
     },
     {
       "id": "site:operations.html#decisions-pending",
@@ -1237,7 +1377,21 @@
         "Legacy Propagation & Push Hooks"
       ],
       "source": "site",
-      "text_chars": 2952
+      "text_chars": 1997
+    },
+    {
+      "id": "site:legacy-propagation.html#bioccheck-does-not-substitute-for-the-hooks",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#bioccheck-does-not-substitute-for-the-hooks",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "BiocCheck does not substitute for the hooks",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks",
+        "The pre-hooks"
+      ],
+      "source": "site",
+      "text_chars": 953
     },
     {
       "id": "site:legacy-propagation.html#how-a-replacement-gate-was-first-sketched",
@@ -1250,7 +1404,21 @@
         "Legacy Propagation & Push Hooks"
       ],
       "source": "site",
-      "text_chars": 1848
+      "text_chars": 1200
+    },
+    {
+      "id": "site:legacy-propagation.html#two-modes-and-the-order-to-build-them-in",
+      "url": "https://seandavi.github.io/bioc-infrastructure/legacy-propagation.html#two-modes-and-the-order-to-build-them-in",
+      "title": "Propagation in the legacy system: the nebbiolo1 rule and the push hooks",
+      "section": "Two modes, and the order to build them in",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Legacy Propagation & Push Hooks",
+        "How a replacement gate was first sketched"
+      ],
+      "source": "site",
+      "text_chars": 646
     },
     {
       "id": "site:legacy-propagation.html#what-could-not-be-determined",
@@ -1309,7 +1477,19 @@
         "Overview"
       ],
       "source": "site",
-      "text_chars": 3006
+      "text_chars": 2825
+    },
+    {
+      "id": "site:index.html#where-to-file-issues",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#where-to-file-issues",
+      "title": "Bioconductor Infrastructure",
+      "section": "Where to file issues",
+      "crumbs": [
+        "Overview",
+        "TL;DR"
+      ],
+      "source": "site",
+      "text_chars": 177
     },
     {
       "id": "site:index.html#how-the-pieces-meet",
@@ -1342,7 +1522,31 @@
         "Overview"
       ],
       "source": "site",
-      "text_chars": 2551
+      "text_chars": 890
+    },
+    {
+      "id": "site:index.html#two-costs-not-one",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#two-costs-not-one",
+      "title": "Bioconductor Infrastructure",
+      "section": "Two costs, not one",
+      "crumbs": [
+        "Overview",
+        "Where this stands"
+      ],
+      "source": "site",
+      "text_chars": 586
+    },
+    {
+      "id": "site:index.html#known-weak-points",
+      "url": "https://seandavi.github.io/bioc-infrastructure/index.html#known-weak-points",
+      "title": "Bioconductor Infrastructure",
+      "section": "Known weak points",
+      "crumbs": [
+        "Overview",
+        "Where this stands"
+      ],
+      "source": "site",
+      "text_chars": 1069
     },
     {
       "id": "site:index.html#how-this-site-is-organised",
@@ -1392,7 +1596,63 @@
         "How bioconductor.org Works"
       ],
       "source": "site",
-      "text_chars": 3697
+      "text_chars": 34
+    },
+    {
+      "id": "site:how-it-works.html#hosts",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#hosts",
+      "title": "How bioconductor.org Works",
+      "section": "Hosts",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works",
+        "Serving: how a request is answered"
+      ],
+      "source": "site",
+      "text_chars": 661
+    },
+    {
+      "id": "site:how-it-works.html#the-route-table-build-first-then-the-mirror",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#the-route-table-build-first-then-the-mirror",
+      "title": "How bioconductor.org Works",
+      "section": "The route table: build first, then the mirror",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works",
+        "Serving: how a request is answered"
+      ],
+      "source": "site",
+      "text_chars": 700
+    },
+    {
+      "id": "site:how-it-works.html#request-order",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#request-order",
+      "title": "How bioconductor.org Works",
+      "section": "Request order",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works",
+        "Serving: how a request is answered"
+      ],
+      "source": "site",
+      "text_chars": 1252
+    },
+    {
+      "id": "site:how-it-works.html#caching",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#caching",
+      "title": "How bioconductor.org Works",
+      "section": "Caching",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works",
+        "Serving: how a request is answered"
+      ],
+      "source": "site",
+      "text_chars": 1039
     },
     {
       "id": "site:how-it-works.html#publishing",
@@ -1405,7 +1665,35 @@
         "How bioconductor.org Works"
       ],
       "source": "site",
-      "text_chars": 4488
+      "text_chars": 876
+    },
+    {
+      "id": "site:how-it-works.html#packages",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#packages",
+      "title": "How bioconductor.org Works",
+      "section": "Packages",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works",
+        "Publishing: how content gets there"
+      ],
+      "source": "site",
+      "text_chars": 1479
+    },
+    {
+      "id": "site:how-it-works.html#site",
+      "url": "https://seandavi.github.io/bioc-infrastructure/how-it-works.html#site",
+      "title": "How bioconductor.org Works",
+      "section": "The site",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "How bioconductor.org Works",
+        "Publishing: how content gets there"
+      ],
+      "source": "site",
+      "text_chars": 2122
     },
     {
       "id": "site:how-it-works.html#diagnosing",
@@ -1457,7 +1745,21 @@
         "DNS Inventory & Cutover"
       ],
       "source": "site",
-      "text_chars": 1692
+      "text_chars": 680
+    },
+    {
+      "id": "site:dns-cutover.html#the-apex-is-the-hard-part",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#the-apex-is-the-hard-part",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "The apex is the hard part",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "What M1 actually changes"
+      ],
+      "source": "site",
+      "text_chars": 1010
     },
     {
       "id": "site:dns-cutover.html#migration-plan",
@@ -1470,7 +1772,77 @@
         "DNS Inventory & Cutover"
       ],
       "source": "site",
-      "text_chars": 14539
+      "text_chars": 562
+    },
+    {
+      "id": "site:dns-cutover.html#where-things-stand-2026-09-28-after-the-switch",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#where-things-stand-2026-09-28-after-the-switch",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Where things stand (2026-09-28, after the switch)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Migration plan"
+      ],
+      "source": "site",
+      "text_chars": 805
+    },
+    {
+      "id": "site:dns-cutover.html#switch-log-2026-09-28",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#switch-log-2026-09-28",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Switch log (2026-09-28)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Migration plan"
+      ],
+      "source": "site",
+      "text_chars": 3044
+    },
+    {
+      "id": "site:dns-cutover.html#change-the-nameservers",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#change-the-nameservers",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "2. Change the nameservers",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Migration plan"
+      ],
+      "source": "site",
+      "text_chars": 5909
+    },
+    {
+      "id": "site:dns-cutover.html#flip-the-site-m1-proper",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#flip-the-site-m1-proper",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "3. Flip the site (M1 proper)",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Migration plan"
+      ],
+      "source": "site",
+      "text_chars": 2783
+    },
+    {
+      "id": "site:dns-cutover.html#found-along-the-way-fix-separately-not-during-the-move",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#found-along-the-way-fix-separately-not-during-the-move",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "Found along the way — fix separately, not during the move",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Migration plan"
+      ],
+      "source": "site",
+      "text_chars": 1415
     },
     {
       "id": "site:dns-cutover.html#full-inventory-with-detail-links",
@@ -1496,7 +1868,427 @@
         "DNS Inventory & Cutover"
       ],
       "source": "site",
-      "text_chars": 5477
+      "text_chars": 199
+    },
+    {
+      "id": "site:dns-cutover.html#dns-master-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-master-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "master.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 163
+    },
+    {
+      "id": "site:dns-cutover.html#dns-staging-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-staging-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "staging.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 212
+    },
+    {
+      "id": "site:dns-cutover.html#dns-git-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-git-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "git.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 205
+    },
+    {
+      "id": "site:dns-cutover.html#dns-chat-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-chat-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "chat.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 134
+    },
+    {
+      "id": "site:dns-cutover.html#dns-zulip-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-zulip-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "zulip.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 153
+    },
+    {
+      "id": "site:dns-cutover.html#dns-www-zulip-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-www-zulip-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "www.zulip.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 371
+    },
+    {
+      "id": "site:dns-cutover.html#dns-www-chat-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-www-chat-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "www.chat.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 210
+    },
+    {
+      "id": "site:dns-cutover.html#dns-packages-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-packages-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "packages.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 185
+    },
+    {
+      "id": "site:dns-cutover.html#dns-support-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-support-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "support.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 113
+    },
+    {
+      "id": "site:dns-cutover.html#dns-issues-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-issues-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "issues.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 210
+    },
+    {
+      "id": "site:dns-cutover.html#dns-code-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-code-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "code.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 290
+    },
+    {
+      "id": "site:dns-cutover.html#dns-rabbitmq-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-rabbitmq-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "rabbitmq.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 214
+    },
+    {
+      "id": "site:dns-cutover.html#dns-pkgmaintainers-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-pkgmaintainers-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "pkgmaintainers.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 105
+    },
+    {
+      "id": "site:dns-cutover.html#dns-annotationhub-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-annotationhub-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "annotationhub.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 104
+    },
+    {
+      "id": "site:dns-cutover.html#dns-experimenthub-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-experimenthub-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "experimenthub.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 128
+    },
+    {
+      "id": "site:dns-cutover.html#dns-nebbiolo1-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-nebbiolo1-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "nebbiolo1.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 140
+    },
+    {
+      "id": "site:dns-cutover.html#dns-nebbiolo2-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-nebbiolo2-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "nebbiolo2.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 110
+    },
+    {
+      "id": "site:dns-cutover.html#dns-kjohnson3-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-kjohnson3-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "kjohnson3.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 103
+    },
+    {
+      "id": "site:dns-cutover.html#dns-workshop-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-workshop-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "workshop.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 144
+    },
+    {
+      "id": "site:dns-cutover.html#dns-workshopauth-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-workshopauth-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "workshopauth.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 128
+    },
+    {
+      "id": "site:dns-cutover.html#dns-webr-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-webr-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "webr.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 252
+    },
+    {
+      "id": "site:dns-cutover.html#dns-run-webr-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-run-webr-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "run.webr.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 179
+    },
+    {
+      "id": "site:dns-cutover.html#dns-discourse-dev-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-discourse-dev-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "discourse.dev.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 185
+    },
+    {
+      "id": "site:dns-cutover.html#dns-isee-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-isee-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "isee.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 240
+    },
+    {
+      "id": "site:dns-cutover.html#dns-hubsingest-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-hubsingest-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "hubsingest.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 208
+    },
+    {
+      "id": "site:dns-cutover.html#dns-certs-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-certs-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "certs.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 115
+    },
+    {
+      "id": "site:dns-cutover.html#dns-workinggroups-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-workinggroups-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "workinggroups.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 120
+    },
+    {
+      "id": "site:dns-cutover.html#dns-training-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-training-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "training.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 199
+    },
+    {
+      "id": "site:dns-cutover.html#dns-contributions-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-contributions-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "contributions.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 175
+    },
+    {
+      "id": "site:dns-cutover.html#dns-blog-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-blog-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "blog.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Core infrastructure, staying put (27)"
+      ],
+      "source": "site",
+      "text_chars": 94
     },
     {
       "id": "site:dns-cutover.html#undecided-needs-an-owner-18-with-live-content-or-a-clear-guess-24-more-listed-in-the-appendix-table-are-wildcards-or-mailcert-plumbing",
@@ -1509,7 +2301,259 @@
         "DNS Inventory & Cutover"
       ],
       "source": "site",
-      "text_chars": 3161
+      "text_chars": 140
+    },
+    {
+      "id": "site:dns-cutover.html#dns-testweb-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-testweb-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "testweb.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 306
+    },
+    {
+      "id": "site:dns-cutover.html#dns-testinggit-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-testinggit-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "testinggit.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 153
+    },
+    {
+      "id": "site:dns-cutover.html#dns-support-test-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-support-test-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "support.test.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 112
+    },
+    {
+      "id": "site:dns-cutover.html#dns-slack-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-slack-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "slack.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 243
+    },
+    {
+      "id": "site:dns-cutover.html#dns-posters-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-posters-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "posters.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 170
+    },
+    {
+      "id": "site:dns-cutover.html#dns-pm-bounces-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-pm-bounces-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "pm-bounces.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 142
+    },
+    {
+      "id": "site:dns-cutover.html#dns-osca-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-osca-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "osca.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 160
+    },
+    {
+      "id": "site:dns-cutover.html#dns-osca-dev-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-osca-dev-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "osca-dev.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 100
+    },
+    {
+      "id": "site:dns-cutover.html#dns-new-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-new-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "new.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 273
+    },
+    {
+      "id": "site:dns-cutover.html#dns-meet-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-meet-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "meet.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 133
+    },
+    {
+      "id": "site:dns-cutover.html#dns-gitdevtest2-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-gitdevtest2-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "gitdevtest2.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 120
+    },
+    {
+      "id": "site:dns-cutover.html#dns-gitdevtest-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-gitdevtest-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "gitdevtest.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 90
+    },
+    {
+      "id": "site:dns-cutover.html#dns-federated-packages-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-federated-packages-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "federated-packages.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 168
+    },
+    {
+      "id": "site:dns-cutover.html#dns-courses-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-courses-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "courses.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 89
+    },
+    {
+      "id": "site:dns-cutover.html#dns-core-sops-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-core-sops-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "core-sops.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 189
+    },
+    {
+      "id": "site:dns-cutover.html#dns-cfp-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-cfp-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "cfp.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 182
+    },
+    {
+      "id": "site:dns-cutover.html#dns-auth-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-auth-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "auth.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 204
+    },
+    {
+      "id": "site:dns-cutover.html#dns-anvil-bioconductor-org",
+      "url": "https://seandavi.github.io/bioc-infrastructure/dns-cutover.html#dns-anvil-bioconductor-org",
+      "title": "DNS Inventory & Cutover Runbook",
+      "section": "anvil.bioconductor.org",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "DNS Inventory & Cutover",
+        "Undecided — needs an owner (18 with live content or a clear guess; 24 more listed in the appendix table are wildcards or mail/cert plumbing)"
+      ],
+      "source": "site",
+      "text_chars": 134
     },
     {
       "id": "site:dns-cutover.html#already-off-aws-no-action-27-one-table",
@@ -1756,7 +2800,77 @@
         "Cloudflare Account Migration"
       ],
       "source": "site",
-      "text_chars": 4727
+      "text_chars": 9
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#a.-prepare-the-new-account-no-user-impact",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#a.-prepare-the-new-account-no-user-impact",
+      "title": "Cloudflare Account Migration",
+      "section": "A. Prepare the new account (no user impact)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration",
+        "Procedure"
+      ],
+      "source": "site",
+      "text_chars": 658
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#b.-build-the-zone-in-the-new-account-no-user-impact",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#b.-build-the-zone-in-the-new-account-no-user-impact",
+      "title": "Cloudflare Account Migration",
+      "section": "B. Build the zone in the new account (no user impact)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration",
+        "Procedure"
+      ],
+      "source": "site",
+      "text_chars": 1218
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#the-certificate-gap",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#the-certificate-gap",
+      "title": "Cloudflare Account Migration",
+      "section": "The certificate gap",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration",
+        "Procedure"
+      ],
+      "source": "site",
+      "text_chars": 1086
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#c.-switch-nameservers",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#c.-switch-nameservers",
+      "title": "Cloudflare Account Migration",
+      "section": "C. Switch nameservers",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration",
+        "Procedure"
+      ],
+      "source": "site",
+      "text_chars": 1390
+    },
+    {
+      "id": "site:cloudflare-account-migration.html#d.-clean-up-after-a-clean-week",
+      "url": "https://seandavi.github.io/bioc-infrastructure/cloudflare-account-migration.html#d.-clean-up-after-a-clean-week",
+      "title": "Cloudflare Account Migration",
+      "section": "D. Clean up (after a clean week)",
+      "crumbs": [
+        "Overview",
+        "Plans",
+        "Cloudflare Account Migration",
+        "Procedure"
+      ],
+      "source": "site",
+      "text_chars": 349
     },
     {
       "id": "site:cloudflare-account-migration.html#open-questions",
@@ -1873,7 +2987,35 @@
         "Astro Site Build"
       ],
       "source": "site",
-      "text_chars": 3524
+      "text_chars": 1717
+    },
+    {
+      "id": "site:astro-site-build.html#the-data-snapshot",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#the-data-snapshot",
+      "title": "Building the site from primary sources",
+      "section": "The data snapshot",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "How a build reaches production"
+      ],
+      "source": "site",
+      "text_chars": 1337
+    },
+    {
+      "id": "site:astro-site-build.html#previews",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#previews",
+      "title": "Building the site from primary sources",
+      "section": "Previews",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "How a build reaches production"
+      ],
+      "source": "site",
+      "text_chars": 465
     },
     {
       "id": "site:astro-site-build.html#editing-content-where-and-how-long-it-takes",
@@ -1886,7 +3028,21 @@
         "Astro Site Build"
       ],
       "source": "site",
-      "text_chars": 1814
+      "text_chars": 1434
+    },
+    {
+      "id": "site:astro-site-build.html#divergences-from-upstream",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#divergences-from-upstream",
+      "title": "Building the site from primary sources",
+      "section": "Divergences from upstream",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "Editing content: where, and how long it takes"
+      ],
+      "source": "site",
+      "text_chars": 378
     },
     {
       "id": "site:astro-site-build.html#the-seam",
@@ -1925,7 +3081,91 @@
         "Astro Site Build"
       ],
       "source": "site",
-      "text_chars": 9862
+      "text_chars": 283
+    },
+    {
+      "id": "site:astro-site-build.html#what-it-produces",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#what-it-produces",
+      "title": "Building the site from primary sources",
+      "section": "What it produces",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "The 2026-08-04 build (record)"
+      ],
+      "source": "site",
+      "text_chars": 840
+    },
+    {
+      "id": "site:astro-site-build.html#the-tarball-origin",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#the-tarball-origin",
+      "title": "Building the site from primary sources",
+      "section": "The tarball origin",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "The 2026-08-04 build (record)"
+      ],
+      "source": "site",
+      "text_chars": 2491
+    },
+    {
+      "id": "site:astro-site-build.html#deliberate-divergences",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#deliberate-divergences",
+      "title": "Building the site from primary sources",
+      "section": "Deliberate divergences",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "The 2026-08-04 build (record)"
+      ],
+      "source": "site",
+      "text_chars": 1036
+    },
+    {
+      "id": "site:astro-site-build.html#erb-is-resolved-in-the-pipeline-not-ported-by-hand",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#erb-is-resolved-in-the-pipeline-not-ported-by-hand",
+      "title": "Building the site from primary sources",
+      "section": "ERB is resolved in the pipeline, not ported by hand",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "The 2026-08-04 build (record)"
+      ],
+      "source": "site",
+      "text_chars": 1898
+    },
+    {
+      "id": "site:astro-site-build.html#what-was-still-missing-on-2026-08-04",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#what-was-still-missing-on-2026-08-04",
+      "title": "Building the site from primary sources",
+      "section": "What was still missing on 2026-08-04",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "The 2026-08-04 build (record)"
+      ],
+      "source": "site",
+      "text_chars": 1018
+    },
+    {
+      "id": "site:astro-site-build.html#next-generation-pages-from-the-build-system-data-plane-added-2026-08-13",
+      "url": "https://seandavi.github.io/bioc-infrastructure/astro-site-build.html#next-generation-pages-from-the-build-system-data-plane-added-2026-08-13",
+      "title": "Building the site from primary sources",
+      "section": "Next-generation pages from the build-system data plane (added 2026-08-13)",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Astro Site Build",
+        "The 2026-08-04 build (record)"
+      ],
+      "source": "site",
+      "text_chars": 2276
     },
     {
       "id": "site:builder-transition.html",
@@ -1951,7 +3191,49 @@
         "Builder Transition"
       ],
       "source": "site",
-      "text_chars": 4896
+      "text_chars": 1329
+    },
+    {
+      "id": "site:builder-transition.html#track-1-r-universe",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#track-1-r-universe",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "Track 1 — r-universe",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition",
+        "The three tracks"
+      ],
+      "source": "site",
+      "text_chars": 1508
+    },
+    {
+      "id": "site:builder-transition.html#track-2-the-kubernetes-container-binary-builder",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#track-2-the-kubernetes-container-binary-builder",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "Track 2 — the Kubernetes container-binary builder",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition",
+        "The three tracks"
+      ],
+      "source": "site",
+      "text_chars": 998
+    },
+    {
+      "id": "site:builder-transition.html#track-3-bbs-which-is-not-going-away",
+      "url": "https://seandavi.github.io/bioc-infrastructure/builder-transition.html#track-3-bbs-which-is-not-going-away",
+      "title": "The Builder Transition: three tracks, not one",
+      "section": "Track 3 — BBS, which is not going away",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Builder Transition",
+        "The three tracks"
+      ],
+      "source": "site",
+      "text_chars": 1047
     },
     {
       "id": "site:builder-transition.html#what-this-means-in-practice",
@@ -2081,7 +3363,63 @@
         "CI & Scheduled Jobs"
       ],
       "source": "site",
-      "text_chars": 3152
+      "text_chars": 19
+    },
+    {
+      "id": "site:ci.html#bioc-edge",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-edge",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-edge",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "New system pipeline"
+      ],
+      "source": "site",
+      "text_chars": 636
+    },
+    {
+      "id": "site:ci.html#bioc-infrastructure",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-infrastructure",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-infrastructure",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "New system pipeline"
+      ],
+      "source": "site",
+      "text_chars": 523
+    },
+    {
+      "id": "site:ci.html#bioc-registry",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-registry",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-registry",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "New system pipeline"
+      ],
+      "source": "site",
+      "text_chars": 1115
+    },
+    {
+      "id": "site:ci.html#bioc-website",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-website",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-website",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "New system pipeline"
+      ],
+      "source": "site",
+      "text_chars": 839
     },
     {
       "id": "site:ci.html#platform-services",
@@ -2094,7 +3432,21 @@
         "CI & Scheduled Jobs"
       ],
       "source": "site",
-      "text_chars": 334
+      "text_chars": 17
+    },
+    {
+      "id": "site:ci.html#bioc-intelligence",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-intelligence",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-intelligence",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "Platform services"
+      ],
+      "source": "site",
+      "text_chars": 315
     },
     {
       "id": "site:ci.html#experimental",
@@ -2107,7 +3459,35 @@
         "CI & Scheduled Jobs"
       ],
       "source": "site",
-      "text_chars": 1596
+      "text_chars": 272
+    },
+    {
+      "id": "site:ci.html#bioc-build",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-build",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-build",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "Experimental"
+      ],
+      "source": "site",
+      "text_chars": 1066
+    },
+    {
+      "id": "site:ci.html#bioc-manifest",
+      "url": "https://seandavi.github.io/bioc-infrastructure/ci.html#bioc-manifest",
+      "title": "CI & Scheduled Jobs",
+      "section": "bioc-manifest",
+      "crumbs": [
+        "Overview",
+        "Operating",
+        "CI & Scheduled Jobs",
+        "Experimental"
+      ],
+      "source": "site",
+      "text_chars": 250
     },
     {
       "id": "site:current-state.html",
@@ -2263,7 +3643,21 @@
         "Download Stats"
       ],
       "source": "site",
-      "text_chars": 2846
+      "text_chars": 1723
+    },
+    {
+      "id": "site:download-stats.html#two-abandoned-attempts-still-on-disk",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#two-abandoned-attempts-still-on-disk",
+      "title": "Download Stats",
+      "section": "Two abandoned attempts, still on disk",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Two systems, both running"
+      ],
+      "source": "site",
+      "text_chars": 1121
     },
     {
       "id": "site:download-stats.html#what-counts-as-a-download",
@@ -2289,7 +3683,35 @@
         "Download Stats"
       ],
       "source": "site",
-      "text_chars": 5146
+      "text_chars": 1101
+    },
+    {
+      "id": "site:download-stats.html#where-the-pre-2020-numbers-come-from",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#where-the-pre-2020-numbers-come-from",
+      "title": "Download Stats",
+      "section": "Where the pre-2020 numbers come from",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Do the two systems agree?"
+      ],
+      "source": "site",
+      "text_chars": 2885
+    },
+    {
+      "id": "site:download-stats.html#package-coverage-differs-and-the-current-system-is-right",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#package-coverage-differs-and-the-current-system-is-right",
+      "title": "Download Stats",
+      "section": "Package coverage differs, and the current system is right",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Do the two systems agree?"
+      ],
+      "source": "site",
+      "text_chars": 1153
     },
     {
       "id": "site:download-stats.html#two-data-quality-problems",
@@ -2302,7 +3724,63 @@
         "Download Stats"
       ],
       "source": "site",
-      "text_chars": 6599
+      "text_chars": 25
+    },
+    {
+      "id": "site:download-stats.html#the-augustseptember-2025-spike-is-real-traffic",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#the-augustseptember-2025-spike-is-real-traffic",
+      "title": "Download Stats",
+      "section": "The August–September 2025 spike is real traffic",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Two data-quality problems"
+      ],
+      "source": "site",
+      "text_chars": 1564
+    },
+    {
+      "id": "site:download-stats.html#junejuly-2026-both-systems-are-wrong",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#junejuly-2026-both-systems-are-wrong",
+      "title": "Download Stats",
+      "section": "June/July 2026: both systems are wrong",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Two data-quality problems"
+      ],
+      "source": "site",
+      "text_chars": 1330
+    },
+    {
+      "id": "site:download-stats.html#resolved-both-published-series-undercount-for-two-unrelated-reasons",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#resolved-both-published-series-undercount-for-two-unrelated-reasons",
+      "title": "Download Stats",
+      "section": "Resolved: both published series undercount, for two unrelated reasons",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Two data-quality problems"
+      ],
+      "source": "site",
+      "text_chars": 2822
+    },
+    {
+      "id": "site:download-stats.html#two-routing-bugs-easy-to-trip-over",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#two-routing-bugs-easy-to-trip-over",
+      "title": "Download Stats",
+      "section": "Two routing bugs, easy to trip over",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Two data-quality problems"
+      ],
+      "source": "site",
+      "text_chars": 843
     },
     {
       "id": "site:download-stats.html#can-this-be-rebuilt-from-source",
@@ -2315,7 +3793,35 @@
         "Download Stats"
       ],
       "source": "site",
-      "text_chars": 6017
+      "text_chars": 1561
+    },
+    {
+      "id": "site:download-stats.html#mirror-the-logs-interpret-them-locally",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#mirror-the-logs-interpret-them-locally",
+      "title": "Download Stats",
+      "section": "Mirror the logs; interpret them locally",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Can this be rebuilt from source?"
+      ],
+      "source": "site",
+      "text_chars": 1767
+    },
+    {
+      "id": "site:download-stats.html#the-script",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#the-script",
+      "title": "Download Stats",
+      "section": "The script",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "Can this be rebuilt from source?"
+      ],
+      "source": "site",
+      "text_chars": 2684
     },
     {
       "id": "site:download-stats.html#what-this-means-for-the-migration",
@@ -2328,7 +3834,21 @@
         "Download Stats"
       ],
       "source": "site",
-      "text_chars": 5834
+      "text_chars": 728
+    },
+    {
+      "id": "site:download-stats.html#what-replaces-the-logs",
+      "url": "https://seandavi.github.io/bioc-infrastructure/download-stats.html#what-replaces-the-logs",
+      "title": "Download Stats",
+      "section": "What replaces the logs",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "Download Stats",
+        "What this means for the migration"
+      ],
+      "source": "site",
+      "text_chars": 5102
     },
     {
       "id": "site:download-stats.html#what-could-not-be-determined",
@@ -2536,7 +4056,49 @@
         "Running a Mirror"
       ],
       "source": "site",
-      "text_chars": 3055
+      "text_chars": 523
+    },
+    {
+      "id": "site:mirror-how-to.html#what-it-does",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#what-it-does",
+      "title": "Running a Bioconductor mirror",
+      "section": "What it does",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror",
+        "Running the sync"
+      ],
+      "source": "site",
+      "text_chars": 1228
+    },
+    {
+      "id": "site:mirror-how-to.html#settings",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#settings",
+      "title": "Running a Bioconductor mirror",
+      "section": "Settings",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror",
+        "Running the sync"
+      ],
+      "source": "site",
+      "text_chars": 739
+    },
+    {
+      "id": "site:mirror-how-to.html#without-the-script",
+      "url": "https://seandavi.github.io/bioc-infrastructure/mirror-how-to.html#without-the-script",
+      "title": "Running a Bioconductor mirror",
+      "section": "Without the script",
+      "crumbs": [
+        "Overview",
+        "Using",
+        "Running a Mirror",
+        "Running the sync"
+      ],
+      "source": "site",
+      "text_chars": 557
     },
     {
       "id": "site:mirror-how-to.html#serving",
@@ -2614,7 +4176,21 @@
         "Propagation Gate"
       ],
       "source": "site",
-      "text_chars": 5464
+      "text_chars": 4510
+    },
+    {
+      "id": "site:propagation-gate.html#binaries-that-arrive-after-publication",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#binaries-that-arrive-after-publication",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "Binaries that arrive after publication",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate",
+        "The gate, check by check"
+      ],
+      "source": "site",
+      "text_chars": 951
     },
     {
       "id": "site:propagation-gate.html#three-ways-into-the-index",
@@ -2653,7 +4229,21 @@
         "Propagation Gate"
       ],
       "source": "site",
-      "text_chars": 2173
+      "text_chars": 1477
+    },
+    {
+      "id": "site:propagation-gate.html#two-traps-in-the-data",
+      "url": "https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#two-traps-in-the-data",
+      "title": "The propagation gate: what bioc-registry publishes, and why",
+      "section": "Two traps in the data",
+      "crumbs": [
+        "Overview",
+        "How it works",
+        "Propagation Gate",
+        "Why the registry polls"
+      ],
+      "source": "site",
+      "text_chars": 694
     },
     {
       "id": "site:propagation-gate.html#relation-to-the-legacy-production-gate",
@@ -2718,7 +4308,49 @@
         "r-universe Size Limits"
       ],
       "source": "site",
-      "text_chars": 3759
+      "text_chars": 743
+    },
+    {
+      "id": "site:r-universe-size-limits.html#the-number-is-100-mib-not-100-mb",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#the-number-is-100-mib-not-100-mb",
+      "title": "Size limits in the r-universe build",
+      "section": "The number is 100 MiB, not 100 MB",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits",
+        "Where r-universe’s limit lives"
+      ],
+      "source": "site",
+      "text_chars": 564
+    },
+    {
+      "id": "site:r-universe-size-limits.html#what-is-being-measured",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#what-is-being-measured",
+      "title": "Size limits in the r-universe build",
+      "section": "What is being measured",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits",
+        "Where r-universe’s limit lives"
+      ],
+      "source": "site",
+      "text_chars": 1577
+    },
+    {
+      "id": "site:r-universe-size-limits.html#what-r-universe-does-not-limit",
+      "url": "https://seandavi.github.io/bioc-infrastructure/r-universe-size-limits.html#what-r-universe-does-not-limit",
+      "title": "Size limits in the r-universe build",
+      "section": "What r-universe does not limit",
+      "crumbs": [
+        "Overview",
+        "Records",
+        "r-universe Size Limits",
+        "Where r-universe’s limit lives"
+      ],
+      "source": "site",
+      "text_chars": 867
     },
     {
       "id": "site:r-universe-size-limits.html#what-github-imposes",

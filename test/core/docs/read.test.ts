@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../src/core/capability';
 import type { Deps } from '../../../src/core/deps';
 import { invokeCapability } from '../../../src/core/invoke';
-import { docsPages, renderPage, renderSection, type DocsPages } from '../../../src/core/docs/pages';
+import { docsPages, renderPage, renderSectionTree, type DocsPages } from '../../../src/core/docs/pages';
 import { DOCS_READ_TEXT_BUDGET } from '../../../src/core/docs/chunk';
 import { docsReadCapability, resolveDocsTarget } from '../../../src/core/docs/read';
 import { MAX_RESULT_BYTES, envelopeBytes } from '../../../src/envelope';
@@ -110,11 +110,27 @@ describe('pagination', () => {
     expect(next.summary).toContain(`characters ${Number(big.data.next_cursor) + 1}–`);
   });
 
+  it('reads a split h2 with its subsections, paging through next_cursor', async () => {
+    let cursor: string | undefined;
+    let text = '';
+    for (let guard = 0; guard < 100; guard++) {
+      const result = await run({ id_or_url: `${BASE}operations.html#runbooks`, ...(cursor ? { cursor } : {}) });
+      if (!result.ok) throw new Error(result.error.message);
+      const data = result.envelope.data as any;
+      expect(data.kind).toBe('section');
+      text += data.text;
+      if (data.next_cursor === null) break;
+      cursor = data.next_cursor;
+    }
+    expect(text.indexOf('## Roll back the Worker')).toBeGreaterThan(-1);
+    expect(text.indexOf('## Roll back DNS')).toBeGreaterThan(text.indexOf('## Roll back the Worker'));
+  });
+
   it('reads every page and every section in full within the size limit', async () => {
     const targets = [
       ...pages.list.map((page) => ({ input: page.id, full: renderPage(page) })),
       ...pages.list.flatMap((page) =>
-        page.records.filter((r) => r.id !== page.id).map((r) => ({ input: r.id, full: renderSection(r) })),
+        page.records.filter((r) => r.id !== page.id).map((r) => ({ input: r.id, full: renderSectionTree(page, r) })),
       ),
     ];
     expect(targets.length).toBeGreaterThan(index.records.length - 1);

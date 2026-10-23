@@ -1,0 +1,6 @@
+Package: ChIPXpressData
+Version: 1.50.0
+Depends: bigmemory
+License: GPL (>= 2)
+MD5sum: a16d4fe5c34244f1e7053d99e019cc69
+NeedsCompilation: no

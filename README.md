@@ -45,6 +45,7 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `pkg` | `pkg_build_environment` | What image, repositories and dependency versions did a build job use? |
 | `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
 | `pkg` | `pkg_downloads` | How many downloads, and from how many distinct IPs, did this package get each month of a year? |
+| `pkg` | `pkg_repo_diff` | How many packages does the registry serve at the same version as bioconductor.org, and which differ? |
 | `pkg` | `pkg_revdeps` | Which packages depend on this one, directly or transitively? What breaks downstream if it fails? |
 | `pkg` | `pkg_missing_deps` | Which published packages have a hard dependency that is in neither the registry, CRAN nor the Bioconductor data repositories? |
 | `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
@@ -53,6 +54,9 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 
 The `docs` module also serves each page as an MCP resource (`bioc://docs/…`) and an
 `explain-decision` prompt.
+The `pkg` module serves a `triage-failing-package` prompt, which uses `pkg_status`,
+`pkg_check_output` and the docs tools, so it is offered only where both modules are (`/mcp`,
+`/mcp/pkg+docs`).
 
 ## Connect
 
@@ -148,6 +152,7 @@ The client loads fewer tools into its context.
 - "What image and dependency versions did that check run with?" (`pkg_build_environment`)
 - "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)
+- "Which release packages does the registry serve at a different version from bioconductor.org, and why?" (`pkg_repo_diff`)
 - "Which bioc-* workflows are failing right now?" (`ops_activity`)
 - "Why does the registry poll r-universe instead of receiving webhooks? Cite the page." (`docs_search`,
   then `docs_read`)

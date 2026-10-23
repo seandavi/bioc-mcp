@@ -1,5 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
+import { QUERY_STOP_WORDS, SUPERSEDED_ADR_BOOST, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
+import { syntheticDocsIndex } from '../support/docs';
+import type { DocsRecord } from '../../src/docs-index/schema';
 import { fixtureArtifact } from './support';
 import type { DocsIndexArtifact } from '../../scripts/docs-index/build';
 
@@ -120,5 +122,60 @@ describe('loadDocsIndex', () => {
     const misses = Array.from({ length: 16 }, (_, i) => 'zqxj' + String.fromCharCode(97 + i)).join(' ');
     expect(index.search(`${misses} registry`)).toEqual([]);
     expect(index.search(`registry ${misses}`).length).toBeGreaterThan(0);
+  });
+
+  it('ranks the rollback-worker runbook first for "how do I roll back the Worker"', () => {
+    expect(index.search('how do I roll back the Worker')[0]?.record.id).toBe('site:operations.html#rollback-worker');
+  });
+
+  it('drops stop words from the query', () => {
+    const scored = (query: string) => index.search(query).map((hit) => [hit.record.id, hit.score]);
+    expect(scored('how do I purge the cache')).toEqual(scored('purge cache'));
+  });
+
+  it('still searches a query of only stop words', () => {
+    expect(index.search('how do I').length).toBeGreaterThan(0);
+  });
+
+  it('does not count stop words against the 16-term budget', () => {
+    const stops = [...QUERY_STOP_WORDS].slice(0, 16).join(' ');
+    expect(index.search(`${stops} registry`)).toEqual(index.search('registry'));
+  });
+
+  describe('term length gates', () => {
+    const synthetic = syntheticDocsIndex([
+      { id: 'site:a.html', url: 'https://docs.test/a.html', title: 'A', section: '', crumbs: [], text: 'the cache', source: 'site' },
+      { id: 'site:b.html', url: 'https://docs.test/b.html', title: 'B', section: '', crumbs: [], text: 'purging stale files', source: 'site' },
+    ]);
+    const ids = (query: string) => synthetic.search(query).map((hit) => hit.record.id);
+
+    it('expands a prefix only for terms of 4 or more characters', () => {
+      expect(ids('cac')).toEqual([]);
+      expect(ids('cach')).toEqual(['site:a.html']);
+    });
+
+    it('matches fuzzily only for terms of 6 or more characters', () => {
+      expect(ids('cachr')).toEqual([]);
+      expect(ids('purgingg')).toEqual(['site:b.html']);
+    });
+  });
+
+  describe('superseded ADRs', () => {
+    const adr = (n: string, status: string): DocsRecord => ({
+      id: `site:adr/${n}.html`,
+      url: `https://docs.test/adr/${n}.html`,
+      title: 'Hash the addresses',
+      section: '',
+      crumbs: [],
+      text: `Status: ${status}\nHash the addresses at the edge.`,
+      source: 'adr',
+    });
+
+    it('scores a superseded ADR SUPERSEDED_ADR_BOOST times as high as an identical current one', () => {
+      const synthetic = syntheticDocsIndex([adr('0001', 'Superseded by 0002'), adr('0002', 'Accepted by 0002')]);
+      const hits = synthetic.search('hash addresses');
+      expect(hits.map((hit) => hit.record.id)).toEqual(['site:adr/0002.html', 'site:adr/0001.html']);
+      expect(hits[1]!.score).toBeCloseTo(hits[0]!.score * SUPERSEDED_ADR_BOOST, 9);
+    });
   });
 });

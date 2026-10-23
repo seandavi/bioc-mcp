@@ -6,8 +6,8 @@
 # plan); the module is about 1.7 MB raw / 0.4 MB gzip on 2026-10-22.
 max_artifact_bytes: 4000000
 
-# The bioc-infrastructure docs site. Its Quarto search.json is fetched from here, and record URLs
-# are resolved against it.
+# The bioc-infrastructure docs site. Its Quarto search.json is fetched from here, and so is the HTML
+# of each page (for h3 structure only); record URLs are resolved against it.
 site_url: https://seandavi.github.io/bioc-infrastructure/
 
 # Component docs, fetched from https://raw.githubusercontent.com/<github_owner>/<repo>/<ref>/<file>

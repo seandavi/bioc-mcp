@@ -18,6 +18,7 @@ const CALLS: readonly [tool: string, args: Record<string, unknown>][] = [
   ['pkg_build_environment', { universe: 'bioc', job: '96299707840', dependencies: ['biomaRt', 'httr2'] }],
   ['pkg_release_info', {}],
   ['pkg_downloads', { package: 'edgeR' }],
+  ['pkg_repo_diff', {}],
   ['pkg_revdeps', { package: 'flowWorkspace' }],
   ['pkg_missing_deps', {}],
   ['ops_activity', { kind: 'summary' }],

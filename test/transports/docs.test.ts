@@ -181,11 +181,16 @@ describe('resources', () => {
 
 describe('prompts', () => {
   test('explain-decision is listed on /mcp/docs and /mcp with one required topic argument', async () => {
-    for (const path of ['/mcp/docs', '/mcp']) {
+    const expected = {
+      '/mcp/docs': ['explain-decision'],
+      '/mcp': ['explain-decision', 'triage-failing-package'],
+    };
+    for (const [path, names] of Object.entries(expected)) {
       const { client } = await connect(path);
       const { prompts } = await client.listPrompts();
-      expect(prompts.map((p) => p.name)).toEqual(['explain-decision']);
-      expect(prompts[0]!.arguments).toEqual([expect.objectContaining({ name: 'topic', required: true })]);
+      expect(prompts.map((p) => p.name).sort()).toEqual(names);
+      const explain = prompts.find((p) => p.name === 'explain-decision');
+      expect(explain!.arguments).toEqual([expect.objectContaining({ name: 'topic', required: true })]);
       await client.close();
     }
   });

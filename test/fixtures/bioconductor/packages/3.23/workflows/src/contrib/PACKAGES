@@ -1,0 +1,9 @@
+Package: BP4RNAseq
+Version: 1.22.0
+Depends: R (>= 4.0.0)
+Imports: dplyr, fastqcr, stringr, tidyr, stats, utils, magrittr,
+        reticulate
+Suggests: knitr, rmarkdown, testthat
+License: GPL-2
+MD5sum: e4391ccc6552e306fc3f3670304d7661
+NeedsCompilation: no

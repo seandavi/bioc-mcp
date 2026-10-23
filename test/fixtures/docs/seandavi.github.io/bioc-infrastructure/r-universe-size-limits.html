@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-09-02">
+
+<title>Size limits in the r-universe build – Bioconductor Infrastructure</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7e725af8e1b2581408ee27b5818d3660.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-88cd55e827d36f33feca41c66d4eeb1c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KLLV1GCF4E"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KLLV1GCF4E', { 'anonymize_ip': true});
+</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bioconductor Infrastructure</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./install.html"> 
+<span class="menu-text">Installing Packages</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./report.html"> 
+<span class="menu-text">Report a Problem</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/seandavi/bioc-infrastructure"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./improvements.html">Records</a></li><li class="breadcrumb-item"><a href="./r-universe-size-limits.html">r-universe Size Limits</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./install.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installing Packages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reporting a Problem</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mirror-how-to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Running a Mirror</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">How it works</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-it-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How bioconductor.org Works</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cache.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge Cache</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./astro-site-build.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Astro Site Build</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./propagation-gate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propagation Gate</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Operating</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Operations &amp; Runbooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CI &amp; Scheduled Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Plans</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry-switch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registry Switch (plan)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cloudflare-account-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cloudflare Account Migration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Proposals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proposal-unified-search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unified Search</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Records</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./improvements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What the New Site Has Changed</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./traffic-2026-09-30.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Day of Traffic (2026-09-30)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dns-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNS Inventory &amp; Cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-universe-size-limits.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">r-universe Size Limits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-packages-in-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Packages in r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./current-state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Current State (legacy)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./legacy-propagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Legacy Propagation &amp; Push Hooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./builder-transition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Builder Transition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./views-and-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VIEWS &amp; r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducing-package-pages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Download Stats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r2-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R2 Migration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decommission-plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decommission Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Decisions (ADRs)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0001-public-docs-site-with-a-publication-boundary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0001 — The docs site is public, with a publication boundary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0002-mirror-access-logs-unfiltered.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0002 — Mirror the access logs unfiltered; interpret with views</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0003 — Request logging after the Cloudflare cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0004-download-statistics-are-generated-static-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0004 — Download statistics are generated static files, not a live service</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0005-completeness-is-measured-by-origin-not-page-type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0005 — Completeness is measured by origin, not by page type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0006-old-releases-and-their-checkresults-are-archival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0006 — 33 of 35 releases, and checkResults for them, are archival</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0007-cloudflare-workflows-for-the-release-roll-guard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0008-three-repos-and-a-strangler-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0008 — Split by audience into three repositories; migrate by strangling behind the Worker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0009-client-addresses-are-hashed-at-the-edge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0009 — Client addresses are hashed at the edge, not de-identified downstream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0011-one-propagation-gate-for-every-producer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0011 — One propagation gate for every producer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0012 — Client addresses are stored raw; de-identification is a view</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0013-redirects-land-on-content-or-they-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0013 — A redirect lands on the content, or it goes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#three-limits-three-different-objects" id="toc-three-limits-three-different-objects" class="nav-link active" data-scroll-target="#three-limits-three-different-objects">Three limits, three different objects</a></li>
+  <li><a href="#where-r-universes-limit-lives" id="toc-where-r-universes-limit-lives" class="nav-link" data-scroll-target="#where-r-universes-limit-lives">Where r-universe’s limit lives</a>
+  <ul class="collapse">
+  <li><a href="#the-number-is-100-mib-not-100-mb" id="toc-the-number-is-100-mib-not-100-mb" class="nav-link" data-scroll-target="#the-number-is-100-mib-not-100-mb">The number is 100 MiB, not 100 MB</a></li>
+  <li><a href="#what-is-being-measured" id="toc-what-is-being-measured" class="nav-link" data-scroll-target="#what-is-being-measured">What is being measured</a></li>
+  <li><a href="#what-r-universe-does-not-limit" id="toc-what-r-universe-does-not-limit" class="nav-link" data-scroll-target="#what-r-universe-does-not-limit">What r-universe does not limit</a></li>
+  </ul></li>
+  <li><a href="#what-github-imposes" id="toc-what-github-imposes" class="nav-link" data-scroll-target="#what-github-imposes">What GitHub imposes</a></li>
+  <li><a href="#where-the-limits-genuinely-differ" id="toc-where-the-limits-genuinely-differ" class="nav-link" data-scroll-target="#where-the-limits-genuinely-differ">Where the limits genuinely differ</a></li>
+  <li><a href="#bioconductors-own-size-rules-are-silent-in-this-pipeline" id="toc-bioconductors-own-size-rules-are-silent-in-this-pipeline" class="nav-link" data-scroll-target="#bioconductors-own-size-rules-are-silent-in-this-pipeline">Bioconductor’s own size rules are silent in this pipeline</a></li>
+  <li><a href="#what-this-means-for-the-migration" id="toc-what-this-means-for-the-migration" class="nav-link" data-scroll-target="#what-this-means-for-the-migration">What this means for the migration</a></li>
+  <li><a href="#reproducing-this" id="toc-reproducing-this" class="nav-link" data-scroll-target="#reproducing-this">Reproducing this</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/r-universe-size-limits.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/r-universe-size-limits.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./improvements.html">Records</a></li><li class="breadcrumb-item"><a href="./r-universe-size-limits.html">r-universe Size Limits</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Size limits in the r-universe build</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 2, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A dated reading of code, not a published specification
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>r-universe does not document a size limit anywhere on <a href="https://docs.r-universe.dev">docs.r-universe.dev</a>. Everything on this page was read on <strong>2026-09-02</strong> from the workflow that actually runs: <a href="https://github.com/r-universe-org/workflows"><code>r-universe-org/workflows</code></a> at ref <code>v3</code>, <a href="https://github.com/r-universe-org/actions"><code>r-universe-org/actions</code></a> at ref <code>v12</code>, and <a href="https://github.com/r-universe-org/build-source"><code>r-universe-org/build-source</code></a> at <code>1ee4788</code>. The measurements of BiocCheck’s behaviour were made against <strong>BiocCheck 1.49.30</strong>. Any of this can change without notice; the point of citing line numbers is that it can be re-checked rather than believed.</p>
+</div>
+</div>
+<p>Bioconductor’s builds are <a href="./builder-transition.html">moving to r-universe</a>, which makes r-universe’s constraints Bioconductor’s constraints. The most consequential one is a limit on how large a package may be — the constraint that <a href="./data-packages-in-r-universe.html">stalled the proposal to add data and workflow packages</a> to the Bioconductor universes.</p>
+<p>Three different systems impose size limits on a Bioconductor package, and two of them use the number 100, which makes them easy to conflate. They apply to different objects at different moments, and a package can satisfy any one of them while failing another. This page states what each one is.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>The short answer
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>r-universe</strong> enforces exactly one size limit: <strong>104,857,600 bytes (100 MiB) per published file</strong>, applied independently to the source package and to every binary. It is enforced in two places in the build, both of which fail the job outright.</p>
+<p><strong>GitHub</strong> blocks files over 100 MiB <em>when they are pushed to a repository</em> — the same number, but measured on a file inside a git commit rather than on a built package. Its other constraints (Git LFS ceilings, repository size, runner disk) bind in situations where r-universe’s limit does not.</p>
+<p><strong>Bioconductor</strong> asks for source tarballs under 10 MB and individual files under 5 MB, and enforces this through BiocCheck. In the r-universe pipeline, <strong>those three checks never fire</strong> — BiocCheck is handed a tarball, and its size checks are inert on tarball input. That is measured below, not inferred.</p>
+</div>
+</div>
+<section id="three-limits-three-different-objects" class="level2">
+<h2 class="anchored" data-anchor-id="three-limits-three-different-objects">Three limits, three different objects</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Limit</th>
+<th>Applies to</th>
+<th>Enforced by</th>
+<th>At what moment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>104,857,600 bytes</td>
+<td>one built package file (source <code>.tar.gz</code> or one platform binary)</td>
+<td>r-universe build workflow</td>
+<td>after the package is built, before upload</td>
+</tr>
+<tr class="even">
+<td>104,857,600 bytes</td>
+<td>one file inside a git push</td>
+<td>GitHub’s git server</td>
+<td>on <code>git push</code></td>
+</tr>
+<tr class="odd">
+<td>5,242,880 bytes</td>
+<td>one file inside a git push, software packages only</td>
+<td>Bioconductor’s <a href="./legacy-propagation.html#the-pre-hooks">pre-receive hook</a></td>
+<td>on <code>git push</code> to <code>git.bioconductor.org</code></td>
+</tr>
+<tr class="even">
+<td>10,000,000 bytes</td>
+<td>source tarball, software packages only</td>
+<td>BiocCheck (<code>ERROR</code>)</td>
+<td>during check — <strong>but see below</strong></td>
+</tr>
+<tr class="odd">
+<td>5,000,000 bytes</td>
+<td>one file inside the package</td>
+<td>BiocCheck (<code>WARNING</code>)</td>
+<td>during check — <strong>but see below</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The distinction that matters most: the first row is measured on a <strong>compressed archive that the build produced</strong>, and the second and third are measured on <strong>individual files as stored in git</strong>. A repository of forty 20 MB files passes every git-side check and fails r-universe. A single 500 MB file tracked in Git LFS passes r-universe’s git-side concerns entirely and can never be built into a package small enough to publish.</p>
+</section>
+<section id="where-r-universes-limit-lives" class="level2">
+<h2 class="anchored" data-anchor-id="where-r-universes-limit-lives">Where r-universe’s limit lives</h2>
+<p>The same check appears twice, written the same way both times:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>Location</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>End of the source build</td>
+<td><a href="https://github.com/r-universe-org/build-source/blob/1ee4788/entrypoint.sh#L346-L350"><code>build-source/entrypoint.sh:347</code></a></td>
+<td>the finished source <code>.tar.gz</code></td>
+</tr>
+<tr class="even">
+<td>Every artifact upload</td>
+<td><a href="https://github.com/r-universe-org/actions/blob/v12/store-package/action.yml#L36-L41"><code>actions/store-package/action.yml:38</code></a></td>
+<td>source <strong>and</strong> every binary — linux, Windows, macOS, wasm</td>
+</tr>
+</tbody>
+</table>
+<p>The second is reached from six places in the build workflow (<code>build.yml</code> at ref <code>v3</code>, lines 95, 105, 165, 229, 292 and 339), which is every target r-universe publishes. The only artifact that bypasses it is the BiocCheck output directory, uploaded directly at line 383.</p>
+<p>Both are one line of shell:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-n</span> <span class="st">"</span><span class="va">$(</span><span class="fu">find</span> <span class="st">"</span><span class="va">$FILE</span><span class="st">"</span> <span class="at">-prune</span> <span class="at">-size</span> +100M<span class="va">)</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"File </span><span class="va">$FILE</span><span class="st"> is larger than 100 MB. This is not allowed"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">exit</span> 1</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="the-number-is-100-mib-not-100-mb" class="level3">
+<h3 class="anchored" data-anchor-id="the-number-is-100-mib-not-100-mb">The number is 100 MiB, not 100 MB</h3>
+<p>The message says “100 MB”, but <code>find -size +100M</code> counts in 1 MiB units and <strong>rounds each file up to the next whole unit</strong> before comparing. The effective rule is therefore:</p>
+<blockquote class="blockquote">
+<p>A file fails if it is <strong>strictly larger than 104,857,600 bytes</strong>.</p>
+</blockquote>
+<p>Checked against GNU findutils 4.8.0: 104,857,600 bytes passes, 104,857,601 bytes is rejected, and a file of 100,000,000 bytes — 100 MB in the decimal sense — passes with 4.8 MiB to spare. The gap between the two readings is about 4.9%, which is enough to matter for a package sitting near the line.</p>
+</section>
+<section id="what-is-being-measured" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-being-measured">What is being measured</h3>
+<p>The source-package check runs <strong>after</strong> r-universe has appended its own files to the tarball — the rendered README, the HTML manual, citation files and <code>contents.json</code> are unpacked into the archive at <code>entrypoint.sh:341-343</code>, immediately before the size check at line 347. A package’s budget is therefore not what <code>R CMD build</code> produced locally; it is that, plus r-universe’s additions, recompressed.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C["git clone"] --&gt; B["R CMD build&lt;br/&gt;vignettes, no manual"]
+  B --&gt; X["append r-universe extras&lt;br/&gt;README · HTML manual · citation · contents.json"]
+  X --&gt; G1{"&amp;gt; 104,857,600 bytes?"}
+  G1 --&gt;|"yes"| F1["exit 1 — source job fails&lt;br/&gt;nothing is published"]
+  G1 --&gt;|"no"| S["source package"]
+  S --&gt; BIN["binary builds&lt;br/&gt;linux · win · mac · wasm"]
+  BIN --&gt; G2{"&amp;gt; 104,857,600 bytes?"}
+  G2 --&gt;|"yes"| F2["exit 1 — that platform fails&lt;br/&gt;source still deploys"]
+  G2 --&gt;|"no"| U["uploaded and published"]
+
+  classDef ok fill:#f3fbf4,stroke:#3d8b47,color:#12263f
+  classDef gate fill:#fff8e6,stroke:#b8860b,color:#12263f
+  classDef bad fill:#fff1f0,stroke:#c0392b,color:#12263f
+  class C,B,X,S,BIN,U ok
+  class G1,G2 gate
+  class F1,F2 bad
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The two failures are not equivalent. An oversized <strong>source</strong> package fails before <code>entrypoint.sh</code> writes its <code>SOURCEPKG</code> output, and every downstream job in the workflow is conditioned on that output being non-empty — so the package is not built for any platform, not checked, and not published at all. An oversized <strong>binary</strong> fails only its own job; the source package and the other platforms still deploy.</p>
+</section>
+<section id="what-r-universe-does-not-limit" class="level3">
+<h3 class="anchored" data-anchor-id="what-r-universe-does-not-limit">What r-universe does not limit</h3>
+<p>No limit was found on any of: the size of individual files <em>inside</em> a package, the total size of a universe, the number of packages in a universe, vignette or documentation output, or the BiocCheck results artifact. Within the 100 MiB per-file ceiling, a universe is unbounded as far as the build code is concerned.</p>
+<p>One related constant is worth knowing about, because it is a size decision even though it is not a size check. <code>build-source/R/buildtools.R:395</code> carries a hard-coded list of four packages commented “Packages over 2GB in size” — <code>SNPlocs.Hsapiens.dbSNP155.GRCh38</code>, <code>SNPlocs.Hsapiens.dbSNP155.GRCh37</code>, <code>MafDb.gnomAD.r2.1.GRCh38</code> and <code>MafDb.gnomAD.r2.1.hs37d5</code> — which are never installed as dependencies. A package that depends on one of them is built without it, and whatever that does to its checks is what its check results report.</p>
+</section>
+</section>
+<section id="what-github-imposes" class="level2">
+<h2 class="anchored" data-anchor-id="what-github-imposes">What GitHub imposes</h2>
+<p>These are GitHub’s platform limits, not r-universe’s choices. They constrain the build because the build runs on GitHub Actions and clones from GitHub.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Constraint</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>File in a push — hard block</td>
+<td>100 MiB</td>
+</tr>
+<tr class="even">
+<td>File in a push — warning</td>
+<td>50 MiB</td>
+</tr>
+<tr class="odd">
+<td>File uploaded via the web UI</td>
+<td>25 MiB</td>
+</tr>
+<tr class="even">
+<td>Git LFS, per file</td>
+<td>2 GB (Free/Pro), 4 GB (Team), 5 GB (Enterprise Cloud)</td>
+</tr>
+<tr class="odd">
+<td>Repository size</td>
+<td>under 1 GB ideal, under 5 GB strongly recommended (advisory)</td>
+</tr>
+<tr class="even">
+<td>Actions artifact, per artifact</td>
+<td><strong>no documented limit</strong> — only a shared storage quota, 500 MB (Free) to 50 GB (Enterprise Cloud)</td>
+</tr>
+<tr class="odd">
+<td>Artifacts per job</td>
+<td>500</td>
+</tr>
+<tr class="even">
+<td>Artifact retention</td>
+<td>90 days by default</td>
+</tr>
+<tr class="odd">
+<td>Job execution time</td>
+<td>6 hours</td>
+</tr>
+<tr class="even">
+<td>Standard runner</td>
+<td>4 cores, 16 GB RAM, <strong>14 GB SSD</strong></td>
+</tr>
+</tbody>
+</table>
+<p>r-universe sets its own timeouts well inside GitHub’s: 60 minutes for a source build (90 for Bioconductor), 150-minute caps on the platform jobs, and a 50-minute <code>timeout</code> around <code>R CMD build</code> itself. The workflow also deletes the preinstalled .NET, GHC and Boost trees before building, which is what a 14 GB disk looks like in practice.</p>
+</section>
+<section id="where-the-limits-genuinely-differ" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-limits-genuinely-differ">Where the limits genuinely differ</h2>
+<p><strong>The two 100 MiB numbers are unrelated.</strong> They coincide numerically and share no scope. GitHub’s applies to a single blob entering git history; r-universe’s applies to a compressed archive leaving the build. Neither implies the other in either direction.</p>
+<p><strong>GitHub does not limit artifact size at all.</strong> r-universe’s ceiling is entirely self-imposed — GitHub would accept the upload. The limit is a statement about what r-universe is willing to store and serve, so it is a policy that can be discussed, not a platform constraint that has to be worked around.</p>
+<p><strong>r-universe has no per-file rule; Bioconductor’s rules are all per-file.</strong> Bioconductor’s pre-receive hook and BiocCheck both police individual files and are indifferent to the total; r-universe polices only the total and is indifferent to how it is distributed.</p>
+<p><strong>Git size and tarball size are not the same quantity.</strong> r-universe clones the full history (the clone at <code>entrypoint.sh:43</code> is deliberately not shallow, so that vignette modification times can be read), so a small package with a heavy history costs the build real time and disk while passing the size gate untouched. The <a href="./data-packages-in-r-universe.html#finding-4-git-repositories-are-not-tarball-sized">size audit</a> found <code>depmap</code> shipping a 1.6 MiB tarball behind a 1.51 GiB git repository.</p>
+<p><strong>The limit is undocumented.</strong> For a maintainer, the only signal is a failed build log reading <code>File &lt;pkg&gt;.tar.gz is larger than 100 MB. This is not allowed</code>.</p>
+</section>
+<section id="bioconductors-own-size-rules-are-silent-in-this-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="bioconductors-own-size-rules-are-silent-in-this-pipeline">Bioconductor’s own size rules are silent in this pipeline</h2>
+<p>Bioconductor’s stated guidance is a 10 MB source tarball for software packages (experiment and annotation packages are exempt) and 5 MB per individual file, enforced through BiocCheck. The r-universe workflow runs BiocCheck for the Bioconductor universes, so it is reasonable to assume those rules are being applied there. They are not.</p>
+<p>BiocCheck is invoked on the built tarball. Three things follow from that, all confirmed by running BiocCheck 1.49.30 on a purpose-built 30 MB package containing a single 30 MB file in <code>inst/extdata</code>:</p>
+<ol type="1">
+<li><code>checkPackageSize()</code> measures <code>file.size()</code> of the package’s <code>sourceDir</code> field. For tarball input that field holds the <strong>directory the tarball was unpacked into</strong>, so <code>file.size()</code> returns a directory entry size — 83 bytes in the test — and the 10 MB comparison can never be true. The same is true for source-directory input, where the field holds the source directory itself.</li>
+<li><code>checkIndivFileSizes()</code> and <code>checkDataFileSizes()</code> both delegate to a helper with two branches, one for a git clone and one for a source directory. Tarball input is neither, so the helper returns nothing. On source-directory input it works correctly and did find the 30 MB file.</li>
+<li>A full <code>BiocCheck()</code> run on the 30 MB tarball reported 2 errors and 2 warnings, none of them about size.</li>
+</ol>
+<p>So in the r-universe Bioconductor jobs, the only size limit in force is r-universe’s own 104,857,600 bytes — roughly ten times Bioconductor’s stated tarball guidance, and with no per-file component at all. This has been reported upstream as <a href="https://github.com/Bioconductor/BiocCheck/issues/259">Bioconductor/BiocCheck#259</a>.</p>
+<p>The Bioconductor rule that <em>is</em> enforced today is the 5,242,880-byte pre-receive hook on <code>git.bioconductor.org</code>, described in <a href="./legacy-propagation.html#the-pre-hooks">the propagation gate</a>. That hook runs on push, before r-universe is involved at all, and it covers software packages only. Nothing in the r-universe path reproduces it — which matters for any plan that treats r-universe’s checks as a replacement for the git server’s.</p>
+</section>
+<section id="what-this-means-for-the-migration" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means-for-the-migration">What this means for the migration</h2>
+<p>The <a href="./data-packages-in-r-universe.html">size audit</a> put numbers to the consequences: 67 of 434 experiment-data packages and 1 of 25 workflow packages exceed the limit, against exactly one software package (<code>SwathXtend</code>) in the current release. The limit is therefore invisible to the software corpus and decisive for the data corpus, which is why it surfaced only when adding data packages was proposed.</p>
+<p>Two properties of the limit are worth carrying into that discussion. It is a <strong>policy of r-universe’s</strong>, not a GitHub constraint, so it is negotiable in a way platform limits are not. And it measures the wrong thing for the packages it excludes: the cost r-universe actually bears for a large data package is dominated by cloning a large git repository and by storing 8–14 near-identical binaries, neither of which the tarball size predicts.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>One thing that was not verified
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Neither <code>r-universe-org/base-image</code> nor <code>build-source</code> installs <code>git-lfs</code>, and the clone at <code>entrypoint.sh:43</code> is a plain <code>git clone --recurse-submodules</code>. On that reading, a repository whose data files are tracked in Git LFS would be checked out as pointer files and built into a package that is small, valid, and missing its data — while <code>buildtools.R:962</code> records <code>gitlfs: true</code> in the package metadata without failing anything. <strong>This was not tested against a live build</strong>, and it should be before anyone relies on it either way.</p>
+</div>
+</div>
+</section>
+<section id="reproducing-this" class="level2">
+<h2 class="anchored" data-anchor-id="reproducing-this">Reproducing this</h2>
+<p>The r-universe boundary, against GNU findutils 4.8.0:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-c</span> 104857600 /dev/zero <span class="op">&gt;</span> f1   <span class="co"># exactly 100 MiB</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-c</span> 104857601 /dev/zero <span class="op">&gt;</span> f2   <span class="co"># one byte more</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> f1 <span class="at">-prune</span> <span class="at">-size</span> +100M         <span class="co"># no output — passes</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> f2 <span class="at">-prune</span> <span class="at">-size</span> +100M         <span class="co"># prints f2 — rejected</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The BiocCheck behaviour, given any source package directory with a file over 5 MB in <code>inst/extdata</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>R CMD build bigpkg    <span class="co"># produces bigpkg_0.99.0.tar.gz, ~30 MB</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>bp <span class="ot">&lt;-</span> BiocCheck<span class="sc">:::</span>.BiocPackage<span class="sc">$</span><span class="fu">copy</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>bp<span class="sc">$</span><span class="fu">initialize</span>(<span class="st">"bigpkg_0.99.0.tar.gz"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>bp<span class="sc">$</span>isTar                                          <span class="co"># TRUE</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">file.size</span>(bp<span class="sc">$</span>sourceDir)                           <span class="co"># 83 — a directory, not the tarball</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">file.size</span>(bp<span class="sc">$</span>tarFilename)                         <span class="co"># 30005481 — the tarball</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>BiocCheck<span class="sc">:::</span><span class="fu">checkPackageSize</span>(bp)                  <span class="co"># silent</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>BiocCheck<span class="sc">:::</span><span class="fu">.findLargeFiles</span>(bp, <span class="at">data_only =</span> <span class="cn">FALSE</span>) <span class="co"># NULL</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>bp2 <span class="ot">&lt;-</span> BiocCheck<span class="sc">:::</span>.BiocPackage<span class="sc">$</span><span class="fu">copy</span>()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>bp2<span class="sc">$</span><span class="fu">initialize</span>(<span class="st">"bigpkg"</span>)                          <span class="co"># the source directory</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>BiocCheck<span class="sc">:::</span><span class="fu">.findLargeFiles</span>(bp2, <span class="at">data_only =</span> <span class="cn">FALSE</span>) <span class="co"># finds inst/extdata/blob.bin</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>BiocCheck<span class="sc">:::</span><span class="fu">checkPackageSize</span>(bp2)                  <span class="co"># still silent</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+.mermaid { cursor: zoom-in; }
+.mermaid.zoomed {
+  position: fixed; inset: 0; z-index: 9999; cursor: zoom-out;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--quarto-body-bg, #fff);
+}
+.mermaid.zoomed svg { max-width: 95vw !important; max-height: 95vh !important; height: auto !important; }
+</style>
+<script>
+document.querySelectorAll("pre.mermaid").forEach(function (el) {
+  el.addEventListener("click", function () { el.classList.toggle("zoomed"); });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/seandavi\.github\.io\/bioc-infrastructure\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/r-universe-size-limits.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/r-universe-size-limits.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

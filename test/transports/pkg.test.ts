@@ -4,9 +4,13 @@ import { AboutSchema } from '../../src/core/about';
 import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
+import { docsTestModule } from '../support/docs';
 import { bioconductorRoutes, statsPageUrl, statsTabUrl } from '../support/bioconductor-routes';
 import { depsRoutes } from '../support/deps-routes';
 import { BIOC_INDEX_URL, buildsUrl, checksUrl, pkgRoutes, RELEASE_INDEX_URL, ruUrl } from '../support/pkg-routes';
+
+// pkg's triage prompt names the docs tools, so a registry holding pkg must hold docs too.
+const docsModule = await docsTestModule();
 
 let client: Client | undefined;
 afterEach(async () => {
@@ -15,7 +19,7 @@ afterEach(async () => {
 });
 
 function testApp() {
-  return makeTestApp({ routes: { ...pkgRoutes, ...bioconductorRoutes }, extraModules: [pkgModule] });
+  return makeTestApp({ routes: { ...pkgRoutes, ...bioconductorRoutes }, extraModules: [pkgModule, docsModule] });
 }
 
 async function get(path: string) {
@@ -40,6 +44,7 @@ describe('MCP', () => {
       'pkg_build_environment',
       'pkg_release_info',
       'pkg_downloads',
+      'pkg_repo_diff',
       'pkg_revdeps',
       'pkg_missing_deps',
     ]);
@@ -50,6 +55,7 @@ describe('MCP', () => {
     expect(names).toContain('pkg_status');
     expect(names).toContain('pkg_release_info');
     expect(names).toContain('pkg_downloads');
+    expect(names).toContain('pkg_repo_diff');
     expect(names).toContain('pkg_check_output');
     expect(names).toContain('pkg_build_environment');
     expect(names).toContain('pkg_revdeps');
@@ -314,6 +320,40 @@ describe('GET /api/v1/pkg/downloads', () => {
   );
 });
 
+describe('GET /api/v1/pkg/repo_diff', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body } = await get('/api/v1/pkg/repo_diff');
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({ universe: 'bioc', bioconductor_version: '3.24', category: 'version_differs' });
+    expect(body.sources).toHaveLength(6);
+    client = await connectClient(testApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_repo_diff', arguments: {} });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+    expect(textOf(result)).toBe(body.summary);
+  });
+
+  test('the query parameters select repo, category and limit', async () => {
+    const { response, body } = await get(
+      '/api/v1/pkg/repo_diff?universe=bioc-release&repo=bioc&category=only_bioconductor&limit=10',
+    );
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({ universe: 'bioc-release', repo: 'bioc', total: 1 });
+  });
+
+  test('a cursor that is not digits is 400 invalid_input with no fetch', async () => {
+    const { response, body, fetch } = await get('/api/v1/pkg/repo_diff?cursor=x');
+    expect(response.status).toBe(400);
+    expect(body.error.code).toBe('invalid_input');
+    expect(fetch.calls).toEqual([]);
+  });
+
+  test('is listed in the OpenAPI document', async () => {
+    const { body } = await get('/api/openapi.json');
+    expect(body.paths['/api/v1/pkg/repo_diff'].get.operationId).toBe('pkg_repo_diff');
+  });
+});
+
 describe('GET /api/v1/about', () => {
   test('lists the registry, both r-universe upstreams and bioconductor.org as used by pkg', async () => {
     const { response, body } = await get('/api/v1/about');
@@ -333,6 +373,7 @@ describe('GET /api/v1/about', () => {
       'pkg_build_environment',
       'pkg_release_info',
       'pkg_downloads',
+      'pkg_repo_diff',
       'pkg_revdeps',
       'pkg_missing_deps',
     ]);
@@ -352,7 +393,8 @@ describe('GET /api/v1/about', () => {
 function depsApp() {
   return makeTestApp({
     routes: { ...pkgRoutes, ...bioconductorRoutes, ...depsRoutes },
-    extraModules: [pkgModule],
+    // pkg's triage prompt names docs tools, so docs must be registered with it (#67).
+    extraModules: [pkgModule, docsModule],
   });
 }
 

@@ -43,13 +43,17 @@ async function ok(input: unknown, capability = search) {
 describe('ranking questions', () => {
   it.each([
     ['why does the registry poll', undefined, `${BASE}propagation-gate.html#why-the-registry-polls`],
-    ['why are client addresses hashed', 'adr', `${BASE}adr/0009-client-addresses-are-hashed-at-the-edge.html`],
     ['how are download stats counted', undefined, `${BASE}download-stats.html#what-counts-as-a-download`],
     ['purging the cache', undefined, `${BASE}cache.html#purging`],
     ['DuckDB sql console', undefined, 'https://github.com/seandavi/bioc-registry/blob/main/docs/api.md#get-sql'],
   ])('%j (source %j) ranks %s first', async (query, source, url) => {
     const { data } = await ok({ query, ...(source ? { source } : {}) });
     expect(data.hits[0].url).toBe(url);
+  });
+
+  it('"why are client addresses hashed" (source "adr") ranks a record of ADR 0009 first', async () => {
+    const { data } = await ok({ query: 'why are client addresses hashed', source: 'adr' });
+    expect(data.hits[0].url.startsWith(`${BASE}adr/0009-client-addresses-are-hashed-at-the-edge.html`)).toBe(true);
   });
 });
 

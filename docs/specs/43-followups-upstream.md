@@ -513,7 +513,14 @@ registry cap there. Also run the MCP `tools/list` curl from AGENTS.md.
   shrink it to the size of one file; the per-file route (#13) does.
 - **Decoded size, not wire size.** The count is of decoded bytes, so a small gzip body that
   inflates is caught. No `Content-Length` pre-check: a large uncompressed body is streamed up to
-  the cap before failing, which costs at most `maxBytes` of transfer, not memory beyond it.
+  the cap before failing. Memory is not bounded by `maxBytes`. `readCapped` keeps every decoded
+  chunk and then joins them, so the chunks and the joined string coexist. The count is checked
+  after a chunk arrives. One read therefore peaks at about 2 × `maxBytes` plus one chunk (ASCII;
+  more for text V8 stores at 2 bytes per character). `fetchUpstreamJson` then adds the parsed
+  object while the body string is alive. For the registry's 16 MiB cap, one `/checks` read can
+  peak near 32 MB of strings before parsing, and `/checks` loads are not shared like the index
+  (`SharedLoads`), so a few concurrent callers approach the 128 MB isolate limit. Pick
+  per-upstream caps on this basis (#47).
 - **workerd streaming decode is verified by types, not by a run**, until the manual `npm run dev`
   check above.
 - **Error precedence change (#36).** An oversized, off-schema result now reports `internal`, not

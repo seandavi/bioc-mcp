@@ -143,8 +143,9 @@ export async function listWorkflowRuns(
 URLs are byte-identical to today (`per_page=20`), so fixtures and routes do not change.
 
 `test/upstreams/imports.test.ts` (new) guards the seam for every adapter: read each
-`src/upstreams/*.ts` with `readFileSync`, find every line matching
-`/^import\s.*from\s+'\.\.\/core\//m` (global), and assert each starts with `import type `. Today
+`src/upstreams/*.ts` with `readFileSync`, find every statement matching
+`/^(?:import|export)\s[^;]*?from\s+'\.\.\/core\/[^']*'/gm` (`[^;]` spans wrapped lines), and assert
+each starts with `import type ` or `export type ` (#79). Today
 `bioconductor.ts`, `http.ts`, `r-universe.ts` and `registry.ts` already comply. Only `github.ts`
 fails, and only until this fix.
 
@@ -451,8 +452,8 @@ Tests:
   `{ kind: 'prs', repo: 'bioc-mcp' }`: `envelopeBytes < MAX_RESULT_BYTES`; the item has 3
   `failing_checks`, each `length <= 40` and ending `…`; `failing_check_count` 100; reason
   `'100 failing checks; merge conflicts'`; `summary` does not contain `'c'.repeat(40)`.
-- activity.test.ts, new `'ten hostile PRs still fit'`: 10 bioc-mcp PRs created 2026-10-21
-  (newer than every recorded PR), titles of 200 `T`s, `mergeable: false`, each with the same
+- activity.test.ts, new `'ten hostile PRs still fit'`: 10 bioc-mcp PRs created from 2026-10-22T12:00Z
+  (newer than every recorded PR; the newest is bioc-infrastructure#122 at 11:51), titles of 200 `T`s, `mergeable: false`, each with the same
   100-run page. `{ kind: 'prs' }` and `{ kind: 'prs', repo: 'bioc-mcp' }` are both under
   `MAX_RESULT_BYTES`. Expected about 7.1 KB. If the implementation measures 8,192 or more, stop
   and report; do not loosen the test.

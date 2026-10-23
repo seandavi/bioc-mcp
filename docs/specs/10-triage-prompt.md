@@ -224,7 +224,7 @@ The prompt makes none. The walk test drives these, all already implemented and a
 
 | Tool call | URL | Fixture |
 |---|---|---|
-| `pkg_status({ package: 'GEOfastq' })` | `https://bioc-registry.seandavi.workers.dev/data/prop/bioc/index.json` | `registry/prop/bioc/index.json` (GEOfastq appended) |
+| `pkg_status({ package: 'GEOfastq', universe: 'bioc' })` | `https://bioc-registry.seandavi.workers.dev/data/prop/bioc/index.json` | `registry/prop/bioc/index.json` (GEOfastq appended) |
 | same | `https://bioc.r-universe.dev/api/packages/GEOfastq` | `r-universe/bioc/GEOfastq.json` NEW |
 | `pkg_check_output({ universe: 'bioc', job: '107579662259' })` and with `file: 'testthat.Rout.fail'` | `https://bioc-registry.seandavi.workers.dev/checks/bioc/107579662259` | `registry/checks/bioc/107579662259.json` NEW |
 | `docs_search({ query: TRIAGE_DOCS_QUERY })` | none (bundled index; the test uses `docsTestModule()`) | the existing docs fixtures |
@@ -330,7 +330,7 @@ client via `connectClient(app, path)`, closed in `afterEach` as in `test/transpo
   with `{ code: -32602 }`.
 - **walks GEOfastq, whose devel check fails**, on `/mcp/pkg+docs`, using `callTool` and reading
   `structuredContent`:
-  1. `pkg_status` `{ package: 'GEOfastq' }`: not `isError`; `data.propagated.version` `1.21.0`,
+  1. `pkg_status` `{ package: 'GEOfastq', universe: 'bioc' }`: not `isError`; `data.propagated.version` `1.21.0`,
      `data.behind` false; `summary` contains `failing linux-devel-x86_64 (ERROR)`.
   2. Apply step 2's rule with a local `pickFailingJob(jobs)` in the test: filter
      `config !== 'bioc-checks' && /^(ERROR|FAIL|FAILURE)$/.test(check ?? '')`, sort ERROR before

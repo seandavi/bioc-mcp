@@ -164,6 +164,15 @@ describe('parsePackagesFile', () => {
     ])('a Path stanza with %s throws', (_label, body) => {
       expect(errorOfParse(body, cranUpstream, URL)).toBeInstanceOf(CapabilityError);
     });
+
+    test.each([
+      ['an invalid version', stanza('MASS', '7.3-66') + '\n' + pathStanza('MASS', '1.0a')],
+      ['no Version', stanza('MASS', '7.3-66') + '\n' + 'Package: MASS\nPath: 4.7.0/Recommended\n'],
+    ])('a Path stanza repeating a known name with %s throws upstream_error', (_label, body) => {
+      const error = errorOfParse(body, cranUpstream, URL) as CapabilityError;
+      expect(error).toBeInstanceOf(CapabilityError);
+      expect(error.code).toBe('upstream_error');
+    });
   });
 
   test('a long run of spaces before a lone \\r is parsed in linear time', () => {

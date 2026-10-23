@@ -336,7 +336,10 @@ None recorded. Existing ones used: `test/fixtures/cran/src/contrib/PACKAGES`,
   Spec #50 test lists, in file order.
 - [ ] Every Spec #50 violation case (the twelve in today's `parsePackagesFile` `test.each`) throws
   `upstream_error` whose message contains the URL and whose details are
-  `{ upstream: upstream.id, url }`, for both `bioconductorUpstream` and `cranUpstream`.
+  `{ upstream: 'bioconductor', url }` under `bioconductorUpstream`. One case (`'Version: 1.0\n'`)
+  under `cranUpstream` throws with message
+  `CRAN returned a PACKAGES file in an unexpected format (<url>)` and details
+  `{ upstream: 'cran', url }`.
 - [ ] A name repeated in `Path` stanzas parses: the stanza without `Path` gives the version
   whether it comes first or last, the name keeps its first position, and a name only in `Path`
   stanzas takes the first one's version. Two stanzas without `Path` for one name throw, also when

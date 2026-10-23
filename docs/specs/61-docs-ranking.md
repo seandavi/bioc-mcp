@@ -133,7 +133,7 @@ export function siteSubsections(html: string): Map<string, SiteSubsection[]>;
  * that h2 section. subsectionsByPage is keyed by page href (the part before '#'). Records without
  * subsections pass through unchanged. Output order: each parent, then its subsections in document order.
  * Throws Error naming the record id, the subsection id and the heading when no line of the
- * parent's text (after the previous cut) equals the heading.
+ * parent's text after its first line (and after the previous cut) equals the heading.
  */
 export function splitSiteRecords(
   records: DocsRecord[],
@@ -158,8 +158,9 @@ level-3 sections on the live site (see Verified).
 `site:<page>#<frag>` and with `subsectionsByPage.get(page)?.get(frag)` non-empty:
 
 - `lines = r.text.split('\n')`. For each subsection in order, find the first index `i` at or after
-  the previous cut + 1 with `lines[i].replace(/\s+/g, ' ').trim() === heading`. Not found: throw
-  `Error(\`${r.id}: no line "${heading}" for subsection #${id} in search.json text\`)`.
+  the previous cut + 1, starting at line 1 (line 0 is the h2's own heading, so an h3 named like its h2
+  does not cut there), with `lines[i].replace(/\s+/g, ' ').trim() === heading`. Not found: throw
+  `Error(\`${r.id}: no line "${heading}" for subsection #${id} in search.json text (search.json and the page HTML may come from different site deploys; re-run, or re-record both with npm run docs:record)\`)`.
 - Parent: `{ ...r, text: lines.slice(0, cut[0]).join('\n').trim() }`. Same id, url, section and
   crumbs.
 - Subsection k: `{ ...r, id: \`site:${page}#${sub.id}\`, url: new URL(\`${page}#${sub.id}\`, siteUrl).href,
@@ -225,7 +226,7 @@ After the split, `operations.html#runbooks` has only its 347-character intro, an
  */
 export function subsectionsOf(page: DocsPage, record: DocsRecord): DocsRecord[];
 
-/** renderSection(record), then renderSection(s) for each of subsectionsOf(page, record), joined by '\n\n'. */
+/** renderSection(record), then renderSection(s, 3) for each of subsectionsOf(page, record), joined by '\n\n'. */
 export function renderSectionTree(page: DocsPage, record: DocsRecord): string;
 ```
 
@@ -422,7 +423,7 @@ All tests stay offline. New fixtures are the 41 HTML pages.
 | `test/docs-index/site.test.ts` | `siteSubsections`: synthetic HTML with two h2 sections, h3s under each, an h3 before the first h2 (omitted), a heading with `<code>x</code> &amp; <a href="…">y</a>` (→ `x & y`), and extra classes (`class="level3 unnumbered"`). Over the `operations.html` fixture it returns the 7 runbook ids under `runbooks`. `splitSiteRecords`: a parent with two subsections gives parent intro, then children with the right id, url, section, crumbs, title, source and text. A record without subsections and a page-level record come back unchanged (`toBe` the same object or `toEqual`). A heading that matches only before the previous cut is not reused. A missing heading line throws naming the record id and heading. |
 | `test/docs-index/build.test.ts` | `routesFor` adds a route for every site page fixture. Counts become 381 site / 535 total. New: the rollback-worker record (criterion 2); every one of the 117 subsections starts with its heading; a missing page route rejects `not_found` naming the page URL. Inputs stay 16. Snapshot regenerated. |
 | `test/docs-index/load.test.ts` | Stop-word equivalence and the all-stop-word fallback (criterion 7). The rollback-worker ranking (criterion 6). The existing 16-term test still passes. The prefix/fuzzy length gates and the superseded boost on synthetic indexes (`syntheticDocsIndex`), criteria 8–9. A query of 16 stop words plus `registry` still finds `registry` hits (stop words do not use up the 16-term budget). |
-| `test/core/docs/pages.test.ts` | `subsectionsOf`: run after an h2 record, ending at the first record with other crumbs. `[]` for the page-level record and for a record with section `''`. `renderSectionTree` equals `renderSection(parent) + '\n\n' + renderSection(child)…`. |
+| `test/core/docs/pages.test.ts` | `subsectionsOf`: run after an h2 record, ending at the first record with other crumbs. `[]` for the page-level record and for a record with section `''`. `renderSectionTree` equals `renderSection(parent) + '\n\n' + renderSection(child, 3)…`. |
 | `test/core/docs/read.test.ts`, `test/core/docs/resources.test.ts` | Criterion 4 (paging through `next_cursor` for the tool). Existing expectations that use `renderSection(record)` for a section with subsections (`propagation-gate.html#why-the-registry-polls` now has `#two-traps-in-the-data`) switch to `renderSectionTree(page, record)`. |
 | `test/core/docs/search.test.ts` | Existing ranking cases are kept. `'why are client addresses hashed'` (source `adr`) may now rank another record of ADR 0009 first. If so, assert `hits[0].url.startsWith(<ADR 0009 page url>)`. Any other change to an existing case is a regression to report, not to edit away. |
 | `test/docs-eval/questions.test.ts` | Unchanged. It checks the re-pointed answers exist. |

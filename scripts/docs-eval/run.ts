@@ -1,4 +1,4 @@
-import { docsSearchCapability } from '../../src/core/docs/search';
+import { DocsSearchDataSchema, docsSearchCapability } from '../../src/core/docs/search';
 import type { Deps } from '../../src/core/deps';
 import { invokeCapability, type InvokeContext } from '../../src/core/invoke';
 import type { DocsIndex } from '../../src/docs-index/load';
@@ -52,7 +52,7 @@ export async function runDocsEval(set: DocsEvalSet, index: DocsIndex): Promise<D
     if (!result.ok) {
       throw new Error(`docs_search failed for "${q.id}": ${result.error.code}: ${result.error.message}`);
     }
-    const data = result.envelope.data as { hits: { url: string }[] };
+    const data = DocsSearchDataSchema.parse(result.envelope.data);
     const topUrls = data.hits.map((hit) => hit.url);
     const position = topUrls.findIndex((url) => q.answers.includes(url));
     results.push({

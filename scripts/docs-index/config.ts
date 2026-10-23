@@ -13,7 +13,7 @@ export const DocsSourcesConfigSchema = z
       .array(
         z.strictObject({
           repo: z.string().regex(segment),
-          ref: z.string().regex(segment), // a branch or tag without "/"
+          ref: z.string().regex(segment), // a branch without "/" (the build looks up its head with GET /repos/seandavi/<repo>/branches/<ref>)
           files: z
             .array(z.string().regex(/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*\.md$/))
             .min(1),

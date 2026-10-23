@@ -116,6 +116,26 @@ describe('input validation', () => {
   });
 });
 
+describe('query words', () => {
+  const Q18 =
+    'registry poll webhooks gate propagation edge traffic build manifest website universe check status release download cache worker deploy';
+
+  it('says in the query describe that only 16 words are searched', () => {
+    const properties = (z.toJSONSchema(DocsSearchInputSchema) as any).properties;
+    expect(properties.query.description).toContain('only the first 16 other distinct words are searched');
+  });
+
+  it('names the words it did not search', async () => {
+    const { summary } = await ok({ query: Q18 });
+    expect(summary).toContain('not searched: worker deploy. Put the key words first.');
+  });
+
+  it('says nothing about skipped words for 16 distinct words', async () => {
+    const { summary } = await ok({ query: Q18.split(' ').slice(0, 16).join(' ') });
+    expect(summary).not.toContain('not searched');
+  });
+});
+
 describe('results', () => {
   it('defaults to 8 hits and honours limit', async () => {
     expect((await ok({ query: 'registry' })).data.hits).toHaveLength(8);
@@ -186,6 +206,14 @@ describe('size guard', () => {
     expect(envelope.summary).toMatch(/\d+ more hits? (was|were) dropped to stay under 8 KB/);
     expect(envelope.summary).toContain('they rank below these. Narrow with source or more specific words to see others.');
     expect(envelope.summary).not.toContain('lower limit');
+  });
+});
+
+describe('heading-only sections', () => {
+  it('cuts the snippet from the subsections when the hit text is only its heading', async () => {
+    const { data } = await ok({ query: 'cloudflare account migration procedure', limit: 1 });
+    expect(data.hits[0].url).toBe(`${BASE}cloudflare-account-migration.html#procedure`);
+    expect(data.hits[0].snippet.startsWith('Procedure A. Prepare the new account')).toBe(true);
   });
 });
 
@@ -315,8 +343,8 @@ describe('freshness', () => {
     const behind = docsSearchCapability(() => behindIndex);
     const edgeSha = behindIndex.meta.inputs.find((i) => i.url.includes('/bioc-edge/main/DATAPLANE.md'))!.commit!.sha;
     const warning =
-      `https://raw.githubusercontent.com/seandavi/bioc-edge/main/DATAPLANE.md comes from seandavi/bioc-edge@${edgeSha.slice(0, 7)}, ` +
-      'but main was already at bbbbbbb (committed 2026-10-20) when the index was built; it may lag main.';
+      `Docs under https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md come from seandavi/bioc-edge@${edgeSha.slice(0, 7)}, ` +
+      'but main was already at bbbbbbb (committed 2026-10-20) when the index was built; they may lag main.';
 
     const hit = await at(BUILT, { query: 'data plane', source: 'repo:bioc-edge' }, behind);
     expect(hit.data.freshness.possibly_stale).toEqual([warning]);
@@ -329,7 +357,7 @@ describe('freshness', () => {
 
   it('warns about an unknown commit at 14 days of age, not at 13', async () => {
     const unknown = docsSearchCapability(() => syntheticDocsIndex([record]));
-    const warning = 'https://docs.test/search.json is 14 days old (as of 2026-10-22) and its source commit is unknown.';
+    const warning = 'Docs under https://docs.test/ are 14 days old (as of 2026-10-22) and their source commit is unknown.';
     const at14 = await at(new Date('2026-11-05T00:00:00Z'), { query: 'needle' }, unknown);
     expect(at14.data.freshness.possibly_stale).toContain(warning);
     expect(at14.summary).toContain(`\nPossibly stale: ${warning}`);

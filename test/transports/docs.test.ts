@@ -264,12 +264,8 @@ describe('about', () => {
       repo: 'seandavi/bioc-infrastructure',
       ref: 'main',
       sha: '256fd62eab16312a6188bef6bf74ea2bbab5f830',
-      url: 'https://github.com/seandavi/bioc-infrastructure/commit/256fd62eab16312a6188bef6bf74ea2bbab5f830',
     });
-    for (const input of dataset.inputs) {
-      expect(input.commit!.url).toBe(`https://github.com/${input.commit!.repo}/commit/${input.commit!.sha}`);
-      expect(input.possibly_stale).toBeNull();
-    }
+    for (const input of dataset.inputs) expect(input.possibly_stale).toBeNull();
 
     const { client } = await connect('/mcp/pkg');
     const { contents } = await client.readResource({ uri: 'bioc://about' });

@@ -14,9 +14,14 @@ describe('chunkText', () => {
     expect(chunkText(text, 0, 12)).toEqual({ text: 'aaaa\nbbbb\n', end: 10 });
   });
 
-  it('prefers a newline over a later space', () => {
+  it('cuts at a newline where the space fallback would cut earlier', () => {
     // hard = 11, half = 5; the space at 6 would give end 7
     expect(chunkText('aaaaaa bb\nccc dddd', 0, 12)).toEqual({ text: 'aaaaaa bb\n', end: 10 });
+  });
+
+  it('prefers a newline over a later space', () => {
+    // hard = 9, half = 4; newline at 5, space at 7: a last-break-of-either rule would give end 8
+    expect(chunkText('aaaaa\nb cdddddd', 0, 10)).toEqual({ text: 'aaaaa\n', end: 6 });
   });
 
   it('falls back to the last space, then to the hard limit', () => {

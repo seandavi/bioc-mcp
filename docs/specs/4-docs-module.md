@@ -324,11 +324,12 @@ export function docsPages(index: DocsIndex): DocsPages;
 /** Section label: record.section; else the URL fragment as words ('why-at-the-edge' → 'Why at the edge'); '' for a page-level record. */
 export function sectionLabel(record: DocsRecord): string;
 
-/** '## <label>\n\n<url>\n\n<body>' (see Rendering). */
-export function renderSection(record: DocsRecord): string;
+/** '<## or ###> <label>\n\n<url>\n\n<body>' (see Rendering); `level` 3 for a nested record. */
+export function renderSection(record: DocsRecord, level: 2 | 3 = 2): string;
 
 /**
- * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r) for every other record.
+ * '# <title>\n\n<page url>\n\n<page-level body>' + '\n\n' + renderSection(r, level) for every other record,
+ * level 3 when r has more crumbs than the page (an h3), else 2.
  * An ADR's page-level record holds the whole ADR, and its section records repeat that text; the page-level
  * body is cut where the first section's body last starts, which keeps the 'Status:' and 'Date:' lines and
  * never drops intro text that repeats it.
@@ -358,10 +359,10 @@ and the first character upper-cased. Example: `#why-at-the-edge-rather-than-at-i
    first line. Site sections repeat their heading (Verified).
 2. Replace `/\n{3,}/g` with `'\n\n'`, then trim.
 
-`renderSection(r)` = `` `## ${sectionLabel(r) || r.title}\n\n${r.url}\n\n${body(r)}` `` (an empty
+`renderSection(r, level = 2)` = `` `${'#'.repeat(level)} ${sectionLabel(r) || r.title}\n\n${r.url}\n\n${body(r)}` `` (an empty
 body leaves the URL line last). `renderPage(page)` = `` `# ${page.title}\n\n${page.url}\n\n` `` + the
-page-level body, then `'\n\n' + renderSection(r)` for every other record in `page.records`
-order. An ADR's page-level record holds the whole ADR and its section records repeat that text
+page-level body, then `'\n\n' + renderSection(r, level)` for every other record in `page.records`
+order, with `level` 3 for a record that has more crumbs than the page (an h3) and 2 otherwise. An ADR's page-level record holds the whole ADR and its section records repeat that text
 (**Verified**, `search.json`), so the page-level body is cut where the first section's non-empty
 `body()` last starts (`pageBody.lastIndexOf(body)`, trimmed). That keeps the `Status:` and `Date:` lines,
 shows each section once, and never drops intro text that repeats the first section's body. If that body is not found in the page-level body (site pages, whose
@@ -416,7 +417,10 @@ export const DocsSearchInputSchema = z.object({
     .min(1)
     .max(256)
     .regex(/\S/, 'query must contain a non-space character')
-    .describe('Words to search for, e.g. "why does the registry poll"'),
+    .describe(
+      'Words to search for, e.g. "why does the registry poll". Common words such as "the" and "why" are skipped, ' +
+        'and only the first 16 other distinct words are searched, so put the key words first',
+    ),
   limit: z.number().int().min(1).max(10).default(8).describe('Maximum number of sections to return (1–10)'),
   source: SourceFilterSchema.optional(),
 });
@@ -468,7 +472,7 @@ Handler (`{ query, limit, source }`, `deps` unused):
    has that repo, throw `CapabilityError('invalid_input', `Unknown docs source "${source}". Valid: site, adr, ${repos.map((r) => 'repo:' + r).join(', ')}.`)`,
    where `repos` are the distinct `repo` values in store order.
 3. `found = index.search(q, limit, filter)`.
-4. Each hit is `{ url: record.url, title, section: sectionLabel(record), crumbs, source, repo: record.repo ?? null, snippet: snippet(record.text, q), score: Math.round(score * 100) / 100 }`.
+4. Each hit is `{ url: record.url, title, section: sectionLabel(record), crumbs, source, repo: record.repo ?? null, snippet: snippet(snippetSource(pages, record), q), score: Math.round(score * 100) / 100 }`. `snippetSource` is the record's text, or, when that is only the record's heading (an h2 whose content is all in h3 subsections), the record's text and its subsections' texts joined by `'\n'`.
 5. `sources` are `docsPageSource(pages.pageOf(record)!)` of the hits (`pages = docsPages(index)`), in
    first-hit order, deduplicated by `url`: the public page URLs, not `search.json` or raw files.
    With no hits, `sources` is `[]`.
@@ -477,6 +481,9 @@ Handler (`{ query, limit, source }`, `deps` unused):
      then one line per hit, `` `\n${i + 1}. ${title}${section ? ` › ${section}` : ''} ${url}` ``.
      When `omitted_for_size > 0`, append
      `` `\n${k} more hit${k === 1 ? ' was' : 's were'} dropped to stay under 8 KB; they rank below these. Narrow with source or more specific words to see others.` ``.
+   - both branches: when `ignoredSearchTerms(q)` is not empty, a line
+     `` `\nOnly the first 16 distinct words were searched (common words such as "the" and "why" are skipped); not searched: ${ignored.join(' ')}. Put the key words first.` ``
+     goes after the hit lines (hits) or after the closing sentence (no hits), before any other trailing line.
    - no hits: `` `No docs sections match "${q}"${source ? ` in ${source}` : ''}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.` ``
 7. **Size guard:** while `envelopeBytes(envelope) > MAX_RESULT_BYTES` and hits remain, drop the
    last hit, increment `omitted_for_size`, and rebuild `sources` and `summary`. Then return.
@@ -568,12 +575,13 @@ Capability: `module: 'docs'`, `name: 'docs_read'`, `title: 'Read a docs page or 
 `description`:
 
 > Read the full text of one Bioconductor infrastructure docs page or section, as Markdown with
-> links. Pass a url from docs_search: a url with #anchor reads that section, a url without one reads
-> the whole page. A record id or a bioc://docs/ URI also works. Long text comes in parts: call again
-> with cursor set to next_cursor. Reads only the docs index bundled with this server and never
-> fetches a URL, so a URL that is not in the index returns not_found with close matches. To find a
+> links. Pass a url from docs_search: a url with #anchor reads that section and the subsections under it,
+> a url without one reads the whole page. A record id or a bioc://docs/ URI also works. Long text comes in
+> parts: call again with cursor set to next_cursor. Reads only the docs index bundled with this server and
+> never fetches a URL, so a URL that is not in the index returns not_found with close matches. To find a
 > page, use docs_search. For live package state use pkg_status; for open issues, pull requests or
-> failing workflows use ops_activity.
+> failing workflows use ops_activity. The result carries as_of, source_commit and freshness (index build
+> date and any reason the page may be out of date).
 
 MCP tool `docs_read`; REST
 `GET /api/v1/docs/read?id_or_url=https%3A%2F%2Fseandavi.github.io%2Fbioc-infrastructure%2Fpropagation-gate.html%23why-the-registry-polls&cursor=5498`

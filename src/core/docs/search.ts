@@ -1,11 +1,11 @@
 import * as z from 'zod';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope, type Source } from '../../envelope';
 import { CapabilityError } from '../../errors';
-import type { DocsIndex } from '../../docs-index/load';
+import { ignoredSearchTerms, MAX_SEARCH_TERMS, type DocsIndex } from '../../docs-index/load';
 import { DocsSourceKindSchema, type DocsInput, type DocsRecord } from '../../docs-index/schema';
 import { defineCapability, type Capability } from '../capability';
 import { docsFreshness, DocsFreshnessSchema, inputNote, type DocsFreshness } from './freshness';
-import { docsPages, docsPageSource, docsSource, sectionLabel } from './pages';
+import { docsPages, docsPageSource, docsSource, sectionLabel, subsectionsOf, type DocsPages } from './pages';
 
 const SourceFilterSchema = z
   .string()
@@ -21,7 +21,10 @@ export const DocsSearchInputSchema = z.object({
     .min(1)
     .max(256)
     .regex(/\S/, 'query must contain a non-space character')
-    .describe('Words to search for, e.g. "why does the registry poll"'),
+    .describe(
+      'Words to search for, e.g. "why does the registry poll". Common words such as "the" and "why" are skipped, ' +
+        'and only the first 16 other distinct words are searched, so put the key words first',
+    ),
   limit: z.number().int().min(1).max(10).default(8).describe('Maximum number of sections to return (1–10)'),
   source: SourceFilterSchema.optional(),
 });
@@ -83,6 +86,16 @@ export function snippet(text: string, query: string): string {
   return (start > 0 ? '…' : '') + plain.slice(start, end) + (end < plain.length ? '…' : '');
 }
 
+/**
+ * The text a hit's snippet is cut from: the record's text, or, when that is only the record's heading (an h2 whose
+ * content is all in h3 subsections), the record's text and its subsections' texts joined by '\n'.
+ */
+function snippetSource(pages: DocsPages, record: DocsRecord): string {
+  if (record.text.trim() !== record.section) return record.text;
+  const page = pages.pageOf(record)!;
+  return [record, ...subsectionsOf(page, record)].map((r) => r.text).join('\n');
+}
+
 function recordFilter(index: DocsIndex, source: string | undefined): ((record: DocsRecord) => boolean) | undefined {
   if (source === undefined) return undefined;
   if (source === 'site' || source === 'adr') return (record) => record.source === source;
@@ -99,6 +112,7 @@ function recordFilter(index: DocsIndex, source: string | undefined): ((record: D
 
 function describeHits(
   query: string,
+  ignored: readonly string[],
   source: string | undefined,
   hits: DocsSearchData['hits'],
   omitted: number,
@@ -107,8 +121,12 @@ function describeHits(
 ): string {
   const where = source ? ` in ${source}` : '';
   const stale = freshness.possibly_stale.map((warning) => `\nPossibly stale: ${warning}`).join('');
+  const skipped =
+    ignored.length === 0
+      ? ''
+      : `\nOnly the first ${MAX_SEARCH_TERMS} distinct words were searched (common words such as "the" and "why" are skipped); not searched: ${ignored.join(' ')}. Put the key words first.`;
   if (hits.length === 0) {
-    return `No docs sections match "${query}"${where}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.${stale}`;
+    return `No docs sections match "${query}"${where}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.${skipped}${stale}`;
   }
   const n = hits.length;
   const lines = hits.map(
@@ -120,7 +138,7 @@ function describeHits(
     omitted > 0
       ? `\n${omitted} more hit${omitted === 1 ? ' was' : 's were'} dropped to stay under 8 KB; they rank below these. Narrow with source or more specific words to see others.`
       : '';
-  return `${n} docs section${n === 1 ? '' : 's'} for "${query}"${where}:${lines.join('')}${built}${stale}${dropped}`;
+  return `${n} docs section${n === 1 ? '' : 's'} for "${query}"${where}:${lines.join('')}${skipped}${built}${stale}${dropped}`;
 }
 
 export function docsSearchCapability(
@@ -145,6 +163,7 @@ export function docsSearchCapability(
     async handler({ query, limit, source }, deps) {
       const index = getIndex();
       const q = query.trim();
+      const ignored = ignoredSearchTerms(q);
       const found = index.search(q, limit, recordFilter(index, source));
       const pages = docsPages(index);
       const hitInputs = found.map(({ record }) => pages.pageOf(record)!.input);
@@ -155,7 +174,7 @@ export function docsSearchCapability(
         crumbs: record.crumbs,
         source: record.source,
         repo: record.repo ?? null,
-        snippet: snippet(record.text, q),
+        snippet: snippet(snippetSource(pages, record), q),
         score: Math.round(score * 100) / 100,
         as_of: docsSource(hitInputs[i]!).as_of,
         source_commit: hitInputs[i]!.commit?.sha ?? null,
@@ -172,7 +191,7 @@ export function docsSearchCapability(
         const freshness = docsFreshness(index.meta, keptInputs, deps.now());
         return {
           data: { query: q, source: source ?? null, hits: hits.slice(0, kept), omitted_for_size: omitted, freshness },
-          summary: describeHits(q, source, hits.slice(0, kept), omitted, keptInputs, freshness),
+          summary: describeHits(q, ignored, source, hits.slice(0, kept), omitted, keptInputs, freshness),
           sources,
         };
       };

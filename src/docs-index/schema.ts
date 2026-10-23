@@ -56,7 +56,7 @@ export const DOCS_INDEX_OPTIONS = {
   extractField: (record: DocsRecord, field: string) =>
     field === 'crumbs' ? record.crumbs.join(' ') : (record[field as keyof DocsRecord] as string),
   searchOptions: {
-    boost: { title: 3, section: 2 },
+    boost: { title: 3, section: 3 },
     prefix: (term: string) => term.length >= PREFIX_MIN_LENGTH,
     fuzzy: (term: string) => (term.length >= FUZZY_MIN_LENGTH ? FUZZY_FRACTION : false),
   },

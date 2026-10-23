@@ -1,0 +1,30 @@
+name: Bug
+description: Something in bioc-mcp does not work.
+title: "bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: did
+    attributes:
+      label: What you did
+      description: The client (or `curl`), the tool or route, and the arguments.
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: The error text or the response.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client and version
+      description: For example Claude Code 2.1.302, or curl.

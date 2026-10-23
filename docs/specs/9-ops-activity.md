@@ -137,7 +137,7 @@ export const WORKFLOW_ITEM_LIMIT = 12;
 export const FAILURE_ITEM_LIMIT = 15;
 export const SUMMARY_PROBLEM_LIMIT = 5; // workflows named in the summary text
 export const FAILING_CHECK_LIMIT = 3; // names kept per PR in failing_checks
-export const CHECK_NAME_LIMIT = 40; // characters per kept name
+export const CHECK_NAME_LIMIT = 40; // bytes of JSON text per kept name (truncateText)
 ```
 
 **Verified (2026-10-22):** all nine repos are public, their default branch is `main`, and they hold
@@ -372,10 +372,15 @@ export function summarizeRuns(runs: readonly GithubWorkflowRun[]): {
  */
 export const FAILURE_ISSUE_TITLE = /^([A-Za-z0-9:_.@\-]{1,64}\.service) is failing$/;
 
-/** At most `limit` UTF-16 code units: the first limit − 1 plus '…' when longer. */
+/**
+ * `text` when its JSON string form is at most `limit` UTF-8 bytes (jsonTextBytes, src/envelope.ts);
+ * otherwise the longest prefix of whole code points within `limit` − 1 bytes, then '…'. ASCII without
+ * JSON escapes is cut to its first limit − 1 characters, as before. A cut result is at most limit + 2
+ * bytes ('…' is 3) whatever the script, and never ends in half a surrogate pair.
+ */
 export function truncateText(text: string, limit: number): string;
 
-/** At most 80 UTF-16 code units: the first 79 plus '…' when longer. */
+/** At most 80 bytes of JSON text (truncateText): 80 ASCII characters, fewer otherwise. */
 export function truncateTitle(title: string): string; // truncateText(title, 80)
 ```
 

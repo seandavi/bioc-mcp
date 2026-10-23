@@ -168,7 +168,7 @@ README.md                            #39 ux-r0-4, code-r0-3, ux-r0-6; #72 ux-r0-
 CONTRIBUTING.md                      #39 code-r0-4
 docs/specs/6-pkg-status.md           step 2 note (#72 code-r1-2)
 docs/specs/8-pkg-release-info.md     year template (#57 code-r0-2); agree snippet (#57 ux-r0-4)
-docs/specs/9-ops-activity.md         8 KB paragraph, parity row, title/failing_checks snippets (#64 security-r0-1)
+docs/specs/9-ops-activity.md         8 KB paragraph, parity row, title/failing_checks snippets, CHECK_NAME_LIMIT and truncateText interfaces (#64 security-r0-1)
 docs/specs/10-triage-prompt.md       pkg_status calls (#66 code-r0-2)
 docs/specs/11-deploy.md              Files entry, test-plan row (#64 code-r0-4)
 docs/specs/43-followups-upstream.md  Risks bullet (#47)
@@ -450,6 +450,10 @@ one hostile PR is open.
 
 5. docs/specs/9-ops-activity.md:
    - Lines 452, 464 and 472: replace the three description snippets with the texts in step 4.
+   - Line 140: `CHECK_NAME_LIMIT` comment → `// bytes of JSON text per kept name (truncateText)`.
+   - Lines 375-379: replace the `truncateText` and `truncateTitle` signatures with the JSDoc and
+     signatures in `src/core/ops/rules.ts` (byte-bounded, whole code points; "At most 80 bytes of
+     JSON text (truncateText): 80 ASCII characters, fewer otherwise.").
    - Line 397 (parity table): "keeps 3 names of at most 40 characters" → "keeps 3 names of at most
      40 bytes of JSON text".
    - Lines 822-828: replace "PR titles are cut to 80 characters. Check names … are cut to 3 names

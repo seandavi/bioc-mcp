@@ -372,7 +372,8 @@ The design below fits. **Estimated** from the same base: each hostile PR adds ab
 each summary line adds 20, so about 7.1 KB in all for 10 hostile PRs with ASCII names and titles.
 The size tests below measure it.
 
-`src/core/ops/config.ts`:
+`src/core/ops/config.ts` (the limits and `truncateText` below are superseded by #79: they count
+UTF-8 bytes of JSON text on whole code points, see spec 9):
 
 ```ts
 export const FAILING_CHECK_LIMIT = 3; // names kept per PR in failing_checks

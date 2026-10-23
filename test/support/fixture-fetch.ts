@@ -11,6 +11,7 @@ export type FixtureRoute =
   | { file: string; status?: number; headers?: Record<string, string> }
   | { status: number; body?: string; headers?: Record<string, string> }
   | 'timeout'
+  | 'body-timeout' // 200 whose body never arrives; the read fails with the signal's reason
   | 'network-error';
 
 /** A FetchFn that answers from `routes` (keyed by full URL) and records every requested URL. */
@@ -35,6 +36,22 @@ export function fixtureFetch(routes: Record<string, FixtureRoute>): FetchFn & { 
           { once: true },
         );
       });
+    }
+    if (route === 'body-timeout') {
+      pendingSignals.add(request.signal);
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          request.signal.addEventListener(
+            'abort',
+            () => {
+              pendingSignals.delete(request.signal);
+              controller.error(request.signal.reason);
+            },
+            { once: true },
+          );
+        },
+      });
+      return new Response(stream);
     }
     if ('file' in route) {
       const body = readFileSync(join(FIXTURES_DIR, route.file), 'utf8');

@@ -394,7 +394,7 @@ next to the threshold. Accept it.
 | workflows outside `.github/workflows/` skipped | same filter on `path` | Yes |
 | schedule staleness (cron) | not computed | No (non-goal) |
 | `pr_checks_failing(statusCheckRollup)` | `prChecksFailing(check-runs, combined status)` | Yes, assuming the rollup is the head commit's latest check runs and statuses |
-| `pr_status(failing, mergeable, updated age, draft)` | `prStatus`, `mergeable` from REST via `mergeableFrom` | Same status. Differs on purpose: the reason counts failing checks (`2 failing checks`) instead of naming them, and `failing_checks` keeps 3 names of at most 40 characters, because check names are contributor-controlled on fork PRs |
+| `pr_status(failing, mergeable, updated age, draft)` | `prStatus`, `mergeable` from REST via `mergeableFrom` | Same status. Differs on purpose: the reason counts failing checks (`2 failing checks`) instead of naming them, and `failing_checks` keeps 3 names of at most 40 bytes of JSON text, because check names are contributor-controlled on fork PRs |
 | stale issues: `updated_at` age > `issue_stale_days` | same | Yes |
 | new issues: `created_at[:10] >= since` | same | Yes |
 | `truncated: len == ISSUE_LIMIT` (200 issues, PRs listed apart) | `truncated: items.length === 100` over the mixed issues+PRs list | Same rule, smaller page (one call) |
@@ -449,7 +449,7 @@ const RepoErrorSchema = z
 const IssueItemSchema = z.object({
   repo: z.string(),
   number: z.number().int(),
-  title: z.string().describe('At most 80 characters'),
+  title: z.string().describe("At most 80 bytes of JSON text (80 ASCII characters, fewer otherwise), ending in '…' when cut"),
   url: z.string(),
   labels: z.array(z.string()),
   age_days: z.number().describe('Days since opened'),
@@ -461,7 +461,7 @@ const IssueItemSchema = z.object({
 const PrItemSchema = z.object({
   repo: z.string(),
   number: z.number().int(),
-  title: z.string().describe('At most 80 characters'),
+  title: z.string().describe("At most 80 bytes of JSON text (80 ASCII characters, fewer otherwise), ending in '…' when cut"),
   url: z.string(),
   draft: z.boolean(),
   age_days: z.number(),
@@ -469,7 +469,9 @@ const PrItemSchema = z.object({
   mergeable: z.enum(['MERGEABLE', 'CONFLICTING', 'UNKNOWN']).describe('UNKNOWN while GitHub computes it'),
   failing_checks: z
     .array(z.string())
-    .describe('Up to 3 failing check runs and commit statuses on the head commit (check runs first), each at most 40 characters'),
+    .describe(
+      "Up to 3 failing check runs and commit statuses on the head commit (check runs first), each at most 40 bytes of JSON text (40 ASCII characters, fewer otherwise), ending in '…' when cut",
+    ),
   failing_check_count: z.number().int().describe('All failing check runs and commit statuses on the head commit'),
   status: StatusSchema,
   reason: z.string().describe("e.g. '2 failing checks; merge conflicts', 'no activity for 67 days', 'ok'"),
@@ -821,11 +823,15 @@ labels or error messages ever push one over.
 
 Text built from caller-controlled strings is bounded at the source. Failure units are limited to 72
 characters, only `OPS_OWNER`'s issues count, and the summary names at most `FAILURE_ITEM_LIMIT` of
-them. PR titles are cut to 80 characters. Check names (chosen by the PR's workflow file on fork
-PRs) are cut to 3 names of 40 characters and never appear in `reason` or the summary. Measured
-(spec #46 test): 10 PRs with 200-character titles and 100 failing 200-character checks each give a
-`kind=prs` envelope of 7,156 bytes (all repos). Non-ASCII text can take up to 3 bytes per
-character, so the guard's `result_too_large` remains the backstop.
+them. PR, issue and failure-issue titles are cut to 80 bytes and check names to 40 bytes of JSON text
+(`truncateText`, whole code points), so non-ASCII or escaped text costs no more than ASCII.
+JSON escapes take up to 6 bytes per character (`\u00XX` for control characters, `\udXXX` for
+a lone surrogate), and the byte bound counts them. Check names (chosen by the PR's workflow
+file on fork PRs) are cut to 3 names and never appear in `reason` or the summary. Measured
+(spec #79): 10 PRs with 200-character titles and 100 failing 200-character checks each give a
+`kind=prs` envelope of 7,156 bytes (all repos) with ASCII text and 7,116 bytes with `日`
+titles and control-character check names. Before #79 the second was `result_too_large`. The
+guard's `result_too_large` remains the backstop.
 
 ### Fixtures
 

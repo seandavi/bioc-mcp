@@ -4,7 +4,6 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import {
   fitSectionText,
-  jsonTextBytes,
   MAX_SECTIONS,
   normalizeText,
   parseCheckLog,
@@ -15,6 +14,7 @@ import {
   textPage,
   type CheckSection,
 } from '../../../src/core/pkg/check-log';
+import { jsonTextBytes } from '../../../src/envelope';
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'fixtures', 'registry', 'checks', 'bioc');
 
@@ -234,6 +234,7 @@ describe('selectSections', () => {
       expect(section.truncated).toBe(true);
       expect(section.text).toBe('');
     }
+    expect(selected.map((s) => s.offset)).toEqual(sections.map((s) => s.offset));
   });
 });
 

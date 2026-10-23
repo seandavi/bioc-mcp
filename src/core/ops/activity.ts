@@ -62,7 +62,7 @@ const RepoErrorSchema = z
 const IssueItemSchema = z.object({
   repo: z.string(),
   number: z.number().int(),
-  title: z.string().describe('At most 80 characters'),
+  title: z.string().describe("At most 80 bytes of JSON text (80 ASCII characters, fewer otherwise), ending in '…' when cut"),
   url: z.string(),
   labels: z.array(z.string()),
   age_days: z.number().describe('Days since opened'),
@@ -74,7 +74,7 @@ const IssueItemSchema = z.object({
 const PrItemSchema = z.object({
   repo: z.string(),
   number: z.number().int(),
-  title: z.string().describe('At most 80 characters'),
+  title: z.string().describe("At most 80 bytes of JSON text (80 ASCII characters, fewer otherwise), ending in '…' when cut"),
   url: z.string(),
   draft: z.boolean(),
   age_days: z.number(),
@@ -82,7 +82,9 @@ const PrItemSchema = z.object({
   mergeable: z.enum(['MERGEABLE', 'CONFLICTING', 'UNKNOWN']).describe('UNKNOWN while GitHub computes it'),
   failing_checks: z
     .array(z.string())
-    .describe('Up to 3 failing check runs and commit statuses on the head commit (check runs first), each at most 40 characters'),
+    .describe(
+      "Up to 3 failing check runs and commit statuses on the head commit (check runs first), each at most 40 bytes of JSON text (40 ASCII characters, fewer otherwise), ending in '…' when cut",
+    ),
   failing_check_count: z.number().int().describe('All failing check runs and commit statuses on the head commit'),
   status: StatusSchema,
   reason: z.string().describe("e.g. '2 failing checks; merge conflicts', 'no activity for 67 days', 'ok'"),

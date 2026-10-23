@@ -39,4 +39,4 @@ export const WORKFLOW_ITEM_LIMIT = 12;
 export const FAILURE_ITEM_LIMIT = 15;
 export const SUMMARY_PROBLEM_LIMIT = 5; // workflows named in the summary text
 export const FAILING_CHECK_LIMIT = 3; // names kept per PR in failing_checks
-export const CHECK_NAME_LIMIT = 40; // characters per kept name
+export const CHECK_NAME_LIMIT = 40; // bytes of JSON text per kept name (truncateText)

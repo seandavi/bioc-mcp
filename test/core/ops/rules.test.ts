@@ -170,12 +170,25 @@ describe('truncateTitle', () => {
     expect(truncateTitle('a'.repeat(80))).toBe('a'.repeat(80));
     expect(truncateTitle('a'.repeat(81))).toBe(`${'a'.repeat(79)}…`);
   });
+
+  test('cuts non-ASCII text by JSON bytes: 26 characters of 3 bytes and an ellipsis', () => {
+    expect(truncateTitle('日'.repeat(80))).toBe(`${'日'.repeat(26)}…`);
+  });
 });
 
 describe('truncateText', () => {
   test('keeps limit characters and cuts one more to limit − 1 plus an ellipsis', () => {
     expect(truncateText('abcd', 4)).toBe('abcd');
     expect(truncateText('abcdef', 4)).toBe('abc…');
+  });
+
+  test.each([
+    ['3-byte characters', '日'.repeat(30), 40, `${'日'.repeat(13)}…`],
+    ['control characters, 6 bytes each', '\u0001'.repeat(30), 40, `${'\u0001'.repeat(6)}…`],
+    ['surrogate pairs are kept or dropped whole', `ab${'😀'.repeat(20)}`, 10, 'ab😀…'],
+    ['a lone surrogate counts as its 6-byte escape', '\ud800'.repeat(10), 20, `${'\ud800'.repeat(3)}…`],
+  ])('cuts by JSON bytes on whole code points: %s', (_label, text, limit, expected) => {
+    expect(truncateText(text, limit)).toBe(expected);
   });
 });
 

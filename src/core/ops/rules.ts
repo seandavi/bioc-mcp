@@ -1,3 +1,4 @@
+import { jsonTextBytes } from '../../envelope';
 import type { GithubWorkflowRun } from '../../upstreams/github';
 import { THRESHOLDS } from './config';
 
@@ -105,14 +106,28 @@ export function summarizeRuns(runs: readonly GithubWorkflowRun[]): {
  */
 export const FAILURE_ISSUE_TITLE = /^([A-Za-z0-9:_.@\-]{1,64}\.service) is failing$/;
 
-const TITLE_LIMIT = 80;
+const TITLE_LIMIT = 80; // bytes of JSON text (truncateText)
 
-/** At most `limit` UTF-16 code units: the first limit − 1 plus '…' when longer. */
+/**
+ * `text` when its JSON string form is at most `limit` UTF-8 bytes (jsonTextBytes); otherwise the
+ * longest prefix of whole code points within `limit` − 1 bytes, then '…'. ASCII without JSON
+ * escapes is cut to its first limit − 1 characters, as before. A cut result is at most limit + 2
+ * bytes ('…' is 3) whatever the script, and never ends in half a surrogate pair.
+ */
 export function truncateText(text: string, limit: number): string {
-  return text.length <= limit ? text : `${text.slice(0, limit - 1)}…`;
+  if (jsonTextBytes(text) <= limit) return text;
+  let kept = '';
+  let bytes = 0;
+  for (const char of text) {
+    const size = jsonTextBytes(char);
+    if (bytes + size > limit - 1) break;
+    kept += char;
+    bytes += size;
+  }
+  return `${kept}…`;
 }
 
-/** At most 80 UTF-16 code units: the first 79 plus '…' when longer. */
+/** At most 80 bytes of JSON text (truncateText): 80 ASCII characters, fewer otherwise. */
 export function truncateTitle(title: string): string {
   return truncateText(title, TITLE_LIMIT);
 }

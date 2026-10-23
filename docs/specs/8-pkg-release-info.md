@@ -50,13 +50,15 @@ package.json, package-lock.json      move yaml from devDependencies to dependenc
 src/upstreams/bioconductor.ts        NEW  bioconductorUpstream, getBiocConfig(), getManifestIndex(),
                                           STATS_CATEGORIES, StatsCategory, MONTHS, Month,
                                           findStatsPage(), getStatsTab(), statsTabPath(), parseDataAsOf(),
-                                          parseStatsYears(), parseStatsTab(), and their schemas/types
+                                          parseStatsYears(), parseStatsTab(), isoDate() (shared Date.UTC
+                                          round-trip used by parseDataAsOf and parseReleaseDate), and
+                                          their schemas/types
 src/core/pkg/release-info.ts         NEW  pkgReleaseInfo, PkgReleaseInfoDataSchema, parseReleaseDate()
 src/core/pkg/downloads.ts            NEW  pkgDownloads, PkgDownloadsDataSchema, STATS_DEFINITION
 src/core/pkg/index.ts                upstreams += bioconductorUpstream; capabilities = [pkgStatus,
                                           pkgReleaseInfo, pkgDownloads]; new description
 src/core/pkg/status.ts               description: last sentence cross-references the new tools
-test/support/bioconductor-routes.ts  NEW  fixture URL → FixtureRoute map and URL helpers
+test/support/bioconductor-routes.ts  NEW  fixture URL → FixtureRoute map and URL helpers; readBiocFixture(), NOT_FOUND
 test/upstreams/bioconductor.test.ts  NEW
 test/core/pkg/release-info.test.ts   NEW
 test/core/pkg/downloads.test.ts      NEW
@@ -293,7 +295,10 @@ export const PkgReleaseInfoDataSchema = z.object({
     serving_symlinks: z
       .object({ release: z.string().nullable(), devel: z.string().nullable() })
       .describe("Targets of the site's packages/release and packages/devel symlinks, from the manifest index; null if not listed"),
-    build: z.string().nullable(),
+    build: z
+      .string()
+      .nullable()
+      .describe('Identifier of the manifest build that produced the index (a commit-run id); null if the index gives none'),
     manifests: z
       .array(
         z.object({
@@ -305,7 +310,11 @@ export const PkgReleaseInfoDataSchema = z.object({
       )
       .describe('Published manifests, in index order'),
   }),
-  agree: z.boolean().describe('true when config.yaml and the manifest index name the same release and devel versions'),
+  agree: z
+    .boolean()
+    .describe(
+      'true when config.yaml, the manifest index versions and its packages/release and packages/devel symlinks all name the same release and devel versions (see disagreements)',
+    ),
   disagreements: z.array(z.string()).describe('Each mismatch found, in plain words; empty when agree is true'),
 });
 ```
@@ -602,6 +611,8 @@ against real markup.
 
 - `CONFIG_URL`, `MANIFEST_URL`, `statsPageUrl(category, name)`, and
   `statsTabUrl(category, name, year)`.
+- `readBiocFixture(path)` (reads a file under test/fixtures/bioconductor/) and `NOT_FOUND` (the
+  inline 404 route below).
 - `bioconductorRoutes: Record<string, FixtureRoute>`:
   - config.yaml, with header `'last-modified': 'Sat, 01 Aug 2026 15:44:12 GMT'` (the value
     observed on 2026-10-22; use the live value when recording).

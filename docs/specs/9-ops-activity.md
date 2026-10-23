@@ -918,7 +918,7 @@ say so in the PR; scenarios GitHub cannot produce on demand are synthetic (inlin
 | PR with conflicts | bioc-website #74 | `mergeable: false` | `CONFLICTING`, `warn`, reason `merge conflicts` |
 | Stale PR | bioc-website #14 | non-draft, updated > 14 days ago, mergeable | `info`, `no activity for N days` |
 | PR mergeability pending | any PR whose detail has `mergeable: null` (bioc-edge #64 on 2026-10-22, may resolve on re-record) or synthetic | — | `UNKNOWN`, not a problem by itself |
-| PR with failing checks | synthetic: a check run `timed_out` and a status `error` on bioc-website #74's head | — | `failing_checks` = `[<run name>, <context>]`, `warn`, reason `failing checks: …; merge conflicts` |
+| PR with failing checks | synthetic: a check run `timed_out` and a status `error` on bioc-website #74's head | — | `failing_checks` = `[<run name>, <context>]`, `failing_check_count` 2, `warn`, reason `2 failing checks; merge conflicts` |
 | Failure issues | bioc-edge | open issues titled `<unit> is failing` | #69 `bioc-sync.service` (0 comments), #57 `bioc-rollup-minute.service` (97 comments) |
 | Issue list cap | all repos | > 15 open issues | 114 open issues → 15 listed, 99 omitted |
 | Truncated | synthetic: an issues page of 100 items | — | `truncated: true` |
@@ -1008,15 +1008,17 @@ All tests run in Node with `fixtureFetch(githubRoutes())`, `createMemoryCache`, 
 - `test/core/ops/token.test.ts`: `deps.env = { GITHUB_TOKEN: SENTINEL }`; `deps.fetch` records each
   `Request` and its headers before delegating to `fixtureFetch`; a cache wrapper records every
   `put`; `vi.spyOn(console, …)` on `log`, `info`, `warn`, `error` and `debug`. Runs every kind, plus
-  routes overridden to 403, 404, 500, `'timeout'` and `'network-error'`, through REST and MCP
-  (`makeTestApp({ env })`), and asserts the sentinel is absent from every serialized output, error
+  routes overridden to 401, 403, 404, 500, `'timeout'` and `'network-error'`, through REST and MCP
+  (`makeTestApp({ env })`; the REST and MCP timeouts go through `makeTestApp({ fetch })`), and asserts the sentinel is absent from every serialized output, error
   and console argument, and present in every request's `authorization` header. A second case with
   `env: {}` asserts no `authorization` header.
 - `test/transports/ops.test.ts`: `makeTestApp({ routes: githubRoutes(), extraModules: [opsModule], now })`;
-  tools/list on `/mcp/ops` and `/mcp`, REST vs MCP equality per kind, REST 400 bodies, the MCP
+  tools/list on `/mcp/ops`, and on `/mcp` built with `extraModules: [pkgModule, opsModule]`, asserting the
+  exact meta, pkg and ops tool set (besides the `example_` tools), REST vs MCP equality per kind, REST 400 bodies, the MCP
   `isError` text for an all-repos 403 (`upstream_error: …`), and `/api/v1/about` listing `github`
   with `used_by: ['ops']`.
-- `test/support/app.ts`: `makeTestApp` takes `env?: CapabilityEnv` (default `{}`), passed to `deps.env`.
+- `test/support/app.ts`: `makeTestApp` takes `env?: CapabilityEnv` (default `{}`), passed to `deps.env`, and `fetch?: FetchFn & { calls: string[] }` (replaces the `fixtureFetch` built from
+  `routes`).
 
 ## Risks
 

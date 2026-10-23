@@ -5,6 +5,7 @@ import type { Module } from '../capability';
 import { pkgBuildEnvironment } from './build-environment';
 import { pkgCheckOutput } from './check-output';
 import { pkgDownloads } from './downloads';
+import { triageFailingPackagePrompt } from './prompts';
 import { pkgReleaseInfo } from './release-info';
 import { pkgRepoDiff } from './repo-diff';
 import { pkgStatus } from './status';
@@ -17,4 +18,5 @@ export const pkgModule: Module = {
     "registry's index compares with bioconductor.org's repositories.",
   upstreams: [registryUpstream, rUniverseUpstreams.bioc, rUniverseUpstreams['bioc-release'], bioconductorUpstream],
   capabilities: [pkgStatus, pkgCheckOutput, pkgBuildEnvironment, pkgReleaseInfo, pkgDownloads, pkgRepoDiff],
+  prompts: [triageFailingPackagePrompt],
 };

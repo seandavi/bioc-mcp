@@ -40,7 +40,7 @@ export const pkgRoutes: Record<string, FixtureRoute> = {
   [BIOC_INDEX_URL]: { file: 'registry/prop/bioc/index.json' },
   [RELEASE_INDEX_URL]: { file: 'registry/prop/bioc-release/index.json' },
   ...Object.fromEntries(
-    ['trackViewer', 'Chromatograms', 'RMassBank', 'biomaRt', 'ClustIRR', 'SEMPLR', 'BiocSet'].map((name) => [
+    ['trackViewer', 'Chromatograms', 'RMassBank', 'biomaRt', 'ClustIRR', 'SEMPLR', 'BiocSet', 'GEOfastq'].map((name) => [
       ruUrl('bioc', name),
       recorded(name),
     ]),
@@ -51,8 +51,9 @@ export const pkgRoutes: Record<string, FixtureRoute> = {
   [ruUrl('bioc', 'biomart')]: notFound('biomart'),
   ...Object.fromEntries(
     // yarn (failing), ADAPT (passing, CRLF), GeneGA (severity budget), singIST (huge ERROR, trimmed),
-    // stJoincount (tail and paging), DeepTarget (bioc-checks, no 00check.log)
-    ['96299707840', '91456856197', '91651624908', '95858209718', '91484882071', '91902836490'].map((job) => [
+    // stJoincount (tail and paging), DeepTarget (bioc-checks, no 00check.log),
+    // GEOfastq (devel test failure, triage walk)
+    ['96299707840', '91456856197', '91651624908', '95858209718', '91484882071', '91902836490', '107579662259'].map((job) => [
       checksUrl('bioc', job),
       { file: `registry/checks/bioc/${job}.json`, headers: { 'content-type': 'application/json' } } as FixtureRoute,
     ]),

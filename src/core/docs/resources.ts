@@ -1,7 +1,7 @@
 import { CapabilityError } from '../../errors';
 import type { DocsIndex } from '../../docs-index/load';
 import type { ResourceTemplateDef } from '../capability';
-import { docsPages, renderPage, renderSection } from './pages';
+import { docsPages, renderPage, renderSectionTree } from './pages';
 import { MAX_DOCS_REFERENCE_LENGTH, docsNotFound, resolveDocsTarget } from './read';
 
 export function docsPageResource(getIndex: () => DocsIndex): ResourceTemplateDef {
@@ -33,7 +33,7 @@ export function docsPageResource(getIndex: () => DocsIndex): ResourceTemplateDef
       const pages = docsPages(index);
       const target = resolveDocsTarget(pages, uri);
       if (target.kind === 'missing') throw docsNotFound(index, pages, uri, target, 'resource');
-      return target.kind === 'page' ? renderPage(target.page) : renderSection(target.record);
+      return target.kind === 'page' ? renderPage(target.page) : renderSectionTree(target.page, target.record);
     },
   };
 }

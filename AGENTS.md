@@ -69,7 +69,9 @@ test/
   when set (`assertUpstream` enforces this). `fetchUpstream` stops reading a body past `maxBytes`
   (default 2 MiB) and fails with `upstream_error`.
 - The docs index is built, never fetched at runtime: `scripts/build-docs-index.ts` reads
-  `docs-sources.yaml`, and the Worker imports the result from `generated/`. Adding a docs source
+  `docs-sources.yaml`, and the Worker imports the result from `generated/`. The build also fetches each
+  site page's HTML, only to split h2 records at their h3 headings; those fixtures sit next to
+  `search.json` and are not `meta.inputs` entries. Adding a docs source
   means editing `docs-sources.yaml`, running `npm run docs:record`, and committing the new
   fixtures and the updated snapshot (`npx vitest run -u test/docs-index`). Re-recording can drop a
   section an eval question names; `test/docs-eval` then fails until `eval/docs-questions.yaml` is
@@ -128,7 +130,9 @@ it up; `validateRegistry` enforces naming and REST-compatible input.
 
 MCP resources and prompts belong to a module too: `resources` (a `ResourceTemplateDef` under
 `bioc://<module>/`) and `prompts` (`definePrompt`, listing every tool its text names in `tools`).
-Both are MCP only; a prompt is offered only on toolsets that include all of its tools. Bundled,
+Both are MCP only; a prompt is offered only on toolsets that include all of its tools, and a prompt
+that names another module's tools makes that module a registration dependency (`validateRegistry`
+rejects unknown tools; test apps must register both). Bundled,
 build-time data (like the docs index) is reported to `bioc://about` through `datasets`.
 
 ## Git

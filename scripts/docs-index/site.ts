@@ -45,3 +45,78 @@ export function siteRecords(searchJson: unknown, siteUrl: string): DocsRecord[] 
     };
   });
 }
+
+/** A level-3 section of a rendered Quarto page: its id (the URL fragment) and heading text. */
+export interface SiteSubsection {
+  id: string;
+  heading: string; // tags stripped, entities decoded, whitespace collapsed, trimmed
+}
+
+const SECTION_HEADING = /<section id="([^"]+)" class="level([23])\b[^"]*"[^>]*>\s*<h\2\b[^>]*>([\s\S]*?)<\/h\2>/g;
+
+/**
+ * Level-3 sections of one rendered Quarto page, keyed by the id of the enclosing level-2 section,
+ * in document order. Level-3 sections before the first level-2 section are omitted.
+ */
+export function siteSubsections(html: string): Map<string, SiteSubsection[]> {
+  const byParent = new Map<string, SiteSubsection[]>();
+  let parent: string | undefined;
+  for (const match of html.matchAll(SECTION_HEADING)) {
+    const [, id, level, inner] = match as unknown as [string, string, string, string];
+    if (level === '2') {
+      parent = id;
+      continue;
+    }
+    if (parent === undefined) continue;
+    const heading = decode(inner.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
+    const list = byParent.get(parent);
+    if (list) list.push({ id, heading });
+    else byParent.set(parent, [{ id, heading }]);
+  }
+  return byParent;
+}
+
+const squash = (line: string) => line.replace(/\s+/g, ' ').trim();
+
+/**
+ * Splits each site record whose href has a fragment at the level-3 headings Quarto rendered inside
+ * that h2 section. subsectionsByPage is keyed by page href (the part before '#'). Records without
+ * subsections pass through unchanged. Output order: each parent, then its subsections in document order.
+ * Throws Error naming the record id, the subsection id and the heading when no line of the
+ * parent's text (after the previous cut) equals the heading.
+ */
+export function splitSiteRecords(
+  records: DocsRecord[],
+  subsectionsByPage: ReadonlyMap<string, ReadonlyMap<string, SiteSubsection[]>>,
+  siteUrl: string,
+): DocsRecord[] {
+  return records.flatMap((record) => {
+    if (record.source === 'repo') return [record];
+    const [page, fragment] = record.id.slice('site:'.length).split('#') as [string, string | undefined];
+    if (fragment === undefined) return [record];
+    const subsections = subsectionsByPage.get(page)?.get(fragment);
+    if (!subsections || subsections.length === 0) return [record];
+
+    const lines = record.text.split('\n');
+    const cuts: number[] = [];
+    let from = 0;
+    for (const sub of subsections) {
+      const at = lines.findIndex((line, i) => i >= from && squash(line) === sub.heading);
+      if (at === -1) {
+        throw new Error(`${record.id}: no line "${sub.heading}" for subsection #${sub.id} in search.json text`);
+      }
+      cuts.push(at);
+      from = at + 1;
+    }
+    const parent: DocsRecord = { ...record, text: lines.slice(0, cuts[0]).join('\n').trim() };
+    const children = subsections.map((sub, k): DocsRecord => ({
+      ...record,
+      id: `site:${page}#${sub.id}`,
+      url: new URL(`${page}#${sub.id}`, siteUrl).href,
+      section: sub.heading,
+      crumbs: [...record.crumbs, record.section],
+      text: lines.slice(cuts[k], cuts[k + 1]).join('\n').trim(),
+    }));
+    return [parent, ...children];
+  });
+}

@@ -205,13 +205,13 @@ describe('pkg_repo_diff on the fixtures', () => {
     expect(data.bioconductor_version).toBe('3.24');
     expect(data.repo).toBeNull();
     expect(data.counts).toEqual({
-      registry_packages: 14,
+      registry_packages: 15,
       bioconductor_packages: 16,
       in_both: 12,
       same_version: 8,
       version_differs: 4,
       only_bioconductor: 4,
-      only_registry: 2,
+      only_registry: 3,
     });
     expect(data.version_differs_by_reason).toEqual({
       registry_newer: 2,
@@ -235,7 +235,7 @@ describe('pkg_repo_diff on the fixtures', () => {
     expect([data.offset, data.total, data.next_cursor]).toEqual([0, 4, null]);
     expect(envelope.summary).toBe(
       'bioc (Bioconductor 3.24 devel) against bioconductor.org 3.24, all four repositories: 8 of 16 packages at the same version; ' +
-        '4 differ (registry newer: 2, seeded behind: 1, gated behind: 1); 4 only on bioconductor.org; 2 only in the registry. ' +
+        '4 differ (registry newer: 2, seeded behind: 1, gated behind: 1); 4 only on bioconductor.org; 3 only in the registry. ' +
         'Software (bioc): 6 of 10 at the same version. Showing version_differs 1–4 of 4.',
     );
   });
@@ -252,7 +252,9 @@ describe('pkg_repo_diff on the fixtures', () => {
 
   test('only_registry lists index entries in none of the repositories', async () => {
     const { data } = await diff({ category: 'only_registry' });
+    // GEOfastq is in the shared registry fixture for the triage prompt (#10) but in no PACKAGES fixture.
     expect(data.items).toEqual([
+      { package: 'GEOfastq', repo: null, registry_version: '1.21.0', bioconductor_version: null, origin: 'r-universe', reason: null },
       { package: 'progeny', repo: null, registry_version: '1.35.0', bioconductor_version: null, origin: 'r-universe', reason: null },
       { package: 'TimerQuant', repo: null, registry_version: '1.43.0', bioconductor_version: null, origin: 'bioc-build', reason: null },
     ]);
@@ -262,20 +264,20 @@ describe('pkg_repo_diff on the fixtures', () => {
     const { data, envelope } = await diff({ repo: 'bioc' });
     expect(data.repo).toBe('bioc');
     expect(data.counts).toEqual({
-      registry_packages: 14,
+      registry_packages: 15,
       bioconductor_packages: 10,
       in_both: 9,
       same_version: 6,
       version_differs: 3,
       only_bioconductor: 1,
-      only_registry: 2,
+      only_registry: 3,
     });
     expect(data.by_repo).toHaveLength(4);
     expect(names(data)).toEqual(['anndataR', 'biomaRt', 'Chromatograms']);
     expect(envelope.summary).toContain('repository bioc');
     expect(envelope.summary).not.toContain('Software (bioc):');
     const registryOnly = await diff({ category: 'only_registry', repo: 'books' });
-    expect(names(registryOnly.data)).toEqual(['progeny', 'TimerQuant']);
+    expect(names(registryOnly.data)).toEqual(['GEOfastq', 'progeny', 'TimerQuant']);
   });
 
   test('pages with a cursor', async () => {

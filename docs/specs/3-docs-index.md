@@ -304,9 +304,16 @@ export interface DocsIndex {
   get(id: string): DocsRecord | undefined;
   /** The input (search.json or raw file) a record was built from, for provenance. */
   inputFor(id: string): DocsInput | undefined;
-  /** Ranked with DOCS_INDEX_OPTIONS.searchOptions; at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. */
-  search(query: string, limit?: number): DocsSearchHit[];
+  /**
+   * Ranked with DOCS_INDEX_OPTIONS.searchOptions over the first MAX_SEARCH_TERMS distinct terms of `query`;
+   * at most `limit` (default 8) hits; RangeError unless `limit` is a positive integer. `filter` keeps only hits
+   * whose record it accepts; applied inside the ranked search, before `limit`.
+   */
+  search(query: string, limit?: number, filter?: (record: DocsRecord) => boolean): DocsSearchHit[];
 }
+
+/** search() uses at most this many distinct query terms: each costs one prefix and one fuzzy sub-query. */
+export const MAX_SEARCH_TERMS = 16;
 
 export interface DocsIndexJson { storeJson: string; indexJson: string }
 
@@ -322,9 +329,11 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex;
    that ids are unique; build `Map<id, record>` and `Map<id, input>` by walking `inputs` in order
    over contiguous slices of `records`.
 3. `MiniSearch.loadJSON<DocsRecord>(indexJson, DOCS_INDEX_OPTIONS)`; check
-   `miniSearch.documentCount === records.length`.
-4. `search(query, limit = 8)`: `miniSearch.search(query)` (constructor `searchOptions` apply),
-   map each result's `id` to its record (skip ids missing from the store, which step 3 rules out),
+   `miniSearch.documentCount === records.length`, and that every store id is in the index
+   (`miniSearch.has`), else `Error('Docs index and store disagree on record ids: <id> is not in the index')`.
+4. `search(query, limit = 8, filter?)`: search over `boundedQuery(query)` (the first 16 distinct
+   lower-cased tokens of MiniSearch's default tokenizer; constructor `searchOptions` apply),
+   map each result's `id` to its record (step 3 makes every id present),
    `slice(0, limit)`, return `{ record, score }`. `limit` that is not a positive integer (0, negative,
    fractional, `NaN`, `Infinity`) throws `RangeError` before searching, so the cap cannot be
    bypassed by a caller that skips validation.
@@ -489,14 +498,21 @@ message names the URL.
 /**
  * Answers from files under `root`, at `<root>/<hostname>/<decoded path segments>`; a missing file
  * is a 404 Response. Content-Type is application/json for .json, text/plain otherwise; no other headers.
+ * Throws on a URL whose hostname or decoded path segment is '.', '..' or contains '/' or '\\'.
  */
 export function fixtureDocsFetch(root: string): FetchFn;
-/** Passes requests to `inner`; writes each 200 body to the fixture path for its URL (mkdir -p). */
+/**
+ * Passes requests to `inner`; writes each 200 body to the fixture path for its URL (mkdir -p).
+ * Refuses an unsafe URL (see fixtureDocsFetch) before calling inner.
+ */
 export function recordingFetch(inner: FetchFn, root: string): FetchFn;
 ```
 
 The fixture path for a URL is `join(root, url.hostname, ...url.pathname.split('/').filter(Boolean).map(decodeURIComponent))`.
-`recordingFetch` reads the body with `response.clone().text()` and returns the original response.
+The hostname and each decoded path segment must not be `.` or `..` and must not contain `/` or `\`;
+otherwise the path function throws (`Refusing unsafe fixture path for <url>: segment "<segment>"`).
+`recordingFetch` computes the path before calling `inner`, so an unsafe URL is refused without a request.
+It reads the body with `response.clone().text()` and returns the original response.
 
 ### CLI: `scripts/build-docs-index.ts`
 
@@ -652,7 +668,8 @@ Commands, new bullets (after `npm run build`):
       the `search.json` input, and of `repo:bioc-edge/DATAPLANE.md#cloudflare-workflows-v` the
       `bioc-edge/main/DATAPLANE.md` input.
 - [ ] `loadDocsIndex` throws on `format_version: 2`, on a record-count mismatch between store and
-      index, and on input `record_count`s that do not sum to `meta.record_count`.
+      index, on input `record_count`s that do not sum to `meta.record_count`, on a renamed record
+      id, a duplicate record id, and a non-https record URL.
 - [ ] **Size check:** `writeArtifactModule` with `maxBytes` one less than `rendered.bytes` throws
       the `max_artifact_bytes` message and writes nothing; with `maxBytes === rendered.bytes` it
       writes both files.
@@ -681,7 +698,8 @@ an error status. A shared helper in `test/docs-index/build.test.ts` builds once 
 | `test/docs-index/site.test.ts` | field mapping on a two-entry inline array (one `adr/`, one not); absolute URLs; entity decoding including `&amp;lt;` → `&lt;`; `crumbs: null` → `[]`; non-array input throws; an entry missing `href` throws naming index 1; duplicate `href` throws; hrefs that leave `site_url` (`https://other.example/x`, `//other.example/x`, `javascript:alert(1)`, `../x.html`) throw |
 | `test/docs-index/markdown.test.ts` | inline Markdown strings: document-level record from preamble + first `#`; `##`/`###` split, `####` kept in body; `#` inside a fenced block (backtick and tilde) ignored; duplicate headings get `-1`; link/code/emphasis stripped from section and anchor; empty sections skipped but named in children's crumbs; no `#` → title `repo/file`; CRLF input; crumbs drop a title equal to the repo; the `bioc-edge/DATAPLANE.md` fixture yields `repo:bioc-edge/DATAPLANE.md#cloudflare-workflows-v` with the crumbs in the example |
 | `test/docs-index/build.test.ts` | byte-identical rebuild; `toMatchFileSnapshot('./__snapshots__/build-summary.json')` of `JSON.stringify({ meta, store_sha256, index_sha256, records: records.map(({ text, ...rest }) => ({ ...rest, text_chars: text.length })) }, null, 2)`; 264 site/adr records; input sha256s equal the fixture files' hashes; `last_modified` comes through when `search.json` is served by `fixtureFetch` with a `last-modified` header; missing fixture → rejects `not_found`; `renderArtifactModule` output imports back (write to a temp dir, `import()` it, `loadDocsIndex` the constants); `writeArtifactModule` size limit at `bytes - 1` / `bytes` (temp dir via `mkdtemp`) |
-| `test/docs-index/load.test.ts` | ranking for the two queries; `limit` (0, negative, 2.5, `NaN`, `Infinity` throw `RangeError`); `get`; `inputFor` for a site and a repo id; throws on `format_version: 2`, a dropped record, and bad input counts |
+| `test/docs-index/load.test.ts` | ranking for the two queries; `limit` (0, negative, 2.5, `NaN`, `Infinity` throw `RangeError`); the 16-distinct-term bound; `get`; `inputFor` for a site and a repo id; throws on `format_version: 2`, a dropped record, bad input counts, a renamed id, a duplicate id, and `javascript:` / `http:` record URLs |
+| `test/docs-index/fixtures.test.ts` | `recordingFetch` and `fixtureDocsFetch` refuse `..%2F`, `..%5C` and `https://../x` URLs (no `inner` call, nothing written); a safe URL is written under `<root>/<host>/<path>` and read back |
 | `test/docs-index/bundled.test.ts` | `bundledDocsIndex()` loads `generated/docs-index` (whatever build is present), `DocsIndexMetaSchema` parses its `meta`, records are non-empty, the same instance is returned twice. No ranking assertion, because a local `docs:build` may have replaced the fixture build |
 
 Manual, reported in the PR: `npm run docs:build` against the live sources, and the top 3 ids for

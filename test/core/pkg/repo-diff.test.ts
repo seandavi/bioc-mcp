@@ -175,7 +175,8 @@ describe('diffRepos', () => {
     const perRepo: Partial<Record<BiocRepo, [string, string][]>> = {};
     let stanzas = 0;
     for (let i = 0; i < 2500; i++) {
-      // Names 0–2,799 exist in the index (some at a different version); the rest only on bioconductor.org.
+      // Names 0–2,399 are in the index (every fifth at a different version); 2,400–2,499 are only on
+      // bioconductor.org; index entries 2,400–2,999 are only in the registry.
       const name = i < 2400 ? `pkg${i}` : `extra${i}`;
       const version = i % 5 === 0 ? '2.0' : `1.${i % 7}`;
       const repo = BIOC_REPOS[i % BIOC_REPOS.length]!;

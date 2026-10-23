@@ -27,9 +27,16 @@ export interface Envelope<T> {
 
 export const MAX_RESULT_BYTES = 8192;
 
+const encoder = new TextEncoder();
+
 /** UTF-8 byte length of JSON.stringify(envelope). */
 export function envelopeBytes(envelope: Envelope<unknown>): number {
-  return new TextEncoder().encode(JSON.stringify(envelope)).length;
+  return encoder.encode(JSON.stringify(envelope)).length;
+}
+
+/** UTF-8 bytes `s` occupies inside a JSON string: encode(JSON.stringify(s)).length - 2. */
+export function jsonTextBytes(s: string): number {
+  return encoder.encode(JSON.stringify(s)).length - 2;
 }
 
 /**

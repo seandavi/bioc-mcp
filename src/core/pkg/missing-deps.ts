@@ -6,6 +6,8 @@ import { getPropagationIndex, UNIVERSES } from '../../upstreams/registry';
 import { defineCapability } from '../capability';
 import {
   BASE_R_PACKAGES,
+  codeUnitOrder,
+  DEPS_UNKNOWN_LISTED,
   dependencyGraph,
   HARD_DEPENDENCY_FIELDS,
   type HardDependencyField,
@@ -78,12 +80,9 @@ export const MISSING_DEPS_NOT_CHECKED = [
 const MISSING_DEPS_PAGE_BYTES = 3000;
 const MISSING_LISTED_PER_PACKAGE = 10;
 const DEPENDENCIES_LISTED = 20;
-const DEPS_UNKNOWN_LISTED = 20;
 const TOP_DEPENDENCIES_IN_SUMMARY = 5;
 
 type AffectedPackage = PkgMissingDepsData['packages'][number];
-
-const codeUnitOrder = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 
 function summarize(data: PkgMissingDepsData): string {
   const { universe, packages_checked: checked, counts, offset, next_cursor } = data;
@@ -115,9 +114,9 @@ export const pkgMissingDeps = defineCapability({
     'Which packages in the Bioconductor propagation index have a hard dependency (Depends, Imports, LinkingTo) ' +
     'that cannot be found: not in the index, not base R, not on CRAN (matched by name against its current ' +
     'package list, best-effort) and not in the Bioconductor annotation or experiment data repositories. Such ' +
-    'packages are published but cannot be installed. Lists each one with its missing dependencies, and ranks the ' +
-    'missing dependencies by how many packages need them. Version requirements, Suggests and system ' +
-    'requirements are not checked (not_checked in the result says what else is not). Long lists are paged ' +
+    "packages are published but likely cannot be installed from the registry's repositories. Lists each one " +
+    'with its missing dependencies, and ranks the missing dependencies by how many packages need them. ' +
+    'Version requirements, Suggests and system requirements are not checked (not_checked in the result says what else is not). Long lists are paged ' +
     "with cursor. universe 'bioc' is devel (default), 'bioc-release' is release. For everything downstream of " +
     "one missing dependency use pkg_revdeps on it; for one package's build state use pkg_status.",
   input: z.object({

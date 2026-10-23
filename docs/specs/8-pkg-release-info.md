@@ -313,7 +313,7 @@ export const PkgReleaseInfoDataSchema = z.object({
   agree: z
     .boolean()
     .describe(
-      'true when config.yaml, the manifest index versions and its packages/release and packages/devel symlinks all name the same release and devel versions (see disagreements)',
+      'true when config.yaml, the manifest index versions and its packages/release and packages/devel symlinks all name the same release and devel versions (see disagreements; a symlink missing from the index is not checked)',
     ),
   disagreements: z.array(z.string()).describe('Each mismatch found, in plain words; empty when agree is true'),
 });
@@ -490,8 +490,8 @@ async handler({ package: name, year: requested }, deps) {
 - `years` is empty → `not_found`:
   `` `${name} (${page.category}) has no yearly download stats on bioconductor.org.` ``
 - `requested` set and not in `years` → `not_found`, without fetching a `.tab`:
-  `` `${name} (${page.category}) has no download stats for ${requested}; years with stats: ${years[0]}–${years.at(-1)}.` ``
-  (en dash). Otherwise `year = requested`, `note = null`.
+  `` `${name} (${page.category}) has no download stats for ${requested}; years with stats: ${yearRanges(years)}.` ``
+  (ascending runs joined by ', ', each run with an en dash, e.g. `2009, 2011–2026`; see Spec #44). Otherwise `year = requested`, `note = null`.
 - `requested` unset and `current` in `years` → `year = current`, `note = null`.
 - `requested` unset and `current` not in `years` → `year` is the largest element of `years` below
   `current`. `note` is

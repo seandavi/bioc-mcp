@@ -60,12 +60,13 @@ which `pkg_status` already loads and memoizes.
 ```
 src/upstreams/shared-load.ts          NEW  SharedLoads: per-cache memo of in-flight loads with a load deadline
                                            (moved out of registry.ts; getPropagationIndex uses it too)
+src/upstreams/registry.ts             getPropagationIndex uses SharedLoads (memo, load deadline and withinMs moved to shared-load.ts)
 src/upstreams/packages-file.ts        NEW  PackageList, parsePackagesFileNames(), getPackageList()
 src/upstreams/cran.ts                 NEW  cranUpstream, CRAN_BASE_URL, getCranPackageList()
 src/upstreams/bioconductor.ts         + BIOC_DATA_REPOS, BiocDataRepo, biocDataRepoPath(), getBiocDataPackageList()
 src/core/pkg/dependency-graph.ts      NEW  HARD_DEPENDENCY_FIELDS, HardDependencyField, BASE_R_PACKAGES,
                                            parseDependencyField(), DependencyGraph, dependencyGraph(),
-                                           ReverseDependency, reverseDependencies()
+                                           ReverseDependency, reverseDependencies(), codeUnitOrder, DEPS_UNKNOWN_LISTED (#79)
 src/core/pkg/paging.ts                NEW  CursorSchema, parseCursor(), takePage(), packagesPhrase()
 src/core/pkg/revdeps.ts               NEW  pkgRevdeps, PkgRevdepsDataSchema
 src/core/pkg/missing-deps.ts          NEW  pkgMissingDeps, PkgMissingDepsDataSchema, MISSING_DEPS_NOT_CHECKED
@@ -223,6 +224,9 @@ export function getBiocDataPackageList(deps: Deps, universe: Universe, repo: Bio
 
 `Universe` is imported as a type from `./registry`. The paths use bioconductor.org's `devel` and
 `release` symlinks, so no config.yaml lookup is needed.
+
+The upstream's `description` names the source PACKAGES index of each repository, including annotation and
+experiment data (#79, #72 code-r0-3).
 
 **Verified (2026-10-22):** `packages/devel/data/annotation/src/contrib/PACKAGES` returns 200 with
 218,067 bytes, byte-identical to `packages/3.24/…`. The release path is identical to `3.23`.
@@ -443,7 +447,7 @@ list's length. Schema errors such as `cursor=abc` are still rejected before any 
 
 `` `No ${universe} propagation entry named "${name}", and no package in the ${universe} index depends on it. Package names are case-sensitive.` ``
 followed by `` ` Did you mean: ${matches.join(', ')}?` `` when
-`closeMatches(name, Object.keys(index.packages))` is not empty, and then by the same
+`closeMatches(name, new Set([...Object.keys(index.packages), ...graph.dependents.keys()]))` (index names and names that have dependents; #79) is not empty, and then by the same
 other-universe hint `pkg_status` gives (`" To check release, call again with universe
 'bioc-release'."` or `" To check devel, call again with universe 'bioc'."`).
 
@@ -469,7 +473,7 @@ space. Numbers are written with `String(n)`.
    `` `${n} ${n === 1 ? 'package' : 'packages'}` ``.
    Otherwise:
    `` `${name} (${universe}): no package in the propagation index depends on it through Depends, Imports or LinkingTo.` ``
-2. If `!in_index`: `` ` ${name} itself is not in the index.` ``
+2. If `!in_index`: `` ` ${name} itself is not in the index (it may be on CRAN or base R; pkg_missing_deps says whether it is missing).` ``
 3. If `next_cursor !== null`:
    `` ` Listed: ${offset + 1}–${offset + shown} of ${total}; call again with cursor "${next_cursor}" for the rest.` ``
    If `next_cursor === null && offset > 0`: `` ` Listed: ${offset + 1}–${total} of ${total}.` ``
@@ -488,7 +492,8 @@ export const pkgRevdeps = defineCapability({
     'Which packages depend on this one, and how many: the reverse hard dependencies (Depends, Imports, ' +
     'LinkingTo) within the Bioconductor propagation index, direct and transitive, with counts per level. ' +
     'Answers "if this package breaks, what is blocked downstream?". Also works for a name that is not in ' +
-    'the index, listing the packages still waiting on it. depth 1 gives direct dependents only. Long lists ' +
+    'the index (a CRAN or base R package, or one missing from the registry), listing the index packages that ' +
+    'depend on it. depth 1 gives direct dependents only. Long lists ' +
     'are paged: pass next_cursor back as cursor with the same package, universe and depth. Suggests is not ' +
     "followed, and CRAN packages are not included. universe 'bioc' is devel (default), 'bioc-release' is " +
     'release. Package names are case-sensitive. For the build state of a package use pkg_status; for ' +
@@ -648,9 +653,9 @@ export const pkgMissingDeps = defineCapability({
     'Which packages in the Bioconductor propagation index have a hard dependency (Depends, Imports, LinkingTo) ' +
     'that cannot be found: not in the index, not base R, not on CRAN (matched by name against its current ' +
     'package list, best-effort) and not in the Bioconductor annotation or experiment data repositories. Such ' +
-    'packages are published but cannot be installed. Lists each one with its missing dependencies, and ranks the ' +
-    'missing dependencies by how many packages need them. Version requirements, Suggests and system ' +
-    'requirements are not checked (not_checked in the result says what else is not). Long lists are paged ' +
+    "packages are published but likely cannot be installed from the registry's repositories. Lists each one " +
+    'with its missing dependencies, and ranks the missing dependencies by how many packages need them. ' +
+    'Version requirements, Suggests and system requirements are not checked (not_checked in the result says what else is not). Long lists are paged ' +
     "with cursor. universe 'bioc' is devel (default), 'bioc-release' is release. For everything downstream of " +
     'one missing dependency use pkg_revdeps on it; for one package\'s build state use pkg_status.',
   input,

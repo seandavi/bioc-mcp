@@ -91,6 +91,11 @@ describe('pkg_missing_deps on the fixtures (devel)', () => {
     expect([...fetch.calls].sort()).toEqual([BIOC_INDEX_URL, ...DEVEL_DATA_URLS].sort());
   });
 
+  test('the description says such packages likely cannot be installed from the registry', () => {
+    expect(pkgMissingDeps.description).toContain("likely cannot be installed from the registry's repositories");
+    expect(pkgMissingDeps.description).not.toContain('published but cannot be installed');
+  });
+
   test('checked_against and not_checked', async () => {
     const { data } = await missingDeps({});
     expect(data.checked_against).toEqual([

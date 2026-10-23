@@ -98,7 +98,7 @@ export async function getPackagesFile(
     loadPackagesFile(deps, upstream, path, url),
   );
   // Per call, outside the shared load: callers of one URL may differ in allowEmpty.
-  // An empty or truncated list would report every CRAN dependency as missing.
+  // An empty list would make every lookup a miss.
   if (file.versions.size === 0 && !options.allowEmpty) {
     throw new CapabilityError(
       'upstream_error',

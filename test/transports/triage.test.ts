@@ -16,12 +16,12 @@ afterEach(async () => {
 });
 
 async function connect(path: string) {
-  const { app, fetch } = await makeTestApp({ routes: pkgRoutes, extraModules: [pkgModule, await docsTestModule()] });
+  const { app, fetch } = makeTestApp({ routes: pkgRoutes, extraModules: [pkgModule, await docsTestModule()] });
   client = await connectClient(app, path);
   return { client, fetch };
 }
 
-type Job = { config: string; check: string | null; job: string; url: string };
+type Job = { config: string; check: string | null; job: string; url: string | null };
 
 /** Step 2 of the prompt text, as code: failing jobs that are not bioc-checks, ERROR first, then linux-*. */
 function pickFailingJob(jobs: Job[]): Job | undefined {
@@ -73,7 +73,7 @@ describe('the walk the prompt describes', () => {
       return result.structuredContent as { summary: string; data: Record<string, any> };
     };
 
-    const status = await call('pkg_status', { package: 'GEOfastq' });
+    const status = await call('pkg_status', { package: 'GEOfastq', universe: 'bioc' });
     expect(status.data.propagated.version).toBe('1.21.0');
     expect(status.data.behind).toBe(false);
     expect(status.summary).toContain('failing linux-devel-x86_64 (ERROR)');

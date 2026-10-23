@@ -10,7 +10,7 @@ export interface Upstream {
   baseUrl: string; // https:, no credentials, ends with '/', no query/fragment
   ttlSeconds: number; // positive integer; cache TTL for 200 responses
   timeoutMs?: number; // positive integer <= MAX_TIMEOUT_MS; default DEFAULT_TIMEOUT_MS
-  maxBytes?: number; // positive integer; decoded body bytes read before failing; default DEFAULT_MAX_BYTES
+  maxBytes?: number; // positive integer; decoded body bytes read before failing; default DEFAULT_MAX_BYTES. Peak memory per read is about 2x this plus the parsed JSON (see readCapped)
   description: string; // one line for bioc://about
 }
 
@@ -98,9 +98,16 @@ function isTimeout(error: unknown): boolean {
 
 /**
  * The body as UTF-8 text, like response.text(), or null once more than maxBytes have arrived. The
- * count is of decoded bytes (after Content-Encoding), which is what the isolate holds. Past the
- * cap the stream is cancelled, so its connection is released and nothing more is buffered. Read
- * errors (including the timeout) propagate to the caller.
+ * count is of decoded bytes (after Content-Encoding). Past the cap the stream is cancelled, so its
+ * connection is released and nothing more is buffered. Read errors (including the timeout)
+ * propagate to the caller.
+ *
+ * Memory: the decoded chunks in `parts` and the joined string coexist until join returns, and the
+ * count is checked after a chunk arrives, so one read peaks at about 2 × maxBytes plus one chunk
+ * (for ASCII bodies; V8 holds text outside Latin-1 at 2 bytes per character).
+ * fetchUpstreamJson then holds the parsed value while the body string is still referenced.
+ * Choose per-upstream caps on that basis: the 16 MiB registry and CRAN caps allow about 32 MB of
+ * strings per uncached read on a 128 MB isolate.
  */
 async function readCapped(body: ReadableStream<Uint8Array> | null, maxBytes: number): Promise<string | null> {
   if (body === null) return '';

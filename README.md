@@ -7,7 +7,7 @@
 **A public, read-only [Model Context Protocol](https://modelcontextprotocol.io) server, and the
 equivalent REST API, for Bioconductor.** Connect an AI agent (Claude, Codex, Gemini, …) to one URL
 and it can check a package's build and propagation state, read why a check failed, see release
-dates and downloads, see what is happening across the `bioc-*` repos, and search the
+dates and downloads, see what is happening across the seandavi/bioc-* infrastructure repos, and search the
 infrastructure docs and ADRs for why it works that way, with every answer linked to the public
 source it came from.
 
@@ -47,8 +47,8 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `pkg` | `pkg_downloads` | How many downloads, and from how many distinct IPs, did this package get each month of a year? |
 | `pkg` | `pkg_repo_diff` | How many packages does the registry serve at the same version as bioconductor.org, and which differ? |
 | `pkg` | `pkg_revdeps` | Which packages depend on this one, directly or transitively? What breaks downstream if it fails? |
-| `pkg` | `pkg_missing_deps` | Which published packages have a hard dependency that is in neither the registry, CRAN nor the Bioconductor data repositories? |
-| `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
+| `pkg` | `pkg_missing_deps` | Which published packages have a hard dependency that is in none of the propagation index, base R, CRAN or the Bioconductor data repositories? |
+| `ops` | `ops_activity` | What is open, failing or stale across the seandavi/bioc-* infrastructure repos? |
 | `docs` | `docs_search` | Which sections of the infrastructure docs (site pages, ADRs, component docs) match these words? |
 | `docs` | `docs_read` | The full text of one docs page or section, from a `docs_search` URL. |
 
@@ -60,7 +60,7 @@ The `pkg` module serves a `triage-failing-package` prompt, which uses `pkg_statu
 
 ## Connect
 
-Run the `export` above first. Each client below was run against the live server on the date shown.
+Run the `export` above first. Each client below says whether it was tested against the live server, and when.
 
 ### Claude Code
 
@@ -118,7 +118,7 @@ jsonlite::write_json(
   list(mcpServers = list(bioc = list(url = paste0(Sys.getenv("BIOC_MCP"), "/mcp")))),
   config, auto_unbox = TRUE
 )
-chat <- ellmer::chat_google_gemini()   # any ellmer chat_*() works
+chat <- ellmer::chat_google_gemini()   # any ellmer chat_*() works; chat_google_gemini() reads GEMINI_API_KEY (or GOOGLE_API_KEY)
 chat$set_tools(mcptools::mcp_tools(config))
 chat$chat("Is edgeR passing check in Bioconductor release? Cite the source URL.")
 ```
@@ -153,7 +153,9 @@ The client loads fewer tools into its context.
 - "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)
 - "Which release packages does the registry serve at a different version from bioconductor.org, and why?" (`pkg_repo_diff`)
-- "Which bioc-* workflows are failing right now?" (`ops_activity`)
+- "If S4Vectors fails today, what is blocked downstream?" (`pkg_revdeps`)
+- "Which packages depend on something that cannot be installed?" (`pkg_missing_deps`)
+- "Which workflows in the seandavi/bioc-* infrastructure repos are failing right now?" (`ops_activity`)
 - "Why does the registry poll r-universe instead of receiving webhooks? Cite the page." (`docs_search`,
   then `docs_read`)
 
@@ -162,6 +164,7 @@ The client loads fewer tools into its context.
 ```sh
 curl -s "$BIOC_MCP/api/v1/meta/ping"
 curl -s "$BIOC_MCP/api/v1/pkg/status?package=edgeR&universe=bioc-release"
+curl -s "$BIOC_MCP/api/v1/pkg/revdeps?package=S4Vectors&depth=1"
 curl -s "$BIOC_MCP/api/v1/ops/activity?kind=failures"
 curl -s "$BIOC_MCP/api/v1/docs/search?query=propagation+gate"
 curl -s -G "$BIOC_MCP/api/v1/docs/read" --data-urlencode 'id_or_url=https://seandavi.github.io/bioc-infrastructure/propagation-gate.html#why-the-registry-polls'

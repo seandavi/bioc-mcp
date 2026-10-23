@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import * as z from 'zod';
-import { jsonTextBytes, normalizeText } from '../../../src/core/pkg/check-log';
+import { normalizeText } from '../../../src/core/pkg/check-log';
 import { pkgCheckOutput, PkgCheckOutputDataSchema } from '../../../src/core/pkg/check-output';
 import { invokeCapability } from '../../../src/core/invoke';
-import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
+import { envelopeBytes, jsonTextBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import { checksUrl, pkgRoutes } from '../../support/pkg-routes';
@@ -101,8 +101,9 @@ describe('truncation', () => {
     ]);
     expect(data.check!.sections[6]!.truncated).toBe(false);
     expect(summary).toContain(
-      "Some output was cut to fit; each cut section's marker gives the offset to read it with full=true.",
+      "Some output was cut to fit; each cut section's marker, or its offset when its text is empty, gives where to read it with full=true.",
     );
+    expect(summary).not.toContain('left out');
     expect(summary).toContain('and 3 more');
   });
 
@@ -276,8 +277,28 @@ describe('size budget', () => {
     expect(data.files_total).toBe(42);
     expect(data.check!.sections).toHaveLength(12);
     expect(data.check!.sections_omitted).toBe(3);
+    expect(envelope.summary).toContain(
+      "each cut section's marker, or its offset when its text is empty, gives where to read it with full=true.",
+    );
+    expect(envelope.summary).toContain('3 more steps were left out');
     const total = data.check!.sections.reduce((sum, s) => sum + jsonTextBytes(s.text), 0);
     expect(total).toBeLessThanOrEqual(2500); // the first budget (4500) did not fit, so the loop stepped down
+  });
+
+  test('more than 12 short sections: the summary says how many steps were left out, and nothing was cut', async () => {
+    const log =
+      Array.from({ length: 15 }, (_, i) => `* checking step ${i} ... ${i < 3 ? 'ERROR' : 'NOTE'}\nbody ${i}`).join('\n') +
+      '\nStatus: 3 ERRORs, 12 NOTEs\n';
+    const files = { '00check.log': log, 'pkgdata.txt': "FILE='x_1.0.tar.gz'\nTARGET='linux'\n" };
+    const url = checksUrl('bioc', '8');
+    const routes = { [url]: { status: 200, body: JSON.stringify(files) } };
+
+    const { data, summary } = await checkOutput({ universe: 'bioc', job: '8' }, routes);
+    expect(data.check!.sections).toHaveLength(12);
+    expect(data.check!.sections_omitted).toBe(3);
+    expect(data.check!.sections.some((s) => s.truncated)).toBe(false);
+    expect(summary).toContain('3 more steps were left out (beyond the 12 most severe); page the whole log with full=true.');
+    expect(summary).not.toContain('cut to fit');
   });
 });
 
@@ -290,6 +311,10 @@ describe('descriptions', () => {
     expect(json.properties.job_url!.description).toBeTruthy();
     const textSchema = json.properties.text!.anyOf!.find((branch) => branch.properties)!;
     expect(textSchema.properties!.total_chars!.description).toBeTruthy();
+  });
+
+  test('the truncated description says where to read when the text is empty', () => {
+    expect(JSON.stringify(z.toJSONSchema(PkgCheckOutputDataSchema))).toContain('or offset when text is empty');
   });
 
   test('the tool and file descriptions say what bioc-checks jobs hold', () => {

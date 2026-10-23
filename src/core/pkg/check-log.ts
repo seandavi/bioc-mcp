@@ -1,12 +1,7 @@
 // Pure text helpers for pkg_check_output. No I/O. Every size is a JSON text size (jsonTextBytes),
 // because the 8 KB limit applies to the serialized envelope.
 
-const encoder = new TextEncoder();
-
-/** UTF-8 bytes `s` occupies inside a JSON string: encode(JSON.stringify(s)).length - 2. */
-export function jsonTextBytes(s: string): number {
-  return encoder.encode(JSON.stringify(s)).length - 2;
-}
+import { jsonTextBytes } from '../../envelope';
 
 /** CRLF/CR → LF, then strip ANSI CSI sequences. All offsets and lengths refer to this text. */
 export function normalizeText(raw: string): string {

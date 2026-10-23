@@ -7,7 +7,7 @@ import type { Deps } from '../../../src/core/deps';
 import { invokeCapability } from '../../../src/core/invoke';
 import { OpsActivityDataSchema, opsActivity } from '../../../src/core/ops/activity';
 import { OPS_REPOS } from '../../../src/core/ops/config';
-import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
+import { envelopeBytes, jsonTextBytes, MAX_RESULT_BYTES, type Envelope } from '../../../src/envelope';
 import { createMemoryCache } from '../../../src/upstreams/cache';
 import { fixtureFetch, type FixtureRoute } from '../../support/fixture-fetch';
 import { GITHUB_RECORDED_AT, githubRoutes, githubUrl } from '../../support/github-routes';
@@ -201,7 +201,11 @@ describe('prs', () => {
   });
 
   /** n bioc-mcp PRs created from 2026-10-22T12:00Z (newer than every recorded PR; the newest is bioc-infrastructure#122 at 11:51) with 100 failing checks each. */
-  function hostileRoutes(count: number, title: string): Record<string, FixtureRoute> {
+  function hostileRoutes(
+    count: number,
+    title: string,
+    checkName: (i: number) => string = (i) => `${i}-${'c'.repeat(200)}`,
+  ): Record<string, FixtureRoute> {
     const template = fixtureJson('bioc-website/pulls.json')[0];
     const pulls = Array.from({ length: count }, (_, i) => ({
       ...template,
@@ -212,7 +216,7 @@ describe('prs', () => {
       head: { sha: `b${i}`, ref: 'x' },
     })).reverse();
     const checkRuns = Array.from({ length: 100 }, (_, i) => ({
-      name: `${i}-${'c'.repeat(200)}`,
+      name: checkName(i),
       status: 'completed',
       conclusion: 'failure',
     }));
@@ -252,6 +256,23 @@ describe('prs', () => {
       const { envelope, data } = await run('prs', extra, hostileRoutes(10, 'T'.repeat(200)));
       expect(data.items.filter((i) => i.repo === 'bioc-mcp')).toHaveLength(10);
       expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+    }
+  });
+
+  test('ten hostile PRs with non-ASCII titles and control-character check names still fit', async () => {
+    const routes = hostileRoutes(10, '日'.repeat(200), (i) => `${i}-${'\u0001'.repeat(200)}`);
+    for (const extra of [{}, { repo: 'bioc-mcp' }]) {
+      const { envelope, data } = await run('prs', extra, routes);
+      const items = data.items.filter((i) => i.repo === 'bioc-mcp');
+      expect(items).toHaveLength(10);
+      expect(envelopeBytes(envelope)).toBeLessThan(MAX_RESULT_BYTES);
+      for (const item of items) {
+        expect(jsonTextBytes(item.title)).toBeLessThanOrEqual(82);
+        for (const name of item.failing_checks) {
+          expect(jsonTextBytes(name)).toBeLessThanOrEqual(42);
+          expect(name.endsWith('…')).toBe(true);
+        }
+      }
     }
   });
 

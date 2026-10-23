@@ -80,6 +80,12 @@ The issue does not settle these. Each is decided here; the reviewer can strike a
    subject and argument are a package. Where it lives does not change where it is offered: the
    transport offers a prompt only on toolsets holding every tool in `prompt.tools`, so it is
    listed on `/mcp`, `/mcp/pkg+docs` and `/mcp/docs+pkg` and nowhere else, whichever module owns it.
+   The cost is a registration dependency: `validateRegistry` rejects any `prompt.tools` name that
+   no registered module defines, and `createApp` runs it, so a registry holding `pkgModule`
+   without `docsModule` now throws at startup. Production registers every module in `modules`, so
+   it is unaffected; a test app that registers `pkgModule` must also register `docsModule`. This is
+   the first prompt that names another module's tools (`explain-decision` names only `docs`
+   tools), and the dependency is accepted.
 2. **`tools` includes `docs_read`.** A `docs_search` snippet is about 200 characters. Whether a
    given failing config blocks propagation is in the gate section's full text (the families
    rule), so the prompt reads the top hit when the snippet does not settle it. `docs_read` is in
@@ -108,6 +114,8 @@ README.md                          one sentence after the explain-decision sente
 test/core/pkg/prompts.test.ts      NEW  render, args, tool names
 test/transports/triage.test.ts     NEW  listing, prompts/get, the GEOfastq walk over fixtures
 test/transports/docs.test.ts       /mcp now lists both prompts (see Test plan)
+test/transports/pkg.test.ts        registers docsTestModule beside pkgModule (see Test plan)
+test/transports/ops.test.ts        registers docsTestModule beside pkgModule (see Test plan)
 test/support/pkg-routes.ts         routes for GEOfastq's r-universe record and check job
 test/fixtures/r-universe/bioc/GEOfastq.json                 NEW (verbatim)
 test/fixtures/registry/checks/bioc/107579662259.json        NEW (jq -c)
@@ -274,8 +282,9 @@ asserted strings in the tests to the recorded files.
       `checking tests` ERROR section naming `test-srp_utils.R:31:5`, the follow-up read of
       `testthat.Rout.fail` succeeds, and `docs_search` with `TRIAGE_DOCS_QUERY` ranks
       `propagation-gate.html#the-gate-check-by-check` first.
-- [ ] No REST route or OpenAPI path is added (`/api/openapi.json` paths unchanged; existing REST
-      tests pass unmodified).
+- [ ] No REST route or OpenAPI path is added (`/api/openapi.json` paths unchanged); `pkg.test.ts`
+      and `ops.test.ts` change only to register `docsTestModule` beside `pkgModule`, and their
+      assertions are otherwise unchanged.
 - [ ] README sentence added.
 - [ ] `npm test` and `npm run typecheck` pass; no test touches the network.
 
@@ -346,6 +355,15 @@ client via `connectClient(app, path)`, closed in `afterEach` as in `test/transpo
 and keep the `topic` argument check on the `explain-decision` entry (find it by name, not
 `prompts[0]`). The `/mcp/pkg`, `/mcp/meta`, `/mcp/example` cases still expect `[]` and need no
 change.
+
+### `test/transports/pkg.test.ts` and `test/transports/ops.test.ts` (edit)
+
+Both build apps with `extraModules: [pkgModule, …]`. With the prompt in `pkgModule`,
+`validateRegistry` throws unless `docs_search` and `docs_read` are registered too (Decision 1), so
+each file adds `const docsModule = await docsTestModule();` (from `../support/docs`) and passes
+`docsModule` in `extraModules` wherever `pkgModule` is registered. In `ops.test.ts` the
+all-modules tool-name check adds `docsModule` to its `expected` module list, because `/mcp` now
+lists the docs tools. No assertion changes otherwise.
 
 ### Commands
 

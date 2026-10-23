@@ -3,9 +3,8 @@ import * as z from 'zod';
 import { CapabilityError } from '../errors';
 import type { Deps } from '../core/deps';
 import { fetchUpstream, fetchUpstreamJson, pathSegment, type Upstream, type UpstreamResponse } from './http';
-import { getPackageList, type PackageList } from './packages-file';
+import { getPackagesFile, type PackagesFile } from './packages-file';
 import type { Universe } from './registry';
-import { PackageNameSchema } from './package-name';
 
 export const BIOCONDUCTOR_BASE_URL = 'https://bioconductor.org/';
 
@@ -97,11 +96,10 @@ export function biocDataRepoPath(universe: Universe, repo: BiocDataRepo): string
   return `packages/${universe === 'bioc' ? 'devel' : 'release'}/${repo}/src/contrib/PACKAGES`;
 }
 
-/** The package names in a data repository's PACKAGES file. */
-export function getBiocDataPackageList(deps: Deps, universe: Universe, repo: BiocDataRepo): Promise<PackageList> {
-  return getPackageList(deps, bioconductorUpstream, biocDataRepoPath(universe, repo));
+/** Package → Version for a data repository's PACKAGES file; an empty file is upstream_error. */
+export function getBiocDataPackagesFile(deps: Deps, universe: Universe, repo: BiocDataRepo): Promise<PackagesFile> {
+  return getPackagesFile(deps, bioconductorUpstream, biocDataRepoPath(universe, repo));
 }
-
 
 // Source PACKAGES indexes
 
@@ -130,74 +128,12 @@ export function packagesPath(biocVersion: string, repo: BiocRepo): string {
   return `packages/${pathSegment(biocVersion)}/${BIOC_REPO_PATHS[repo]}/src/contrib/PACKAGES`;
 }
 
-/** GET packages/{version}/{repo path}/src/contrib/PACKAGES. The body is parsed by the caller (parsePackagesFile). */
-export async function getPackagesFile(deps: Deps, biocVersion: string, repo: BiocRepo): Promise<UpstreamResponse> {
-  try {
-    return await fetchUpstream(deps, bioconductorUpstream, packagesPath(biocVersion, repo));
-  } catch (error) {
-    if (error instanceof CapabilityError && error.code === 'not_found') {
-      throw new CapabilityError(
-        'upstream_error',
-        `bioconductor.org has no ${BIOC_REPO_PATHS[repo]} PACKAGES for Bioconductor ${biocVersion} (${error.details.url})`,
-        error.details,
-      );
-    }
-    throw error;
-  }
-}
-
-const PACKAGES_FIELD = /^([^\s:]+):[ \t]*(.*)$/;
-const PACKAGES_VERSION = /^\d+([.-]\d+)*$/;
-
-/** Package → Version from a PACKAGES (DCF) body, in file order; throws upstream_error (with `url`) on any deviation. */
-export function parsePackagesFile(body: string, url: string): Map<string, string> {
-  const malformed = () =>
-    new CapabilityError(
-      'upstream_error',
-      `bioconductor.org returned a PACKAGES file in an unexpected format (${url})`,
-      upstreamDetails(url),
-    );
-  const versions = new Map<string, string>();
-  let packageNames: string[] = [];
-  let packageVersions: string[] = [];
-  let inStanza = false;
-
-  const endStanza = () => {
-    if (!inStanza) return;
-    const name = packageNames[0];
-    const version = packageVersions[0];
-    if (
-      packageNames.length !== 1 ||
-      packageVersions.length !== 1 ||
-      name === undefined ||
-      version === undefined ||
-      !PackageNameSchema.safeParse(name).success ||
-      !PACKAGES_VERSION.test(version) ||
-      versions.has(name)
-    ) {
-      throw malformed();
-    }
-    versions.set(name, version);
-    packageNames = [];
-    packageVersions = [];
-    inStanza = false;
-  };
-
-  for (const line of body.split(/\r?\n/)) {
-    if (/^\s*$/.test(line)) {
-      endStanza();
-    } else if (line.startsWith(' ') || line.startsWith('\t')) {
-      if (!inStanza) throw malformed();
-    } else {
-      const match = PACKAGES_FIELD.exec(line);
-      if (!match) throw malformed();
-      inStanza = true;
-      if (match[1] === 'Package') packageNames.push(match[2]!.trim());
-      else if (match[1] === 'Version') packageVersions.push(match[2]!.trim());
-    }
-  }
-  endStanza();
-  return versions;
+/**
+ * Package → Version for packages/{version}/{repo path}/src/contrib/PACKAGES. An empty file is
+ * allowed (a new version's books or workflows repository can be empty).
+ */
+export async function getBiocPackagesFile(deps: Deps, biocVersion: string, repo: BiocRepo): Promise<PackagesFile> {
+  return getPackagesFile(deps, bioconductorUpstream, packagesPath(biocVersion, repo), { allowEmpty: true });
 }
 
 // Download stats

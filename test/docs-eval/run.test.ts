@@ -4,8 +4,9 @@ import { runDocsEval } from '../../scripts/docs-eval/run';
 import type { DocsRecord } from '../../src/docs-index/schema';
 import { syntheticDocsIndex } from '../support/docs';
 
+// Real index ids are '<source>:<path>' (site:…, repo:…); docs_search groups records into pages by them.
 const record = (id: string, title: string, text: string): DocsRecord => ({
-  id,
+  id: `site:${id}`,
   url: `https://docs.test/${id}`,
   title,
   section: '',

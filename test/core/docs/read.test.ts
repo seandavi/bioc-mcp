@@ -3,11 +3,12 @@ import type { Capability } from '../../../src/core/capability';
 import type { Deps } from '../../../src/core/deps';
 import { invokeCapability } from '../../../src/core/invoke';
 import { docsPages, renderPage, renderSection, type DocsPages } from '../../../src/core/docs/pages';
+import { DOCS_READ_TEXT_BUDGET } from '../../../src/core/docs/chunk';
 import { docsReadCapability, resolveDocsTarget } from '../../../src/core/docs/read';
 import { MAX_RESULT_BYTES, envelopeBytes } from '../../../src/envelope';
 import type { DocsIndex } from '../../../src/docs-index/load';
 import { createMemoryCache } from '../../../src/upstreams/cache';
-import { fixtureDocsIndex } from '../../support/docs';
+import { fixtureDocsIndex, syntheticDocsIndex } from '../../support/docs';
 import { fixtureFetch } from '../../support/fixture-fetch';
 import { testContext } from '../../support/invoke-context';
 
@@ -82,9 +83,13 @@ describe('resolution', () => {
     expect(resolveDocsTarget(pages, `${GATE}#`).kind).toBe('page');
   });
 
-  it('gives the input source provenance', async () => {
-    const { sources } = await ok({ id_or_url: GATE });
-    expect(sources).toEqual([{ url: `${BASE}search.json`, as_of: index.meta.inputs[0]!.fetched_at }]);
+  it('cites the page url, dated by its input', async () => {
+    const asOf = index.meta.inputs[0]!.fetched_at;
+    expect((await ok({ id_or_url: GATE })).sources).toEqual([{ url: GATE, as_of: asOf }]);
+    expect((await ok({ id_or_url: POLLS })).sources).toEqual([{ url: GATE, as_of: asOf }]);
+    const repo = await ok({ id_or_url: 'bioc://docs/repo/bioc-edge/DATAPLANE.md' });
+    expect(repo.sources).toHaveLength(1);
+    expect(repo.sources[0]!.url).toBe('https://github.com/seandavi/bioc-edge/blob/main/DATAPLANE.md');
   });
 });
 
@@ -132,6 +137,44 @@ describe('pagination', () => {
       expect(previous).toBeNull();
       expect(rebuilt).toBe(full);
     }
+  });
+});
+
+describe('budget', () => {
+  it('fits a page with very long metadata', async () => {
+    const idx = syntheticDocsIndex([
+      {
+        id: 'site:big.html',
+        url: `https://docs.test/${'u'.repeat(800)}.html`,
+        title: 'T'.repeat(1000),
+        section: '',
+        crumbs: Array.from({ length: 4 }, () => 'C'.repeat(250)),
+        text: 'word '.repeat(6000).trim(),
+        source: 'site',
+      },
+    ]);
+    const capability = docsReadCapability(() => idx);
+    const full = renderPage(docsPages(idx).list[0]!);
+    let cursor: string | undefined;
+    let rebuilt = '';
+    let firstText: string | undefined;
+    for (let guard = 0; guard < 100; guard++) {
+      const result = await invokeCapability(
+        capability,
+        { id_or_url: 'site:big.html', ...(cursor ? { cursor } : {}) },
+        deps().deps,
+        testContext(),
+      );
+      if (!result.ok) throw new Error(result.error.message);
+      expect(envelopeBytes(result.envelope)).toBeLessThanOrEqual(MAX_RESULT_BYTES);
+      const data = result.envelope.data as any;
+      firstText ??= data.text;
+      rebuilt += data.text;
+      if (data.next_cursor === null) break;
+      cursor = data.next_cursor;
+    }
+    expect(rebuilt).toBe(full);
+    expect(new TextEncoder().encode(JSON.stringify(firstText)).length - 2).toBeLessThan(DOCS_READ_TEXT_BUDGET);
   });
 });
 
@@ -195,6 +238,14 @@ describe('not_found', () => {
     const error = await failure({ id_or_url: 'x'.repeat(500) });
     expect(error.message).toContain(`"${'x'.repeat(200)}…"`);
     expect(error.message).not.toContain('x'.repeat(201));
+  });
+
+  it('truncates a long section fragment to 200 characters in the message', async () => {
+    const error = await failure({ id_or_url: `${GATE}#${'x'.repeat(2000)}`.slice(0, 2048) });
+    expect(error.code).toBe('not_found');
+    expect(error.message).toContain(`"#${'x'.repeat(200)}…"`);
+    expect(error.message).not.toContain('x'.repeat(201));
+    expect(error.message.length).toBeLessThan(1500);
   });
 
   it('answers an http: URL from the index only', async () => {

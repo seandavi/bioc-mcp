@@ -92,4 +92,33 @@ describe('loadDocsIndex', () => {
       /inputs claim/,
     );
   });
+
+  function loadWith(records: typeof artifact.store.records) {
+    return () => loadDocsIndex({ storeJson: JSON.stringify({ ...artifact.store, records }), indexJson: artifact.indexJson });
+  }
+
+  it('throws when a store id is not in the index', () => {
+    const records = artifact.store.records.map((r, i) => (i === 0 ? { ...r, id: 'site:renamed.html' } : r));
+    expect(loadWith(records)).toThrow(/disagree on record ids/);
+  });
+
+  it('throws on a duplicate record id', () => {
+    const records = [...artifact.store.records];
+    records[1] = { ...records[1]!, id: records[0]!.id };
+    expect(loadWith(records)).toThrow(/duplicate record id/);
+  });
+
+  it.each(['javascript:alert(1)', 'http://example.org/'])('rejects a record url %s', (url) => {
+    const records = artifact.store.records.map((r, i) => (i === 0 ? { ...r, url } : r));
+    expect(loadWith(records)).toThrow(/format_version 1/);
+  });
+
+  it('uses at most 16 distinct query terms', () => {
+    const scored = (query: string) => index.search(query).map((hit) => [hit.record.id, hit.score]);
+    expect(scored('registry ' + 'zzz '.repeat(100))).toEqual(scored('registry zzz'));
+
+    const misses = Array.from({ length: 16 }, (_, i) => 'zqxj' + String.fromCharCode(97 + i)).join(' ');
+    expect(index.search(`${misses} registry`)).toEqual([]);
+    expect(index.search(`registry ${misses}`).length).toBeGreaterThan(0);
+  });
 });

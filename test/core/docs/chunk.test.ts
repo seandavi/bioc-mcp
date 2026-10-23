@@ -10,8 +10,13 @@ describe('chunkText', () => {
 
   it('cuts after the last newline in the second half', () => {
     const text = 'aaaa\nbbbb\ncccc\ndddd';
-    // hard = 12 ('aaaa\nbbbb\ncc'), half = 6; last \n in [6, 12) is at 9
+    // hard = 10 ('aaaa\nbbbb\n' costs 12), half = 5; last \n in [5, 10) is at 9
     expect(chunkText(text, 0, 12)).toEqual({ text: 'aaaa\nbbbb\n', end: 10 });
+  });
+
+  it('prefers a newline over a later space', () => {
+    // hard = 11, half = 5; the space at 6 would give end 7
+    expect(chunkText('aaaaaa bb\nccc dddd', 0, 12)).toEqual({ text: 'aaaaaa bb\n', end: 10 });
   });
 
   it('falls back to the last space, then to the hard limit', () => {

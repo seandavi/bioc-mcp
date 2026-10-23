@@ -96,6 +96,7 @@ describe('GET /api/openapi.json', () => {
     expect(repeat.in).toBe('query');
     expect(repeat.schema).toMatchObject({ type: 'integer', default: 1 });
     expect(Object.keys(item.responses).sort()).toEqual(['200', '400', '404', '429', '500', '502']);
+    expect(item.responses['404'].description).toBe('Not found (upstream or bundled index)');
     expect(body.paths['/api/v1/meta/ping'].get.operationId).toBe('meta_ping');
     expect(body.paths['/api/v1/meta/ping'].get.responses['429']).toBeDefined();
     expect(body.paths['/api/v1/about'].get.responses['429']).toBeDefined();

@@ -82,7 +82,7 @@ export function createRestApp({ modules, deps, usage }: RestAppOptions): OpenAPI
       responses: {
         200: json(capability.output, 'The result envelope (same as MCP structuredContent)'),
         400: json(ErrorBodySchema, 'Invalid input'),
-        404: json(ErrorBodySchema, 'Not found upstream'),
+        404: json(ErrorBodySchema, 'Not found (upstream or bundled index)'),
         429: tooManyRequests,
         500: json(ErrorBodySchema, 'Server error'),
         502: json(ErrorBodySchema, 'Upstream failed or timed out'),

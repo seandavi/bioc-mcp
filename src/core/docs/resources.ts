@@ -32,7 +32,7 @@ export function docsPageResource(getIndex: () => DocsIndex): ResourceTemplateDef
       const index = getIndex();
       const pages = docsPages(index);
       const target = resolveDocsTarget(pages, uri);
-      if (target.kind === 'missing') throw docsNotFound(index, pages, uri, target);
+      if (target.kind === 'missing') throw docsNotFound(index, pages, uri, target, 'resource');
       return target.kind === 'page' ? renderPage(target.page) : renderSection(target.record);
     },
   };

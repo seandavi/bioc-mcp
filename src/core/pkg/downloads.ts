@@ -115,7 +115,8 @@ export const pkgDownloads = defineCapability({
     'workflow packages. year defaults to the current year, or the latest year with stats when the current ' +
     'year has none yet (early January). Package names are case-sensitive. Does not separate people from ' +
     'automated clients or give per-version or per-country counts. For build or propagation state use ' +
-    'pkg_status; for release versions use pkg_release_info.',
+    'pkg_status; for release versions use pkg_release_info. ' +
+    'For why or how the infrastructure works this way (design, ADRs, runbooks) use docs_search.',
   input: z.object({
     package: PackageNameSchema,
     year: z

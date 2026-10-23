@@ -3,6 +3,8 @@ import * as z from 'zod';
 import { CapabilityError } from '../errors';
 import type { Deps } from '../core/deps';
 import { fetchUpstream, fetchUpstreamJson, pathSegment, type Upstream, type UpstreamResponse } from './http';
+import { getPackageList, type PackageList } from './packages-file';
+import type { Universe } from './registry';
 
 export const BIOCONDUCTOR_BASE_URL = 'https://bioconductor.org/';
 
@@ -82,6 +84,21 @@ export async function getManifestIndex(deps: Deps): Promise<{ response: Upstream
     );
   }
   return { response, index: parsed.data };
+}
+
+// Data repositories
+
+export const BIOC_DATA_REPOS = ['data/annotation', 'data/experiment'] as const;
+export type BiocDataRepo = (typeof BIOC_DATA_REPOS)[number];
+
+/** 'packages/devel/{repo}/src/contrib/PACKAGES' for 'bioc', 'packages/release/…' for 'bioc-release'. */
+export function biocDataRepoPath(universe: Universe, repo: BiocDataRepo): string {
+  return `packages/${universe === 'bioc' ? 'devel' : 'release'}/${repo}/src/contrib/PACKAGES`;
+}
+
+/** The package names in a data repository's PACKAGES file. */
+export function getBiocDataPackageList(deps: Deps, universe: Universe, repo: BiocDataRepo): Promise<PackageList> {
+  return getPackageList(deps, bioconductorUpstream, biocDataRepoPath(universe, repo));
 }
 
 // Download stats

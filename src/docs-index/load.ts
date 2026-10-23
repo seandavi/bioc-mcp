@@ -36,7 +36,7 @@ export interface DocsIndexJson {
 
 const DEFAULT_LIMIT = 8;
 
-/** search() uses at most this many distinct query terms: each costs one prefix and one fuzzy sub-query. */
+/** search() uses at most this many distinct query terms: each costs at most one prefix and one fuzzy sub-query. */
 export const MAX_SEARCH_TERMS = 16;
 
 const tokenize: (text: string) => string[] = MiniSearch.getDefault('tokenize');

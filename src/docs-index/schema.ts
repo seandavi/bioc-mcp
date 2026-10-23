@@ -41,6 +41,13 @@ export const DocsStoreSchema = z.object({
 });
 export type DocsStore = z.infer<typeof DocsStoreSchema>;
 
+/** Query terms shorter than this get no prefix expansion. */
+export const PREFIX_MIN_LENGTH = 4;
+/** Query terms shorter than this get no fuzzy matching. */
+export const FUZZY_MIN_LENGTH = 6;
+/** Fuzzy edit distance as a fraction of term length (MiniSearch rounds; 6–7 letters → 1 edit). */
+export const FUZZY_FRACTION = 0.2;
+
 /** Shared by the build and the loader: MiniSearch requires the same options on load. */
 export const DOCS_INDEX_OPTIONS = {
   idField: 'id',
@@ -48,5 +55,9 @@ export const DOCS_INDEX_OPTIONS = {
   storeFields: [],
   extractField: (record: DocsRecord, field: string) =>
     field === 'crumbs' ? record.crumbs.join(' ') : (record[field as keyof DocsRecord] as string),
-  searchOptions: { boost: { title: 3, section: 2 }, prefix: true, fuzzy: 0.2 },
+  searchOptions: {
+    boost: { title: 3, section: 2 },
+    prefix: (term: string) => term.length >= PREFIX_MIN_LENGTH,
+    fuzzy: (term: string) => (term.length >= FUZZY_MIN_LENGTH ? FUZZY_FRACTION : false),
+  },
 } satisfies Options<DocsRecord>;

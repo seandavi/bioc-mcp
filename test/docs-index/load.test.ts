@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { QUERY_STOP_WORDS, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
+import { syntheticDocsIndex } from '../support/docs';
 import { fixtureArtifact } from './support';
 import type { DocsIndexArtifact } from '../../scripts/docs-index/build';
 
@@ -138,5 +139,23 @@ describe('loadDocsIndex', () => {
   it('does not count stop words against the 16-term budget', () => {
     const stops = [...QUERY_STOP_WORDS].slice(0, 16).join(' ');
     expect(index.search(`${stops} registry`)).toEqual(index.search('registry'));
+  });
+
+  describe('term length gates', () => {
+    const synthetic = syntheticDocsIndex([
+      { id: 'site:a.html', url: 'https://docs.test/a.html', title: 'A', section: '', crumbs: [], text: 'the cache', source: 'site' },
+      { id: 'site:b.html', url: 'https://docs.test/b.html', title: 'B', section: '', crumbs: [], text: 'purging stale files', source: 'site' },
+    ]);
+    const ids = (query: string) => synthetic.search(query).map((hit) => hit.record.id);
+
+    it('expands a prefix only for terms of 4 or more characters', () => {
+      expect(ids('cac')).toEqual([]);
+      expect(ids('cach')).toEqual(['site:a.html']);
+    });
+
+    it('matches fuzzily only for terms of 6 or more characters', () => {
+      expect(ids('cachr')).toEqual([]);
+      expect(ids('purgingg')).toEqual(['site:b.html']);
+    });
   });
 });

@@ -107,7 +107,8 @@ export function parsePackagesFileNames(body: string): Set<string>;
 
 /**
  * GET `path` on `upstream` through fetchUpstream, parsed with parsePackagesFileNames and memoized
- * per cache and URL until the response's fetchedAt + upstream.ttlSeconds.
+ * per cache and URL until the response's fetchedAt + upstream.ttlSeconds. Concurrent callers on a
+ * cold or expired entry share one load (SharedLoads).
  */
 export async function getPackageList(deps: Deps, upstream: Upstream, path: string): Promise<PackageList>;
 ```
@@ -118,18 +119,17 @@ twice. **Verified:** CRAN's file has 25,528 `Package:` lines and 25,498 distinct
 
 `getPackageList` behaviour:
 
-1. Memo: `const parsedLists = new WeakMap<UpstreamCache, Map<string, { expiresAt: number; list: PackageList }>>()`,
-   keyed by `deps.cache` and then by the absolute URL (`new URL(path, upstream.baseUrl).href`).
-   On a hit with `deps.now().getTime() < expiresAt`, return
-   `{ names: list.names, response: { ...list.response, fromCache: true } }`. Only settled
-   successes are stored. The memo holds the in-flight load Promise, so concurrent callers on a
-   cold or expired entry share one fetch and one parse. CRAN's file is 7.4 MB and the cap allows
-   16 MiB, and each independent load transiently holds several copies of the body, so N concurrent
-   cold calls from one client would multiply memory use on a 128 MB isolate. A joiner waits at
-   most the load deadline (`timeoutMs` + 5 s), so a stalled or cancelled owner cannot hang it, and
-   an in-flight entry past its deadline is replaced by the next caller. Errors are not cached. The
-   memo, the deadline and the timeout error live in `SharedLoads` (`src/upstreams/shared-load.ts`),
-   which `getPropagationIndex` in `registry.ts` also uses.
+1. `const packageLists = new SharedLoads<PackageList>()` (module scope) and
+   `return packageLists.get(deps, upstream, url, 'the PACKAGES file', () => loadPackageList(deps, upstream, path, url))`,
+   where `url = new URL(path, upstream.baseUrl).href`. `SharedLoads` keys its memo by `deps.cache`
+   and then by `url`, and holds the in-flight load Promise, so concurrent callers on a cold or
+   expired entry share one fetch and one parse. CRAN's file is 7.4 MB and the cap allows 16 MiB,
+   and each independent load transiently holds several copies of the body, so N concurrent cold
+   calls from one client would multiply memory use on a 128 MB isolate. A joiner waits at most
+   the load deadline (`timeoutMs` + 5 s), so a stalled or cancelled owner cannot hang it, and an
+   in-flight entry past its deadline is replaced by the next caller. Errors are not cached.
+   `getPropagationIndex` in `registry.ts` uses the same class. Steps 2 to 4 are
+   `loadPackageList(deps, upstream, path, url)`, the function `SharedLoads` runs once per entry.
 2. `response = await fetchUpstream(deps, upstream, path)`. A `CapabilityError` with code
    `not_found` becomes
    `CapabilityError('upstream_error', \`${upstream.name} has no PACKAGES file at ${url}\`, { upstream: upstream.id, url })`,
@@ -138,8 +138,38 @@ twice. **Verified:** CRAN's file has 25,528 `Package:` lines and 25,498 distinct
 3. `names = parsePackagesFileNames(response.body)`. An empty set →
    `CapabilityError('upstream_error', \`${upstream.name} returned a PACKAGES file with no packages (${url})\`, { upstream: upstream.id, url })`.
    This guard matters. An empty or truncated list would report every CRAN dependency as missing.
-4. Store `{ expiresAt: Date.parse(response.fetchedAt) + upstream.ttlSeconds * 1000, list }`, with
-   `list.response` being the response without `body`, and return the list.
+4. Resolve to `{ response: <the response without body>, names }`. `SharedLoads` then sets the
+   entry's `expiresAt` to `Date.parse(response.fetchedAt) + upstream.ttlSeconds * 1000`; the loader
+   stores nothing itself.
+
+### `src/upstreams/shared-load.ts`
+
+```ts
+const LOAD_ALLOWANCE_MS = 5_000; // covers the cache read and the parse around the fetch
+
+export class SharedLoads<T extends { response: UpstreamResponseMeta }> {
+  /** `what` completes "<upstream> did not deliver ___ in time". `load` runs only when no live entry exists. */
+  get(deps: Deps, upstream: Upstream, url: string, what: string, load: () => Promise<T>): Promise<T>;
+}
+```
+
+Every parsed upstream body larger than a few hundred KB goes through one `SharedLoads`.
+
+- **Memo:** `WeakMap<UpstreamCache, Map<string, entry>>` keyed by `deps.cache`, then `url`. An
+  entry holds the load Promise, `expiresAt` and, while the load is in flight, `loadDeadline`.
+- **Owner:** a caller with no live entry (none, or `deps.now()` at or past `expiresAt`) stores
+  `{ load: load(), expiresAt: loadDeadline, loadDeadline }` before awaiting, where
+  `loadDeadline = now + (upstream.timeoutMs ?? DEFAULT_TIMEOUT_MS) + LOAD_ALLOWANCE_MS`. It races
+  the Promise against that deadline. On success it sets
+  `expiresAt = Date.parse(value.response.fetchedAt) + upstream.ttlSeconds * 1000` and clears
+  `loadDeadline`.
+- **Joiner:** a caller that finds a live entry awaits the same Promise, raced against the time
+  left to `loadDeadline` while it is set. It returns the value with `response.fromCache: true`.
+- **Errors:** on any failure the owner deletes the entry only if it is still the current one
+  (`byUrl.get(url) === entry`), so a failed load is shared by the callers already waiting and is
+  never cached, and a replacement entry is not removed by a stale owner.
+- **Deadline:** missing the deadline rejects with
+  `CapabilityError('upstream_timeout', \`${upstream.name} did not deliver ${what} in time (${url}). Retry shortly.\`, { upstream: upstream.id, url })`.
 
 ### `src/upstreams/cran.ts`
 

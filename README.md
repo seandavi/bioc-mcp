@@ -45,6 +45,8 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 | `pkg` | `pkg_build_environment` | What image, repositories and dependency versions did a build job use? |
 | `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
 | `pkg` | `pkg_downloads` | How many downloads, and from how many distinct IPs, did this package get each month of a year? |
+| `pkg` | `pkg_revdeps` | Which packages depend on this one, directly or transitively? What breaks downstream if it fails? |
+| `pkg` | `pkg_missing_deps` | Which published packages have a hard dependency that is in neither the registry, CRAN nor the Bioconductor data repositories? |
 | `ops` | `ops_activity` | What is open, failing or stale across the `bioc-*` repos? |
 | `docs` | `docs_search` | Which sections of the infrastructure docs (site pages, ADRs, component docs) match these words? |
 | `docs` | `docs_read` | The full text of one docs page or section, from a `docs_search` URL. |

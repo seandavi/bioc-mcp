@@ -8,7 +8,7 @@ import { envelopeBytes, MAX_RESULT_BYTES } from '../../../src/envelope';
 import type { DocsIndex } from '../../../src/docs-index/load';
 import type { DocsRecord } from '../../../src/docs-index/schema';
 import { createMemoryCache } from '../../../src/upstreams/cache';
-import { fixtureDocsIndex, syntheticDocsIndex } from '../../support/docs';
+import { fixtureDocsIndex, fixtureDocsIndexWith, syntheticDocsIndex } from '../../support/docs';
 import { fixtureFetch } from '../../support/fixture-fetch';
 import { testContext } from '../../support/invoke-context';
 
@@ -225,5 +225,140 @@ describe('snippet', () => {
     const text = 'a'.repeat(199) + '😀' + 'b'.repeat(50);
     const out = snippet(text, 'zzz');
     expect(out).not.toMatch(/[\ud800-\udbff](?![\udc00-\udfff])/);
+  });
+});
+
+describe('freshness', () => {
+  const BUILT = new Date('2026-10-22T00:00:00Z');
+  const LIVE_SHA = '256fd62eab16312a6188bef6bf74ea2bbab5f830';
+  const INDEX_WARNING = (days: number) =>
+    `The docs index was built 2026-10-22, ${days} days ago; it is rebuilt daily, so docs changed since then are not in it.`;
+
+  async function at(now: Date, input: unknown, capability: Capability = search) {
+    const d = deps();
+    const result = await invokeCapability(capability, input, { ...d.deps, now: () => now }, testContext());
+    if (!result.ok) throw new Error(`${result.error.code}: ${result.error.message}`);
+    return result.envelope as { data: any; summary: string; sources: { url: string; as_of: string }[] };
+  }
+
+  const record: DocsRecord = {
+    id: 'site:p.html#s',
+    url: 'https://docs.test/p.html#s',
+    title: 'T',
+    section: 'S',
+    crumbs: [],
+    text: 'needle in a haystack',
+    source: 'site',
+  };
+
+  it('gives each hit as_of and source_commit: the live deployment for the site, the branch head for a repo', async () => {
+    const { data } = await ok({ query: 'data plane', limit: 10 });
+    const site = data.hits.find((hit: any) => hit.source !== 'repo');
+    const repo = data.hits.find((hit: any) => hit.source === 'repo');
+    expect(site).toMatchObject({ as_of: index.meta.inputs[0]!.fetched_at, source_commit: LIVE_SHA });
+    const input = index.meta.inputs.find((i) => i.url.includes(`/${repo.repo}/`))!;
+    expect(repo).toMatchObject({ as_of: input.fetched_at, source_commit: input.commit!.sha });
+    expect(repo.source_commit).toMatch(/^[0-9a-f]{40}$/);
+  });
+
+  it('gives source_commit null for an input with an unknown commit', async () => {
+    const unknown = docsSearchCapability(() => syntheticDocsIndex([record]));
+    const { data } = await at(BUILT, { query: 'needle' }, unknown);
+    expect(data.hits[0]).toMatchObject({ as_of: '2026-10-22T00:00:00.000Z', source_commit: null });
+  });
+
+  it('ends each summary line with the as-of date and short commit, then says when the index was built', async () => {
+    const { summary, data } = await at(BUILT, { query: 'propagation gate', limit: 2 });
+    expect(data.freshness).toEqual({ index_built_at: '2026-10-22T00:00:00.000Z', index_age_days: 0, possibly_stale: [] });
+    const lines = summary.split('\n');
+    expect(lines[0]).toBe('2 docs sections for "propagation gate":');
+    expect(lines[1]!.startsWith('1. ')).toBe(true);
+    expect(lines[1]!.endsWith(` ${data.hits[0].url} (as of 2026-10-22, commit 256fd62)`)).toBe(true);
+    expect(lines[2]!.endsWith(` ${data.hits[1].url} (as of 2026-10-22, commit 256fd62)`)).toBe(true);
+    expect(lines[3]).toBe('Index built 2026-10-22 (0 days old).');
+    expect(lines).toHaveLength(4);
+  });
+
+  it('says "1 day old" at one day', async () => {
+    const { summary } = await at(new Date('2026-10-23T12:00:00Z'), { query: 'propagation gate', limit: 1 });
+    expect(summary).toContain('\nIndex built 2026-10-22 (1 day old).');
+  });
+
+  it('puts the index warning in the data and the summary at 2 days, not at 1 day 23:59', async () => {
+    const stale = await at(new Date('2026-10-24T00:00:00Z'), { query: 'propagation gate', limit: 1 });
+    expect(stale.data.freshness).toMatchObject({ index_age_days: 2, possibly_stale: [INDEX_WARNING(2)] });
+    expect(stale.summary).toContain(`\nPossibly stale: ${INDEX_WARNING(2)}`);
+    // The warning follows the "Index built" line.
+    expect(stale.summary.indexOf('Index built')).toBeLessThan(stale.summary.indexOf('Possibly stale'));
+
+    const fresh = await at(new Date('2026-10-23T23:59:00Z'), { query: 'propagation gate', limit: 1 });
+    expect(fresh.data.freshness.possibly_stale).toEqual([]);
+    expect(fresh.summary).not.toContain('Possibly stale');
+  });
+
+  it('puts the index warning in a no-hits summary too', async () => {
+    const stale = await at(new Date('2026-10-25T00:00:00Z'), { query: 'zzzqqqxxx', source: 'adr' });
+    expect(stale.data.hits).toEqual([]);
+    expect(stale.summary).toBe(
+      'No docs sections match "zzzqqqxxx" in adr. Try other words or drop source. For live package state use pkg_status; for open issues or failing workflows use ops_activity.' +
+        `\nPossibly stale: ${INDEX_WARNING(3)}`,
+    );
+    const fresh = await at(BUILT, { query: 'zzzqqqxxx', source: 'adr' });
+    expect(fresh.summary).not.toContain('Possibly stale');
+  });
+
+  it('warns about an input behind its branch only when a kept hit comes from it', async () => {
+    const behindIndex = await fixtureDocsIndexWith((inputs) => {
+      const edge = inputs.find((i) => i.url.includes('/bioc-edge/main/DATAPLANE.md'))!;
+      edge.commit = { ...edge.commit!, head_sha: 'b'.repeat(40), head_committed_at: '2026-10-20T08:09:10Z' };
+    });
+    const behind = docsSearchCapability(() => behindIndex);
+    const edgeSha = behindIndex.meta.inputs.find((i) => i.url.includes('/bioc-edge/main/DATAPLANE.md'))!.commit!.sha;
+    const warning =
+      `https://raw.githubusercontent.com/seandavi/bioc-edge/main/DATAPLANE.md comes from seandavi/bioc-edge@${edgeSha.slice(0, 7)}, ` +
+      'but main was already at bbbbbbb (committed 2026-10-20) when the index was built; it may lag main.';
+
+    const hit = await at(BUILT, { query: 'data plane', source: 'repo:bioc-edge' }, behind);
+    expect(hit.data.freshness.possibly_stale).toEqual([warning]);
+    expect(hit.summary).toContain(`\nPossibly stale: ${warning}`);
+
+    const other = await at(BUILT, { query: 'purging the cache', source: 'site' }, behind);
+    expect(other.data.freshness.possibly_stale).toEqual([]);
+    expect(other.summary).not.toContain('Possibly stale');
+  });
+
+  it('warns about an unknown commit at 14 days of age, not at 13', async () => {
+    const unknown = docsSearchCapability(() => syntheticDocsIndex([record]));
+    const warning = 'https://docs.test/search.json is 14 days old (as of 2026-10-22) and its source commit is unknown.';
+    const at14 = await at(new Date('2026-11-05T00:00:00Z'), { query: 'needle' }, unknown);
+    expect(at14.data.freshness.possibly_stale).toContain(warning);
+    expect(at14.summary).toContain(`\nPossibly stale: ${warning}`);
+    const at13 = await at(new Date('2026-11-04T23:59:59Z'), { query: 'needle' }, unknown);
+    expect(at13.data.freshness.possibly_stale.some((w: string) => w.includes('source commit is unknown'))).toBe(false);
+  });
+
+  it('never warns about an input at its branch head, however old', async () => {
+    const atHead = docsSearchCapability(() =>
+      syntheticDocsIndex([record], {
+        repo: 'seandavi/docs',
+        ref: 'main',
+        sha: 'c'.repeat(40),
+        head_sha: 'c'.repeat(40),
+        head_committed_at: '2025-01-01T00:00:00Z',
+      }),
+    );
+    const { data } = await at(new Date('2027-11-22T00:00:00Z'), { query: 'needle' }, atHead);
+    expect(data.freshness.possibly_stale).toEqual([INDEX_WARNING(396)]);
+  });
+
+  it('keeps the envelope within 8 KB at limit 10 for a stale, behind index', async () => {
+    const behindIndex = await fixtureDocsIndexWith((inputs) => {
+      for (const input of inputs) input.commit = { ...input.commit!, head_sha: 'b'.repeat(40), head_committed_at: '2026-10-20T08:09:10Z' };
+    });
+    const behind = docsSearchCapability(() => behindIndex);
+    for (const query of ['why does the registry poll', 'how are download stats counted', 'purging the cache']) {
+      const envelope = await at(new Date('2026-12-01T00:00:00Z'), { query, limit: 10 }, behind);
+      expect(envelopeBytes(envelope)).toBeLessThanOrEqual(MAX_RESULT_BYTES);
+    }
   });
 });

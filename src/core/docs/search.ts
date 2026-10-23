@@ -2,9 +2,10 @@ import * as z from 'zod';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope, type Source } from '../../envelope';
 import { CapabilityError } from '../../errors';
 import type { DocsIndex } from '../../docs-index/load';
-import { DocsSourceKindSchema, type DocsRecord } from '../../docs-index/schema';
+import { DocsSourceKindSchema, type DocsInput, type DocsRecord } from '../../docs-index/schema';
 import { defineCapability, type Capability } from '../capability';
-import { docsPages, docsPageSource, sectionLabel } from './pages';
+import { docsFreshness, DocsFreshnessSchema, inputNote, type DocsFreshness } from './freshness';
+import { docsPages, docsPageSource, docsSource, sectionLabel } from './pages';
 
 const SourceFilterSchema = z
   .string()
@@ -34,6 +35,11 @@ export const DocsSearchHitSchema = z.object({
   repo: z.string().nullable().describe("The bioc-* repo for source 'repo'; else null"),
   snippet: z.string().describe('About 200 characters of the section around the first query word'),
   score: z.number().describe('BM25+ score, rounded to 2 decimals; comparable only within one result'),
+  as_of: z.string().describe("When this hit's source was current (ISO 8601): the site's publish time or the build's fetch time"),
+  source_commit: z
+    .string()
+    .nullable()
+    .describe('Commit (40-hex sha) of the bioc-* repo or published site this hit was built from; null when unknown'),
 });
 
 export const DocsSearchDataSchema = z.object({
@@ -41,6 +47,7 @@ export const DocsSearchDataSchema = z.object({
   source: z.string().nullable(),
   hits: z.array(DocsSearchHitSchema).describe('Best first'),
   omitted_for_size: z.number().int().nonnegative().describe('Hits dropped from the end to stay under 8 KB'),
+  freshness: DocsFreshnessSchema,
 });
 type DocsSearchData = z.output<typeof DocsSearchDataSchema>;
 
@@ -90,18 +97,30 @@ function recordFilter(index: DocsIndex, source: string | undefined): ((record: D
   return (record) => record.source === 'repo' && record.repo === name;
 }
 
-function describeHits(query: string, source: string | undefined, hits: DocsSearchData['hits'], omitted: number): string {
+function describeHits(
+  query: string,
+  source: string | undefined,
+  hits: DocsSearchData['hits'],
+  omitted: number,
+  inputs: readonly DocsInput[],
+  freshness: DocsFreshness,
+): string {
   const where = source ? ` in ${source}` : '';
+  const stale = freshness.possibly_stale.map((warning) => `\nPossibly stale: ${warning}`).join('');
   if (hits.length === 0) {
-    return `No docs sections match "${query}"${where}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.`;
+    return `No docs sections match "${query}"${where}. Try other words${source ? ' or drop source' : ''}. For live package state use pkg_status; for open issues or failing workflows use ops_activity.${stale}`;
   }
   const n = hits.length;
-  const lines = hits.map((hit, i) => `\n${i + 1}. ${hit.title}${hit.section ? ` › ${hit.section}` : ''} ${hit.url}`);
+  const lines = hits.map(
+    (hit, i) => `\n${i + 1}. ${hit.title}${hit.section ? ` › ${hit.section}` : ''} ${hit.url} (${inputNote(inputs[i]!)})`,
+  );
+  const days = freshness.index_age_days;
+  const built = `\nIndex built ${freshness.index_built_at.slice(0, 10)} (${days} day${days === 1 ? '' : 's'} old).`;
   const dropped =
     omitted > 0
       ? `\n${omitted} more hit${omitted === 1 ? ' was' : 's were'} dropped to stay under 8 KB; they rank below these. Narrow with source or more specific words to see others.`
       : '';
-  return `${n} docs section${n === 1 ? '' : 's'} for "${query}"${where}:${lines.join('')}${dropped}`;
+  return `${n} docs section${n === 1 ? '' : 's'} for "${query}"${where}:${lines.join('')}${built}${stale}${dropped}`;
 }
 
 export function docsSearchCapability(
@@ -119,14 +138,17 @@ export function docsSearchCapability(
       "'site', 'adr' or 'repo:<name>' (e.g. 'repo:bioc-registry'). The docs describe design and " +
       "procedure, not live state: for a package's current build, check or propagation state use " +
       'pkg_status. Open issues, pull requests and failing workflows in the bioc-* repos are not in the ' +
-      'docs: use ops_activity.',
+      'docs: use ops_activity. Each hit carries as_of and source_commit; freshness says when the index ' +
+      'was built and lists any reason a hit may be out of date.',
     input: DocsSearchInputSchema,
     data: DocsSearchDataSchema,
-    async handler({ query, limit, source }) {
+    async handler({ query, limit, source }, deps) {
       const index = getIndex();
       const q = query.trim();
       const found = index.search(q, limit, recordFilter(index, source));
-      const hits = found.map(({ record, score }) => ({
+      const pages = docsPages(index);
+      const hitInputs = found.map(({ record }) => pages.pageOf(record)!.input);
+      const hits = found.map(({ record, score }, i) => ({
         url: record.url,
         title: record.title,
         section: sectionLabel(record),
@@ -135,8 +157,9 @@ export function docsSearchCapability(
         repo: record.repo ?? null,
         snippet: snippet(record.text, q),
         score: Math.round(score * 100) / 100,
+        as_of: docsSource(hitInputs[i]!).as_of,
+        source_commit: hitInputs[i]!.commit?.sha ?? null,
       }));
-      const pages = docsPages(index);
       const pageSources = found.map(({ record }) => docsPageSource(pages.pageOf(record)!));
 
       const build = (kept: number): Envelope<DocsSearchData> => {
@@ -145,9 +168,11 @@ export function docsSearchCapability(
           if (!sources.some((s) => s.url === pageSource.url)) sources.push(pageSource);
         }
         const omitted = hits.length - kept;
+        const keptInputs = hitInputs.slice(0, kept);
+        const freshness = docsFreshness(index.meta, keptInputs, deps.now());
         return {
-          data: { query: q, source: source ?? null, hits: hits.slice(0, kept), omitted_for_size: omitted },
-          summary: describeHits(q, source, hits.slice(0, kept), omitted),
+          data: { query: q, source: source ?? null, hits: hits.slice(0, kept), omitted_for_size: omitted, freshness },
+          summary: describeHits(q, source, hits.slice(0, kept), omitted, keptInputs, freshness),
           sources,
         };
       };

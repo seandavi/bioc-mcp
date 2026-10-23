@@ -2,7 +2,14 @@ import MiniSearch from 'minisearch';
 import type { Module } from '../../src/core/registry';
 import { createDocsModule } from '../../src/core/docs';
 import { loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
-import { DOCS_FORMAT_VERSION, DOCS_INDEX_OPTIONS, type DocsInputCommit, type DocsRecord } from '../../src/docs-index/schema';
+import {
+  DOCS_FORMAT_VERSION,
+  DOCS_INDEX_OPTIONS,
+  type DocsInput,
+  type DocsInputCommit,
+  type DocsRecord,
+  type DocsStore,
+} from '../../src/docs-index/schema';
 import { fixtureArtifact } from '../docs-index/support';
 
 let shared: Promise<DocsIndex> | undefined;
@@ -10,6 +17,14 @@ let shared: Promise<DocsIndex> | undefined;
 export function fixtureDocsIndex(): Promise<DocsIndex> {
   shared ??= fixtureArtifact().then(loadDocsIndex);
   return shared;
+}
+
+/** The fixture index with `edit` applied to a copy of its meta.inputs (to make an input behind its branch, say). */
+export async function fixtureDocsIndexWith(edit: (inputs: DocsInput[]) => void): Promise<DocsIndex> {
+  const artifact = await fixtureArtifact();
+  const store = JSON.parse(artifact.storeJson) as DocsStore;
+  edit(store.meta.inputs);
+  return loadDocsIndex({ storeJson: JSON.stringify(store), indexJson: artifact.indexJson });
 }
 
 /**

@@ -8,7 +8,7 @@ import { docsReadCapability, resolveDocsTarget } from '../../../src/core/docs/re
 import { MAX_RESULT_BYTES, envelopeBytes } from '../../../src/envelope';
 import type { DocsIndex } from '../../../src/docs-index/load';
 import { createMemoryCache } from '../../../src/upstreams/cache';
-import { fixtureDocsIndex, syntheticDocsIndex } from '../../support/docs';
+import { fixtureDocsIndex, fixtureDocsIndexWith, syntheticDocsIndex } from '../../support/docs';
 import { fixtureFetch } from '../../support/fixture-fetch';
 import { testContext } from '../../support/invoke-context';
 
@@ -69,7 +69,7 @@ describe('resolution', () => {
       const { data, summary } = await ok({ id_or_url: input });
       expect(data).toMatchObject({ kind: 'section', url: POLLS, section: 'Why the registry polls', title: expect.any(String) });
       expect(data.text.startsWith('## Why the registry polls\n\n' + POLLS)).toBe(true);
-      expect(summary).toMatch(/^".+" › Why the registry polls \(.+\), full text, \d+ characters\.$/);
+      expect(summary).toMatch(/^".+" › Why the registry polls \(.+\), full text, \d+ characters\. As of 2026-10-22, commit 256fd62\.$/);
     },
   );
 
@@ -334,5 +334,94 @@ describe('close-match search bound', () => {
   it('cuts a very long word to 32 characters', async () => {
     const calls = await termsSearched(`${GATE}#${'x'.repeat(2000)}`.slice(0, 2048));
     expect(calls).toEqual([['x'.repeat(MAX_TERM_LENGTH)]]);
+  });
+});
+
+describe('freshness', () => {
+  const LIVE_SHA = '256fd62eab16312a6188bef6bf74ea2bbab5f830';
+  const EDGE = 'bioc://docs/repo/bioc-edge/DATAPLANE.md';
+
+  async function at(now: Date, input: unknown, capability: Capability = read) {
+    const d = deps();
+    const result = await invokeCapability(capability, input, { ...d.deps, now: () => now }, testContext());
+    if (!result.ok) throw new Error(`${result.error.code}: ${result.error.message}`);
+    return result.envelope as { data: any; summary: string; sources: { url: string; as_of: string }[] };
+  }
+
+  it('gives as_of, source_commit and a clean freshness block', async () => {
+    const { data } = await ok({ id_or_url: GATE });
+    expect(data).toMatchObject({
+      as_of: index.meta.inputs[0]!.fetched_at,
+      source_commit: LIVE_SHA,
+      freshness: { index_built_at: '2026-10-22T00:00:00.000Z', index_age_days: 0, possibly_stale: [] },
+    });
+    const repo = (await ok({ id_or_url: EDGE })).data;
+    const input = index.meta.inputs.find((i) => i.url.includes('/bioc-edge/main/DATAPLANE.md'))!;
+    expect(repo).toMatchObject({ as_of: input.fetched_at, source_commit: input.commit!.sha });
+  });
+
+  it('states the as-of date and commit after each part of a paged read', async () => {
+    const big = await ok({ id_or_url: `${BASE}proposal-unified-search.html` });
+    expect(big.summary.endsWith('for the rest. As of 2026-10-22, commit 256fd62.')).toBe(true);
+    const last = await ok({ id_or_url: `${BASE}proposal-unified-search.html`, cursor: big.data.next_cursor });
+    expect(last.summary).toMatch(/ As of 2026-10-22, commit 256fd62\.$/);
+  });
+
+  it('puts the index warning in data and summary at 2 days, not at 1 day 23:59', async () => {
+    const warning = 'The docs index was built 2026-10-22, 2 days ago; it is rebuilt daily, so docs changed since then are not in it.';
+    const stale = await at(new Date('2026-10-24T00:00:00Z'), { id_or_url: GATE });
+    expect(stale.data.freshness.possibly_stale).toEqual([warning]);
+    expect(stale.summary.endsWith(`As of 2026-10-22, commit 256fd62. Possibly stale: ${warning}`)).toBe(true);
+    const fresh = await at(new Date('2026-10-23T23:59:00Z'), { id_or_url: GATE });
+    expect(fresh.data.freshness.possibly_stale).toEqual([]);
+    expect(fresh.summary).not.toContain('Possibly stale');
+  });
+
+  it("warns about the read page's own input when it is behind its branch, and about no other", async () => {
+    const behindIndex = await fixtureDocsIndexWith((inputs) => {
+      const edge = inputs.find((i) => i.url.includes('/bioc-edge/main/DATAPLANE.md'))!;
+      edge.commit = { ...edge.commit!, head_sha: 'b'.repeat(40), head_committed_at: '2026-10-20T08:09:10Z' };
+    });
+    const behind = docsReadCapability(() => behindIndex);
+    const now = new Date('2026-10-22T00:00:00Z');
+    const page = await at(now, { id_or_url: EDGE }, behind);
+    expect(page.data.freshness.possibly_stale).toHaveLength(1);
+    expect(page.data.freshness.possibly_stale[0]).toMatch(/^https:\/\/raw\.githubusercontent\.com\/seandavi\/bioc-edge\/main\/DATAPLANE\.md comes from seandavi\/bioc-edge@[0-9a-f]{7}, but main was already at bbbbbbb \(committed 2026-10-20\)/);
+    expect(page.summary).toContain(` Possibly stale: ${page.data.freshness.possibly_stale[0]}`);
+    expect((await at(now, { id_or_url: GATE }, behind)).data.freshness.possibly_stale).toEqual([]);
+  });
+
+  it('warns about an unknown commit at 14 days, not at 13, and never about a commit at its head', async () => {
+    const record = { id: 'site:p.html', url: 'https://docs.test/p.html', title: 'T', section: '', crumbs: [], text: 'body', source: 'site' as const };
+    const unknown = docsReadCapability(() => syntheticDocsIndex([record]));
+    const at14 = await at(new Date('2026-11-05T00:00:00Z'), { id_or_url: 'https://docs.test/p.html' }, unknown);
+    expect(at14.data.source_commit).toBeNull();
+    expect(at14.summary).toContain('As of 2026-10-22. Possibly stale: ');
+    expect(at14.data.freshness.possibly_stale).toContain(
+      'https://docs.test/search.json is 14 days old (as of 2026-10-22) and its source commit is unknown.',
+    );
+    const at13 = await at(new Date('2026-11-04T23:59:59Z'), { id_or_url: 'https://docs.test/p.html' }, unknown);
+    expect(at13.data.freshness.possibly_stale.some((w: string) => w.includes('source commit is unknown'))).toBe(false);
+
+    const head = 'c'.repeat(40);
+    const atHead = docsReadCapability(() =>
+      syntheticDocsIndex([record], { repo: 'seandavi/docs', ref: 'main', sha: head, head_sha: head, head_committed_at: '2025-01-01T00:00:00Z' }),
+    );
+    const old = await at(new Date('2026-10-22T00:00:00Z'), { id_or_url: 'https://docs.test/p.html' }, atHead);
+    expect(old.data.freshness.possibly_stale).toEqual([]);
+    expect(old.summary.endsWith(`As of 2026-10-22, commit ${head.slice(0, 7)}.`)).toBe(true);
+  });
+
+  it('keeps every part within 8 KB with the longest warnings', async () => {
+    const behindIndex = await fixtureDocsIndexWith((inputs) => {
+      for (const input of inputs) input.commit = { ...input.commit!, head_sha: 'b'.repeat(40), head_committed_at: '2026-10-20T08:09:10Z' };
+    });
+    const behind = docsReadCapability(() => behindIndex);
+    let cursor: string | undefined;
+    do {
+      const envelope = await at(new Date('2027-01-01T00:00:00Z'), { id_or_url: `${BASE}proposal-unified-search.html`, ...(cursor ? { cursor } : {}) }, behind);
+      expect(envelopeBytes(envelope)).toBeLessThanOrEqual(MAX_RESULT_BYTES);
+      cursor = envelope.data.next_cursor ?? undefined;
+    } while (cursor);
   });
 });

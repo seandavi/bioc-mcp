@@ -39,6 +39,9 @@ const DEFAULT_LIMIT = 8;
 /** search() uses at most this many distinct query terms: each costs at most one prefix and one fuzzy sub-query. */
 export const MAX_SEARCH_TERMS = 16;
 
+/** search() multiplies the score of every record of a superseded ADR by this. */
+export const SUPERSEDED_ADR_BOOST = 0.75;
+
 const tokenize: (text: string) => string[] = MiniSearch.getDefault('tokenize');
 
 /** English function words and question words that search() drops from a query (lower case). */
@@ -103,6 +106,13 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
     offset += input.record_count;
   }
 
+  const superseded = new Set(
+    records
+      .filter((r) => r.source === 'adr' && !r.id.includes('#') && /^Status: Superseded\b/m.test(r.text))
+      .map((r) => r.id),
+  );
+  const boostDocument = (id: string) => (superseded.has(id.split('#')[0]!) ? SUPERSEDED_ADR_BOOST : 1);
+
   const miniSearch = MiniSearch.loadJSON<DocsRecord>(json.indexJson, DOCS_INDEX_OPTIONS);
   if (miniSearch.documentCount !== records.length) {
     throw new Error(
@@ -123,12 +133,13 @@ export function loadDocsIndex(json: DocsIndexJson): DocsIndex {
       const hits: DocsSearchHit[] = [];
       const results = filter
         ? miniSearch.search(q, {
+            boostDocument,
             filter: (result) => {
               const record = byId.get(result.id as string);
               return record !== undefined && filter(record);
             },
           })
-        : miniSearch.search(q);
+        : miniSearch.search(q, { boostDocument });
       for (const result of results) {
         const record = byId.get(result.id as string);
         if (record) hits.push({ record, score: result.score });

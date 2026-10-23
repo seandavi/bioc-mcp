@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { QUERY_STOP_WORDS, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
+import { QUERY_STOP_WORDS, SUPERSEDED_ADR_BOOST, loadDocsIndex, type DocsIndex } from '../../src/docs-index/load';
 import { syntheticDocsIndex } from '../support/docs';
+import type { DocsRecord } from '../../src/docs-index/schema';
 import { fixtureArtifact } from './support';
 import type { DocsIndexArtifact } from '../../scripts/docs-index/build';
 
@@ -156,6 +157,25 @@ describe('loadDocsIndex', () => {
     it('matches fuzzily only for terms of 6 or more characters', () => {
       expect(ids('cachr')).toEqual([]);
       expect(ids('purgingg')).toEqual(['site:b.html']);
+    });
+  });
+
+  describe('superseded ADRs', () => {
+    const adr = (n: string, status: string): DocsRecord => ({
+      id: `site:adr/${n}.html`,
+      url: `https://docs.test/adr/${n}.html`,
+      title: 'Hash the addresses',
+      section: '',
+      crumbs: [],
+      text: `Status: ${status}\nHash the addresses at the edge.`,
+      source: 'adr',
+    });
+
+    it('scores a superseded ADR SUPERSEDED_ADR_BOOST times as high as an identical current one', () => {
+      const synthetic = syntheticDocsIndex([adr('0001', 'Superseded by 0002'), adr('0002', 'Accepted by 0002')]);
+      const hits = synthetic.search('hash addresses');
+      expect(hits.map((hit) => hit.record.id)).toEqual(['site:adr/0002.html', 'site:adr/0001.html']);
+      expect(hits[1]!.score).toBeCloseTo(hits[0]!.score * SUPERSEDED_ADR_BOOST, 9);
     });
   });
 });

@@ -53,7 +53,6 @@ async function runCapability(capability: Capability, rawInput: unknown, deps: De
   let envelope: Envelope<unknown>;
   try {
     envelope = await capability.handler(parsed.data, deps);
-    assertEnvelopeSize(envelope, capability.name);
   } catch (error) {
     if (error instanceof CapabilityError) return { ok: false, error };
     console.error(capability.name, error);
@@ -69,5 +68,13 @@ async function runCapability(capability: Capability, rawInput: unknown, deps: De
     };
   }
   // Return the parsed value so fields the output schema does not declare never leave the server.
-  return { ok: true, envelope: output.data as Envelope<unknown> };
+  // Size that value, not the handler's: an output-side .default() or .transform() can add bytes.
+  const sent = output.data as Envelope<unknown>;
+  try {
+    assertEnvelopeSize(sent, capability.name);
+  } catch (error) {
+    if (error instanceof CapabilityError) return { ok: false, error };
+    throw error;
+  }
+  return { ok: true, envelope: sent };
 }

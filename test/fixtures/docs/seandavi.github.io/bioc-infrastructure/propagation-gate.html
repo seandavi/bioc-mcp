@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-08-04">
+
+<title>The propagation gate: what bioc-registry publishes, and why – Bioconductor Infrastructure</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7e725af8e1b2581408ee27b5818d3660.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-88cd55e827d36f33feca41c66d4eeb1c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KLLV1GCF4E"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KLLV1GCF4E', { 'anonymize_ip': true});
+</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bioconductor Infrastructure</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./install.html"> 
+<span class="menu-text">Installing Packages</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./report.html"> 
+<span class="menu-text">Report a Problem</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/seandavi/bioc-infrastructure"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./how-it-works.html">How it works</a></li><li class="breadcrumb-item"><a href="./propagation-gate.html">Propagation Gate</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./install.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installing Packages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reporting a Problem</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mirror-how-to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Running a Mirror</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">How it works</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-it-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How bioconductor.org Works</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cache.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge Cache</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./astro-site-build.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Astro Site Build</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./propagation-gate.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Propagation Gate</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Operating</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Operations &amp; Runbooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CI &amp; Scheduled Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Plans</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry-switch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registry Switch (plan)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cloudflare-account-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cloudflare Account Migration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Proposals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proposal-unified-search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unified Search</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Records</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./improvements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What the New Site Has Changed</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./traffic-2026-09-30.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Day of Traffic (2026-09-30)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dns-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNS Inventory &amp; Cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-universe-size-limits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">r-universe Size Limits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-packages-in-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Packages in r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./current-state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Current State (legacy)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./legacy-propagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Legacy Propagation &amp; Push Hooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./builder-transition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Builder Transition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./views-and-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VIEWS &amp; r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducing-package-pages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Download Stats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r2-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R2 Migration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decommission-plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decommission Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Decisions (ADRs)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0001-public-docs-site-with-a-publication-boundary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0001 — The docs site is public, with a publication boundary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0002-mirror-access-logs-unfiltered.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0002 — Mirror the access logs unfiltered; interpret with views</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0003 — Request logging after the Cloudflare cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0004-download-statistics-are-generated-static-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0004 — Download statistics are generated static files, not a live service</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0005-completeness-is-measured-by-origin-not-page-type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0005 — Completeness is measured by origin, not by page type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0006-old-releases-and-their-checkresults-are-archival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0006 — 33 of 35 releases, and checkResults for them, are archival</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0007-cloudflare-workflows-for-the-release-roll-guard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0008-three-repos-and-a-strangler-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0008 — Split by audience into three repositories; migrate by strangling behind the Worker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0009-client-addresses-are-hashed-at-the-edge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0009 — Client addresses are hashed at the edge, not de-identified downstream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0011-one-propagation-gate-for-every-producer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0011 — One propagation gate for every producer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0012 — Client addresses are stored raw; de-identification is a view</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0013-redirects-land-on-content-or-they-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0013 — A redirect lands on the content, or it goes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-gate-check-by-check" id="toc-the-gate-check-by-check" class="nav-link active" data-scroll-target="#the-gate-check-by-check">The gate, check by check</a>
+  <ul class="collapse">
+  <li><a href="#binaries-that-arrive-after-publication" id="toc-binaries-that-arrive-after-publication" class="nav-link" data-scroll-target="#binaries-that-arrive-after-publication">Binaries that arrive after publication</a></li>
+  </ul></li>
+  <li><a href="#three-ways-into-the-index" id="toc-three-ways-into-the-index" class="nav-link" data-scroll-target="#three-ways-into-the-index">Three ways into the index</a></li>
+  <li><a href="#what-r-universe-already-computes" id="toc-what-r-universe-already-computes" class="nav-link" data-scroll-target="#what-r-universe-already-computes">What r-universe already computes</a></li>
+  <li><a href="#why-the-registry-polls" id="toc-why-the-registry-polls" class="nav-link" data-scroll-target="#why-the-registry-polls">Why the registry polls</a>
+  <ul class="collapse">
+  <li><a href="#two-traps-in-the-data" id="toc-two-traps-in-the-data" class="nav-link" data-scroll-target="#two-traps-in-the-data">Two traps in the data</a></li>
+  </ul></li>
+  <li><a href="#relation-to-the-legacy-production-gate" id="toc-relation-to-the-legacy-production-gate" class="nav-link" data-scroll-target="#relation-to-the-legacy-production-gate">Relation to the legacy production gate</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/propagation-gate.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/propagation-gate.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./how-it-works.html">How it works</a></li><li class="breadcrumb-item"><a href="./propagation-gate.html">Propagation Gate</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">The propagation gate: what bioc-registry publishes, and why</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 4, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 30, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>r-universe and bioc-build build Bioconductor packages. Only some of those builds become what <a href="https://github.com/seandavi/bioc-registry">bioc-registry</a> publishes: installable repositories at <code>https://bioc-registry.seandavi.workers.dev/repo/{bioc,bioc-release}</code>, and the propagation index that the <a href="./astro-site-build.html"><code>/next/</code> preview pages</a> are built from. This page states the rule that decides, read from the code that runs it.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>This gate does not govern bioconductor.org today
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>bioconductor.org’s repositories and package pages do not read from bioc-registry. Packages reach bioconductor.org through Bioconductor’s own propagation (below) and the hourly <code>bioc-sync</code> from master; its landing pages take versions and download links from the repositories’ own <code>PACKAGES</code> indexes. Switching bioconductor.org’s software repositories to bioc-registry is a documented plan with open blockers: <a href="./registry-switch.html">Registry switch</a>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Bioconductor’s production gate is a different gate
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bioconductor’s production propagation to <code>bioconductor.org</code> runs in core infrastructure next to BBS and is known here only from conversation. It is described on <a href="./legacy-propagation.html">Propagation in the legacy system</a>, together with the push hooks and the measured agreement between r-universe’s checks and <code>nebbiolo1</code>’s. The two are compared at the <a href="#relation-to-the-legacy-production-gate">end of this page</a>.</p>
+</div>
+</div>
+<section id="the-gate-check-by-check" class="level2">
+<h2 class="anchored" data-anchor-id="the-gate-check-by-check">The gate, check by check</h2>
+<p>Since <a href="./adr/0011-one-propagation-gate-for-every-producer.html">ADR 0011</a> (2026-09-04) there is one decision function, <code>gate()</code> in <a href="https://github.com/seandavi/bioc-registry/blob/f10719e/src/repo.ts#L677-L723"><code>src/repo.ts</code></a>, with three callers and no gating anywhere else:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Caller</th>
+<th>Producer</th>
+<th>Config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>evaluate()</code> in <a href="https://github.com/seandavi/bioc-registry/blob/f10719e/src/index.ts#L536-L589"><code>src/index.ts</code></a>, on every r-universe wave</td>
+<td>r-universe</td>
+<td>gating R from <code>config.yaml</code>, <code>replace_seed: false</code></td>
+</tr>
+<tr class="even">
+<td><code>POST /publish</code> (maintenance key required)</td>
+<td>bioc-build</td>
+<td>the R version bioc-build’s image ships, <code>replace_seed: true</code>, plus manifest rules</td>
+</tr>
+<tr class="odd">
+<td><code>POST /gate</code> (public, read-only)</td>
+<td>whatever the caller sends</td>
+<td>defaults as for r-universe</td>
+</tr>
+</tbody>
+</table>
+<p>Everything below is read from bioc-registry at commit <code>f10719e</code> (main, 2026-09-28). A candidate propagates when <strong>every</strong> rule passes. Each decision returns every rule’s verdict, pass or fail, under these names:</p>
+<ol type="1">
+<li><strong><code>build-status</code></strong>: the producer’s build status is <code>success</code>. For r-universe that is <code>_status</code>; <code>_failure</code> is not read. A green status on a stale commit is caught by <code>version-gate</code> in practice, because the stale version has already propagated. Before the gate runs, <code>evaluate()</code> drops any r-universe package with no source sha256.</li>
+<li><strong><code>families</code></strong>: at least one platform family passes, judged only on jobs running the gating R version. The gating R is resolved at evaluation time from <code>bioconductor.org/config.yaml</code> (<code>r_ver_for_bioc_ver</code> for the universe’s Bioconductor version) and matched against each job’s actual R version, not its label. Three families are gated (<a href="https://github.com/seandavi/bioc-registry/blob/f10719e/src/repo.ts#L223-L232"><code>passingFamilies</code></a>): <code>linux</code> (the <code>source</code> job plus <code>linux-*</code> x86_64), <code>win</code> (<code>windows-*</code> x86_64) and <code>mac</code> (<code>macos-*</code> arm64). A family passes when it has at least one gating job and none of them is <code>ERROR</code>, <code>FAIL</code> or <code>FAILURE</code>. <code>NOTE</code> and <code>WARNING</code> pass. Other configs gate nothing: <code>bioc-checks</code>, <code>wasm</code>, linux arm64, mac x86_64. bioc-build reports one <code>linux-x86_64</code> job.</li>
+<li><strong><code>bioccheck</code></strong>: advisory in every caller today; it always passes and records the verdict. A caller could set it to <code>blocking</code>, and then <code>ERROR</code>/<code>FAIL</code> would block.</li>
+<li><strong><code>version-parse</code></strong>: the version is digits separated by <code>.</code> or <code>-</code>.</li>
+<li><strong><code>version-gate</code></strong>: the version is a strict bump over the one in the propagation index, or the package is new. A push without a bump never propagates. With <code>replace_seed</code> (bioc-build only), a build at the same version may also replace a <code>bioconductor</code> seed; r-universe must bump.</li>
+<li><strong><code>manifest-state</code>, <code>manifest-git-url</code>, <code>manifest-stream</code>, <code>manifest-component</code></strong> (bioc-build only): the package’s entry in <a href="https://github.com/seandavi/bioc-manifest">bioc-manifest</a>, read at the commit the build recorded, is <code>active</code>, names the git URL that was built, lists the build’s stream, and has <code>component</code> equal to <code>profile</code>.</li>
+<li><strong><code>deps</code></strong>, run last over everything the other rules cleared (<a href="https://github.com/seandavi/bioc-registry/blob/f10719e/src/repo.ts#L600-L641"><code>approveByDeps</code></a>): every <code>Depends</code>, <code>Imports</code> and <code>LinkingTo</code> entry naming a package that is itself in the propagation index must be present at a version meeting its <code>&gt;=</code> or <code>&gt;</code> constraint. Dependencies not in the index (CRAN, base R, and annotation, experiment and workflow packages until they have a build home) pass untouched. Candidates are approved in waves until a fixpoint, so a package lands as soon as what it waits on does. A dependency that is in neither the index nor CRAN is not caught; that is <a href="https://github.com/seandavi/bioc-registry/issues/56">bioc-registry#56</a> (open), and finding 2 on <a href="./registry-switch.html">Registry switch</a>.</li>
+</ol>
+<p>What propagates for an r-universe package that passes: the <strong>source tarball always</strong>; <strong>binaries only for the families that passed</strong>, and only those built at the same version with status <code>success</code>. <code>wasm</code> binaries ride along with no gate of their own. The passing families are recorded on the index entry as <code>archs</code>, the BiocCheck verdict as <code>bioccheck</code>.</p>
+<p>Every new version that fails (its <code>version-gate</code> passed, something else did not) is written to <code>prop/{universe}/blocked/</code> with its full list of rule verdicts. To ask why a package did not propagate, or whether it would, <code>POST /gate</code> runs the same function against the live index and writes nothing:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST https://bioc-registry.seandavi.workers.dev/gate <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">'content-type: application/json'</span> <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{"universe":"bioc-release","candidates":[{"package":"limma","version":"99.0.0",</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">       "jobs":[{"config":"source","r":"4.6.0","check":"OK"}]}]}'</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2026-09-30: propagate true, archs ["linux"], gating_r 4.6, "99.0.0 &gt; 3.68.5"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>What this gate does <strong>not</strong> check, and the <a href="./legacy-propagation.html">legacy production gate or the push hooks</a> do:</p>
+<ul>
+<li>The <code>nebbiolo1</code> sha match. The gate has no provenance check for r-universe builds. (bioc-build’s sha256 and <code>gh attestation verify</code> are checked by its publisher; per ADR 0011 they are integrity checks, not gate rules.)</li>
+<li>The push-hook rules: version parity, <code>x</code> and <code>y</code> unchanged, the 5 MiB file limit, merge markers. It inherits them by trusting that the commit reached <code>git.bioconductor.org</code>.</li>
+</ul>
+<section id="binaries-that-arrive-after-publication" class="level3">
+<h3 class="anchored" data-anchor-id="binaries-that-arrive-after-publication">Binaries that arrive after publication</h3>
+<p>The gate decides binaries in the wave that first publishes a version, and <code>version-gate</code> keeps that version out of every later wave. Since bioc-registry#50 (PR #51, merged 2026-09-29 02:30 UTC), every wave ends with a top-up (<a href="https://github.com/seandavi/bioc-registry/blob/f10719e/src/repo.ts#L268-L288"><code>topUpBinaries</code></a>, <a href="https://github.com/seandavi/bioc-registry/blob/f10719e/src/index.ts#L700-L722"><code>topUp</code></a>):</p>
+<ul>
+<li>For an r-universe entry, if r-universe now has a successful binary <strong>at the published version</strong> for a family that passed then or passes now on the gating R, it is added. This covers binaries that finish after the source was published and platforms whose check passes on a same-version rebuild.</li>
+<li>For a seeded entry, Bioconductor’s binaries are fetched once they reach the seeded version.</li>
+</ul>
+<p>Top-up is additive only: the source, its sha256 and the version never change, a family that passed is never withdrawn, and a slot that already has a binary keeps it. Each addition is recorded under <code>prop/{universe}/topup/</code>. <code>POST /topup</code> (maintenance key) runs the same for a backfill.</p>
+</section>
+</section>
+<section id="three-ways-into-the-index" class="level2">
+<h2 class="anchored" data-anchor-id="three-ways-into-the-index">Three ways into the index</h2>
+<p>Each index entry carries an <code>origin</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>origin</code></th>
+<th>How it got there</th>
+<th style="text-align: right;"><code>bioc</code> (devel)</th>
+<th style="text-align: right;"><code>bioc-release</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>r-universe</code> (or no field: entries from before the field existed)</td>
+<td>passed the gate above; <code>archs</code> says on which families</td>
+<td style="text-align: right;">2,292</td>
+<td style="text-align: right;">2,235</td>
+</tr>
+<tr class="even">
+<td><code>bioconductor</code></td>
+<td><strong>seeded</strong>, never faced the gate; empty <code>archs</code>, null <code>bioccheck</code></td>
+<td style="text-align: right;">124</td>
+<td style="text-align: right;">153</td>
+</tr>
+<tr class="odd">
+<td><code>bioc-build</code></td>
+<td>passed the gate through <code>POST /publish</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<p>Counts from the live index, 2026-09-30.</p>
+<p>Seeds exist because some packages build in BBS and fail in r-universe’s environment, usually because an example reaches a network service the runner cannot (about 300 when measured 2026-08-04; 277 seeded entries today). They are copied from Bioconductor’s repository for the universe’s branch: the devel repository for <code>bioc</code>, the release repository for <code>bioc-release</code> (<code>seedPlan()</code> in <code>src/index.ts</code>). Seeding only fills holes. A seed is replaced by an r-universe build when the maintainer bumps the version, or by a bioc-build build at the same version.</p>
+</section>
+<section id="what-r-universe-already-computes" class="level2">
+<h2 class="anchored" data-anchor-id="what-r-universe-already-computes">What r-universe already computes</h2>
+<p>A common assumption, encouraged by “r-universe doesn’t care about <code>R CMD check</code>”, is that r-universe skips checking. It does not. It <strong>does not gate</strong> on the result, which is a different claim. It runs <code>R CMD check</code> on every platform in its matrix, and for Bioconductor packages it also runs <strong>BiocCheck</strong>.</p>
+<p>All of it is exposed in the per-package API, e.g. <code>https://bioc.r-universe.dev/api/packages/limma</code> (verified live, 2026-08-04):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>_jobs[]</code></td>
+<td>one entry per matrix leg: <code>{job, time, config, r, check, artifact}</code>. <code>config</code> values include <code>source</code>, <code>bioc-checks</code>, <code>linux-{devel,release}-{arm64,x86_64}</code>, <code>macos-*</code>, <code>windows-*</code>, <code>wasm-release</code>. <code>check</code> is <code>OK</code> / <code>NOTE</code> / <code>WARNING</code> / <code>ERROR</code> / <code>FAIL</code>.</td>
+</tr>
+<tr class="even">
+<td><code>_bioccheck</code></td>
+<td>BiocCheck summary as counts: <code>{error, warning, note}</code>. First-class API field; no download required.</td>
+</tr>
+<tr class="odd">
+<td><code>_commit</code></td>
+<td><code>{id, author, committer, message, time}</code>: the source commit sha and metadata.</td>
+</tr>
+<tr class="even">
+<td><code>_status</code></td>
+<td>overall deploy status for the package.</td>
+</tr>
+<tr class="odd">
+<td><code>_failure</code></td>
+<td>present when the <strong>newest</strong> commit failed to produce a source package.</td>
+</tr>
+<tr class="even">
+<td><code>_buildurl</code></td>
+<td>the GitHub Actions <strong>run</strong> URL, in <code>r-universe/{universe}</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>_binaries[]</code></td>
+<td>per-artifact provenance: <code>{r, os, arch, distro, version, date, commit, fileid, status, check, buildurl}</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Build logs and the full BiocCheck artifact are retrievable without authentication via <code>/api/actions/logs/{job}</code> and <code>/api/actions/artifacts/{id}</code> (both 302 to a signed blob URL).</p>
+<p>The gate therefore does not need to run checks. It needs to <strong>read</strong> them.</p>
+</section>
+<section id="why-the-registry-polls" class="level2">
+<h2 class="anchored" data-anchor-id="why-the-registry-polls">Why the registry polls</h2>
+<p>r-universe emits <strong>no webhook, no <code>repository_dispatch</code>, and no subscribable status endpoint</strong>. The feature request for build notifications (<a href="https://github.com/r-universe-org/help/issues/101"><code>r-universe-org/help#101</code></a>) is open with no comments (checked 2026-09-30). The one push-style signal, a GitHub commit status on the upstream repo (context <code>r-universe/{universe}/{package}/deploy</code>), needs the r-universe GitHub App installed on that repo; checked against <code>bioc/limma</code> on 2026-08-04 at the sha r-universe built, there were no statuses.</p>
+<p>So the registry polls. Its Worker cron runs every 15 minutes (<code>*/15 * * * *</code> in <code>wrangler.jsonc</code>). Each run fetches <code>/api/packages</code> for both universes with a fixed field list and hashes the response; a new wave (gate, propagate, top-up) starts only when the hash changes. The field list leaves out volatile fields such as <code>_stars</code> so the hash stays quiet when nothing build-relevant changed. The same cron also captures logs and compacts the observation archive.</p>
+<p>For scale: r-universe discovers new commits once an hour (<code>sync.yml</code> in <code>r-universe-org/control-room</code>, cron <code>25 * * * *</code>, checked 2026-09-30), and rebuilds nightly (<code>rebuilds.yml</code>, <code>30 1 * * *</code>). Measured against <code>bioc-release</code> on 2026-08-04, <code>/api/files</code> with <code>fields=_created,_buildurl,_commit</code> was 1.1 MB in 0.27 s; <code>/api/packages</code> with a field list 6.4 MB in 0.9 s; with no field list about 69 MB. Always pass <code>fields=</code>. <code>PATCH /api/sync</code> is public, unauthenticated, and self-throttles to 60 seconds, if a sync is needed ahead of the cron.</p>
+<section id="two-traps-in-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="two-traps-in-the-data">Two traps in the data</h3>
+<p><strong><code>_status</code> can be green on a stale commit.</strong> When the newest commit fails to produce a source package, the package keeps its previous successful <code>_status</code> and the failure appears separately in <code>_failure</code>. A gate reading only <code>_status</code> will propagate while the current head is broken. This gate reads only <code>_status</code> and relies on <code>version-gate</code> (rule 1 above).</p>
+<p><strong>Key the delta on <code>_commit.id</code>, not build time.</strong> 453 release packages were rebuilt in the 24 hours before the 2026-08-04 measurement, but r-universe also rebuilds on dependency changes, R-version changes, the nightly rebuild cron, and a reverse-dependency cascade after any version change. Most of that churn carries no new source.</p>
+</section>
+</section>
+<section id="relation-to-the-legacy-production-gate" class="level2">
+<h2 class="anchored" data-anchor-id="relation-to-the-legacy-production-gate">Relation to the legacy production gate</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Legacy production gate</th>
+<th>This gate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Feeds</td>
+<td><code>bioconductor.org/packages/...</code> (the site and its mirrors)</td>
+<td><code>bioc-registry</code> (<code>/repo/...</code>, the propagation index, the <code>/next/</code> pages)</td>
+</tr>
+<tr class="even">
+<td>Runs in</td>
+<td>Bioconductor core infrastructure, alongside BBS</td>
+<td>a Cloudflare Worker</td>
+</tr>
+<tr class="odd">
+<td>Described from</td>
+<td>conversation with a core team member, 2026-08-04, not re-verified since</td>
+<td>the code, pinned at commit <a href="https://github.com/seandavi/bioc-registry/tree/f10719e"><code>f10719e</code></a></td>
+</tr>
+<tr class="even">
+<td>Provenance check</td>
+<td>source sha must match what <code>nebbiolo1</code> built</td>
+<td>none for r-universe: pushes to <code>git.bioconductor.org</code> are assumed hook-checked upstream</td>
+</tr>
+<tr class="odd">
+<td>Check verdict</td>
+<td>“the check is clean”: one all-or-nothing verdict; the source does not say it covers more than one platform</td>
+<td>per platform family on the gating R; at least one family must pass</td>
+</tr>
+<tr class="even">
+<td>Version rule</td>
+<td>version must match <code>nebbiolo1</code>’s build</td>
+<td>strict bump over the last propagated version</td>
+</tr>
+<tr class="odd">
+<td>Dependency rule</td>
+<td>unknown</td>
+<td>hard deps that this registry publishes must be satisfiable</td>
+</tr>
+<tr class="even">
+<td>BiocCheck</td>
+<td>advisory</td>
+<td>advisory, recorded on the index entry</td>
+</tr>
+<tr class="odd">
+<td>Late binaries</td>
+<td>unknown</td>
+<td>added by top-up at the same version</td>
+</tr>
+</tbody>
+</table>
+<p>Whether <code>WARNINGS</code> counts as clean in the legacy gate is still <a href="./legacy-propagation.html#what-could-not-be-determined">undetermined</a>; this gate answers it explicitly (<code>families</code>: yes).</p>
+</section>
+<section id="sources" class="level2">
+<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<ul>
+<li><a href="https://github.com/seandavi/bioc-registry"><code>seandavi/bioc-registry</code></a> at <code>f10719e</code>: <code>src/repo.ts</code> (<code>gate</code>, <code>passingFamilies</code>, <code>approveByDeps</code>, <code>topUpBinaries</code>, <code>seedBinaryTopUp</code>, <code>verGt</code>), <code>src/index.ts</code> (<code>evaluate</code>, <code>gatingRMinor</code>, <code>poll</code>, <code>topUp</code>, <code>seedPlan</code>, <code>/gate</code>), <code>wrangler.jsonc</code></li>
+<li><a href="./adr/0011-one-propagation-gate-for-every-producer.html">ADR 0011</a>: one propagation gate for every producer</li>
+<li><a href="https://github.com/r-universe-org/frontend"><code>r-universe-org/frontend</code></a>: <code>routes/packages.js</code>, <code>routes/universe.js</code>; <a href="https://github.com/r-universe-org/workflows"><code>r-universe-org/workflows</code></a>: <code>build.yml</code>, <code>deploy.yml</code>; <a href="https://github.com/r-universe-org/control-room"><code>r-universe-org/control-room</code></a>: <code>sync.yml</code>, <code>rebuilds.yml</code></li>
+<li>Live endpoints: <code>bioc-release.r-universe.dev/api/{packages,files}</code>, <code>bioc.r-universe.dev/api/packages/limma</code> (2026-08-04); <code>bioc-registry.seandavi.workers.dev/data/prop/{bioc,bioc-release}/index.json</code> and <code>/gate</code> (2026-09-30)</li>
+<li>Related: <a href="./legacy-propagation.html">Propagation in the legacy system</a>, <a href="./registry-switch.html">Registry switch</a>, <a href="./builder-transition.html">Builder Transition</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+.mermaid { cursor: zoom-in; }
+.mermaid.zoomed {
+  position: fixed; inset: 0; z-index: 9999; cursor: zoom-out;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--quarto-body-bg, #fff);
+}
+.mermaid.zoomed svg { max-width: 95vw !important; max-height: 95vh !important; height: auto !important; }
+</style>
+<script>
+document.querySelectorAll("pre.mermaid").forEach(function (el) {
+  el.addEventListener("click", function () { el.classList.toggle("zoomed"); });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/seandavi\.github\.io\/bioc-infrastructure\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/propagation-gate.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/propagation-gate.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

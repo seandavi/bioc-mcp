@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
-import { docsPages, renderPage, renderSection } from '../../../src/core/docs/pages';
+import { docsPages, renderPage, renderSectionTree } from '../../../src/core/docs/pages';
 import { docsPageResource } from '../../../src/core/docs/resources';
 import type { ResourceTemplateDef } from '../../../src/core/capability';
 import { CapabilityError } from '../../../src/errors';
@@ -41,8 +41,15 @@ describe('docsPageResource', () => {
 
   it('reads one section when the URI has a fragment', async () => {
     const pages = docsPages(await fixtureDocsIndex());
-    const record = pages.byPath.get('propagation-gate.html')!.records.find((r) => r.url.endsWith('#why-the-registry-polls'))!;
-    expect(resource.read('bioc://docs/propagation-gate.html#why-the-registry-polls')).toBe(renderSection(record));
+    const page = pages.byPath.get('propagation-gate.html')!;
+    const record = page.records.find((r) => r.url.endsWith('#why-the-registry-polls'))!;
+    expect(resource.read('bioc://docs/propagation-gate.html#why-the-registry-polls')).toBe(renderSectionTree(page, record));
+  });
+
+  it('reads a split h2 with its subsections', async () => {
+    const text = resource.read('bioc://docs/operations.html#runbooks');
+    expect(text.indexOf('## Roll back the Worker')).toBeGreaterThan(-1);
+    expect(text.indexOf('## Roll back DNS')).toBeGreaterThan(text.indexOf('## Roll back the Worker'));
   });
 
   it('throws not_found for an unknown URI, pointing at docs_search', () => {

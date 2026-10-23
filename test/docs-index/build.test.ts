@@ -1,17 +1,29 @@
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderArtifactModule, writeArtifactModule } from '../../scripts/docs-index/build';
+import { siteSubsections } from '../../scripts/docs-index/site';
 import { loadDocsIndex } from '../../src/docs-index/load';
 import { DocsRecordSchema } from '../../src/docs-index/schema';
 import { CapabilityError } from '../../src/errors';
 import { fixtureFetch } from '../support/fixture-fetch';
 import { BUILD_COMMIT, DOCS_FIXTURES_DIR, NOW, buildFromFixtures, fixtureArtifact, realConfig } from './support';
 
-const SEARCH_URL = 'https://seandavi.github.io/bioc-infrastructure/search.json';
+const SITE_URL = 'https://seandavi.github.io/bioc-infrastructure/';
+const SEARCH_URL = SITE_URL + 'search.json';
+
+/** The distinct pages (href before '#') of the fixture search.json. */
+const SITE_PAGES: string[] = [
+  ...new Set(
+    (JSON.parse(readFileSync(join(DOCS_FIXTURES_DIR, 'seandavi.github.io', 'bioc-infrastructure', 'search.json'), 'utf8')) as { href: string }[]).map(
+      (entry) => entry.href.split('#')[0]!,
+    ),
+  ),
+];
 
 function fixtureFile(url: string): string {
   const { hostname, pathname } = new URL(url);
@@ -23,6 +35,9 @@ function routesFor(override?: Parameters<typeof fixtureFetch>[0][string]) {
   const config = realConfig();
   const routes: Parameters<typeof fixtureFetch>[0] = {};
   routes[SEARCH_URL] = override ?? { file: 'docs/seandavi.github.io/bioc-infrastructure/search.json' };
+  for (const page of SITE_PAGES) {
+    routes[SITE_URL + page] = { file: `docs/seandavi.github.io/bioc-infrastructure/${page}` };
+  }
   for (const { repo, ref, files } of config.repos) {
     for (const file of files) {
       const path = `seandavi/${repo}/${ref}/${file}`;
@@ -60,10 +75,10 @@ describe('buildDocsIndex', () => {
     await expect(JSON.stringify(summary, null, 2) + '\n').toMatchFileSnapshot('./__snapshots__/build-summary.json');
   });
 
-  it('builds valid records: 264 site/adr first, unique ids, repo only on repo records', async () => {
+  it('builds valid records: 381 site/adr first, unique ids, repo only on repo records', async () => {
     const { store } = await fixtureArtifact();
     const siteCount = store.records.filter((r) => r.source !== 'repo').length;
-    expect(siteCount).toBe(264);
+    expect(siteCount).toBe(381);
     expect(store.records.slice(0, siteCount).every((r) => r.source !== 'repo')).toBe(true);
     expect(new Set(store.records.map((r) => r.id)).size).toBe(store.records.length);
     for (const record of store.records) {
@@ -91,6 +106,58 @@ describe('buildDocsIndex', () => {
     }
     expect(inputs.reduce((sum, i) => sum + i.record_count, 0)).toBe(store.meta.record_count);
     expect(store.meta).toMatchObject({ built_at: '2026-10-22T00:00:00.000Z', build_commit: BUILD_COMMIT });
+  });
+
+  it('fetches 41 site pages and records 535 records', async () => {
+    expect(SITE_PAGES).toHaveLength(41);
+    const { store } = await fixtureArtifact();
+    expect(store.records).toHaveLength(535);
+    expect(store.meta.inputs[0]?.record_count).toBe(381);
+  });
+
+  it('splits site h2 records at h3: the rollback-worker runbook is its own record', async () => {
+    const { store } = await fixtureArtifact();
+    const byId = new Map(store.records.map((r) => [r.id, r]));
+    const runbook = byId.get('site:operations.html#rollback-worker')!;
+    expect(runbook).toMatchObject({
+      url: SITE_URL + 'operations.html#rollback-worker',
+      section: 'Roll back the Worker',
+      crumbs: ['Overview', 'Operating', 'Operations & Runbooks', 'Runbooks'],
+      source: 'site',
+    });
+    expect(runbook.text.startsWith('Roll back the Worker\n')).toBe(true);
+    expect(byId.get('site:operations.html#runbooks')!.text).not.toContain('wrangler rollback');
+    for (const id of ['deploy-worker', 'rollback-worker', 'rollback-site', 'failed-sync', 'purge', 'yank', 'rollback-dns']) {
+      expect(byId.has(`site:operations.html#${id}`)).toBe(true);
+    }
+  });
+
+  it('makes every level-3 section of every page a record that starts with its heading', async () => {
+    const { store } = await fixtureArtifact();
+    const byId = new Map(store.records.map((r) => [r.id, r]));
+    let count = 0;
+    for (const page of SITE_PAGES) {
+      const html = readFileSync(join(DOCS_FIXTURES_DIR, 'seandavi.github.io', 'bioc-infrastructure', page), 'utf8');
+      for (const subsections of siteSubsections(html).values()) {
+        for (const { id, heading } of subsections) {
+          const record = byId.get(`site:${page}#${id}`);
+          expect(record, `${page}#${id}`).toBeDefined();
+          expect(record!.text.split('\n')[0]).toBe(heading);
+          expect(record!.section).toBe(heading);
+          count++;
+        }
+      }
+    }
+    expect(count).toBe(117);
+  });
+
+  it('rejects with not_found naming the page URL when a site page has no route', async () => {
+    const routes = routesFor();
+    routes[SITE_URL + 'operations.html'] = { status: 404 };
+    const error = await buildFromFixtures(realConfig(), fixtureFetch(routes)).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(CapabilityError);
+    expect((error as CapabilityError).code).toBe('not_found');
+    expect((error as CapabilityError).message).toContain(SITE_URL + 'operations.html');
   });
 
   it('passes through last_modified from the upstream header', async () => {

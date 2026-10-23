@@ -14,7 +14,7 @@ import { createMemoryCache } from '../../src/upstreams/cache';
 import { fetchUpstream, fetchUpstreamJson, pathSegment, type Upstream, type UpstreamResponse } from '../../src/upstreams/http';
 import type { DocsSourcesConfig } from './config';
 import { markdownRecords } from './markdown';
-import { siteRecords } from './site';
+import { siteRecords, siteSubsections, splitSiteRecords, type SiteSubsection } from './site';
 
 export interface DocsBuildDeps {
   fetch: FetchFn;
@@ -50,7 +50,7 @@ export async function buildDocsIndex(config: DocsSourcesConfig, deps: DocsBuildD
     baseUrl: config.site_url,
     ttlSeconds: 3600,
     timeoutMs: 30_000,
-    description: 'Quarto search.json of the infrastructure docs site.',
+    description: 'Quarto search.json and page HTML of the infrastructure docs site.',
   };
   const githubRaw: Upstream = {
     id: 'github-raw',
@@ -70,7 +70,16 @@ export async function buildDocsIndex(config: DocsSourcesConfig, deps: DocsBuildD
   };
 
   const site = await fetchUpstreamJson(fetchDeps, docsSite, 'search.json');
-  add(site.response, siteRecords(site.json, config.site_url));
+  const flat = siteRecords(site.json, config.site_url);
+  // Page HTML is read only for h3 structure; the text and provenance stay search.json's (no meta.inputs entry).
+  const subsectionsByPage = new Map<string, Map<string, SiteSubsection[]>>();
+  for (const record of flat) {
+    const page = record.id.slice('site:'.length).split('#')[0]!;
+    if (subsectionsByPage.has(page)) continue;
+    const response = await fetchUpstream(fetchDeps, docsSite, page.split('/').map(pathSegment).join('/'));
+    subsectionsByPage.set(page, siteSubsections(response.body));
+  }
+  add(site.response, splitSiteRecords(flat, subsectionsByPage, config.site_url));
 
   for (const { repo, ref, files } of config.repos) {
     for (const file of files) {

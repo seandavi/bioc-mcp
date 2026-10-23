@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-09-28">
+
+<title>Cloudflare Account Migration – Bioconductor Infrastructure</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7e725af8e1b2581408ee27b5818d3660.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-88cd55e827d36f33feca41c66d4eeb1c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KLLV1GCF4E"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KLLV1GCF4E', { 'anonymize_ip': true});
+</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bioconductor Infrastructure</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./install.html"> 
+<span class="menu-text">Installing Packages</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./report.html"> 
+<span class="menu-text">Report a Problem</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/seandavi/bioc-infrastructure"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./roadmap.html">Plans</a></li><li class="breadcrumb-item"><a href="./cloudflare-account-migration.html">Cloudflare Account Migration</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./install.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installing Packages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reporting a Problem</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mirror-how-to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Running a Mirror</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">How it works</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-it-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How bioconductor.org Works</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cache.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge Cache</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./astro-site-build.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Astro Site Build</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./propagation-gate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propagation Gate</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Operating</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Operations &amp; Runbooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CI &amp; Scheduled Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Plans</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry-switch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registry Switch (plan)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cloudflare-account-migration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Cloudflare Account Migration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Proposals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proposal-unified-search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unified Search</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Records</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./improvements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What the New Site Has Changed</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./traffic-2026-09-30.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Day of Traffic (2026-09-30)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dns-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNS Inventory &amp; Cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-universe-size-limits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">r-universe Size Limits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-packages-in-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Packages in r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./current-state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Current State (legacy)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./legacy-propagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Legacy Propagation &amp; Push Hooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./builder-transition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Builder Transition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./views-and-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VIEWS &amp; r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducing-package-pages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Download Stats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r2-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R2 Migration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decommission-plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decommission Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Decisions (ADRs)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0001-public-docs-site-with-a-publication-boundary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0001 — The docs site is public, with a publication boundary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0002-mirror-access-logs-unfiltered.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0002 — Mirror the access logs unfiltered; interpret with views</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0003 — Request logging after the Cloudflare cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0004-download-statistics-are-generated-static-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0004 — Download statistics are generated static files, not a live service</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0005-completeness-is-measured-by-origin-not-page-type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0005 — Completeness is measured by origin, not by page type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0006-old-releases-and-their-checkresults-are-archival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0006 — 33 of 35 releases, and checkResults for them, are archival</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0007-cloudflare-workflows-for-the-release-roll-guard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0008-three-repos-and-a-strangler-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0008 — Split by audience into three repositories; migrate by strangling behind the Worker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0009-client-addresses-are-hashed-at-the-edge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0009 — Client addresses are hashed at the edge, not de-identified downstream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0011-one-propagation-gate-for-every-producer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0011 — One propagation gate for every producer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0012 — Client addresses are stored raw; de-identification is a view</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0013-redirects-land-on-content-or-they-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0013 — A redirect lands on the content, or it goes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#why-move" id="toc-why-move" class="nav-link active" data-scroll-target="#why-move">Why move</a></li>
+  <li><a href="#what-it-costs-to-do-later-instead-of-first" id="toc-what-it-costs-to-do-later-instead-of-first" class="nav-link" data-scroll-target="#what-it-costs-to-do-later-instead-of-first">What it costs to do later instead of first</a></li>
+  <li><a href="#inventory-what-moves-and-how" id="toc-inventory-what-moves-and-how" class="nav-link" data-scroll-target="#inventory-what-moves-and-how">Inventory — what moves, and how</a></li>
+  <li><a href="#procedure" id="toc-procedure" class="nav-link" data-scroll-target="#procedure">Procedure</a>
+  <ul class="collapse">
+  <li><a href="#a.-prepare-the-new-account-no-user-impact" id="toc-a.-prepare-the-new-account-no-user-impact" class="nav-link" data-scroll-target="#a.-prepare-the-new-account-no-user-impact">A. Prepare the new account (no user impact)</a></li>
+  <li><a href="#b.-build-the-zone-in-the-new-account-no-user-impact" id="toc-b.-build-the-zone-in-the-new-account-no-user-impact" class="nav-link" data-scroll-target="#b.-build-the-zone-in-the-new-account-no-user-impact">B. Build the zone in the new account (no user impact)</a></li>
+  <li><a href="#the-certificate-gap" id="toc-the-certificate-gap" class="nav-link" data-scroll-target="#the-certificate-gap">The certificate gap</a></li>
+  <li><a href="#c.-switch-nameservers" id="toc-c.-switch-nameservers" class="nav-link" data-scroll-target="#c.-switch-nameservers">C. Switch nameservers</a></li>
+  <li><a href="#d.-clean-up-after-a-clean-week" id="toc-d.-clean-up-after-a-clean-week" class="nav-link" data-scroll-target="#d.-clean-up-after-a-clean-week">D. Clean up (after a clean week)</a></li>
+  </ul></li>
+  <li><a href="#open-questions" id="toc-open-questions" class="nav-link" data-scroll-target="#open-questions">Open questions</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/cloudflare-account-migration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/cloudflare-account-migration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./roadmap.html">Plans</a></li><li class="breadcrumb-item"><a href="./cloudflare-account-migration.html">Cloudflare Account Migration</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Cloudflare Account Migration</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 28, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Status: plan, deferred
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>bioconductor.org</code> zone went into the <strong>current</strong> Cloudflare account (the personal account <code>55bf7202…</code>, which already holds the <code>bioc-site</code> Worker, Workers Paid and R2 Paid) so the DNS cutover did not wait on an account move. See the <a href="./dns-cutover.html#migration-plan">DNS cutover runbook</a>. This page is the plan for moving everything to a dedicated Bioconductor account <strong>after</strong> the cutover has settled. It has not been rehearsed, and items marked <em>verify</em> have not been confirmed against Cloudflare.</p>
+</div>
+</div>
+<section id="why-move" class="level2">
+<h2 class="anchored" data-anchor-id="why-move">Why move</h2>
+<p>The Worker, R2 buckets, dev hostname and now the production zone share an account with unrelated personal domains.</p>
+<ul>
+<li><strong>Permissions are account-wide.</strong> Workers and R2 rights can’t be scoped to one project, so a Bioconductor co-admin would hold rights over unrelated infrastructure, and the reverse.</li>
+<li><strong>Billing, grants and sponsorships attach to an account.</strong> Bioconductor’s bill should not be one person’s card.</li>
+<li><strong>Bus factor.</strong> A project account with 2–3 super administrators survives any one person leaving. A personal account doesn’t.</li>
+</ul>
+</section>
+<section id="what-it-costs-to-do-later-instead-of-first" class="level2">
+<h2 class="anchored" data-anchor-id="what-it-costs-to-do-later-instead-of-first">What it costs to do later instead of first</h2>
+<p>Doing it after the cutover means a <strong>second nameserver change on the live production <!-- docs-check: ok --> domain</strong>. A zone can’t be handed between accounts. It’s added fresh to the new account, which assigns different nameservers, and the registrar is repointed. That is the price of not blocking the cutover. It’s manageable because the zone is small, fully scripted, and the procedure below keeps both accounts serving identical answers throughout.</p>
+</section>
+<section id="inventory-what-moves-and-how" class="level2">
+<h2 class="anchored" data-anchor-id="inventory-what-moves-and-how">Inventory — what moves, and how</h2>
+<p>It’s a redeploy, not a rebuild. Everything except data is declared in <code>wrangler.jsonc</code>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Piece</th>
+<th>Effort</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workers, cron triggers, Workflows: <code>bioc-site</code> (cron every 15 min, Workflow <code>bioc-release-roll</code>), <code>bioc-registry</code> (cron every 15 min, Workflow <code>bioc-registry-observe</code>), and <code>bioc-prop</code>, now a stub that only returns a 301 to bioc-registry</td>
+<td>minutes</td>
+<td>Redeploy with the new <code>account_id</code>; code unchanged</td>
+</tr>
+<tr class="even">
+<td>Secrets, API tokens</td>
+<td>~1 hour</td>
+<td>Nothing transfers. Re-set every secret, reissue CI tokens, update GitHub Actions secrets</td>
+</tr>
+<tr class="odd">
+<td>R2 buckets <code>bioc-site</code>, <code>bioc-prop</code> (now bioc-registry’s archive bucket)</td>
+<td>~1 day, mostly waiting</td>
+<td>No cross-account move. Copy with Super Slurper or rclone. Egress is free; cost is write operations, driven by object count: <code>bioc-site</code> holds 4.2 million objects, 5.1 TB (<a href="./improvements.html#costs-about-5000-a-month-down-to-a-couple-of-hundred">costs</a>); <code>bioc-prop</code> not yet counted</td>
+</tr>
+<tr class="even">
+<td>Producers writing to R2</td>
+<td>1–2 hours</td>
+<td>The S3 endpoint embeds the account ID. Every sync job needs the new endpoint and keys, and the purge token needs access to the new zone. <code>cf-purge.sh</code> in bioc-edge purges four hosts: <code>bioconductor.org</code>, <code>www.</code>, <code>next.</code> and <code>bioc-dev.cancerdatasci.org</code></td>
+</tr>
+<tr class="odd">
+<td>Analytics Engine dataset <code>bioc_site_requests_v3</code></td>
+<td>not movable</td>
+<td>History restarts (retention is ~3 months anyway)</td>
+</tr>
+<tr class="even">
+<td>Logpush job (request log, <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html">ADR 0003</a>)</td>
+<td>minutes</td>
+<td>Recreate. <strong>Overlap old and new jobs</strong> so no window goes unlogged; Logpush cannot backfill</td>
+</tr>
+<tr class="odd">
+<td>In-flight Workflow instances</td>
+<td>lost</td>
+<td>Let them finish, or accept a rerun</td>
+</tr>
+<tr class="even">
+<td><code>bioconductor.org</code> zone</td>
+<td>~1 hour + a registrar change</td>
+<td>Below</td>
+</tr>
+<tr class="odd">
+<td>Zone settings (SSL mode, Always Use HTTPS, Bot Preference Sync off, cache rules…)</td>
+<td>~1 hour</td>
+<td>Not copied. List them from the old zone first. Known so far: Browser Cache TTL “Respect existing headers” (set 2026-09-28, <a href="https://github.com/seandavi/bioc-edge/issues/38">bioc-edge#38</a>), and the WAF rule blocking AS150436 and AS4229 on <code>/talks/</code> (<a href="https://github.com/seandavi/bioc-edge/issues/32">bioc-edge#32</a>). Without that rule, the crawler that hit <code>/talks/</code> on 2026-09-28 is served again</td>
+</tr>
+<tr class="even">
+<td>Edge certificate</td>
+<td>automatic, but see the gap below</td>
+<td>Issued fresh for the new zone</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="procedure" class="level2">
+<h2 class="anchored" data-anchor-id="procedure">Procedure</h2>
+<section id="a.-prepare-the-new-account-no-user-impact" class="level3">
+<h3 class="anchored" data-anchor-id="a.-prepare-the-new-account-no-user-impact">A. Prepare the new account (no user impact)</h3>
+<ol type="1">
+<li>Create the account under a Bioconductor-owned address. Add at least two more super administrators, and set the billing owner and payment method.</li>
+<li>Subscribe <strong>Workers Paid</strong> and <strong>R2</strong> on it.</li>
+<li>Create the R2 buckets and start the copy. Record object counts on both sides.</li>
+<li>Deploy the Workers to the new account with a <strong>temporary hostname</strong> only (a <code>workers.dev</code> name, or a spare domain). Re-set secrets. Run the full-crawl <code>cutover-diff.sh</code> against it.</li>
+<li>Repoint producers to write to <strong>both</strong> accounts’ buckets, or to the new one plus a final re-sync before the switch. Both Workers must serve the same bytes during the overlap in step C.</li>
+</ol>
+</section>
+<section id="b.-build-the-zone-in-the-new-account-no-user-impact" class="level3">
+<h3 class="anchored" data-anchor-id="b.-build-the-zone-in-the-new-account-no-user-impact">B. Build the zone in the new account (no user impact)</h3>
+<ol type="1">
+<li><p>Export the live zone from the <strong>old</strong> Cloudflare account: <strong>DNS → Records → Import and Export → Export</strong>, or <code>GET /zones/&lt;id&gt;/dns_records/export</code>. Cloudflare is now the source of truth, not Route53. Also save the record list as JSON through the API, because the BIND export does not carry each record’s <strong>proxied</strong> flag.</p></li>
+<li><p>Add <code>bioconductor.org</code> to the new account and choose the zone-file upload. It gets its own pending nameserver pair.</p></li>
+<li><p><strong>Reset proxy status record by record</strong> from the JSON. The dashboard upload marks every A/CNAME as Proxied (seen on 2026-09-28). Only the records that are proxied in the old zone should be proxied here (on 2026-09-30: apex, <code>www</code> and <code>next</code>).</p></li>
+<li><p>Recreate zone settings from the list above, and the Worker routes for <code>bioconductor.org/*</code>, <code>www.bioconductor.org/*</code> and <code>next.bioconductor.org/*</code> in the new account’s <code>wrangler.jsonc</code> (inert until the zone is Active).</p></li>
+<li><p>Diff the two Cloudflare zones with the repo’s script:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">A</span><span class="op">=&lt;</span>old-cf-ns<span class="op">&gt;</span> B=<span class="op">&lt;</span>new-cf-ns<span class="op">&gt;</span> ./dns/verify-zone.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Refresh <code>dns/route53-index.txt</code> from the old zone’s export first if records changed since the Route53 copy.</p></li>
+<li><p>The new zone is pending, so the 28-day clock runs (Free plan). Do C within that window.</p></li>
+</ol>
+</section>
+<section id="the-certificate-gap" class="level3">
+<h3 class="anchored" data-anchor-id="the-certificate-gap">The certificate gap</h3>
+<p>A pending zone has no active edge certificate. At the moment of the switch, resolvers that reach the new zone for a <strong>proxied</strong> name (apex, <code>www</code>) are served by a zone whose Universal certificate isn’t issued yet. That means TLS errors until it is, usually minutes and occasionally longer. Two ways to close the gap:</p>
+<ul>
+<li><strong>Pre-issue.</strong> Order an Advanced Certificate for <code>bioconductor.org</code> and <code>*.bioconductor.org</code> in the new zone with <strong>TXT</strong> validation, then add the TXT challenge records to the <em>old</em> (live) zone so it validates before the switch. <em>Verify</em> that Advanced Certificate Manager allows this on a pending zone and what it costs. It is a paid add-on.</li>
+<li><strong>Drop to grey for the switch.</strong> If CloudFront is still running (before M2 retires it), set apex and <code>www</code> back to DNS only in the old zone for the switch window. The <!-- docs-check: ok --> site is then served by CloudFront (the rollback target of the site flip). Re-proxy in the new zone once its certificate shows Active. This is free, but only available while CloudFront exists. <strong>If the account move happens after M2, the pre-issue route is the only one.</strong></li>
+</ul>
+</section>
+<section id="c.-switch-nameservers" class="level3">
+<h3 class="anchored" data-anchor-id="c.-switch-nameservers">C. Switch nameservers</h3>
+<ol type="1">
+<li>Lower nothing: Cloudflare’s NS TTL is fixed at 86400 s, and the .org parent’s is 3600 s.</li>
+<li>Freeze record changes in both Cloudflare zones, or make each change in both.</li>
+<li>Registrar (Route53 Domains, AWS account 555219204010): <strong>Registered domains → bioconductor.org → Actions → Edit name servers</strong> → replace the old Cloudflare pair with the new pair. Copy, don’t type.</li>
+<li>Cloudflare (new account) → <strong>Overview → Re-check now</strong>. Wait for Active and the certificate.</li>
+<li>The old zone turns <strong>Moved</strong> (Cloudflare: deleted after 7 days in that state). It keeps answering for resolvers that cached the old delegation, for up to a day. <strong>Keep the old Worker, routes, buckets and Logpush running for at least 2 days</strong>, so those stragglers get the same site and are still logged.</li>
+<li>Post-checks: <code>verify-zone.sh</code> against the public resolvers, <code>curl -sI</code> apex and <code>www</code>, mail to and from the domain, <code>ssh git@git.bioconductor.org</code>, <code>cutover-diff.sh</code>, and Logpush records arriving in the new destination.</li>
+</ol>
+<p><strong>Rollback</strong> (within the 7-day Moved window): put the old Cloudflare pair back at the registrar, then <strong>Re-check now</strong> in the old account. <em>Verify</em> that a Moved zone re-activates in place rather than needing a re-add. If it doesn’t, the rollback is re-adding it and re-importing from the saved export, which would mean new nameservers again. Don’t let the old zone reach Deleted until the new one has run clean for a week.</p>
+</section>
+<section id="d.-clean-up-after-a-clean-week" class="level3">
+<h3 class="anchored" data-anchor-id="d.-clean-up-after-a-clean-week">D. Clean up (after a clean week)</h3>
+<ul>
+<li>Remove the zone from the old account, then the Workers, routes, buckets, tokens and Logpush job there.</li>
+<li>Retire the dev hostname <code>bioc-dev.cancerdatasci.org</code>, or recreate it under a Bioconductor-owned name.</li>
+<li>Update the docs that name the old account ID (this page and the <a href="./dns-cutover.html">DNS cutover runbook</a>). <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html">ADR 0003</a> names no account.</li>
+</ul>
+</section>
+</section>
+<section id="open-questions" class="level2">
+<h2 class="anchored" data-anchor-id="open-questions">Open questions</h2>
+<ul>
+<li>Who owns the new account and who are the super administrators? Who pays? Not decided as of 2026-09-30. Until then everything runs on, and is billed to, the personal account named at the top of this page.</li>
+<li>R2 object count for <code>bioc-prop</code>, to size the copy.</li>
+<li>Is the move done before or after M2 retires CloudFront? That decides how the certificate gap is closed.</li>
+<li>Is there a sponsorship route (e.g.&nbsp;Cloudflare’s open-source program) that should be applied for on the new account before any paid add-ons?</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+.mermaid { cursor: zoom-in; }
+.mermaid.zoomed {
+  position: fixed; inset: 0; z-index: 9999; cursor: zoom-out;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--quarto-body-bg, #fff);
+}
+.mermaid.zoomed svg { max-width: 95vw !important; max-height: 95vh !important; height: auto !important; }
+</style>
+<script>
+document.querySelectorAll("pre.mermaid").forEach(function (el) {
+  el.addEventListener("click", function () { el.classList.toggle("zoomed"); });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/seandavi\.github\.io\/bioc-infrastructure\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/cloudflare-account-migration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/cloudflare-account-migration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

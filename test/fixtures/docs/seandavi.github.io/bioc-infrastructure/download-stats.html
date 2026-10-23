@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Download Stats – Bioconductor Infrastructure</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7e725af8e1b2581408ee27b5818d3660.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-39c5bf676fe5f74c3e2352cc4d0198db.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-88cd55e827d36f33feca41c66d4eeb1c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-7df852acea54d18a157409ecc6f91305.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KLLV1GCF4E"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KLLV1GCF4E', { 'anonymize_ip': true});
+</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bioconductor Infrastructure</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./roadmap.html"> 
+<span class="menu-text">Roadmap</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./install.html"> 
+<span class="menu-text">Installing Packages</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./report.html"> 
+<span class="menu-text">Report a Problem</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/seandavi/bioc-infrastructure"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./improvements.html">Records</a></li><li class="breadcrumb-item"><a href="./download-stats.html">Download Stats</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Using</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./install.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installing Packages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reporting a Problem</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mirror-how-to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Running a Mirror</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">How it works</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-it-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">How bioconductor.org Works</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cache.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge Cache</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./astro-site-build.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Astro Site Build</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./propagation-gate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Propagation Gate</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Operating</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Operations &amp; Runbooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CI &amp; Scheduled Jobs</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Plans</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./roadmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Roadmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry-switch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registry Switch (plan)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cloudflare-account-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cloudflare Account Migration</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Proposals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proposal-unified-search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unified Search</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Records</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./improvements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What the New Site Has Changed</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./traffic-2026-09-30.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Day of Traffic (2026-09-30)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dns-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNS Inventory &amp; Cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-universe-size-limits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">r-universe Size Limits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-packages-in-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Packages in r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./current-state.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Current State (legacy)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./legacy-propagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Legacy Propagation &amp; Push Hooks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./builder-transition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Builder Transition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./views-and-r-universe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VIEWS &amp; r-universe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducing-package-pages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Package Pages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./download-stats.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Download Stats</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r2-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R2 Migration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decommission-plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decommission Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Decisions (ADRs)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0001-public-docs-site-with-a-publication-boundary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0001 — The docs site is public, with a publication boundary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0002-mirror-access-logs-unfiltered.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0002 — Mirror the access logs unfiltered; interpret with views</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0003-request-logging-after-the-cloudflare-cutover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0003 — Request logging after the Cloudflare cutover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0004-download-statistics-are-generated-static-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0004 — Download statistics are generated static files, not a live service</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0005-completeness-is-measured-by-origin-not-page-type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0005 — Completeness is measured by origin, not by page type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0006-old-releases-and-their-checkresults-are-archival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0006 — 33 of 35 releases, and checkResults for them, are archival</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0007-cloudflare-workflows-for-the-release-roll-guard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0007 — Cloudflare Workflows carries the human-approval gate, starting with the release roll</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0008-three-repos-and-a-strangler-migration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0008 — Split by audience into three repositories; migrate by strangling behind the Worker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0009-client-addresses-are-hashed-at-the-edge.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0009 — Client addresses are hashed at the edge, not de-identified downstream</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0010-two-new-repos-for-the-build-system-and-the-manifest-name.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0010 — Two new repos for the parallel build system; the governance file is the manifest, not a registry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0011-one-propagation-gate-for-every-producer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0011 — One propagation gate for every producer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0012-client-addresses-are-stored-raw-and-hashed-in-views.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0012 — Client addresses are stored raw; de-identification is a view</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adr/0013-redirects-land-on-content-or-they-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0013 — A redirect lands on the content, or it goes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#two-systems-both-running" id="toc-two-systems-both-running" class="nav-link active" data-scroll-target="#two-systems-both-running">Two systems, both running</a>
+  <ul class="collapse">
+  <li><a href="#two-abandoned-attempts-still-on-disk" id="toc-two-abandoned-attempts-still-on-disk" class="nav-link" data-scroll-target="#two-abandoned-attempts-still-on-disk">Two abandoned attempts, still on disk</a></li>
+  </ul></li>
+  <li><a href="#what-counts-as-a-download" id="toc-what-counts-as-a-download" class="nav-link" data-scroll-target="#what-counts-as-a-download">What counts as a download</a></li>
+  <li><a href="#do-the-two-systems-agree" id="toc-do-the-two-systems-agree" class="nav-link" data-scroll-target="#do-the-two-systems-agree">Do the two systems agree?</a>
+  <ul class="collapse">
+  <li><a href="#where-the-pre-2020-numbers-come-from" id="toc-where-the-pre-2020-numbers-come-from" class="nav-link" data-scroll-target="#where-the-pre-2020-numbers-come-from">Where the pre-2020 numbers come from</a></li>
+  <li><a href="#package-coverage-differs-and-the-current-system-is-right" id="toc-package-coverage-differs-and-the-current-system-is-right" class="nav-link" data-scroll-target="#package-coverage-differs-and-the-current-system-is-right">Package coverage differs, and the current system is right</a></li>
+  </ul></li>
+  <li><a href="#two-data-quality-problems" id="toc-two-data-quality-problems" class="nav-link" data-scroll-target="#two-data-quality-problems">Two data-quality problems</a>
+  <ul class="collapse">
+  <li><a href="#the-augustseptember-2025-spike-is-real-traffic" id="toc-the-augustseptember-2025-spike-is-real-traffic" class="nav-link" data-scroll-target="#the-augustseptember-2025-spike-is-real-traffic">The August–September 2025 spike is real traffic</a></li>
+  <li><a href="#junejuly-2026-both-systems-are-wrong" id="toc-junejuly-2026-both-systems-are-wrong" class="nav-link" data-scroll-target="#junejuly-2026-both-systems-are-wrong">June/July 2026: both systems are wrong</a></li>
+  <li><a href="#resolved-both-published-series-undercount-for-two-unrelated-reasons" id="toc-resolved-both-published-series-undercount-for-two-unrelated-reasons" class="nav-link" data-scroll-target="#resolved-both-published-series-undercount-for-two-unrelated-reasons">Resolved: both published series undercount, for two unrelated reasons</a></li>
+  <li><a href="#two-routing-bugs-easy-to-trip-over" id="toc-two-routing-bugs-easy-to-trip-over" class="nav-link" data-scroll-target="#two-routing-bugs-easy-to-trip-over">Two routing bugs, easy to trip over</a></li>
+  </ul></li>
+  <li><a href="#can-this-be-rebuilt-from-source" id="toc-can-this-be-rebuilt-from-source" class="nav-link" data-scroll-target="#can-this-be-rebuilt-from-source">Can this be rebuilt from source?</a>
+  <ul class="collapse">
+  <li><a href="#mirror-the-logs-interpret-them-locally" id="toc-mirror-the-logs-interpret-them-locally" class="nav-link" data-scroll-target="#mirror-the-logs-interpret-them-locally">Mirror the logs; interpret them locally</a></li>
+  <li><a href="#the-script" id="toc-the-script" class="nav-link" data-scroll-target="#the-script">The script</a></li>
+  </ul></li>
+  <li><a href="#what-this-means-for-the-migration" id="toc-what-this-means-for-the-migration" class="nav-link" data-scroll-target="#what-this-means-for-the-migration">What this means for the migration</a>
+  <ul class="collapse">
+  <li><a href="#what-replaces-the-logs" id="toc-what-replaces-the-logs" class="nav-link" data-scroll-target="#what-replaces-the-logs">What replaces the logs</a></li>
+  </ul></li>
+  <li><a href="#what-could-not-be-determined" id="toc-what-could-not-be-determined" class="nav-link" data-scroll-target="#what-could-not-be-determined">What could not be determined</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/download-stats.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/download-stats.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./improvements.html">Records</a></li><li class="breadcrumb-item"><a href="./download-stats.html">Download Stats</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Download Stats</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Part of the migration record
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A dated snapshot kept as history, not a live view of the current system: corrected if wrong, but not updated to track the estate. The <a href="./index.html">overview</a> links the reference pages that describe the replacement itself. <strong>Since the cutover (2026-09-30).</strong> Since about 20:09 UTC on 2026-09-28, requests to <code>bioconductor.org</code> and <code>www</code> go to Cloudflare, not CloudFront, so the CloudFront logs that feed both pipelines below no longer see production traffic. The published tables at <code>/packages/stats/</code> were the legacy output, passed through uncached to master, and stopped gaining days at the cutover (<a href="https://github.com/seandavi/bioc-infrastructure/issues/114">bioc-infrastructure#114</a>). The “replacement is live” callout below covers log collection only: request logs go by Logpush to <code>gs://bioc-u24-logs/cloudflare/bioc-access-logs/</code>.</p>
+<p><strong>Correction (2026-10-16).</strong> The statistics from the new logs are generated by <a href="https://github.com/seandavi/bioc-traffic">bioc-traffic</a> (<code>download-stats.py</code>, issue <a href="https://github.com/seandavi/bioc-traffic/issues/11">#11</a>, closed), not by bioc-registry as this note said before (<a href="https://github.com/seandavi/bioc-registry/issues/26">bioc-registry#26</a> was superseded by that work and is still open). A daily timer writes the <code>/packages/stats/</code> <code>.tab</code> tree from both log eras and uploads it to R2. Since 2026-10-16 (about 20:00 UTC, <a href="https://github.com/seandavi/bioc-edge/pull/66">bioc-edge#66</a>) the Worker serves the <code>.tab</code> files from R2, so those files count October onward. Since about 23:00 UTC the same day the HTML pages and <code>static/barchart.js</code> are generated from that tree too (<a href="https://github.com/seandavi/bioc-traffic/issues/28">bioc-traffic#28</a>) and served from R2, and the Worker no longer sends any <code>/packages/stats/</code> request to master (<a href="https://github.com/seandavi/bioc-edge/pull/68">bioc-edge#68</a>). The stats no longer depend on the webstats host, so the “dynamic application” points further down this page are history. The numbers in the <code>.tab</code> files are generated on the published definition from both log eras; where and why they differ from master’s is in bioc-traffic <code>docs/published-comparison.md</code>. Bot classification is <a href="https://github.com/seandavi/bioc-traffic/issues/5">bioc-traffic#5</a>, open.</p>
+</div>
+</div>
+<p>Measured 2026-08-04. Numbers on this page are point-in-time.</p>
+<p>Bioconductor’s package download statistics — the per-package tables at <code>/packages/stats/</code>, and the <code>Rank</code> field on every package landing page — are produced by a pipeline that is separate from everything else in this repository. It has its own host, its own data source, its own database, and its own release history. It is also one of only two things master’s Apache <em>proxies</em> rather than serves from disk — the other being Solr. Retiring master without a plan for this takes the download stats offline.</p>
+<p>This page documents what that pipeline is, how a “download” is actually defined, where the published numbers actually come from — which is not one source but three eras — and the data-quality problems the measurements turned up.</p>
+<section id="two-systems-both-running" class="level2">
+<h2 class="anchored" data-anchor-id="two-systems-both-running">Two systems, both running</h2>
+<p>There are two complete implementations, and <strong>both are live today</strong>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Legacy</th>
+<th>Current</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Repository</td>
+<td><a href="https://github.com/Bioconductor/download_stats"><code>Bioconductor/download_stats</code></a></td>
+<td><a href="https://github.com/Bioconductor/bio-web-stats"><code>Bioconductor/bio-web-stats</code></a></td>
+</tr>
+<tr class="even">
+<td>Serves</td>
+<td><code>/packages/oldstats/</code></td>
+<td><code>/packages/stats/</code></td>
+</tr>
+<tr class="odd">
+<td>Server header</td>
+<td><code>Apache/2.4.52</code> (pre-generated static files)</td>
+<td><code>waitress</code> (a live Python WSGI app)</td>
+</tr>
+<tr class="even">
+<td>Stack</td>
+<td>Python + DuckDB, one database file per year</td>
+<td>Flask + SQLAlchemy, Athena → Postgres</td>
+</tr>
+<tr class="odd">
+<td>Cadence</td>
+<td>weekly cron, one repository per weekday</td>
+<td>daily, 01:12 UTC</td>
+</tr>
+<tr class="even">
+<td>Freshness observed</td>
+<td>data through 2026-08-01</td>
+<td>data through 2026-08-03</td>
+</tr>
+<tr class="odd">
+<td>First commit</td>
+<td>2017 (migrated from SVN; code is older)</td>
+<td>2023-10-05</td>
+</tr>
+</tbody>
+</table>
+<p>The handover happened on <strong>2024-05-14</strong>: a commit in the legacy repository retargeted its publishing <code>rsync</code> from <code>/packages/stats/</code> to <code>/packages/oldstats/</code>, and the new application took over the original URL. The legacy pipeline was never switched off — it still runs weekly on a Jetstream2 VM and still publishes, just to a URL nothing links to.</p>
+<p>That accident of history is useful. Two independent implementations reading the same source logs give a free cross-check, and this page leans on it heavily.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  CF["CloudFront access logs"] --&gt; S3["s3://bioc-cloudfront-logs"]
+  S3 --&gt; L["legacy: DuckDB per year&lt;br/&gt;weekly cron"]
+  S3 --&gt; A["Athena view&lt;br/&gt;v_bioc_web_downloads"]
+  A --&gt; PG["Postgres&lt;br/&gt;bioc_web_downloads"]
+  PG --&gt; F["Flask + Waitress"]
+  L --&gt;|rsync| OS["/packages/oldstats/"]
+  F --&gt;|proxied by master| NS["/packages/stats/"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Both read the same bucket of CloudFront logs. The legacy pipeline’s other historical inputs — Squid logs from the old FHCRC proxies, Apache logs from master — are commented out of its crontab, so CloudFront is the only live source for either system.</p>
+<section id="two-abandoned-attempts-still-on-disk" class="level3">
+<h3 class="anchored" data-anchor-id="two-abandoned-attempts-still-on-disk">Two abandoned attempts, still on disk</h3>
+<p>Storage recon turned up two further buckets that look relevant and are not:</p>
+<ul>
+<li>One holds a <strong>Hive-partitioned Parquet extract</strong> (<code>year=/month=/day=</code>) that the current system’s ingestion code once read directly — the line is still there, commented out. It contains four months of 2024 and nine days of September 2025, nothing since, and the objects are encrypted with a key the investigating credentials cannot use. The write timestamps fall into exactly two clusters, January 2024 and September 2025, both bearing Athena query-run identifiers — so this is not a pipeline that stalled, it is a query somebody ran twice, nineteen months apart.</li>
+<li>The other holds a <strong>rendered snapshot of the legacy stats site</strong> — the same <code>_stats.tab</code> files and category pages, 131,077 objects and 1.1 GiB. Every sampled object across all four package categories carries a timestamp inside one 90-minute window on 2024-01-19. Almost certainly the reference copy taken to validate the replacement before the 2024-05 handover.</li>
+</ul>
+<p>Neither is wired into anything today. Worth knowing so nobody mistakes them for live inputs.</p>
+</section>
+</section>
+<section id="what-counts-as-a-download" class="level2">
+<h2 class="anchored" data-anchor-id="what-counts-as-a-download">What counts as a download</h2>
+<p>Both systems define it the same way, and it is narrower than “a request to bioconductor.org”:</p>
+<ul>
+<li>The URL must be a <strong>package tarball or binary</strong> — matching <code>&lt;pkg&gt;_&lt;version&gt;.tar.gz|zip|tgz</code> under <code>src/contrib</code> or <code>bin/…/contrib/…</code>, below <code>/packages/</code>. Landing pages, vignettes, manuals, and the <code>PACKAGES</code> index files are not downloads.</li>
+<li>The HTTP status must be one of <strong>200, 301, 302, 307, 308</strong>. Redirects count. Partial content (<code>206</code>) does not, so a resumed or ranged fetch is invisible.</li>
+<li><strong>One matching log line is one download.</strong> There is no per-IP-per-day collapsing, no session logic, no dedup of any kind. The same machine pulling the same tarball ten times counts ten times.</li>
+<li><code>Nb_of_distinct_IPs</code> is a <code>COUNT(DISTINCT …)</code> over the client address, computed independently for each month and again for the whole year. The yearly figure is therefore <em>not</em> the sum of the monthly ones — it is genuinely deduplicated across the year.</li>
+</ul>
+<p>Two consequences worth stating plainly, because they are easy to get wrong when quoting these numbers:</p>
+<p><strong>Neither system filters bots.</strong> The legacy code contains an 18-entry list of known crawlers and a list of build-node addresses, with the code to exclude them — and both checks are commented out. The current system’s Athena view does not select the user-agent column at all, so it could not filter on it even in principle. No crawler, mirror, or build-farm traffic is excluded from any published number.</p>
+<p><strong>Distinct-IP counts are inflated for proxied traffic.</strong> The legacy pipeline counts distinct values of the raw address <em>field</em>, which for a forwarded request can be a comma-separated <code>X-Forwarded-For</code> chain. <code>"1.2.3.4, 5.6.7.8"</code> is counted as a different client from <code>"1.2.3.4"</code>. There is no normalization and no subnet aggregation.</p>
+</section>
+<section id="do-the-two-systems-agree" class="level2">
+<h2 class="anchored" data-anchor-id="do-the-two-systems-agree">Do the two systems agree?</h2>
+<p>Mostly, and that is the reassuring part. Comparing the repository-wide <code>bioc_stats.tab</code> from each, total downloads per year:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Year</th>
+<th style="text-align: right;">Legacy</th>
+<th style="text-align: right;">Current</th>
+<th style="text-align: right;">Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2014</td>
+<td style="text-align: right;">9,032,041</td>
+<td style="text-align: right;">8,997,377</td>
+<td style="text-align: right;">−0.38%</td>
+</tr>
+<tr class="even">
+<td>2015–2018</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">≤0.05%</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td style="text-align: right;">23,191,951</td>
+<td style="text-align: right;">23,067,474</td>
+<td style="text-align: right;">−0.54%</td>
+</tr>
+<tr class="even">
+<td>2020–2021</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">≤0.01%</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td style="text-align: right;">42,930,744</td>
+<td style="text-align: right;">42,015,520</td>
+<td style="text-align: right;">−2.13%</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td style="text-align: right;">46,195,370</td>
+<td style="text-align: right;">45,546,881</td>
+<td style="text-align: right;">−1.40%</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td style="text-align: right;">59,127,030</td>
+<td style="text-align: right;">58,659,127</td>
+<td style="text-align: right;">−0.79%</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td style="text-align: right;">98,582,586</td>
+<td style="text-align: right;">98,759,953</td>
+<td style="text-align: right;">+0.18%</td>
+</tr>
+</tbody>
+</table>
+<p>Month by month from January 2025 through May 2026 they agree within 1.3% on downloads and 0.8% on distinct IPs.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>The early years are not independent corroboration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It is tempting to read the table above as two independently written pipelines validating each other across twelve years. For the early years that is <strong>not</strong> what it shows — the current system’s pre-2020 history was <em>copied from the legacy system’s own databases</em>, so agreement there is close to tautological. See <a href="#where-the-pre-2020-numbers-come-from">Where the pre-2020 numbers come from</a>. The genuinely independent comparison starts around 2023, and the near-zero differences before that are an artifact of shared ancestry.</p>
+</div>
+</div>
+<section id="where-the-pre-2020-numbers-come-from" class="level3">
+<h3 class="anchored" data-anchor-id="where-the-pre-2020-numbers-come-from">Where the pre-2020 numbers come from</h3>
+<p>Both systems publish per-package statistics back to <strong>2009</strong>. The CloudFront logs that feed them only start on <strong>2020-01-01</strong>. So eleven years of published history cannot have been computed from the live data source, and were not.</p>
+<p>They came from a <strong>one-time database conversion</strong>, run on 2023-12-09/10 and preserved in the current system’s repository under <code>conversion/</code>. The script opens the legacy pipeline’s per-year <strong>SQLite</strong> databases directly on the legacy host — <code>download_db_&lt;year&gt;.sqlite</code>, one file per year — and <code>COPY</code>s the row-level records straight into the new system’s Postgres downloads table. The commit sequence is explicit: <em>“convert logs 2009-2020”</em>, then <em>“conversion of sqlite3 through 2022 complete”</em>.</p>
+<p>Three things follow, and they matter more than the mechanism:</p>
+<p><strong>The historical numbers were never recomputed.</strong> They are the legacy system’s own output, re-hosted. Every methodology quirk on this page — no bot filtering, no build-node exclusion, raw-string IP distinctness — is baked into the pre-2020 figures, and re-deriving them from clean rules is not possible, because the inputs are gone.</p>
+<p><strong>Two known distortions were introduced by the conversion itself.</strong> Client addresses were truncated to 30 characters on import (commit: <em>“db conversion truncate malformed ips”</em>), so pre-2020 distinct-IP counts in the current system are computed over clipped addresses and are not strictly comparable to the legacy system’s. Separately, the legacy schema renamed its status column in 2019, which the conversion had to special-case — and 2019 shows the largest early-year discrepancy between the two systems (−0.54%) outside the genuinely independent era.</p>
+<p><strong>For 2009–2019 there is no raw source at all.</strong> Those log files predate the S3 archive and do not exist anywhere in it. That history survives only as the legacy SQLite/DuckDB files on the legacy VM, the imported rows in Postgres, and the published <code>.tab</code> files. It cannot be regenerated from anything.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Eleven years of history live on a VM nobody has claimed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The recoverability note further down applies only from 2020 onward. <strong>Statistics for 2009–2019 are irreplaceable</strong> — no raw logs exist. The only copies are two databases and a set of published text files, none of them documented as backed up, on a host whose ownership is <a href="./decommission-plan.html">still an open question</a>. Copying those SQLite/DuckDB files somewhere durable is cheap, and is worth doing before anything else on this page is acted on.</p>
+</div>
+</div>
+<p>The exact upper boundary of the import is ambiguous: the script as committed covers 2009–2020, while the final commit message claims completion “through 2022”. The measured agreement is consistent with the import reaching at least 2021 — every year from 2015 to 2021 matches to within 0.05%, and the first substantial divergence appears in <strong>2022</strong> (−2.13%), which is the signature of independent computation beginning.</p>
+</section>
+<section id="package-coverage-differs-and-the-current-system-is-right" class="level3">
+<h3 class="anchored" data-anchor-id="package-coverage-differs-and-the-current-system-is-right">Package coverage differs, and the current system is right</h3>
+<p>The current system reports 3,106 packages with 2026 downloads; the legacy one reports 6,356. The gap is not a bug in the new system — it is the <code>INNER JOIN</code> against a known-packages table that the legacy pipeline lacks. The packages the legacy system counts and the current one drops are overwhelmingly <strong>CRAN</strong> packages fetched through Bioconductor URLs (<code>curl</code>, <code>openssl</code>, <code>jsonlite</code>, <code>rlang</code>, <code>Rcpp</code>, <code>cpp11</code>, <code>ggplot2</code>, <code>BiocManager</code>), plus case-variant artifacts — legacy lists a phantom <code>BioBase</code> alongside the real <code>Biobase</code>, with 20,715 downloads attributed to the misspelling.</p>
+<p>Those extra 3,256 “packages” account for <strong>0.84%</strong> of legacy’s 2026 download volume, so this does not move the headline numbers. It does mean legacy’s per-package tables contain entries that are not Bioconductor packages at all.</p>
+<p>The join has a real cost in the other direction, though: a newly accessioned devel package is absent from the packages table and its downloads silently vanish until the table is refreshed. That is a known open issue in the current repository, and the table-refresh command does not appear in any scheduled job.</p>
+</section>
+</section>
+<section id="two-data-quality-problems" class="level2">
+<h2 class="anchored" data-anchor-id="two-data-quality-problems">Two data-quality problems</h2>
+<section id="the-augustseptember-2025-spike-is-real-traffic" class="level3">
+<h3 class="anchored" data-anchor-id="the-augustseptember-2025-spike-is-real-traffic">The August–September 2025 spike is real traffic</h3>
+<p>Site-wide, downloads per distinct IP is a very stable ratio — between 1.7 and 2.5 every month for years. In two months it was not:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Month</th>
+<th style="text-align: right;">Downloads</th>
+<th style="text-align: right;">Distinct IPs</th>
+<th style="text-align: right;">Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2025 Jul</td>
+<td style="text-align: right;">5,326,712</td>
+<td style="text-align: right;">233,881</td>
+<td style="text-align: right;">1.70</td>
+</tr>
+<tr class="even">
+<td><strong>2025 Aug</strong></td>
+<td style="text-align: right;"><strong>18,065,065</strong></td>
+<td style="text-align: right;">169,669</td>
+<td style="text-align: right;"><strong>6.57</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>2025 Sep</strong></td>
+<td style="text-align: right;"><strong>19,547,487</strong></td>
+<td style="text-align: right;">190,208</td>
+<td style="text-align: right;"><strong>6.39</strong></td>
+</tr>
+<tr class="even">
+<td>2025 Oct</td>
+<td style="text-align: right;">8,092,969</td>
+<td style="text-align: right;">186,827</td>
+<td style="text-align: right;">2.62</td>
+</tr>
+</tbody>
+</table>
+<p>Downloads roughly quadrupled while the number of distinct clients did not move. Both systems report the spike, and they agree on it to within 0.2% — so it is genuinely in the logs, not an artifact of either implementation.</p>
+<p>The traffic is concentrated in exactly the packages every Bioconductor install pulls in: <code>BiocVersion</code>, <code>BiocGenerics</code>, <code>S4Vectors</code>, <code>GenomeInfoDb</code>, <code>IRanges</code>, <code>XVector</code>, <code>Biobase</code>, <code>zlibbioc</code>. <code>BiocVersion</code> alone went from a downloads-per-IP ratio of 1.8 in July to <strong>13.3</strong> in August, then back to 2.2 by October. That is the signature of automated installation — CI matrices or container builds repeatedly installing the base dependency closure — not of user growth.</p>
+<p>Because no bot filtering is active, those two months are inflated in every published table, every per-package page, and the download-score ranking that feeds <code>Rank</code>. Nothing has been corrected retroactively.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Distinct IPs is the metric that survives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In both excursions on this page, <code>Nb_of_distinct_IPs</code> stayed stable while <code>Nb_of_downloads</code> moved by factors of 3–4. Anyone using these tables to compare packages or track adoption should prefer the distinct-IP column, and should treat August–September 2025 as contaminated.</p>
+</div>
+</div>
+</section>
+<section id="junejuly-2026-both-systems-are-wrong" class="level3">
+<h3 class="anchored" data-anchor-id="junejuly-2026-both-systems-are-wrong">June/July 2026: both systems are wrong</h3>
+<p>Through May 2026 the two pipelines track each other within about 1%. Then:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Month</th>
+<th style="text-align: right;">Legacy</th>
+<th style="text-align: right;">Current</th>
+<th style="text-align: right;">Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2026 May</td>
+<td style="text-align: right;">7,644,668</td>
+<td style="text-align: right;">7,741,634</td>
+<td style="text-align: right;">+1.3%</td>
+</tr>
+<tr class="even">
+<td><strong>2026 Jun</strong></td>
+<td style="text-align: right;"><strong>8,617,209</strong></td>
+<td style="text-align: right;"><strong>6,769,369</strong></td>
+<td style="text-align: right;"><strong>−21.4%</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>2026 Jul</strong></td>
+<td style="text-align: right;"><strong>7,317,007</strong></td>
+<td style="text-align: right;"><strong>8,933,461</strong></td>
+<td style="text-align: right;"><strong>+22.1%</strong></td>
+</tr>
+<tr class="even">
+<td>Jun + Jul combined</td>
+<td style="text-align: right;">15,934,216</td>
+<td style="text-align: right;">15,702,830</td>
+<td style="text-align: right;">−1.45%</td>
+</tr>
+<tr class="odd">
+<td>Jan–Jul combined</td>
+<td style="text-align: right;">50,193,667</td>
+<td style="text-align: right;">50,278,734</td>
+<td style="text-align: right;">+0.17%</td>
+</tr>
+</tbody>
+</table>
+<p>The combined totals agree, which invites the conclusion that roughly 1.8 million downloads were merely attributed to June by one system and to July by the other. Hold that thought — it is the natural reading from the published tables alone, and it is wrong.</p>
+<p>The disagreement is systematic rather than a traffic event. Comparing the two systems package by package, for packages with at least 2,000 downloads:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Month</th>
+<th style="text-align: right;">Packages agreeing within ±5%</th>
+<th style="text-align: right;">Median difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2026 May</td>
+<td style="text-align: right;">97%</td>
+<td style="text-align: right;">+0.6%</td>
+</tr>
+<tr class="even">
+<td>2026 Jun</td>
+<td style="text-align: right;">2%</td>
+<td style="text-align: right;">−23.4%</td>
+</tr>
+<tr class="odd">
+<td>2026 Jul</td>
+<td style="text-align: right;">0%</td>
+<td style="text-align: right;">+21.3%</td>
+</tr>
+</tbody>
+</table>
+<p>Essentially <em>every</em> package moves by the same proportion, with a tight spread. A real traffic event is concentrated in a few packages, the way the 2025 spike was concentrated in the dependency closure. A uniform movement across the whole catalogue means a pipeline defect — as it turned out, one at each end.</p>
+<p>That reading was wrong. It has now been checked against the raw CloudFront logs, and the answer is worse than a reattribution.</p>
+</section>
+<section id="resolved-both-published-series-undercount-for-two-unrelated-reasons" class="level3">
+<h3 class="anchored" data-anchor-id="resolved-both-published-series-undercount-for-two-unrelated-reasons">Resolved: both published series undercount, for two unrelated reasons</h3>
+<p>Recomputing June and July 2026 directly from the raw logs, <code>bioc</code> category:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>2026</th>
+<th style="text-align: right;">Raw logs (truth)</th>
+<th style="text-align: right;">Legacy</th>
+<th style="text-align: right;">Current</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>June</td>
+<td style="text-align: right;"><strong>8,977,013</strong></td>
+<td style="text-align: right;">8,617,209 (−4.0%)</td>
+<td style="text-align: right;">6,769,369 (<strong>−24.6%</strong>)</td>
+</tr>
+<tr class="even">
+<td>July</td>
+<td style="text-align: right;"><strong>9,040,668</strong></td>
+<td style="text-align: right;">7,317,007 (<strong>−19.1%</strong>)</td>
+<td style="text-align: right;">8,933,461 (−1.2%)</td>
+</tr>
+<tr class="odd">
+<td>Jun + Jul</td>
+<td style="text-align: right;"><strong>18,017,681</strong></td>
+<td style="text-align: right;">15,934,216 (−11.6%)</td>
+<td style="text-align: right;">15,702,830 (−12.8%)</td>
+</tr>
+</tbody>
+</table>
+<p>The combined agreement that looked reassuring was a coincidence: <strong>both series are missing roughly 2.1–2.3 million downloads</strong>, and it is not the same downloads. Nothing was reattributed. Two separate defects happened to lean in opposite directions.</p>
+<p><strong>The legacy series is stale, not miscomputed.</strong> Its July figure matches the raw total for 1–24 July to within <strong>0.4%</strong> (7,284,637 against a published 7,317,007). It publishes weekly, so the last log fetch before the final run of the month landed around 24 July and the published “July” is simply a partial month. It is arithmetically fine and will fill in on a later run — the number is just younger than it looks.</p>
+<p><strong>The current series lost data, and will not recover it.</strong> Its June is short by 2,207,644 downloads, about a quarter of the month, while its July is accurate (−1.2% on downloads, and distinct IPs of 823,271 against a measured 823,202 — a 0.008% match). The raw daily profile for June is smooth, with no gap at either boundary, so the loss is distributed through the month rather than a clean missing range — invisible from the published tables. This coincides exactly with the ingestion rewrite: the change to insert in chunks, to stop the ingest being killed by the OOM killer, landed 2026-06-26 and merged 2026-07-10, and it wrapped the load-and-insert step in a <code>try</code>/<code>except</code> that can swallow a partial failure silently.</p>
+<p>The distinction matters operationally. Staleness self-corrects. <strong>Silent partial loss does not</strong> — the ingest window advances past the affected days and never revisits them, so June 2026 stays wrong in the live series until someone backfills it deliberately.</p>
+<p>There is one more trace of that window. Sitting in the CloudFront log bucket — alongside the logs, not in any query-output location — are several Athena result files written in <strong>June 2026</strong>, the largest 311 MB. Their header is <code>"date","c-ip","sc-status","category","package","year","month","day"</code>: precisely the column set of the download-extraction view. Someone was re-running the extraction by hand while this was happening.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Neither published series should be trusted for June or July 2026
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The live series at <code>/packages/stats/</code> understates June 2026 by about a quarter. The archived series at <code>/packages/oldstats/</code> understates July because it had not finished the month. Correct figures are recoverable from the raw logs — that is how the numbers above were obtained — but the published tables have not been corrected.</p>
+</div>
+</div>
+</section>
+<section id="two-routing-bugs-easy-to-trip-over" class="level3">
+<h3 class="anchored" data-anchor-id="two-routing-bugs-easy-to-trip-over">Two routing bugs, easy to trip over</h3>
+<p>Mistyping a path under <code>/packages/stats/</code> does not produce a 404. Two responses worth knowing about, both from the current application:</p>
+<ul>
+<li>A <strong>plausible-but-wrong filename</strong> returns a server error rather than a not-found. This is adjacent to two already-open issues in the repository, one about error statuses being swallowed instead of passed to the reverse proxy, and one about a missing package directory returning the category page instead of a 404.</li>
+<li>A <strong>path directly under <code>/packages/stats/</code></strong> redirects to an internal origin rather than to the public site, so the link is broken for an external client. Anything that reimplements this routing in a Worker should not carry that behaviour forward.</li>
+</ul>
+<p>Specifics are deliberately not published here; they are recorded privately and shared with the Bioconductor core team.</p>
+</section>
+</section>
+<section id="can-this-be-rebuilt-from-source" class="level2">
+<h2 class="anchored" data-anchor-id="can-this-be-rebuilt-from-source">Can this be rebuilt from source?</h2>
+<p>Yes, from 2020 onward, and it is cheaper than it looks. This was measured rather than estimated, because it decides whether the June/July discrepancy has to be adjudicated between two pipelines or can simply be recomputed.</p>
+<p><strong>We can read the raw logs directly.</strong> Listing and fetching objects from the CloudFront log bucket both work with read-only credentials. What does <em>not</em> work is the query layer around it: <code>glue:GetDatabases</code>, <code>glue:GetTable</code> and <code>athena:ListWorkGroups</code> are all denied, so the existing table and view definitions are out of reach — and the production ETL config points at a different AWS account from the one that owns the bucket. That turns out not to matter, because nothing needs Athena.</p>
+<p><strong>The archive is smaller than its object count suggests.</strong> Sampling one day per year:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Year</th>
+<th style="text-align: right;">Compressed per day</th>
+<th style="text-align: right;">Annualized</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2020</td>
+<td style="text-align: right;">143 MB</td>
+<td style="text-align: right;">52 GB</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td style="text-align: right;">141 MB</td>
+<td style="text-align: right;">52 GB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td style="text-align: right;">105 MB</td>
+<td style="text-align: right;">38 GB</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td style="text-align: right;">95 MB</td>
+<td style="text-align: right;">35 GB</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td style="text-align: right;">334 MB</td>
+<td style="text-align: right;">122 GB</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td style="text-align: right;">464 MB</td>
+<td style="text-align: right;">169 GB</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td style="text-align: right;">390 MB</td>
+<td style="text-align: right;">~143 GB</td>
+</tr>
+</tbody>
+</table>
+<p>Roughly <strong>550–600 GB compressed across ~800,000 objects</strong>, all flat at the bucket root.</p>
+<p><strong>Parquet lands at roughly parity with the gzipped source.</strong> Measured on two full months, mirroring every row and every column: June 2026 gave 157,956,840 rows in 437 seconds, July 2026 gave 175,314,722 rows in 553 seconds and 12 GB. Columnar zstd on highly repetitive log fields compresses about as well as gzip does row-wise, so keeping everything costs far less than a row count suggests — the whole archive projects to <strong>550–600 GB and 8–10 hours</strong>, and it parallelizes by month.</p>
+<section id="mirror-the-logs-interpret-them-locally" class="level3">
+<h3 class="anchored" data-anchor-id="mirror-the-logs-interpret-them-locally">Mirror the logs; interpret them locally</h3>
+<p>DuckDB reads the gzipped logs straight out of S3 with a glob, so there is no need to stage a copy as a processing step. More importantly, <strong>nothing should be filtered on the way in</strong> — neither columns nor rows.</p>
+<p>That is the specific mistake to avoid, because both existing pipelines made it, and made it twice. Each projects down to a handful of columns at ingest, discarding <code>cs(User-Agent)</code> and <code>x-forwarded-for</code>, which is precisely why neither can filter bots or handle proxied clients today. Each also filters to package-tarball requests at ingest, which discards about 97% of the log — every content page, every vignette, every crawler hitting documentation. The columns and rows were never missing from the source; they were thrown away upstream, and recovering them means re-reading six years from S3.</p>
+<p>Filtering at ingest also bakes in the very policies under dispute — whether redirects count, whether <code>206</code> counts, whether <code>HEAD</code> counts. Those become unaskable. So the mirror stays raw and the download definition lives in a <strong>view</strong> over it. The egress is paid once; what is kept afterwards is free.</p>
+<p>This matters beyond download statistics. A complete mirror supports questions the published series cannot touch at all: user journeys through the site, which of the hundreds of thousands of content pages carry value, and bot pressure against documentation rather than against tarballs.</p>
+<p>A full <code>rclone copy</code> of the original gzip is still worth doing, but as a <strong>backup</strong> rather than a pipeline stage: the bucket is currently the only copy of the 2020-onward raw logs, with no versioning or lifecycle protection in evidence. A Parquet mirror is a derived artifact and depends on the column mapping being right; a byte-identical copy does not.</p>
+</section>
+<section id="the-script" class="level3">
+<h3 class="anchored" data-anchor-id="the-script">The script</h3>
+<p><code>cloudfront-logs-to-parquet.py</code> in the working repository behind this site does the mirroring: one Parquet file per month, Hive-partitioned as <code>year=YYYY/month=M/</code>, so the result queries as a single table with pruning on either level.</p>
+<p>A month at a time rather than a day gives ~80 files of tens of megabytes instead of ~2,400 of around one — fewer, larger row groups compress better and query faster. Two partition levels rather than a single <code>month=YYYY-MM</code> allows pruning by year alone, and matches the <code>year=/month=/day=</code> layout Bioconductor already used for its own abandoned Parquet extract. <code>date</code> and <code>time</code> are kept <em>in</em> the data rather than merely implied by the partition, because the question this exists to settle is a month-boundary dispute — day- and hour-level detail across that boundary is the one thing that must not be aggregated away.</p>
+<p>The mirror copies and does not interpret: every row, all 33 fields, VARCHAR exactly as logged apart from <code>date</code>. The download definition — package tarball or binary under <code>/packages/</code>, status in 200/301/302/307/308, <code>HEAD</code> excluded — lives in a <code>DOWNLOADS_SQL</code> view, so its output stays directly comparable to what the two series publish while remaining a policy that can be changed without re-reading anything. It deliberately does <em>not</em> filter bots; the point is to preserve that decision for the team rather than pre-empt it.</p>
+<p>The view is the part that can drift, so the script carries a <code>--self-check</code> that exercises it against known-good and known-bad URLs (tarball, Windows binary, annotation package, redirect, 404, partial content, <code>HEAD</code>, an HTML page, a <code>PACKAGES</code> index). It also asserts that the mirror <em>stays</em> a mirror — the check fails if the copy grows a <code>WHERE</code> clause or a derived column.</p>
+<p>Two guards matter more than they look. The column mapping is <strong>positional</strong>, and the reader skips the <code>#Fields:</code> header, so an upstream format change would silently shift every column; the script verifies the field count per month and refuses to continue on a mismatch. The header was checked byte-for-byte at 2020, 2023 and 2026 and is identical, but the assertion is what keeps that true.</p>
+<p>Against the mirrored months, <code>cs_user_agent</code> alone separates <code>libcurl</code>, <code>RStudio</code>, <code>R</code>, <code>Wget</code>, <code>renv</code> and browser traffic — the distinction neither published series can currently draw.</p>
+<p><strong>The rebuild answered the open question</strong>, and the answer was not the expected one. Recomputing June and July 2026 showed both published series undercounting for unrelated reasons; the numbers are in <a href="#resolved-both-published-series-undercount-for-two-unrelated-reasons">Resolved: both published series undercount</a>. Validation came out clean along the way: the mirror reproduces published 2020 figures to within 0.15%, and July 2026 distinct IPs to within 0.008%.</p>
+</section>
+</section>
+<section id="what-this-means-for-the-migration" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means-for-the-migration">What this means for the migration</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The R2 migration removes this pipeline’s only input
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Both systems are fed exclusively by <strong>CloudFront access logs</strong>. Serving package downloads from Cloudflare instead of CloudFront stops those logs being produced — and with the Squid and Apache ingests already commented out, there is no second source to fall back on. Download statistics stop accruing on the day traffic moves, for both systems at once, whatever else has been migrated.</p>
+<p>Cloudflare can emit equivalent logs, but nothing reads them today and the field layout differs from the CloudFront W3C format the Athena table and the legacy parsers both assume. <strong>This is a prerequisite for the traffic cutover, not a follow-up.</strong></p>
+</div>
+</div>
+<section id="what-replaces-the-logs" class="level3">
+<h3 class="anchored" data-anchor-id="what-replaces-the-logs">What replaces the logs</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>This is no longer a proposal — the replacement is live (2026-08-13)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The design below is <strong>implemented and running</strong>. The Worker has been emitting one full record per request since early August; the record uses the CloudFront field vocabulary, so the two eras line up column-for-column. Logpush delivers continuously to durable object storage (the destination moved from R2 to Google Cloud Storage on 2026-08-10, for isolation of logging output from operational data), external tables make both eras queryable in one place, and a <strong>single normalizing view presents the Cloudflare records with the identical columns, names and types as the CloudFront archive</strong> — cross-era statistics are a plain <code>UNION ALL</code>, verified. Delivery is <strong>gap-alerted daily</strong> through the same failure channel as the sync jobs, because Logpush cannot backfill and a silent gap is permanent loss. The CloudFront side still accrues in parallel, so the deliberate cutover overlap this page calls for is already underway. The prerequisite in the callout above is met.</p>
+</div>
+</div>
+<p>Cloudflare’s Logpush <strong>HTTP requests</strong> dataset is Enterprise-only, and Bioconductor is not on Enterprise. That rules out the direct analogue of CloudFront-to-S3 and settles the design:</p>
+<ul>
+<li><strong>Worker emits one structured JSON record per request via <code>console.log</code>, shipped by Workers Trace Events Logpush</strong> to object storage. Trace Events Logpush is available on the Workers Paid plan, and the 16,384-character limit on the combined logs field is ample for a single record. The Worker is already in the request path, so this needs no additional infrastructure.</li>
+<li><strong>Tail Workers</strong> consume the same event stream with code in the middle. Reach for one only if the record needs shaping Logpush cannot express — not as the system of record. The documentation does not state delivery guarantees, sampling under load, or overload behaviour, and they bill on CPU time, which at this request volume is a real per-request cost Logpush does not carry.</li>
+<li><strong>Workers Analytics Engine</strong> retains data for <strong>three months</strong>. That makes it a live dashboard, never the record behind a series reaching back to 2009.</li>
+</ul>
+<p>Three constraints carry over from everything above. <strong>Take all fields and no sampling</strong> — Logpush offers both knobs, and using them is the same mistake that left both current pipelines unable to filter bots. <strong>Monitor the push</strong>: Logpush cannot backfill, so a failed or disabled job is permanent loss, and the failure is silent. <strong>Overlap the cutover deliberately</strong> — run CloudFront and Cloudflare logging together for at least a month, because the only reason anything on this page could be validated is that two pipelines happened to overlap by accident.</p>
+<p>Field names differ between the two (<code>ClientIP</code> against <code>c-ip</code>, <code>EdgeResponseStatus</code> against <code>sc-status</code>). Normalising at ingest would repeat the mistake; keep the eras in separate partitions and put a normalising view on top.</p>
+<ul>
+<li><strong><code>/packages/stats/</code> is a dynamic application, not files.</strong> Everything else this repository proposes to move to R2 is static content. This is a Flask app over a Postgres database, reached through a proxy rule in master’s Apache. A Worker serving objects from R2 cannot replace it — it needs somewhere to keep running, and a route pointing at it.</li>
+<li><strong>It is the last thing keeping that proxy rule alive</strong>, alongside Solr. Both need a destination before master’s Apache can be retired.</li>
+<li><strong>The raw logs are recoverable, contrary to the design notes.</strong> Those notes say objects in the CloudFront log bucket are destroyed after six months. Measured, that is not what happens: the oldest object present is dated 2020-01-01 and every year since is represented, so roughly 6.6 years are retained with no lifecycle expiry in evidence. Statistics from 2020 onward could therefore be <strong>recomputed from source</strong> if either database were lost — which makes a rebuild a viable answer to the June/July discrepancy, rather than something to be patched forward. This applies <strong>only from 2020</strong>; everything earlier has no surviving raw source and is <a href="#where-the-pre-2020-numbers-come-from">irreplaceable</a>. Two caveats: continuous delivery only starts in <strong>January 2024</strong> (2020–2023 objects were bulk-loaded in November 2023, so their completeness is unverified), and the bucket has no prefix structure at all — every object sits flat at the root, which is why a full listing takes minutes and why the Athena table scans everything.</li>
+<li><strong>Neither system has working CI.</strong> The current repository’s only workflow is bound to branch names that do not exist in it, and has never run. There are no tests over the ingestion path in either system.</li>
+<li>The current repository has an open issue reporting a hardcoded Flask secret key committed to version control. It is unresolved on the default branch and should be handled before this application is redeployed anywhere.</li>
+<li><strong>Raw client IP addresses are retained indefinitely</strong>, both in the source logs going back to 2020 and as a column in the downloads table. The system’s own design notes proposed encrypting them; that was not implemented. Anything that moves or copies this database is moving personal data, and is worth a deliberate decision rather than an inherited default.</li>
+</ul>
+</section>
+</section>
+<section id="what-could-not-be-determined" class="level2">
+<h2 class="anchored" data-anchor-id="what-could-not-be-determined">What could not be determined</h2>
+<ul>
+<li>Which specific days the current system lost in June 2026. The shortfall is 2,207,644 downloads distributed through the month, but the published tables are monthly only, so the affected days cannot be identified from outside — it needs a query against the downloads table.</li>
+<li>Whether the packages-table refresh runs anywhere. It is not in the repository’s cron script, but a manual or externally scheduled invocation would not be visible from the repository.</li>
+<li>Whether the legacy VM’s actual crontab matches its README, which is the only description of it. Nothing was logged into to check.</li>
+<li>Whether either system’s database is backed up. Given that the 2009–2019 statistics exist nowhere else, this is the most consequential unknown on the page.</li>
+<li>The exact last year covered by the 2023 database import. The script covers 2009–2020, a commit message claims “through 2022”, and the measured agreement suggests at least 2021. Settling it needs a query against the downloads table.</li>
+<li>Whether the 2020–2023 portion of the log archive is complete. Those objects were bulk-loaded in one pass in November 2023; only continuous delivery from January 2024 onward is self-evidently complete.</li>
+<li>Whether anyone is monitoring the divergence. Both systems publish; only one is linked.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+.mermaid { cursor: zoom-in; }
+.mermaid.zoomed {
+  position: fixed; inset: 0; z-index: 9999; cursor: zoom-out;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--quarto-body-bg, #fff);
+}
+.mermaid.zoomed svg { max-width: 95vw !important; max-height: 95vh !important; height: auto !important; }
+</style>
+<script>
+document.querySelectorAll("pre.mermaid").forEach(function (el) {
+  el.addEventListener("click", function () { el.classList.toggle("zoomed"); });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/seandavi\.github\.io\/bioc-infrastructure\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/seandavi/bioc-infrastructure/edit/main/download-stats.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/blob/main/download-stats.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/seandavi/bioc-infrastructure/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

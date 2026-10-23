@@ -1009,16 +1009,17 @@ All tests run in Node with `fixtureFetch(githubRoutes())`, `createMemoryCache`, 
   `Request` and its headers before delegating to `fixtureFetch`; a cache wrapper records every
   `put`; `vi.spyOn(console, …)` on `log`, `info`, `warn`, `error` and `debug`. Runs every kind, plus
   routes overridden to 401, 403, 404, 500, `'timeout'` and `'network-error'`, through REST and MCP
-  (`makeTestApp({ env })`; the REST and MCP timeouts go through `makeTestApp({ fetch })`), and asserts the sentinel is absent from every serialized output, error
-  and console argument, and present in every request's `authorization` header. A second case with
-  `env: {}` asserts no `authorization` header.
+  (`makeTestApp({ env })`; the REST and MCP timeouts go through `makeTestApp({ fetch })`), and
+  asserts the sentinel is absent from every serialized output, error and console argument, and
+  present in every request's `authorization` header. A second case with `env: {}` asserts no
+  `authorization` header.
 - `test/transports/ops.test.ts`: `makeTestApp({ routes: githubRoutes(), extraModules: [opsModule], now })`;
   tools/list on `/mcp/ops`, and on `/mcp` built with `extraModules: [pkgModule, opsModule]`, asserting the
-  exact meta, pkg and ops tool set (besides the `example_` tools), REST vs MCP equality per kind, REST 400 bodies, the MCP
-  `isError` text for an all-repos 403 (`upstream_error: …`), and `/api/v1/about` listing `github`
-  with `used_by: ['ops']`.
-- `test/support/app.ts`: `makeTestApp` takes `env?: CapabilityEnv` (default `{}`), passed to `deps.env`, and `fetch?: FetchFn & { calls: string[] }` (replaces the `fixtureFetch` built from
-  `routes`).
+  exact meta, pkg and ops tool set (besides the `example_` tools), REST vs MCP equality per kind,
+  REST 400 bodies, the MCP `isError` text for an all-repos 403 (`upstream_error: …`), and
+  `/api/v1/about` listing `github` with `used_by: ['ops']`.
+- `test/support/app.ts`: `makeTestApp` takes `env?: CapabilityEnv` (default `{}`), passed to `deps.env`, and `fetch?: FetchFn & { calls: string[] }` (replaces the
+  `fixtureFetch` built from `routes`).
 
 ## Risks
 

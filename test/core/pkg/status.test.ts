@@ -289,7 +289,8 @@ describe('pkg_status', () => {
   });
 });
 
-test('the description names pkg_check_output and pkg_build_environment', () => {
+test('the description names pkg_check_output, pkg_build_environment and pkg_legacy_status', () => {
+  expect(pkgStatus.description).toContain('pkg_legacy_status');
   expect(pkgStatus.description).toContain('pkg_check_output');
   expect(pkgStatus.description).toContain('pkg_build_environment');
 });

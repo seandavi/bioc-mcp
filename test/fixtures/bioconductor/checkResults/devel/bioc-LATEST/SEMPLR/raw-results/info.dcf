@@ -1,0 +1,6 @@
+Package: SEMPLR
+Version: 1.1.2
+git_url: https://git.bioconductor.org/packages/SEMPLR
+git_branch: devel
+git_last_commit: fcecf41
+git_last_commit_date: 2026-05-16 20:12:20 -0400 (Sat, 16 May 2026)

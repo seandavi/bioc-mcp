@@ -1,0 +1,6 @@
+Package: adductData
+Version: 1.29.0
+git_url: https://git.bioconductor.org/packages/adductData
+git_branch: devel
+git_last_commit: ce0c4f7
+git_last_commit_date: 2026-04-28 08:32:38 -0400 (Tue, 28 Apr 2026)

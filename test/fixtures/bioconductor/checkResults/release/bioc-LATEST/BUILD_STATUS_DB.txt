@@ -1,0 +1,12 @@
+edgeR#nebbiolo1#install: OK
+edgeR#nebbiolo1#buildsrc: OK
+edgeR#nebbiolo1#checksrc: OK
+edgeR#kunpeng2#install: OK
+edgeR#kunpeng2#buildsrc: OK
+edgeR#kunpeng2#checksrc: OK
+xcms#nebbiolo1#install: OK
+xcms#nebbiolo1#buildsrc: OK
+xcms#nebbiolo1#checksrc: OK
+xcms#kunpeng2#install: OK
+xcms#kunpeng2#buildsrc: OK
+xcms#kunpeng2#checksrc: NA

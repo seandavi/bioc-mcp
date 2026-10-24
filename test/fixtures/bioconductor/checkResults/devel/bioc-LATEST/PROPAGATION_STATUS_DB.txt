@@ -1,0 +1,11 @@
+affxparser#source#propagate: UNNEEDED, same version is already published
+Chromatograms#source#propagate: YES
+cosmosR#source#propagate: NO, package depends on 'decoupleR' which is not available
+GEOfastq#source#propagate: UNNEEDED, same version is already published
+SEMPLR#source#propagate: UNNEEDED, same version is already published
+trackViewer#source#propagate: UNNEEDED, same version is already published
+affxparser#mac.binary.big-sur-x86_64#propagate: UNNEEDED, same version is already published
+Chromatograms#mac.binary.big-sur-x86_64#propagate: YES
+cosmosR#mac.binary.big-sur-x86_64#propagate: UNNEEDED, same version is already published
+GEOfastq#mac.binary.big-sur-x86_64#propagate: UNNEEDED, same version is already published
+trackViewer#mac.binary.big-sur-x86_64#propagate: UNNEEDED, same version is already published

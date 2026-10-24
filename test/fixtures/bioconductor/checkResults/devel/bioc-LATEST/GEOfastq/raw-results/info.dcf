@@ -1,0 +1,6 @@
+Package: GEOfastq
+Version: 1.21.0
+git_url: https://git.bioconductor.org/packages/GEOfastq
+git_branch: devel
+git_last_commit: b161401
+git_last_commit_date: 2026-04-28 08:54:38 -0400 (Tue, 28 Apr 2026)

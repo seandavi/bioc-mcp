@@ -1,0 +1,3 @@
+adductData#nebbiolo2#install: OK
+adductData#nebbiolo2#buildsrc: OK
+adductData#nebbiolo2#checksrc: OK

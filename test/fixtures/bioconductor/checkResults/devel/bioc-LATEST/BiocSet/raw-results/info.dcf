@@ -1,0 +1,6 @@
+Package: BiocSet
+Version: 1.27.0
+git_url: https://git.bioconductor.org/packages/BiocSet
+git_branch: devel
+git_last_commit: edc80df
+git_last_commit_date: 2026-04-28 08:51:26 -0400 (Tue, 28 Apr 2026)

@@ -54,6 +54,6 @@ Upstream calls go through an injected `deps.fetch`, fed from `test/fixtures/`. `
 ## How work is done here
 
 Issues are implemented through a spec → implement → review → revise → PR loop, described in
-[`.pi/factory.md`](.pi/factory.md). Human contributions do not need to follow it; a focused PR
+[`.pi/crucible.md`](.pi/crucible.md). Human contributions do not need to follow it; a focused PR
 with tests is welcome. Issues and PRs waiting on a maintainer carry the `needs:human` label
 (`gh issue list -l needs:human`).

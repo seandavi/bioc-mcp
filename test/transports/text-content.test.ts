@@ -3,6 +3,7 @@ import { afterEach, describe, expect, test } from 'vitest';
 import { modules } from '../../src/core/registry';
 import { envelopeBytes, MAX_RESULT_BYTES, type Envelope } from '../../src/envelope';
 import { connectClient, makeTestApp } from '../support/app';
+import { bbsRoutes } from '../support/bbs-routes';
 import { depsRoutes } from '../support/deps-routes';
 import { docsTestModule } from '../support/docs';
 import { bioconductorRoutes } from '../support/bioconductor-routes';
@@ -13,6 +14,7 @@ const CALLS: readonly [tool: string, args: Record<string, unknown>][] = [
   ['meta_ping', {}],
   ['pkg_status', { package: 'trackViewer' }],
   ['pkg_status', { package: 'edgeR', universe: 'bioc-release' }],
+  ['pkg_legacy_status', { package: 'trackViewer' }],
   ['pkg_check_output', { universe: 'bioc', job: '96299707840' }],
   ['pkg_check_output', { universe: 'bioc', job: '96299707840', full: true }],
   ['pkg_build_environment', { universe: 'bioc', job: '96299707840', dependencies: ['biomaRt', 'httr2'] }],
@@ -44,6 +46,7 @@ async function call(tool: string, args: Record<string, unknown>) {
     routes: {
       ...pkgRoutes,
       ...bioconductorRoutes,
+      ...bbsRoutes,
       ...githubRoutes(),
       ...(DEPS_TOOLS.has(tool) ? depsRoutes : {}),
     },

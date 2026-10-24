@@ -1,0 +1,6 @@
+Package: cosmosR
+Version: 1.21.2
+git_url: https://git.bioconductor.org/packages/cosmosR
+git_branch: devel
+git_last_commit: b2ed195
+git_last_commit_date: 2026-09-03 05:31:50 -0400 (Thu, 03 Sep 2026)

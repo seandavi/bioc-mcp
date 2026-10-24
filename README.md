@@ -41,6 +41,7 @@ export BIOC_MCP=https://bioc-mcp.seandavi.workers.dev
 |---|---|---|
 | `meta` | `meta_ping` | Is the server up? |
 | `pkg` | `pkg_status` | Is this package propagated, and did its latest build and check pass? |
+| `pkg` | `pkg_legacy_status` | What does the legacy build system (BBS) report for this package, and where does it disagree with the registry? |
 | `pkg` | `pkg_check_output` | Why did the check fail? The failing part of the log. |
 | `pkg` | `pkg_build_environment` | What image, repositories and dependency versions did a build job use? |
 | `pkg` | `pkg_release_info` | Which release and devel versions are current, on which R, and when was the release? |
@@ -149,6 +150,7 @@ The client loads fewer tools into its context.
 - "Is edgeR propagated in Bioconductor release, and did its last check pass?" (`pkg_status`)
 - "Why is *package* failing check on devel? Show the failing part of the log." (`pkg_status`, then
   `pkg_check_output`)
+- "BBS says trackViewer is fine; does the registry agree on every platform?" (`pkg_legacy_status`)
 - "What image and dependency versions did that check run with?" (`pkg_build_environment`)
 - "Which Bioconductor versions are current release and devel, and which R does each use?" (`pkg_release_info`)
 - "How many downloads did edgeR have this year?" (`pkg_downloads`)

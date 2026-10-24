@@ -1,0 +1,9 @@
+BiocBookDemo#source#propagate: UNNEEDED, same version is already published
+csawBook#source#propagate: UNNEEDED, same version is already published
+OMA#source#propagate: UNNEEDED, same version is already published
+OSCA#source#propagate: UNNEEDED, same version is already published
+OSCA.basic#source#propagate: UNNEEDED, same version is already published
+OSCA.multisample#source#propagate: UNNEEDED, same version is already published
+OSCA.workflows#source#propagate: UNNEEDED, same version is already published
+scrapbook#source#propagate: UNNEEDED, same version is already published
+SingleRBook#source#propagate: UNNEEDED, same version is already published

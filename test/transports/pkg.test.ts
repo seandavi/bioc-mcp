@@ -4,6 +4,7 @@ import { AboutSchema } from '../../src/core/about';
 import { pkgModule } from '../../src/core/pkg';
 import { modules, validateRegistry } from '../../src/core/registry';
 import { connectClient, makeTestApp } from '../support/app';
+import { bbsRoutes, bbsUrl } from '../support/bbs-routes';
 import { docsTestModule } from '../support/docs';
 import { bioconductorRoutes, statsPageUrl, statsTabUrl } from '../support/bioconductor-routes';
 import { depsRoutes } from '../support/deps-routes';
@@ -19,7 +20,10 @@ afterEach(async () => {
 });
 
 function testApp() {
-  return makeTestApp({ routes: { ...pkgRoutes, ...bioconductorRoutes }, extraModules: [pkgModule, docsModule] });
+  return makeTestApp({
+    routes: { ...pkgRoutes, ...bioconductorRoutes, ...bbsRoutes },
+    extraModules: [pkgModule, docsModule],
+  });
 }
 
 async function get(path: string) {
@@ -40,6 +44,7 @@ describe('MCP', () => {
     client = await connectClient(testApp().app, '/mcp/pkg');
     expect((await client.listTools()).tools.map((t) => t.name)).toEqual([
       'pkg_status',
+      'pkg_legacy_status',
       'pkg_check_output',
       'pkg_build_environment',
       'pkg_release_info',
@@ -53,6 +58,7 @@ describe('MCP', () => {
     const names = (await client.listTools()).tools.map((t) => t.name);
     expect(names).toContain('meta_ping');
     expect(names).toContain('pkg_status');
+    expect(names).toContain('pkg_legacy_status');
     expect(names).toContain('pkg_release_info');
     expect(names).toContain('pkg_downloads');
     expect(names).toContain('pkg_repo_diff');
@@ -105,6 +111,16 @@ describe('MCP', () => {
     expect(fetch.calls).toContain(ruUrl('bioc', 'edgr'));
   });
 
+  test('an unknown package in pkg_legacy_status is an isError result starting not_found:', async () => {
+    const { app, fetch } = testApp();
+    client = await connectClient(app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_legacy_status', arguments: { package: 'trackViewr' } });
+    expect(result.isError).toBe(true);
+    expect(textOf(result).startsWith('not_found:')).toBe(true);
+    expect(textOf(result)).toContain('Did you mean: trackViewer?');
+    expect(fetch.calls).toContain(bbsUrl('devel', 'bioc', 'BUILD_STATUS_DB.txt'));
+  });
+
   test('an unknown package in pkg_downloads is an isError result starting not_found:', async () => {
     const { app, fetch } = testApp();
     client = await connectClient(app, '/mcp/pkg');
@@ -151,6 +167,41 @@ describe('GET /api/v1/pkg/status', () => {
     const { response, fetch } = await get('/api/v1/pkg/status?package=edgeR&universe=bioc-release');
     expect(response.status).toBe(200);
     expect([...fetch.calls].sort()).toEqual([RELEASE_INDEX_URL, ruUrl('bioc-release', 'edgeR')].sort());
+  });
+});
+
+describe('GET /api/v1/pkg/legacy_status', () => {
+  test('returns the same envelope MCP returns as structuredContent', async () => {
+    const { response, body } = await get('/api/v1/pkg/legacy_status?package=trackViewer');
+    expect(response.status).toBe(200);
+    expect(body.data.package).toBe('trackViewer');
+    expect(body.data.legacy.build).toBe('bioc');
+    client = await connectClient(testApp().app, '/mcp/pkg');
+    const result = await client.callTool({ name: 'pkg_legacy_status', arguments: { package: 'trackViewer' } });
+    expect(result.isError).toBeFalsy();
+    expect(body).toEqual(result.structuredContent);
+  });
+
+  test('an unknown package is 404 not_found with suggestions', async () => {
+    const { response, body } = await get('/api/v1/pkg/legacy_status?package=trackViewr');
+    expect(response.status).toBe(404);
+    expect(body.error.code).toBe('not_found');
+    expect(body.error.message).toContain('Did you mean: trackViewer?');
+  });
+
+  test.each(['package=a%27b', 'package=x', 'package=edgeR&universe=cran'])(
+    '%s is 400 invalid_input with no fetch',
+    async (query) => {
+      const { response, body, fetch } = await get(`/api/v1/pkg/legacy_status?${query}`);
+      expect(response.status).toBe(400);
+      expect(body.error.code).toBe('invalid_input');
+      expect(fetch.calls).toEqual([]);
+    },
+  );
+
+  test('is listed in the OpenAPI document', async () => {
+    const { body } = await get('/api/openapi.json');
+    expect(body.paths['/api/v1/pkg/legacy_status'].get.operationId).toBe('pkg_legacy_status');
   });
 });
 
@@ -369,6 +420,7 @@ describe('GET /api/v1/about', () => {
     });
     expect(about.modules.find((m) => m.name === 'pkg')?.tools).toEqual([
       'pkg_status',
+      'pkg_legacy_status',
       'pkg_check_output',
       'pkg_build_environment',
       'pkg_release_info',

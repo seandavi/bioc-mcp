@@ -1,0 +1,210 @@
+{
+  "Chromatograms": {
+    "version": "1.3.5",
+    "sha256": "172153c42a869bf8e8fc4bf824cdd866f597c56c8f3dd1557a9ad711340594f9",
+    "ts": "2026-10-22T19:55:41.044Z",
+    "bioccheck": "WARNING",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "172153c42a869bf8e8fc4bf824cdd866f597c56c8f3dd1557a9ad711340594f9",
+        "file": "Chromatograms_1.3.5.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "8175fd2a566d5b0b76f4bb5b4bcd99858b0ec00bf5ec7e0c3862e45eb222817d",
+        "distro": "resolute",
+        "file": "Chromatograms_1.3.5.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "a639df2dd83340615031f5f6557328e9adcbb42314081e3a5cc6d0ff0339cc0a",
+        "distro": "resolute",
+        "file": "Chromatograms_1.3.5.tar.gz"
+      },
+      {
+        "os": "wasm",
+        "r": "4.6.0",
+        "sha256": "0017c415ba9358f8ba9ae67c826419ca93433c22cf2e9cf81173ec993fd8a3e3",
+        "file": "Chromatograms_1.3.5.tar.gz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "4538f823de0d7482e5f5dc5f5d44ab1e02566be53b5c89b23b82dbad5ced940f",
+        "file": "Chromatograms_1.3.5.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "cd011980978470a43a8e01b58048daa1f555c62986f23ebf207481572f21e22b",
+        "file": "Chromatograms_1.3.5.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "34fef16c124c1dcac9a11b6906bafdd35d399b63f1a2e845a59042d19239ebf9",
+        "file": "Chromatograms_1.3.5.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "BiocParallel, ProtGenerics (>= 1.39.2), R (>= 4.5.0)",
+      "Imports": "data.table, methods, ggplot2, S4Vectors, MsCoreUtils (>= 1.7.5), Spectra",
+      "Suggests": "MsDataHub, roxygen2, BiocStyle (>= 2.5.19), testthat, knitr (>= 1.1.0), rmarkdown, mzR (>= 2.41.4), MsBackendMetaboLights (>= 1.3.1), pheatmap, vdiffr, IRanges, RColorBrewer, ggiraph",
+      "License": "Artistic-2.0",
+      "NeedsCompilation": "no"
+    },
+    "meta": {
+      "Title": "Infrastructure for Chromatographic Mass Spectrometry Data",
+      "Description": "The Chromatograms packages defines an efficient\ninfrastructure for storing and handling of chromatographic mass\nspectrometry data. It provides different implementations of\n*backends* to store and represent the data. Such backends can\nbe optimized for small memory footprint or fast data\naccess/processing. A lazy evaluation queue and chunk-wise\nprocessing capabilities ensure efficient analysis of also very\nlarge data sets.",
+      "biocViews": "Infrastructure, Metabolomics, MassSpectrometry, Proteomics",
+      "Author": "Johannes Rainer [aut] (ORCID: <https://orcid.org/0000-0002-6977-7147>),\nLaurent Gatto [aut] (ORCID: <https://orcid.org/0000-0002-1520-2268>),\nPhilippine Louail [aut, cre] (ORCID:\n<https://orcid.org/0009-0007-5429-6846>, fnd: European Union\nHORIZON-MSCA-2021 project Grant No. 101073062: HUMAN – Harmonising\nand Unifying Blood Metabolic Analysis Networks)",
+      "Maintainer": "Philippine Louail <philippine.louail@outlook.com>",
+      "URL": "https://github.com/RforMassSpectrometry/Chromatograms",
+      "BugReports": "https://github.com/RforMassSpectrometry/Chromatograms/issues",
+      "VignetteBuilder": "knitr",
+      "vignettes": [
+        {
+          "filename": "creating-backend-classes.html",
+          "title": "Creating new ChromBackend classes for Chromatograms"
+        },
+        {
+          "filename": "using-a-chromatograms-object.html",
+          "title": "Using and understanding a Chromatograms object"
+        }
+      ],
+      "commit": {
+        "id": "32220289a83d21fd461907b3223ef72df12cbdee",
+        "time": 1792654564
+      },
+      "git_url": "https://github.com/bioc/Chromatograms"
+    },
+    "archs": [
+      "linux",
+      "win"
+    ],
+    "origin": "r-universe"
+  },
+  "affxparser": {
+    "version": "1.85.1",
+    "sha256": "27a2fa767cbadf1478761f82070f94c8e45a4e836f513fc80386e9fde3dcd092",
+    "ts": "2026-08-18T20:31:09.268Z",
+    "bioccheck": "ERROR",
+    "artifacts": [
+      {
+        "os": "src",
+        "r": "",
+        "sha256": "27a2fa767cbadf1478761f82070f94c8e45a4e836f513fc80386e9fde3dcd092",
+        "file": "affxparser_1.85.1.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.7.0",
+        "sha256": "543c88a7806f9a99f4a6f671be2159d8f59e1f9517835999ac4c95ca95824060",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "affxparser_1.85.1.tar.gz"
+      },
+      {
+        "os": "linux",
+        "r": "4.6.1",
+        "sha256": "b3928572997a579faf47a405b0016a5d5f9b73cf9b665a7189079db1beb5b72d",
+        "arch": "x86_64",
+        "distro": "resolute",
+        "file": "affxparser_1.85.1.tar.gz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "87530712924a2b1146e2fd6ca697b04ab6c8b554a1d943b9f6c0782297420fed",
+        "arch": "aarch64",
+        "file": "affxparser_1.85.1.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.5.3",
+        "sha256": "648ca5e6974773c22fa9790a6b1c157f44ca192de36178bb4f5f3f3508358904",
+        "arch": "x86_64",
+        "file": "affxparser_1.85.1.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "9bce016e7511c380ecca92f3bf5d3f0ec2db4d6a5cffc5cc0524c7c5f18f0d96",
+        "arch": "aarch64",
+        "file": "affxparser_1.85.1.tgz"
+      },
+      {
+        "os": "mac",
+        "r": "4.6.1",
+        "sha256": "05503b5c68f26c77aecd771c5e712a92156f6c83ee5c7575fd74f8f58e6a4fff",
+        "arch": "x86_64",
+        "file": "affxparser_1.85.1.tgz"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "fd2dfeba2b099a519c0b5d12b8c709da71aa5fa2b69842a06a11e4f51c22c8b9",
+        "arch": "aarch64",
+        "file": "affxparser_1.85.1.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.7.0",
+        "sha256": "6a998759300d4dcaaf52a18a9e3d475939e162ca37a7465b5969cd8e4e988c83",
+        "arch": "x86_64",
+        "file": "affxparser_1.85.1.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.5.3",
+        "sha256": "d9b560792ca5ee65891272cf79736a76f8f1ea804a26a5cf57b385077f4d676f",
+        "arch": "x86_64",
+        "file": "affxparser_1.85.1.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "ab138d1f15bf487e6195508cfcc181c35bb3535046ecdeea222e06a5be8a261b",
+        "arch": "aarch64",
+        "file": "affxparser_1.85.1.zip"
+      },
+      {
+        "os": "win",
+        "r": "4.6.1",
+        "sha256": "47a29ce6e97376cd3d72212c0e77b8bc370181d3022a2989e5bb16adc21f70ba",
+        "arch": "x86_64",
+        "file": "affxparser_1.85.1.zip"
+      }
+    ],
+    "desc": {
+      "Depends": "R (>= 2.14.0)",
+      "Suggests": "R.oo (>= 1.22.0), R.utils (>= 2.7.0), AffymetrixDataTestFiles",
+      "License": "LGPL (>= 2)",
+      "NeedsCompilation": "yes"
+    },
+    "meta": {
+      "Title": "Affymetrix File Parsing SDK",
+      "Description": "Package for parsing Affymetrix files (CDF, CEL, CHP,\nBPMAP, BAR).  It provides methods for fast and memory efficient\nparsing of Affymetrix files using the Affymetrix' Fusion SDK.\nBoth ASCII- and binary-based files are supported.  Currently,\nthere are methods for reading chip definition file (CDF) and a\ncell intensity file (CEL).  These files can be read either in\nfull or in part.  For example, probe signals from a few\nprobesets can be extracted very quickly from a set of CEL files\ninto a convenient list structure.",
+      "biocViews": "Infrastructure, DataImport, Microarray,\nProprietaryPlatforms, OneChannel",
+      "Author": "Henrik Bengtsson [aut], James Bullard [aut], Robert Gentleman\n[ctb], Kasper Daniel Hansen [aut, cre], Jim Hester [ctb],\nMartin Morgan [ctb]",
+      "Maintainer": "Kasper Daniel Hansen <kasperdanielhansen@gmail.com>",
+      "URL": "https://github.com/HenrikBengtsson/affxparser",
+      "BugReports": "https://github.com/HenrikBengtsson/affxparser/issues",
+      "commit": {
+        "id": "6fd83fcaca7707c1b198482ae11bc8aeb0e2c0b2",
+        "time": 1787074578
+      },
+      "git_url": "https://github.com/bioc/affxparser"
+    },
+    "archs": [
+      "linux",
+      "win",
+      "mac"
+    ],
+    "origin": "r-universe"
+  }
+}

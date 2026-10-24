@@ -1,0 +1,6 @@
+Package: trackViewer
+Version: 1.49.3
+git_url: https://git.bioconductor.org/packages/trackViewer
+git_branch: devel
+git_last_commit: 602809b
+git_last_commit_date: 2026-09-29 15:32:11 -0400 (Tue, 29 Sep 2026)

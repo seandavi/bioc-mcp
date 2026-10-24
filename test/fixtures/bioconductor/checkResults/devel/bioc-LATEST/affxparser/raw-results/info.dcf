@@ -1,0 +1,6 @@
+Package: affxparser
+Version: 1.85.1
+git_url: https://git.bioconductor.org/packages/affxparser
+git_branch: devel
+git_last_commit: 6fd83fc
+git_last_commit_date: 2026-08-18 13:36:18 -0400 (Tue, 18 Aug 2026)

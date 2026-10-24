@@ -1,0 +1,6 @@
+Package: RMassBank
+Version: 3.23.1
+git_url: https://git.bioconductor.org/packages/RMassBank
+git_branch: devel
+git_last_commit: fa37118
+git_last_commit_date: 2026-09-14 10:46:46 -0400 (Mon, 14 Sep 2026)

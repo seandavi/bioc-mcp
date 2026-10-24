@@ -6,6 +6,7 @@ import type { Module } from '../capability';
 import { pkgBuildEnvironment } from './build-environment';
 import { pkgCheckOutput } from './check-output';
 import { pkgDownloads } from './downloads';
+import { pkgLegacyStatus } from './legacy-status';
 import { pkgMissingDeps } from './missing-deps';
 import { triageFailingPackagePrompt } from './prompts';
 import { pkgReleaseInfo } from './release-info';
@@ -16,7 +17,7 @@ import { pkgStatus } from './status';
 export const pkgModule: Module = {
   name: 'pkg',
   description:
-    'Package build and propagation state (Bioconductor registry, r-universe), check output and build ' +
+    'Package build and propagation state (Bioconductor registry, r-universe, and the legacy BBS report), check output and build ' +
     'environments of r-universe jobs, reverse dependencies and unresolvable dependencies in the propagation ' +
     "index (with CRAN), release versions and download stats (bioconductor.org), and how the registry's index " +
     "compares with bioconductor.org's repositories.",
@@ -29,6 +30,7 @@ export const pkgModule: Module = {
   ],
   capabilities: [
     pkgStatus,
+    pkgLegacyStatus,
     pkgCheckOutput,
     pkgBuildEnvironment,
     pkgReleaseInfo,

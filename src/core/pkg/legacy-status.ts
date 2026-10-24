@@ -155,7 +155,7 @@ export const PkgLegacyStatusDataSchema = z.object({
         registry_passed: z
           .boolean()
           .nullable()
-          .describe("Whether the registry's archs include this family; null when there is no entry or archs is unknown"),
+          .describe("Whether the registry's archs include this family; null when there is no entry, archs is unknown, or the entry was never gated (seeded)"),
       }),
     )
     .describe('Per platform family, in the order linux, mac, win; families neither side mentions are left out'),
@@ -363,7 +363,8 @@ export const pkgLegacyStatus = defineCapability({
     const comparison: Comparison[] = [];
     for (const family of PLATFORM_FAMILIES) {
       const nodes = legacy?.nodes.filter((n) => n.family === family) ?? [];
-      const registryPassed = registry?.archs ? registry.archs.includes(family) : null;
+      const registryPassed =
+        registry?.archs && registry.passed_gate !== false ? registry.archs.includes(family) : null;
       if (nodes.length === 0 && registryPassed !== true) continue;
       comparison.push({
         family,

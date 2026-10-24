@@ -437,7 +437,7 @@ export const PkgLegacyStatusDataSchema = z.object({
         registry_passed: z
           .boolean()
           .nullable()
-          .describe("Whether the registry's archs include this family; null when there is no entry or archs is unknown"),
+          .describe("Whether the registry's archs include this family; null when there is no entry, archs is unknown, or the entry was never gated (seeded)"),
       }),
     )
     .describe('Per platform family, in the order linux, mac, win; families neither side mentions are left out'),
@@ -529,7 +529,8 @@ The input is the same shape as `pkg_status`'s, so `validateRegistry` accepts it.
    Otherwise `null`.
 7. `comparison`: for each family `f` of `PLATFORM_FAMILIES`:
    - `nodes = legacy?.nodes.filter(n => n.family === f) ?? []`;
-   - `registry_passed = registry && registry.archs ? registry.archs.includes(f) : null`;
+   - `registry_passed = registry && registry.archs && registry.passed_gate !== false ? registry.archs.includes(f) : null`
+     (a seeded entry never ran the gate, so its `archs` say nothing about passing);
    - the row `{ family: f, bbs_nodes: nodes.map(n => n.node), bbs_verdict: familyVerdict(nodes.map(n => n.verdict)), registry_passed }`
      is kept unless `nodes.length === 0` and `registry_passed !== true`.
 
@@ -757,7 +758,8 @@ substitute one that does and say so in the PR.
 |---|---|---|
 | All ok, agrees | `{ package: 'trackViewer' }` | build `bioc`; version `1.49.3`; commit `{ id: '602809b', time: '2026-09-29T15:32:11-04:00', branch: 'devel' }`; nodes `nebbiolo2` (linux, x86_64), `lconway` (mac), `taishan` (linux, aarch64), all `ok`, every stage `url: null`; `lconway` has 4 stages ending `buildbin`; propagation `source` and `mac.binary.big-sur-x86_64`, both `UNNEEDED` with reason `same version is already published`; registry `1.49.3`, origin `r-universe`, archs `['linux','win','mac']`; comparison `[linux ok true, mac ok true, win null true]` (win `bbs_nodes: []`); same_version true; no sentence 4 or 5 |
 | BBS fails, registry passed linux | `{ package: 'GEOfastq' }` | `taishan` `failed` (checksrc `ERROR`, with a url ending `/GEOfastq/taishan-checksrc.html`); `nebbiolo2`, `lconway` `ok`; registry archs `['linux','mac']`, origin `r-universe` (absent in the entry); comparison `linux failed true`, `mac ok true`; the summary contains `BBS and the registry disagree on linux (BBS failed, registry passed).` |
-| Failed everywhere, seeded | `{ package: 'biomaRt' }` | `nebbiolo2` and `taishan` `failed (buildsrc ERROR)`; `lconway` `failed (checksrc TIMEOUT)`; propagation `[]`; registry origin `bioconductor`, `passed_gate: false`, archs `[]`; comparison `linux failed false`, `mac failed false`; same_version false (2.69.5 vs 2.69.0); sentence 2′ and sentence 5 |
+| Failed everywhere, seeded | `{ package: 'biomaRt' }` | `nebbiolo2` and `taishan` `failed (buildsrc ERROR)`; `lconway` `failed (checksrc TIMEOUT)`; propagation `[]`; registry origin `bioconductor`, `passed_gate: false`, archs `[]`; comparison `linux failed null`, `mac failed null`; same_version false (2.69.5 vs 2.69.0); sentence 2′ and sentence 5 |
+| Seeded, BBS ok | `{ package: 'trackViewer' }` with an inline index seeding it (`origin: 'bioconductor'`, `archs: []`, a mac binary) | all three nodes `ok`; registry `passed_gate: false`; comparison `linux ok null`, `mac ok null`; the summary does not contain `disagree` |
 | Propagated now, newer than registry | `{ package: 'Chromatograms' }` | version `1.3.5`; propagation both `YES`, reason null; registry `1.3.3`; same_version false |
 | Blocked by a dependency | `{ package: 'cosmosR' }` | propagation `source NO (package depends on 'decoupleR' which is not available)`, `mac.binary.big-sur-x86_64 UNNEEDED (…)`; registry null; sentence 3′ |
 | Unknown archs | `{ package: 'RMassBank' }` | all nodes `failed` (install and buildsrc `ERROR`; checksrc `skipped` with url null); propagation `[]`; registry origin `r-universe`, archs null, `passed_gate: true`; comparison `linux failed null`, `mac failed null`; no sentence 4; same_version false (3.23.1 vs 3.23.0) |

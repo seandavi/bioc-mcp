@@ -251,8 +251,8 @@ describe('pkg_legacy_status scenarios', () => {
     expect(data.legacy?.propagation).toEqual([]);
     expect(data.registry).toMatchObject({ origin: 'bioconductor', passed_gate: false, archs: [] });
     expect(data.comparison).toEqual([
-      { family: 'linux', bbs_nodes: ['nebbiolo2', 'taishan'], bbs_verdict: 'failed', registry_passed: false },
-      { family: 'mac', bbs_nodes: ['lconway'], bbs_verdict: 'failed', registry_passed: false },
+      { family: 'linux', bbs_nodes: ['nebbiolo2', 'taishan'], bbs_verdict: 'failed', registry_passed: null },
+      { family: 'mac', bbs_nodes: ['lconway'], bbs_verdict: 'failed', registry_passed: null },
     ]);
     expect(data.legacy?.version).toBe('2.69.5');
     expect(data.registry?.version).toBe('2.69.0');
@@ -264,6 +264,34 @@ describe('pkg_legacy_status scenarios', () => {
         'The registry propagated 2.69.0 (seeded from Bioconductor, never gated). ' +
         'BBS built 2.69.5; the registry propagated 2.69.0.',
     );
+  });
+
+  test('seeded entry with a BBS-ok package: registry_passed is null and nothing disagrees (trackViewer)', async () => {
+    // A seeded entry has archs [] yet can carry binaries; the gate never ran, so the registry has no verdict.
+    const seeded = {
+      trackViewer: {
+        version: '1.49.3',
+        sha256: '00f889a99dfa2acd320026762e7c2b66dca057a7ce8aae0afed60bf847a7c92b',
+        ts: '2026-09-30T01:16:10.678Z',
+        origin: 'bioconductor',
+        archs: [],
+        artifacts: [
+          { os: 'src', r: '', sha256: '00f889a99dfa2acd320026762e7c2b66dca057a7ce8aae0afed60bf847a7c92b', file: 'trackViewer_1.49.3.tar.gz' },
+          { os: 'mac', r: '4.6.1', sha256: '47952af74de5e5b58696601dabcb2d93a23e9a055a2f928c6c7dc70ad12b4380', file: 'trackViewer_1.49.3.tgz' },
+        ],
+      },
+    };
+    const { data, summary } = await legacy(
+      { package: 'trackViewer' },
+      { [BIOC_INDEX_URL]: { status: 200, body: JSON.stringify(seeded) } },
+    );
+    expect(data.legacy!.nodes.map((n) => n.verdict)).toEqual(['ok', 'ok', 'ok']);
+    expect(data.registry).toMatchObject({ origin: 'bioconductor', passed_gate: false, archs: [] });
+    expect(data.comparison).toEqual([
+      { family: 'linux', bbs_nodes: ['nebbiolo2', 'taishan'], bbs_verdict: 'ok', registry_passed: null },
+      { family: 'mac', bbs_nodes: ['lconway'], bbs_verdict: 'ok', registry_passed: null },
+    ]);
+    expect(summary).not.toContain('disagree');
   });
 
   test('propagated now, newer than the registry: Chromatograms', async () => {

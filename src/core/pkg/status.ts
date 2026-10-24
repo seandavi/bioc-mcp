@@ -153,7 +153,7 @@ export function historySql(universe: Universe, name: string): string {
   ].join('\n');
 }
 
-const ORIGIN_PASSED_GATE: Record<string, boolean> = { 'r-universe': true, 'bioc-build': true, bioconductor: false };
+export const ORIGIN_PASSED_GATE: Record<string, boolean> = { 'r-universe': true, 'bioc-build': true, bioconductor: false };
 
 function shapePropagated(entry: RegistryEntry): Propagated {
   const origin = entry.origin ?? 'r-universe';
@@ -261,7 +261,7 @@ function behindReasons(
   return reasons;
 }
 
-function originLabel(origin: string): string {
+export function originLabel(origin: string): string {
   switch (origin) {
     case 'r-universe':
       return 'passed the gate via r-universe';
@@ -322,7 +322,9 @@ export const pkgStatus = defineCapability({
     "propagated version and why, and returns a SQL query for the package's check history to run in the " +
     "registry's /sql console (not executed). universe 'bioc' is devel (default), 'bioc-release' is release. " +
     'Package names are case-sensitive. For why a job failed, pass its job id to pkg_check_output; for what it ' +
-    'ran with, to pkg_build_environment. For download counts use pkg_downloads; for release and devel ' +
+    'ran with, to pkg_build_environment. ' +
+    'For the legacy Bioconductor Build System (BBS) report on the same package, beside the registry, use pkg_legacy_status. ' +
+    'For download counts use pkg_downloads; for release and devel ' +
     'versions use pkg_release_info. ' +
     "For how the whole index compares with bioconductor.org's repositories use pkg_repo_diff. " +
     'For why or how the infrastructure works this way (design, ADRs, runbooks) use docs_search.',
